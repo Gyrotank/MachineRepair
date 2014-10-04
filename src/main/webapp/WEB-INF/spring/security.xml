@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"          
+      xmlns:beans="http://www.springframework.org/schema/beans"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                 http://www.springframework.org/schema/beans/spring-beans-4.1.xsd 
+                 http://www.springframework.org/schema/security 
+                 http://www.springframework.org/schema/security/spring-security-3.2.xsd"> 
+
+
+<http access-denied-page="/error403.jsp"> 
+   <intercept-url pattern="/index*" access="ROLE_CLIENT,ROLE_ANONYMOUS"/> 
+   <intercept-url pattern="/clientpage*" access="ROLE_CLIENT"/>
+   <intercept-url pattern="/managerpage*" access="ROLE_MANAGER,ROLE_ADMIN"/>
+   <intercept-url pattern="/adminpage*" access="ROLE_ADMIN"/> 
+   <form-login login-page="/login"
+   				username-parameter="login"  
+   				password-parameter="password"
+   				default-target-url="/index"
+    			authentication-failure-url="/login?error=true"/> 
+   <logout logout-url="/logout" logout-success-url="/index"/> 
+   <anonymous username="guest" granted-authority="ROLE_ANONYMOUS"/> 
+   <remember-me/>
+   <session-management session-fixation-protection="newSession">
+        <concurrency-control max-sessions="1"
+         expired-url="/Login.html"
+         error-if-maximum-exceeded="true"/>
+	</session-management> 
+</http>
+
+<authentication-manager>  
+  <authentication-provider>
+  	<password-encoder ref="encoder"/>
+  	<jdbc-user-service data-source-ref="dataSource"  
+    users-by-username-query="select login, password, enabled from users where login=?"  
+    authorities-by-username-query="select u1.login, u2.role from users u1, user_authorization u2 where u1.users_id = u2.user_id and u1.login=?"/>  
+  </authentication-provider>  
+ </authentication-manager>
+
+ 
+</beans:beans> 

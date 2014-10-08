@@ -1,6 +1,7 @@
 package com.glomozda.machinerepair.domain.machine;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -24,7 +25,7 @@ import com.glomozda.machinerepair.domain.order.Order;
 @Entity
 @Table(name = "machines")
 public class Machine {
-
+	
 	@Id
 	@GeneratedValue
 	@Column(name = "machines_id")

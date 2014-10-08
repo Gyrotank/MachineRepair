@@ -2,6 +2,7 @@ package com.glomozda.machinerepair;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -64,10 +65,30 @@ public class ClientPageController implements MessageSourceAware {
 	
 	private Integer selectedFirstRepairServiceableId = 0;
 	private String enteredFirstRepairSerialNumber = "";
-	private Integer selectedFirstRepairYear = 0;
+	private Integer selectedFirstRepairYear = 1950;
 	private Integer selectedFirstRepairRepairTypeId = 0;
 	
 	private MessageSource messageSource;
+	
+	private boolean isNonNegativeInteger(String str) {
+		if (str == null) {
+			return false;
+		}
+		int length = str.length();
+		if (length == 0) {
+			return false;
+		}
+		if (str.charAt(0) == '-') {
+			return false;
+		}
+		for (int i = 0; i < length; i++) {
+			char c = str.charAt(i);
+			if (c <= '/' || c >= ':') {
+				return false;
+			}
+		}
+		return true;
+	}
 	 
 	public void setMessageSource(MessageSource messageSource) {
 		this.messageSource = messageSource;
@@ -86,13 +107,17 @@ public class ClientPageController implements MessageSourceAware {
 		model.addAttribute("clientname", myClient.getClientName());
 				
 		List<Order> myPastOrders =
-				orderSvc.getOrdersForClientIdAndStatusWithFetching(myClient.getClientId(), "finished");
+				orderSvc.getOrdersForClientIdAndStatusWithFetching(myClient.getClientId(),
+						"finished");
 		List<Order> myCurrentOrders =
-				orderSvc.getOrdersForClientIdAndStatusWithFetching(myClient.getClientId(), "pending");
+				orderSvc.getOrdersForClientIdAndStatusWithFetching(myClient.getClientId(),
+						"pending");
 		myCurrentOrders.addAll(
-				orderSvc.getOrdersForClientIdAndStatusWithFetching(myClient.getClientId(), "ready"));
+				orderSvc.getOrdersForClientIdAndStatusWithFetching(myClient.getClientId(),
+						"ready"));
 		myCurrentOrders.addAll(
-				orderSvc.getOrdersForClientIdAndStatusWithFetching(myClient.getClientId(), "started"));		
+				orderSvc.getOrdersForClientIdAndStatusWithFetching(myClient.getClientId(),
+						"started"));		
 		
 		ArrayList<String> myMachinesSNs = new ArrayList<String>();
 		
@@ -163,7 +188,7 @@ public class ClientPageController implements MessageSourceAware {
 		messageFirstRepairYear = "";
 		model.addAttribute("first_repair_selected_year",
 				selectedFirstRepairYear);
-		selectedFirstRepairYear = 0;
+		selectedFirstRepairYear = 1950;
 		
 		model.addAttribute("message_first_repair_repairtype_id",
 				messageFirstRepairRepairTypeId);
@@ -217,11 +242,16 @@ public class ClientPageController implements MessageSourceAware {
 	public String createOrderForFirstRepair(
 			@RequestParam("machineServiceableId") Integer machineServiceableId,
 			@RequestParam("machineSerialNumber") String machineSerialNumber,
-			@RequestParam("machineYear") Integer machineYear,
+			@RequestParam("machineYear") String machineYear,
 			@RequestParam("repairTypeId") Integer repairTypeId) {
 		
-		if (machineServiceableId == 0 || machineSerialNumber.isEmpty() ||
-				machineYear == 0 || repairTypeId == 0) {
+		if (machineServiceableId == 0 || machineSerialNumber.isEmpty()
+				|| machineYear.isEmpty()
+				|| !isNonNegativeInteger(machineYear.toString())
+				|| Integer.parseInt(machineYear) < 1950
+				|| Integer.parseInt(machineYear)
+					> java.util.Calendar.getInstance().get(Calendar.YEAR)				
+				|| repairTypeId == 0) {
 			if (machineServiceableId == 0) {
 				messageFirstRepairServiceableId = 
 						messageSource.getMessage("error.clientpage.firstRepairServiceableId",
@@ -232,25 +262,47 @@ public class ClientPageController implements MessageSourceAware {
 						messageSource.getMessage("error.clientpage.firstRepairSerialNumber",
 								null, Locale.getDefault());
 			}
-			if (machineYear == 0) {
+			if (machineYear.isEmpty()) {
 				messageFirstRepairYear = 
 						messageSource.getMessage("error.clientpage.firstRepairYear",
 								null, Locale.getDefault());
+			}
+			if (!isNonNegativeInteger(machineYear.toString())) {
+				messageFirstRepairYear = 
+						messageSource.getMessage("error.clientpage.firstRepairYearFormat",
+								null, Locale.getDefault());
+			}
+			if (isNonNegativeInteger(machineYear.toString())) {
+				if (Integer.parseInt(machineYear) < 1950) {
+					messageFirstRepairYear = 
+							messageSource.getMessage("Min.machine.machineYear",
+									null, Locale.getDefault());
+				}
+				if (Integer.parseInt(machineYear) >
+				java.util.Calendar.getInstance().get(Calendar.YEAR)) {
+					messageFirstRepairYear = 
+							messageSource.getMessage("error.clientpage.firstRepairYearFuture",
+									null, Locale.getDefault());
+				}
 			}
 			if (repairTypeId == 0) {
 				messageFirstRepairRepairTypeId = 
 						messageSource.getMessage("error.clientpage.firstRepairRepairTypeId",
 								null, Locale.getDefault());
-			}
-			
+			}			
+						
 			selectedFirstRepairServiceableId = machineServiceableId;
 			enteredFirstRepairSerialNumber = machineSerialNumber;
-			selectedFirstRepairYear = machineYear;
+			if (isNonNegativeInteger(machineYear.toString())) {
+				selectedFirstRepairYear = Integer.parseInt(machineYear);
+			} else {
+				selectedFirstRepairYear = 1950;
+			}
 			selectedFirstRepairRepairTypeId = repairTypeId;
 			return "redirect:/clientpage";
 		}
 		
-		Machine m = new Machine(machineSerialNumber, machineYear);
+		Machine m = new Machine(machineSerialNumber, Integer.parseInt(machineYear));
 		machineSvc.add(m, machineServiceableId);
 		
 		m = machineSvc.getMachineForSerialNumberWithFetching(machineSerialNumber);

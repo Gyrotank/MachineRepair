@@ -1,6 +1,7 @@
 package com.glomozda.machinerepair;
 
 import java.security.Principal;
+import java.util.Calendar;
 import java.util.Locale;
 
 import javax.validation.Valid;
@@ -169,12 +170,17 @@ public class AdminPageController implements MessageSourceAware {
 			final RedirectAttributes redirectAttributes,			
 			@RequestParam("machineServiceableId") final Integer machineServiceableId) {
 		
+		if (machine.getMachineYear() != null)
+			if (machine.getMachineYear() > java.util.Calendar.getInstance().get(Calendar.YEAR)) {
+				bindingResult.rejectValue("machineYear", "error.adminpage.machineYear", null);
+			}
+		
 		if (machineServiceableId == 0 || bindingResult.hasErrors()) {
 			if (machineServiceableId == 0) {
 				messageMachineServiceableId = 
 						messageSource.getMessage("error.adminpage.machineServiceableId", null,
 								Locale.getDefault());
-			}
+			}			
 
 			if (bindingResult.hasErrors()) {
 				redirectAttributes.addFlashAttribute

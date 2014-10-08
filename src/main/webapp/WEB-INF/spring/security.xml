@@ -15,9 +15,9 @@
    <intercept-url pattern="/adminpage*" access="ROLE_ADMIN"/> 
    <form-login login-page="/login"
    				username-parameter="login"  
-   				password-parameter="password"
-   				default-target-url="/index"
-    			authentication-failure-url="/login?error=true"/> 
+   				password-parameter="password"   				
+    			authentication-failure-url="/login?error=true"
+    			authentication-success-handler-ref="urlAuthenticationSuccessHandler"/> 
    <logout logout-url="/logout" logout-success-url="/index"/> 
    <anonymous username="guest" granted-authority="ROLE_ANONYMOUS"/> 
    <remember-me/>
@@ -27,6 +27,9 @@
          error-if-maximum-exceeded="true"/>
 	</session-management> 
 </http>
+
+<beans:bean id="urlAuthenticationSuccessHandler"
+        class="com.glomozda.machinerepair.security.UrlAuthenticationSuccessHandler" />
 
 <authentication-manager>  
   <authentication-provider>

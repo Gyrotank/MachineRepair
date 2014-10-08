@@ -25,19 +25,19 @@
   	<form method="post" action="signuppage/signup">
   	<table>
   		<tr>
-  			<td>Name:</td>
+  			<td>Name:*</td>
   			<td><input type="text" name="name" value="${entered_name}"/></td>
   		</tr>
   		<tr>
-  			<td>Login:</td>
+  			<td>Login:*</td>
   			<td><input type="text" name="login" value="${entered_login}"/></td>
   		</tr>
   		<tr>
-  			<td>Password:</td>
+  			<td>Password:*</td>
   			<td><input type="password" name="password1"/></td>
   		</tr>
   		<tr>
-  			<td>Repeat password:</td>
+  			<td>Repeat password:*</td>
   			<td><input type="password" name="password2"/></td>
   		</tr>
   		<tr>

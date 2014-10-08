@@ -21,6 +21,10 @@ h3.right {
     right: 10px;
     top: 0px;
 }
+
+tr.odd {background-color: #EEDDEE}
+
+tr.even {background-color: #EEEEDD}
 </style>
 
 </head>
@@ -37,12 +41,12 @@ h3.right {
 	<h2>Your Past Orders:</h2>
 	<c:out value="${message}"/>
 	<table border="1" style="width:1000px">
-	<tr><th align="center">Id:</th><th align="center">RepairType:</th>
+	<tr><th align="center"></th><th align="center">RepairType:</th>
 	<th align="center">Machine S/N:</th><th align="center">Machine Name:</th>
 	<th align="center">Start:</th><th align="center">Status:</th></tr>	
-  	<c:forEach var="po" items="${my_past_orders}">
-  	<tr>
-    	<td>${po.orderId}</td>    	 
+  	<c:forEach var="po" items="${my_past_orders}" varStatus="loopStatus">
+  	<tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
+    	<td><c:out value="${loopStatus.index + 1}"/></td>    	 
     	<td>${po.repairType.repairTypeName}</td>
     	<td>${po.machine.machineSerialNumber}</td>
     	<td>${po.machine.machineServiceable.machineServiceableName}</td>
@@ -55,13 +59,13 @@ h3.right {
 	<h2>Your Current Orders:</h2>
 	<c:out value="${message}"/>
 	<table border="1" style="width:1000px">
-	<tr><th align="center">Id:</th><th align="center">RepairType:</th>
+	<tr><th align="center"></th><th align="center">RepairType:</th>
 	<th align="center">Machine S/N:</th><th align="center">Machine Name:</th>
 	<th align="center">Start:</th><th align="center">Status:</th>
 	<th align="center">Actions:</th></tr>	
-  	<c:forEach var="co" items="${my_current_orders}">
-  	<tr>
-    	<td>${co.orderId}</td>    	 
+  	<c:forEach var="co" items="${my_current_orders}" varStatus="loopStatus">
+  	<tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
+    	<td><c:out value="${loopStatus.index + 1}"/></td>    	 
     	<td>${co.repairType.repairTypeName}</td>
     	<td>${co.machine.machineSerialNumber}</td>
     	<td>${co.machine.machineServiceable.machineServiceableName}</td>
@@ -165,19 +169,8 @@ h3.right {
   		</tr>
   		<tr> 
   		<td>Year:</td>  		
-  		<td><select name="machineYear">
-  			<option value="0"><c:out value="-Select production year-" /></option>
-  			<c:forEach begin="1950" end="${current_year}" var="y">
-  			<c:choose>
-  			<c:when test="${first_repair_selected_year == y}">
-  				<option selected value="${y}">${y}</option>
-  			</c:when>
-  			<c:otherwise>
-  				<option value="${y}">${y}</option>
-  			</c:otherwise>
-  			</c:choose>   				
-			</c:forEach>
-		</select></td>
+  		<td><input type="text" name="machineYear" size="4" maxlength="4"
+  				 value="${first_repair_selected_year}"/></td>
 		<td><small><font color="red">
 			<c:out value="${message_first_repair_year}"/>
 		</font></small></td>

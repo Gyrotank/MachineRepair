@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,10 +58,15 @@ public class ManagerPageController {
 			return "redirect:/index";
 		}
 		
+		UsernamePasswordAuthenticationToken userToken =
+				(UsernamePasswordAuthenticationToken)principal;
+		
 		model.addAttribute("pending_orders", orderSvc.getOrdersForStatusWithFetching("pending"));
 		model.addAttribute("selected_client_id", selectedClientId);
 		model.addAttribute("active_orders_for_selected_client", activeOrdersForSelectedClient);
 		model.addAttribute("clients", clientSvc.getAllWithFetching());
+		model.addAttribute("user_token_authorities",
+				userToken.getAuthorities().toString());
 		
 		return "managerpage";
 	}

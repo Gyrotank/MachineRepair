@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Base View and Add (Basic)</title>
+<title>Administrative Tools</title>
 
 <style>
 .error {
@@ -27,25 +27,30 @@ h3.right {
     right: 10px;
     top: 0px;
 }
+
+tr.odd {background-color: #EEDDEE}
+
+tr.even {background-color: #EEEEDD}
 </style>
 </head>
 <body>	
 	<jsp:useBean id="now" class="java.util.Date" />
 	<fmt:formatDate var="current_year" value="${now}" pattern="yyyy" />
 	
-	<h3 class="left"><a href="<c:url value="/index"/>">Home</a></h3>
+	<h3 class="left"><a href="<c:url value="/index"/>">Home</a>
+	<br><a href="<c:url value="/managerpage"/>">Switch to orders management</a></h3>
 	<h3 class="right"><a href="<c:url value="/logout"/>">Log out</a></h3>
 	<br>
 	<br>
 	<br>
 	<h1>Machines</h1>
 	<table border="1" style="width:1000px">
-	<tr><th align="center">Id:</th><th align="center">M_S_Name:</th>
+	<tr><th align="center"></th><th align="center">M_S_Name:</th>
 	<th align="center">S/N:</th>
 	<th align="center">Year:</th><th align="center">Times Repaired:</th></tr>
-  	<c:forEach var="m" items="${machines}">    	
-    <tr>
-    	<td>${m.machineId}</td>
+  	<c:forEach var="m" items="${machines}" varStatus="loopStatus">    	
+    <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
+    	<td><c:out value="${loopStatus.index + 1}"/></td>
     	<td>${m.machineServiceable.machineServiceableName}</td> 
     	<td>${m.machineSerialNumber}</td>
     	<td>${m.machineYear}</td>
@@ -89,13 +94,9 @@ h3.right {
   		</tr>
   		<tr>  		
   			<td><label for="machineYearInput">Year: </label></td>
-  			<td><form:select path="machineYear" id="machineYearInput">
-  			<form:option value="0"><c:out value="---" /></form:option>
-  			<c:forEach begin="1950" end="${current_year}" var="y">
-   				<form:option value="${y}">${y}</form:option>
-			</c:forEach>
-			</form:select></td>
-			<td><form:errors path="machineYear" cssClass="error" /></td>
+  			<td><form:input size="4" minlength="4" maxlength="4"
+  				 path="machineYear" id="machineYearInput"/></td>
+  			<td><form:errors path="machineYear" cssClass="error" /></td>  			
 		</tr>
 		<tr>
   			<td><label for="machineTimesRepairedInput">Times Repaired: </label></td>
@@ -111,11 +112,11 @@ h3.right {
   	
   	<h1>Serviceable Machines</h1>
   	<table border="1" style="width:1000px">
-	<tr><th align="center">Id:</th><th align="center">Name:</th>
+	<tr><th align="center"></th><th align="center">Name:</th>
 	<th align="center">Trademark:</th><th align="center">Country:</th></tr>
-  	<c:forEach var="ms" items="${machines_serviceable}">    	
-    <tr>
-    	<td>${ms.machineServiceableId}</td>
+  	<c:forEach var="ms" items="${machines_serviceable}" varStatus="loopStatus">    	
+    <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
+    	<td><c:out value="${loopStatus.index + 1}"/></td>
     	<td>${ms.machineServiceableName}</td> 
     	<td>${ms.machineServiceableTrademark}</td>
     	<td>${ms.machineServiceableCountry}</td>    	   	
@@ -153,11 +154,11 @@ h3.right {
   
   	<h1>Repair Types</h1>
   	<table border="1" style="width:1000px">
-	<tr><th align="center">Id:</th><th align="center">Name:</th>
+	<tr><th align="center"></th><th align="center">Name:</th>
 	<th align="center">Price:</th><th align="center">Duration:</th></tr>
-  	<c:forEach var="rt" items="${repair_types}">		
-    <tr>
-    	<td>${rt.repairTypeId}</td>
+  	<c:forEach var="rt" items="${repair_types}" varStatus="loopStatus">    	
+    <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
+    	<td><c:out value="${loopStatus.index + 1}"/></td>
     	<td>${rt.repairTypeName}</td> 
     	<td>${rt.repairTypePrice}</td>
     	<td>${rt.repairTypeDuration}</td>    	   	
@@ -191,14 +192,13 @@ h3.right {
   
   	<h1>Users</h1>
   	<table border="1" style="width:1000px">
-	<tr><th align="center">Id:</th><th align="center">Login:</th>
-	<th align="center">Password:</th><th align="center">PasswordText:</th></tr>
-  	<c:forEach var="u" items="${users}">    	
-    <tr>
-    	<td>${u.userId}</td>
+	<tr><th align="center"></th><th align="center">Login:</th>
+	<th align="center">Password:</th></tr>
+  	<c:forEach var="u" items="${users}" varStatus="loopStatus">    	
+    <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
+    	<td><c:out value="${loopStatus.index + 1}"/></td>
     	<td>${u.login}</td> 
     	<td>${u.password}</td>
-    	<td>${u.passwordText}</td>    	   	
     </tr>
   	</c:forEach>
   	</table>
@@ -224,13 +224,25 @@ h3.right {
   	
   	<h1>User Authorizations</h1>
   	<table border="1" style="width:1000px">
-	<tr><th align="center">Id:</th><th align="center">Login:</th>
+	<tr><th align="center"></th><th align="center">Login:</th>
 	<th align="center">Role:</th></tr>
-  	<c:forEach var="ua" items="${user_authorizations}">    	
-    <tr>
-    	<td>${ua.userAuthorizationId}</td>
+  	<c:forEach var="ua" items="${user_authorizations}" varStatus="loopStatus">    	
+    <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
+    	<td><c:out value="${loopStatus.index + 1}"/></td>
     	<td>${ua.user.login}</td> 
-    	<td>${ua.role}</td>    	    	   	
+    	<td>
+    		<c:choose>
+  				<c:when test="${ua.role == 'ROLE_ADMIN'}">
+  					<c:out value="Administrator"/>  					
+  				</c:when>
+  				<c:when test="${ua.role == 'ROLE_MANAGER'}">
+  					<c:out value="Manager"/>  					
+  				</c:when>
+  				<c:otherwise>
+  					<c:out value="Client"/>  					
+  				</c:otherwise>
+  			</c:choose>
+    	</td>    	    	   	
     </tr>
   	</c:forEach>
   	</table>
@@ -282,11 +294,11 @@ h3.right {
   
   	<h1>Clients</h1>
   	<table border="1" style="width:1000px">
-	<tr><th align="center">Id:</th><th align="center">Name:</th>
+	<tr><th align="center"></th><th align="center">Name:</th>
 	<th align="center">Login:</th></tr>
-  	<c:forEach var="c" items="${clients}">    	
-    <tr>
-    	<td>${c.clientId}</td>
+  	<c:forEach var="c" items="${clients}" varStatus="loopStatus">    	
+    <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
+    	<td><c:out value="${loopStatus.index + 1}"/></td>
     	<td>${c.clientName}</td> 
     	<td>${c.clientUser.login}</td>    	    	   	
     </tr>
@@ -334,13 +346,13 @@ h3.right {
   
   	<h1>Orders</h1>
   	<table border="1" style="width:1000px">
-	<tr><th align="center">Id:</th><th align="center">Client:</th>
+	<tr><th align="center"></th><th align="center">Client:</th>
 	<th align="center">RepairType:</th><th align="center">Machine:</th>
 	<th align="center">Machine S/N:</th>
 	<th align="center">Start:</th><th align="center">Status:</th></tr>
-  	<c:forEach var="o" items="${orders}">    	
-    <tr>
-    	<td>${o.orderId}</td>
+  	<c:forEach var="o" items="${orders}" varStatus="loopStatus">    	
+    <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
+    	<td><c:out value="${loopStatus.index + 1}"/></td>
     	<td>${o.client.clientName}</td> 
     	<td>${o.repairType.repairTypeName}</td>
     	<td>${o.machine.machineServiceable.machineServiceableName}</td>

@@ -1,11 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Manage Orders</title>
+<title>Orders Management</title>
 
 <style>
 h3.left {
@@ -19,25 +20,33 @@ h3.right {
     right: 10px;
     top: 0px;
 }
+
+tr.odd {background-color: #EEDDEE}
+
+tr.even {background-color: #EEEEDD}
 </style>
 
 </head>
 <body>
 	
-	<h3 class="left"><a href="<c:url value="/index"/>">Home</a></h3>
+	<h3 class="left"><a href="<c:url value="/index"/>">Home</a>
+	<c:if test="${fn:contains(user_token_authorities, 'ROLE_ADMIN')}">
+		<br>
+		<a href="<c:url value="/adminpage"/>">Switch to administrative tools</a>						
+	</c:if></h3>
 	<h3 class="right"><a href="<c:url value="/logout"/>">Log out</a></h3>
 	<br>
 	<br>
 	<br>
 	<h2>Pending Orders:</h2>
 	<table border="1" style="width:1000px">
-	<tr><th align="center">Id:</th><th align="center">Client:</th>
+	<tr><th align="center"></th><th align="center">Client:</th>
 	<th align="center">RepairType:</th><th align="center">Machine S/N:</th>
 	<th align="center">Machine Name:</th><th align="center">Start:</th>
 	<th align="center">Status:</th><th align="center">Actions:</th></tr>	
-  	<c:forEach var="po" items="${pending_orders}">
-  	<tr>
-    	<td>${po.orderId}</td>
+  	<c:forEach var="po" items="${pending_orders}" varStatus="loopStatus">
+  	<tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
+    	<td><c:out value="${loopStatus.index + 1}"/></td>
     	<td>${po.client.clientName}</td> 
     	<td>${po.repairType.repairTypeName}</td>
     	<td>${po.machine.machineSerialNumber}</td>
@@ -72,13 +81,13 @@ h3.right {
   	</form>
   	
   	<table border="1" style="width:1000px">
-	<tr><th align="center">Id:</th><th align="center">Client:</th>
+	<tr><th align="center"></th><th align="center">Client:</th>
 	<th align="center">RepairType:</th><th align="center">Machine S/N:</th>
 	<th align="center">Machine Name:</th><th align="center">Start:</th>
 	<th align="center">Status:</th><th align="center">Actions:</th></tr>	
-  	<c:forEach var="ao" items="${active_orders_for_selected_client}">
-  	<tr>
-    	<td>${ao.orderId}</td>
+  	<c:forEach var="ao" items="${active_orders_for_selected_client}" varStatus="loopStatus">
+  	<tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
+    	<td><c:out value="${loopStatus.index + 1}"/></td>
     	<td>${ao.client.clientName}</td> 
     	<td>${ao.repairType.repairTypeName}</td>
     	<td>${ao.machine.machineSerialNumber}</td>

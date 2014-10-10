@@ -217,9 +217,11 @@ element.innerHTML = pagerHtml;
 }
 }
 </script>
+
 </head>
 
-<body>	
+<body>
+	
 	<jsp:useBean id="now" class="java.util.Date" />
 	<fmt:formatDate var="current_year" value="${now}" pattern="yyyy" />
 	
@@ -275,7 +277,7 @@ element.innerHTML = pagerHtml;
   		<tr>
   			<td>Machine Name: </td>
   			<td><select name="machineServiceableId">  		
-  				<option value="0"><c:out value="---" /></option>
+  				<option value="0"><c:out value="-Select machine name-" /></option>
   				<c:forEach var="ms" items="${machines_serviceable}">
   				<c:choose>
   					<c:when test="${selected_machineserviceable_id == ms.machineServiceableId}">
@@ -593,7 +595,7 @@ element.innerHTML = pagerHtml;
   		<tr>
   			<td>User:</td>
   			<td><select name="userId">
-  				<option value="0"><c:out value="---" /></option>
+  				<option value="0"><c:out value="-Select user-" /></option>
   				<c:forEach var="u" items="${users}">
   					<c:choose>
   					<c:when test="${selected_client_user_id == u.userId}">
@@ -628,9 +630,9 @@ element.innerHTML = pagerHtml;
   	<h1>Orders</h1>
   	<table border="1" style="width:900px" id="tablepaging7" class="yui" align="center">
 	<tr><th align="center"></th><th align="center">Client:</th>
-	<th align="center">RepairType:</th><th align="center">Machine:</th>
+	<th align="center">Repair Type:</th><th align="center">Machine:</th>
 	<th align="center">Machine S/N:</th>
-	<th align="center">Start:</th><th align="center">Status:</th></tr>
+	<th align="center">Application Date:</th><th align="center">Status:</th></tr>
   	<c:forEach var="o" items="${orders}" varStatus="loopStatus">    	
     <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
     	<td><c:out value="${loopStatus.index + 1}"/></td>
@@ -638,7 +640,7 @@ element.innerHTML = pagerHtml;
     	<td>${o.repairType.repairTypeName}</td>
     	<td>${o.machine.machineServiceable.machineServiceableName}</td>
     	<td>${o.machine.machineSerialNumber}</td>
-    	<td>${o.start}</td>
+    	<td>${o.start.date}-${o.start.month + 1}-${o.start.year + 1900}</td>
     	<td>${o.status}</td>
     </tr>
   	</c:forEach>
@@ -731,9 +733,13 @@ element.innerHTML = pagerHtml;
   			</td>
   		</tr>
   		<tr>  		
-  			<td><label for="startInput">Start date (yyyy-MM-dd): </label></td>
-  			<td><form:input path="start" id="startInput" placeholder="yyyy-MM-dd"/></td>                
-  			<td><form:errors path="start" cssClass="error" /></td>  			  		
+  			<td>Start date (dd-MM-yyyy):</td>
+  			<td><input name="startDate" value="${entered_order_start}"/></td>                
+  			<td>
+  			<div class="error">
+  				<c:out value="${message_order_start}"/>
+  			</div>
+  			</td>  			  		
   		</tr>
   		<tr>
   			<td><label for="statusInput">Status: </label></td>
@@ -743,7 +749,7 @@ element.innerHTML = pagerHtml;
   				<form:option value="started"><c:out value="started" /></form:option>
   				<form:option value="ready"><c:out value="ready" /></form:option>
   				<form:option value="finished"><c:out value="finished" /></form:option>
-  			</form:select></td>  			
+  			</form:select></td>
   			<td><form:errors path="status" cssClass="error" /></td>  			
   		</tr>
   		<tr>  

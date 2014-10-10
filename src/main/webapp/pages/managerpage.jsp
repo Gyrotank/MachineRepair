@@ -258,7 +258,7 @@ element.innerHTML = pagerHtml;
   	<h2>Manage Active Orders:</h2>
   	<form method="post" action="listactiveordersforselectedclient">
   		<select name="clientId" onchange="this.form.submit();">
-  			<option value="0"><c:out value="---" /></option>
+  			<option value="0"><c:out value="-Select client-" /></option>
   			<c:forEach var="c" items="${clients}">
   				<c:choose>
   					<c:when test="${selected_client_id == c.clientId}">

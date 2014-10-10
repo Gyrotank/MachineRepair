@@ -10,10 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import com.glomozda.machinerepair.domain.client.Client;
 import com.glomozda.machinerepair.domain.machine.Machine;
@@ -41,8 +39,7 @@ public class Order {
 	@JoinColumn(name = "machine_id")	
 	private Machine machine;
 	
-	@Column(name = "start")
-	@NotNull
+	@Column(name = "start")	
 	private Date start;
 	
 	@Column(name = "status")
@@ -117,12 +114,7 @@ public class Order {
 		return status;
 	}
 
-	public void setStatus(final String status) {
-		/*if (null == status || status.isEmpty()) {
-			this.status = "pending";
-		} else {
-			this.status = status;
-		}*/
+	public void setStatus(final String status) {		
 		this.status = status;
 	}
 

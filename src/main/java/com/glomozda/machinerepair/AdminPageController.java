@@ -66,6 +66,8 @@ public class AdminPageController implements MessageSourceAware {
 	
 	private User myUser;
 	
+	private MessageSource messageSource;
+	
 	private String messageMachineServiceableId = "";
 	private Integer selectedMachineServiceableId = 0;
 	
@@ -75,8 +77,6 @@ public class AdminPageController implements MessageSourceAware {
 	private String messageClientUserId = "";
 	private Integer selectedClientUserId = 0;	
 
-	private MessageSource messageSource;
-
 	private String messageOrderClientId = "";
 	private Integer selectedOrderClientId = 0;
 
@@ -85,6 +85,9 @@ public class AdminPageController implements MessageSourceAware {
 	
 	private String messageOrderMachineId = "";
 	private Integer selectedOrderMachineId = 0;
+
+	private String messageOrderStart = "";
+	private String enteredOrderStart = "";
 	 
 	public void setMessageSource(final MessageSource messageSource) {
 		this.messageSource = messageSource;
@@ -157,9 +160,14 @@ public class AdminPageController implements MessageSourceAware {
 		selectedOrderRepairTypeId = 0;
 		
 		model.addAttribute("message_order_machine_id", messageOrderMachineId);
-		messageOrderMachineId = "";		
+		messageOrderMachineId = "";
 		model.addAttribute("selected_order_machine_id", selectedOrderMachineId);
 		selectedOrderMachineId = 0;
+		
+		model.addAttribute("message_order_start", messageOrderStart);
+		messageOrderStart = "";
+		model.addAttribute("entered_order_start", enteredOrderStart);
+		enteredOrderStart = "";
 		
 		return "adminpage";
 	}	
@@ -189,11 +197,11 @@ public class AdminPageController implements MessageSourceAware {
 			}
 			
 			selectedMachineServiceableId = machineServiceableId;
-			return "redirect:/adminpage";
+			return "redirect:/adminpage#machines";
 		}
 		
 		machineSvc.add(machine, machineServiceableId);
-		return "redirect:/adminpage";
+		return "redirect:/adminpage#machines";
 	}
 	
 	@RequestMapping(value = "/addMachineServiceable", method = RequestMethod.POST)
@@ -206,11 +214,11 @@ public class AdminPageController implements MessageSourceAware {
 			redirectAttributes.addFlashAttribute
 			("org.springframework.validation.BindingResult.machineServiceable", bindingResult);
 			redirectAttributes.addFlashAttribute("machineServiceable", machineServiceable);
-			return "redirect:/adminpage";
+			return "redirect:/adminpage#serviceable_machines";
 		}
 		
 		machineServiceableSvc.add(machineServiceable);
-		return "redirect:/adminpage";
+		return "redirect:/adminpage#serviceable_machines";
 	}
 
 	@RequestMapping(value = "/addRepairType", method = RequestMethod.POST)
@@ -223,11 +231,11 @@ public class AdminPageController implements MessageSourceAware {
 			redirectAttributes.addFlashAttribute
 			("org.springframework.validation.BindingResult.repairType", bindingResult);
 			redirectAttributes.addFlashAttribute("repairType", repairType);
-			return "redirect:/adminpage";
+			return "redirect:/adminpage#repair_types";
 		}
 		
 		repairTypeSvc.add(repairType);
-		return "redirect:/adminpage";
+		return "redirect:/adminpage#repair_types";
 	}
 
 	@RequestMapping(value = "/addUser", method = RequestMethod.POST)
@@ -240,12 +248,12 @@ public class AdminPageController implements MessageSourceAware {
 			redirectAttributes.addFlashAttribute
 			("org.springframework.validation.BindingResult.user", bindingResult);
 			redirectAttributes.addFlashAttribute("user", user);
-			return "redirect:/adminpage";
+			return "redirect:/adminpage#users";
 		}
 		
 		userSvc.add(new	User(user.getLogin(), user.getPasswordText(),
 				encoder.encode(user.getPasswordText())));
-		return "redirect:/adminpage";
+		return "redirect:/adminpage#users";
 	}
 	
 	@RequestMapping(value = "/addUserAuthorization", method = RequestMethod.POST)
@@ -269,12 +277,12 @@ public class AdminPageController implements MessageSourceAware {
 			}
 			
 			selectedUserAuthorizationUserId = userId;
-			return "redirect:/adminpage";
+			return "redirect:/adminpage#user_auths";
 		}
 		
 		userAuthorizationSvc.add(new UserAuthorization(userAuthorization.getRole()),
 				userId);
-		return "redirect:/adminpage";
+		return "redirect:/adminpage#user_auths";
 	}
 
 	@RequestMapping(value = "/addClient", method = RequestMethod.POST)
@@ -297,11 +305,11 @@ public class AdminPageController implements MessageSourceAware {
 			}
 			
 			selectedClientUserId = userId;
-			return "redirect:/adminpage";
+			return "redirect:/adminpage#clients";
 		}
 		
 		clientSvc.add(client, userId);
-		return "redirect:/adminpage";
+		return "redirect:/adminpage#clients";
 	}
 
 	@RequestMapping(value = "/addOrder", method = RequestMethod.POST)
@@ -310,10 +318,29 @@ public class AdminPageController implements MessageSourceAware {
 			final RedirectAttributes redirectAttributes,
 			@RequestParam("clientId") final Integer clientId, 
 			@RequestParam("repairTypeId") final Integer repairTypeId, 
-			@RequestParam("machineId") final Integer machineId) {
+			@RequestParam("machineId") final Integer machineId,
+			@RequestParam("startDate") final String startDate) {
+		
+		java.sql.Date startSqlDate = new java.sql.Date(0);
+		
+		try {
+			String startParsed = new String();
+			startParsed = startParsed.concat(startDate.substring(6));			
+			startParsed = startParsed.concat("-");			
+			startParsed = startParsed.concat(startDate.substring(3, 5));			
+			startParsed = startParsed.concat("-");			
+			startParsed = startParsed.concat(startDate.substring(0, 2));			
+			startSqlDate = java.sql.Date.valueOf(startParsed);			
+		} catch (java.lang.StringIndexOutOfBoundsException e) {
+			startSqlDate = null;
+		} catch (IllegalArgumentException e) {
+			startSqlDate = null;
+		} catch (NullPointerException e) {
+			startSqlDate = null;
+		}		
 		
 		if (clientId == 0 || repairTypeId == 0 || 
-				machineId == 0 || bindingResult.hasErrors()) {
+				machineId == 0 || startSqlDate == null || bindingResult.hasErrors()) {
 			
 			if (clientId == 0) {
 				messageOrderClientId = 
@@ -332,20 +359,28 @@ public class AdminPageController implements MessageSourceAware {
 						messageSource.getMessage("error.adminpage.machineId", null,
 								Locale.getDefault());			
 			}
+			
+			if (startSqlDate == null) {
+				messageOrderStart = 
+						messageSource.getMessage("typeMismatch.order.start", null,
+								Locale.getDefault());
+			}
 
 			if (bindingResult.hasErrors()) {
 				redirectAttributes.addFlashAttribute
 				("org.springframework.validation.BindingResult.order", bindingResult);
 				redirectAttributes.addFlashAttribute("order", order);			
 			}
-
+			
 			selectedOrderClientId = clientId;
 			selectedOrderRepairTypeId = repairTypeId;
 			selectedOrderMachineId = machineId;
-			return "redirect:/adminpage";
+			enteredOrderStart = startDate;
+			return "redirect:/adminpage#orders";
 		}
 		
+		order.setStart(startSqlDate);		
 		orderSvc.add(order, clientId, repairTypeId, machineId);
-		return "redirect:/adminpage";
+		return "redirect:/adminpage#orders";
 	}
 }

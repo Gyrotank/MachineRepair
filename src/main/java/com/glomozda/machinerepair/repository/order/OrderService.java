@@ -38,6 +38,19 @@ public class OrderService {
 	}
 	
 	@Transactional
+	public Order getOrderById(Integer orderId) {
+		Order result = null;
+		TypedQuery<Order> query = em.createQuery("SELECT o FROM Order o"				
+				+ " WHERE o.orderId = :id", Order.class);
+		query.setParameter("id", orderId);	  
+		try {
+			result = query.getSingleResult();
+		} catch (NoResultException nre){}
+		
+		return result;
+	}
+	
+	@Transactional
 	public Order getOrderByIdWithFetching(Integer orderId) {
 		Order result = null;
 		TypedQuery<Order> query = em.createQuery("SELECT o FROM Order o"

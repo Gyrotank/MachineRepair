@@ -73,12 +73,26 @@ public class ManagerPageController {
 	
 	@RequestMapping(value = "/confirm", method = RequestMethod.GET)
 	public String confirmOrder(@RequestParam("order_id") Integer orderId) {
+		Order myOrder = orderSvc.getOrderById(orderId);
+		if (myOrder == null) {
+			return "redirect:/managerpage";
+		}
+		if (!myOrder.getStatus().contentEquals("pending")) {
+			return "redirect:/managerpage";
+		}
 		orderSvc.confirmOrderById(orderId);
 		return "redirect:/managerpage";
 	}
 	
 	@RequestMapping(value = "/cancel", method = RequestMethod.GET)
 	public String cancelOrder(@RequestParam("order_id") Integer orderId) {
+		Order myOrder = orderSvc.getOrderById(orderId);
+		if (myOrder == null) {
+			return "redirect:/managerpage";
+		}
+		if (!myOrder.getStatus().contentEquals("pending")) {
+			return "redirect:/managerpage";
+		}
 		orderSvc.cancelOrderById(orderId);
 		return "redirect:/managerpage";
 	}
@@ -97,11 +111,18 @@ public class ManagerPageController {
 	
 	@RequestMapping(value = "/setready", method = RequestMethod.GET)
 	public String setOrderReady(@RequestParam("order_id") Integer orderId) {
+		Order myOrder = orderSvc.getOrderById(orderId);
+		if (myOrder == null) {
+			return "redirect:/managerpage";
+		}
+		if (!myOrder.getStatus().contentEquals("started")) {
+			return "redirect:/managerpage";
+		}
 		orderSvc.setOrderStatusById(orderId, "ready");
-		Order order = orderSvc.getOrderByIdWithFetching(orderId);
+		myOrder = orderSvc.getOrderByIdWithFetching(orderId);
 		activeOrdersForSelectedClient.remove(
-				activeOrdersForSelectedClient.indexOf(order));		
-		machineSvc.incrementTimesRepairedById(order.getMachine().getMachineId());
+				activeOrdersForSelectedClient.indexOf(myOrder));		
+		machineSvc.incrementTimesRepairedById(myOrder.getMachine().getMachineId());
 		return "redirect:/managerpage";
 	}
 }

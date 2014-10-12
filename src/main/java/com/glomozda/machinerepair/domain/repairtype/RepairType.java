@@ -1,5 +1,6 @@
 package com.glomozda.machinerepair.domain.repairtype;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -30,8 +32,8 @@ public class RepairType {
 	private String  repairTypeName;
 	
 	@Column(name = "price")
-	@NotNull @Min(0)
-	private Integer repairTypePrice;
+	@NotNull @DecimalMin("0.0")
+	private BigDecimal repairTypePrice;
 	
 	@Column(name = "duration")
 	@NotNull @Min(0)
@@ -43,7 +45,7 @@ public class RepairType {
 	public RepairType(){
 	}
 
-	public RepairType(final String repairTypeName, final Integer repairTypePrice,
+	public RepairType(final String repairTypeName, final BigDecimal repairTypePrice,
     		final Integer repairTypeDuration) {
         this.repairTypeName = repairTypeName;        
         this.repairTypePrice = repairTypePrice;
@@ -69,11 +71,11 @@ public class RepairType {
         this.repairTypeName = repairTypeName;
     }
 
-    public Integer getRepairTypePrice() {
+    public BigDecimal getRepairTypePrice() {
         return repairTypePrice;
     }
 
-    public void setRepairTypePrice(final Integer repairTypePrice) {
+    public void setRepairTypePrice(final BigDecimal repairTypePrice) {
         this.repairTypePrice = repairTypePrice;
     }
 

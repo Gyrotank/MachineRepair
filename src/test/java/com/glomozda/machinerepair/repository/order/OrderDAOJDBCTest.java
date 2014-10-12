@@ -1,5 +1,6 @@
 package com.glomozda.machinerepair.repository.order;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 
 import org.junit.Assert;
@@ -95,8 +96,8 @@ public class OrderDAOJDBCTest extends DAOTestsTemplate{
         clientService.add(cl1, 1);
         clientService.add(cl2, 2);
         
-        repairTypeService.add(new RepairType("Full", 10000, 6));
-        repairTypeService.add(new RepairType("Partial", 5000, 3));
+        repairTypeService.add(new RepairType("Full", new BigDecimal(10000), 6));
+        repairTypeService.add(new RepairType("Partial", new BigDecimal(5000), 3));
         
         machineService.add(new Machine("SN1", 2010, 2), 1);
         machineService.add(new Machine("SN2", 2013, 1), 2);

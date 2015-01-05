@@ -19,7 +19,7 @@
     <property name="suffix" value=".jsp" />
   </bean>
   
-  <!-- <mvc:resources mapping="/resources/**" location="/resources/" />  -->
+  <mvc:resources mapping="/resources/**" location="/resources/js/" />
    
   <!-- MySQL Datasource with Commons DBCP connection pooling -->
   <bean class="org.apache.commons.dbcp.BasicDataSource" id="dataSource">

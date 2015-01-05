@@ -7,8 +7,18 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Administrative Tools</title>
 
+<link href="../resources/css/ufd-base.css" rel="stylesheet" type="text/css" />
+<link href="../resources/css/plain.css" rel="stylesheet" type="text/css" />
+
+<script src="<c:url value="../resources/js/jquery-1.11.1.min.js" />"></script>
+<script src="<c:url value="../resources/js/jquery-ui.js" />"></script>
+<script src="<c:url value="../resources/js/jquery.ui.ufd.js" />"></script>
+<script src="<c:url value="../resources/js/pager.js" />"></script>
+
+<title>Administrative Tools</title>
+<style type="text/css">
+	</style>
 <style>
 .error {
     color: #ff0000;
@@ -226,7 +236,7 @@ element.innerHTML = pagerHtml;
 	<fmt:formatDate var="current_year" value="${now}" pattern="yyyy" />
 	
 	<h1 align = "center">ADMINISTRATIVE TOOLS</h1>
-		
+	
 	<div id="sidebar">
 		<p><a href="<c:url value="/index"/>">Home</a></p>		
 		<p><a href="<c:url value="/managerpage"/>">Switch to orders management</a></p>
@@ -271,12 +281,17 @@ element.innerHTML = pagerHtml;
 		pager1.showPage(1);
 	</script>  	
   	
+  	<div>
 	<h2>Add New Machine:</h2>
   	<form:form method="post" commandName="machine" action="addMachine">
   	<table>
   		<tr>
   			<td>Machine Name: </td>
-  			<td><select name="machineServiceableId">  		
+  			<td>
+  				<script type="text/javascript">
+  					$("#machineServiceableId").ufd();
+				</script>
+  				<select id="machineServiceableId" name="machineServiceableId">
   				<option value="0"><c:out value="-Select machine name-" /></option>
   				<c:forEach var="ms" items="${machines_serviceable}">
   				<c:choose>
@@ -292,7 +307,8 @@ element.innerHTML = pagerHtml;
   					</c:otherwise>
   				</c:choose>  					
   				</c:forEach>
-  				</select></td>
+  				</select>  				
+  				</td>
   				<td>
   					<div class="error">
   						<c:out value="${message_machineserviceable_id}"/>
@@ -322,6 +338,7 @@ element.innerHTML = pagerHtml;
   		</tr>
   	</table>
   	</form:form>  	
+  	</div>
   	</div>
   	
   	<br><hr>

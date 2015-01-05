@@ -1,7 +1,7 @@
 /**
  * 
  */
-function Pager(tableName, itemsPerPage) {
+$(document).ready(function Pager(tableName, itemsPerPage) {
 this.tableName = tableName;
 this.itemsPerPage = itemsPerPage;
 this.currentPage = 1;
@@ -67,4 +67,4 @@ pagerHtml += '<span id="pg' + tableName + page + '" class="pg-normal" onclick="'
 pagerHtml += '<span onclick="' + pagerName + '.next();" class="pg-normal"> Next »</span>';
 element.innerHTML = pagerHtml;
 }
-}
+});

@@ -29,7 +29,7 @@ public class Machine {
 	@Id
 	@GeneratedValue
 	@Column(name = "machines_id")
-	private Integer machineId;
+	private Long machineId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "machine_serviceable_id")	
@@ -108,11 +108,11 @@ public class Machine {
 		this.machineYear = machineYear;
 	}
 
-	public Integer getMachineId() {
+	public Long getMachineId() {
 		return machineId;
 	}
 
-	public void setMachineId(final Integer machineId) {
+	public void setMachineId(final Long machineId) {
 		this.machineId = machineId;
 	}
 

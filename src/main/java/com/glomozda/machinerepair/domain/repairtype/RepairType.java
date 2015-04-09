@@ -25,7 +25,7 @@ public class RepairType {
 	@Id
 	@GeneratedValue
 	@Column(name = "repair_types_id")	
-	private Integer repairTypeId;
+	private Long repairTypeId;
 	
 	@Column(name = "name")
 	@NotEmpty
@@ -79,11 +79,11 @@ public class RepairType {
         this.repairTypePrice = repairTypePrice;
     }
 
-    public Integer getRepairTypeId() {
+    public Long getRepairTypeId() {
         return repairTypeId;
     }
 
-    public void setRepairTypeId(final Integer repairTypeId) {
+    public void setRepairTypeId(final Long repairTypeId) {
         this.repairTypeId = repairTypeId;
     }    
 

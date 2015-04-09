@@ -86,7 +86,7 @@ public class UserService {
 	}
 	
 	@Transactional
-	public User getUserById(Integer userId) {
+	public User getUserById(Long userId) {
 		User result = null;	  
 		TypedQuery<User> query = em.createQuery("SELECT u FROM User u"
 				+ " WHERE u.userId = :id", User.class);
@@ -99,7 +99,7 @@ public class UserService {
 	}
 	
 	@Transactional
-	public User getUserByIdWithFetching(Integer userId) {
+	public User getUserByIdWithFetching(Long userId) {
 		User result = null;	  
 		TypedQuery<User> query = em.createQuery("SELECT u FROM User u"
 				+ " LEFT JOIN FETCH u.client"

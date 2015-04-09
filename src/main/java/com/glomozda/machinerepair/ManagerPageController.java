@@ -45,7 +45,7 @@ public class ManagerPageController {
 	
 	private User myUser;
 	
-	private Integer selectedClientId = 0;
+	private Long selectedClientId = (long) 0;
 	private ArrayList<Order> activeOrdersForSelectedClient = new ArrayList<Order>();
 	
 	@RequestMapping(value = "/managerpage", method = RequestMethod.GET)
@@ -72,7 +72,7 @@ public class ManagerPageController {
 	}
 	
 	@RequestMapping(value = "/confirm", method = RequestMethod.GET)
-	public String confirmOrder(@RequestParam("order_id") Integer orderId) {
+	public String confirmOrder(@RequestParam("order_id") Long orderId) {
 		Order myOrder = orderSvc.getOrderById(orderId);
 		if (myOrder == null) {
 			return "redirect:/managerpage";
@@ -85,7 +85,7 @@ public class ManagerPageController {
 	}
 	
 	@RequestMapping(value = "/cancel", method = RequestMethod.GET)
-	public String cancelOrder(@RequestParam("order_id") Integer orderId) {
+	public String cancelOrder(@RequestParam("order_id") Long orderId) {
 		Order myOrder = orderSvc.getOrderById(orderId);
 		if (myOrder == null) {
 			return "redirect:/managerpage";
@@ -98,7 +98,7 @@ public class ManagerPageController {
 	}
 	
 	@RequestMapping(value = "/listactiveordersforselectedclient", method = RequestMethod.POST)
-	public String listActiveOrdersForSelectedClient(@RequestParam("clientId") Integer clientId) {
+	public String listActiveOrdersForSelectedClient(@RequestParam("clientId") Long clientId) {
 		activeOrdersForSelectedClient.clear();
 		
 		activeOrdersForSelectedClient.addAll(
@@ -110,7 +110,7 @@ public class ManagerPageController {
 	}
 	
 	@RequestMapping(value = "/setready", method = RequestMethod.GET)
-	public String setOrderReady(@RequestParam("order_id") Integer orderId) {
+	public String setOrderReady(@RequestParam("order_id") Long orderId) {
 		Order myOrder = orderSvc.getOrderById(orderId);
 		if (myOrder == null) {
 			return "redirect:/managerpage";

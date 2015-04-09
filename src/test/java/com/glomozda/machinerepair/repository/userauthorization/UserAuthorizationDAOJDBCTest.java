@@ -42,8 +42,8 @@ public class UserAuthorizationDAOJDBCTest extends DAOTestsTemplate{
     	userService.add(u1);
         userService.add(u2);
         
-        userAuthorizationService.add(new UserAuthorization("ROLE_ADMIN"), 1);
-        userAuthorizationService.add(new UserAuthorization("ROLE_CLIENT"), 2);
+        userAuthorizationService.add(new UserAuthorization("ROLE_ADMIN"), (long) 1);
+        userAuthorizationService.add(new UserAuthorization("ROLE_CLIENT"), (long) 2);
     }
    
     @Test

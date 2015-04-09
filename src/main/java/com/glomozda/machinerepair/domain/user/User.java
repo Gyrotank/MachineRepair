@@ -25,7 +25,7 @@ public class User {
 	@Id
 	@GeneratedValue
 	@Column(name = "users_id")
-	private Integer userId;
+	private Long userId;
 	
 	@Column(name = "login")
 	@NotEmpty
@@ -53,11 +53,11 @@ public class User {
 		this.password = password;
 	}	
 	
-	public Integer getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 	
-	public void setUserId(final Integer userId) {
+	public void setUserId(final Long userId) {
 		this.userId = userId;
 	}
 

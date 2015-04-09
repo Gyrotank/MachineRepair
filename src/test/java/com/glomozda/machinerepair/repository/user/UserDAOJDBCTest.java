@@ -42,10 +42,10 @@ public class UserDAOJDBCTest extends DAOTestsTemplate{
         Client cl2 = new Client();
         
         cl1.setClientName("Ivan");
-    	clientService.add(cl1, 1);
+    	clientService.add(cl1, (long) 1);
     	
     	cl2.setClientName("Petro");
-    	clientService.add(cl2, 2);
+    	clientService.add(cl2, (long) 2);
     	
     	userService.add(u1);
         userService.add(u2);
@@ -85,13 +85,13 @@ public class UserDAOJDBCTest extends DAOTestsTemplate{
     @Test
     public void testGetUserById() {    	
     	Assert.assertTrue((BCrypt.checkpw("qwerty", 
-    			userService.getUserById(1).getPassword())));
+    			userService.getUserById((long) 1).getPassword())));
     }
     
     @Test
     public void testGetUserByIdWithFetching() {    	
     	Assert.assertTrue((BCrypt.checkpw("qwerty", 
-    			userService.getUserByIdWithFetching(1)
+    			userService.getUserByIdWithFetching((long) 1)
     			.getPassword())));
     }
 }

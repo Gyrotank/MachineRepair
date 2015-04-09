@@ -21,7 +21,7 @@ public class MachineServiceable {
 	@Id
 	@GeneratedValue
 	@Column(name = "machines_serviceable_id")
-	private Integer machineServiceableId;	
+	private Long machineServiceableId;	
 	
 	@Column(name = "name")
 	@NotEmpty
@@ -49,11 +49,11 @@ public class MachineServiceable {
 		this.machineServiceableCountry = machineServiceableCountry;				
 	}
 	
-	public Integer getMachineServiceableId() {
+	public Long getMachineServiceableId() {
 		return machineServiceableId;
 	}
 
-	public void setMachineServiceableId(final Integer machineServiceableId) {
+	public void setMachineServiceableId(final Long machineServiceableId) {
 		this.machineServiceableId = machineServiceableId;
 	}
 	

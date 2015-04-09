@@ -69,22 +69,22 @@ public class AdminPageController implements MessageSourceAware {
 	private MessageSource messageSource;
 	
 	private String messageMachineServiceableId = "";
-	private Integer selectedMachineServiceableId = 0;
+	private Long selectedMachineServiceableId = (long) 0;
 	
 	private String messageUserAuthorizationUserId = "";
-	private Integer selectedUserAuthorizationUserId = 0;
+	private Long selectedUserAuthorizationUserId = (long) 0;
 
 	private String messageClientUserId = "";
-	private Integer selectedClientUserId = 0;	
+	private Long selectedClientUserId = (long) 0;	
 
 	private String messageOrderClientId = "";
-	private Integer selectedOrderClientId = 0;
+	private Long selectedOrderClientId = (long) 0;
 
 	private String messageOrderRepairTypeId = "";
-	private Integer selectedOrderRepairTypeId = 0;
+	private Long selectedOrderRepairTypeId = (long) 0;
 	
 	private String messageOrderMachineId = "";
-	private Integer selectedOrderMachineId = 0;
+	private Long selectedOrderMachineId = (long) 0;
 
 	private String messageOrderStart = "";
 	private String enteredOrderStart = "";
@@ -137,32 +137,32 @@ public class AdminPageController implements MessageSourceAware {
 		model.addAttribute("message_machineserviceable_id", messageMachineServiceableId);
 		messageMachineServiceableId = "";		
 		model.addAttribute("selected_machineserviceable_id", selectedMachineServiceableId);
-		selectedMachineServiceableId = 0;
+		selectedMachineServiceableId = (long) 0;
 		
 		model.addAttribute("message_user_authorization_user_id", messageUserAuthorizationUserId);
 		messageUserAuthorizationUserId = "";		
 		model.addAttribute("selected_user_authorization_user_id", selectedUserAuthorizationUserId);
-		selectedUserAuthorizationUserId = 0;
+		selectedUserAuthorizationUserId = (long) 0;
 		
 		model.addAttribute("message_client_user_id", messageClientUserId);
 		messageClientUserId = "";		
 		model.addAttribute("selected_client_user_id", selectedClientUserId);
-		selectedClientUserId = 0;
+		selectedClientUserId = (long) 0;
 		
 		model.addAttribute("message_order_client_id", messageOrderClientId);
 		messageOrderClientId = "";		
 		model.addAttribute("selected_order_client_id", selectedOrderClientId);
-		selectedOrderClientId = 0;
+		selectedOrderClientId = (long) 0;
 		
 		model.addAttribute("message_order_repair_type_id", messageOrderRepairTypeId);
 		messageOrderRepairTypeId = "";		
 		model.addAttribute("selected_order_repair_type_id", selectedOrderRepairTypeId);
-		selectedOrderRepairTypeId = 0;
+		selectedOrderRepairTypeId = (long) 0;
 		
 		model.addAttribute("message_order_machine_id", messageOrderMachineId);
 		messageOrderMachineId = "";
 		model.addAttribute("selected_order_machine_id", selectedOrderMachineId);
-		selectedOrderMachineId = 0;
+		selectedOrderMachineId = (long) 0;
 		
 		model.addAttribute("message_order_start", messageOrderStart);
 		messageOrderStart = "";
@@ -176,7 +176,7 @@ public class AdminPageController implements MessageSourceAware {
 	public String addMachine(@ModelAttribute("machine") @Valid final Machine machine,
 			final BindingResult bindingResult,			
 			final RedirectAttributes redirectAttributes,			
-			@RequestParam("machineServiceableId") final Integer machineServiceableId) {
+			@RequestParam("machineServiceableId") final Long machineServiceableId) {
 		
 		if (machine.getMachineYear() != null)
 			if (machine.getMachineYear() > java.util.Calendar.getInstance().get(Calendar.YEAR)) {
@@ -261,7 +261,7 @@ public class AdminPageController implements MessageSourceAware {
 		(@ModelAttribute("userAuthorization") @Valid final UserAuthorization userAuthorization,
 			final BindingResult bindingResult,			
 			final RedirectAttributes redirectAttributes,
-			@RequestParam("userId") final Integer userId) {
+			@RequestParam("userId") final Long userId) {
 		
 		if (userId == 0 || bindingResult.hasErrors()) {
 			if (userId == 0) {
@@ -289,7 +289,7 @@ public class AdminPageController implements MessageSourceAware {
 	public String addClient(@ModelAttribute("client") @Valid final Client client,
 			final BindingResult bindingResult,			
 			final RedirectAttributes redirectAttributes,
-			@RequestParam("userId") final Integer userId) {
+			@RequestParam("userId") final Long userId) {
 		
 		if (userId == 0 || bindingResult.hasErrors()) {
 			if (userId == 0) {
@@ -316,9 +316,9 @@ public class AdminPageController implements MessageSourceAware {
 	public String addOrder(@ModelAttribute("order") @Valid final Order order,
 			final BindingResult bindingResult,			
 			final RedirectAttributes redirectAttributes,
-			@RequestParam("clientId") final Integer clientId, 
-			@RequestParam("repairTypeId") final Integer repairTypeId, 
-			@RequestParam("machineId") final Integer machineId,
+			@RequestParam("clientId") final Long clientId, 
+			@RequestParam("repairTypeId") final Long repairTypeId, 
+			@RequestParam("machineId") final Long machineId,
 			@RequestParam("startDate") final String startDate) {
 		
 		java.sql.Date startSqlDate = new java.sql.Date(0);

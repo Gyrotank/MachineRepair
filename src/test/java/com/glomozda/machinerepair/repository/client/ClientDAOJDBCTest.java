@@ -40,10 +40,10 @@ public class ClientDAOJDBCTest extends DAOTestsTemplate{
         jdbcTemplate.execute("ALTER TABLE Users ALTER COLUMN users_id RESTART WITH 1");
         
         cl1.setClientName("Ivan");
-    	clientService.add(cl1, 1);
+    	clientService.add(cl1, (long) 1);
     	
     	cl2.setClientName("Petro");
-    	clientService.add(cl2, 2);
+    	clientService.add(cl2, (long) 2);
         
         userService.add(new User("ivan_user", "qwerty", "qwerty_encoded"));
         userService.add(new User("petro_user", "12345", "12345_encoded"));
@@ -62,18 +62,19 @@ public class ClientDAOJDBCTest extends DAOTestsTemplate{
     
     @Test
     public void testGetAllClientIds() {
-    	Assert.assertTrue(clientService.getAllClientIds().containsAll(Arrays.asList(1, 2)));
+    	Assert.assertTrue(clientService.getAllClientIds()
+    			.containsAll(Arrays.asList((long) 1, (long) 2)));
     }
     
     @Test
     public void testGetClientByUserId() {    	
-        final Client actualResult = clientService.getClientByUserId(1);
+        final Client actualResult = clientService.getClientByUserId((long) 1);
         Assert.assertEquals(cl1, actualResult);
     }
     
     @Test   
     public void testGetClientByUserIdWithFetching() {        
-        final Client actualResult = clientService.getClientByUserIdWithFetching(1);
+        final Client actualResult = clientService.getClientByUserIdWithFetching((long) 1);
         Assert.assertTrue(actualResult.getClientUser().getLogin().contentEquals("ivan_user"));
     }
     

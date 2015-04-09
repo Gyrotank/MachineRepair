@@ -38,7 +38,7 @@ public class OrderService {
 	}
 	
 	@Transactional
-	public Order getOrderById(Integer orderId) {
+	public Order getOrderById(Long orderId) {
 		Order result = null;
 		TypedQuery<Order> query = em.createQuery("SELECT o FROM Order o"				
 				+ " WHERE o.orderId = :id", Order.class);
@@ -51,7 +51,7 @@ public class OrderService {
 	}
 	
 	@Transactional
-	public Order getOrderByIdWithFetching(Integer orderId) {
+	public Order getOrderByIdWithFetching(Long orderId) {
 		Order result = null;
 		TypedQuery<Order> query = em.createQuery("SELECT o FROM Order o"
 				+ " LEFT JOIN FETCH o.client LEFT JOIN FETCH o.repairType"
@@ -94,7 +94,7 @@ public class OrderService {
 	}
 	
 	@Transactional
-	public List<Order> getAllForClientId(Integer clientId) {
+	public List<Order> getAllForClientId(Long clientId) {
 		List<Order> result = null;
 		TypedQuery<Order> query = em.createQuery("SELECT o FROM Order o"
 				+ " WHERE o.client.clientId = :id", Order.class);
@@ -107,7 +107,7 @@ public class OrderService {
 	}
 	
 	@Transactional
-	public List<Order> getOrdersForClientIdAndStatusWithFetching(Integer clientId, String status) {
+	public List<Order> getOrdersForClientIdAndStatusWithFetching(Long clientId, String status) {
 		List<Order> result = null;
 		TypedQuery<Order> query = em.createQuery("SELECT o FROM Order o"
 				+ " LEFT JOIN FETCH o.client LEFT JOIN FETCH o.repairType"
@@ -123,7 +123,7 @@ public class OrderService {
 	}
 
 	@Transactional
-	public void add(Order o, Integer clientId, Integer repairTypeId, Integer machineId) {
+	public void add(Order o, Long clientId, Long repairTypeId, Long machineId) {
 
 		Client client = em.getReference(Client.class, clientId);
 		RepairType repairType = em.getReference(RepairType.class, repairTypeId);
@@ -140,7 +140,7 @@ public class OrderService {
 	}
 	
 	@Transactional
-	public Integer confirmOrderById(Integer orderId) {
+	public Integer confirmOrderById(Long orderId) {
 		Query query = em.createQuery(
 				"UPDATE Order o SET status = 'started' " +
 				"WHERE o.orderId = :id AND o.status = 'pending'");
@@ -149,7 +149,7 @@ public class OrderService {
 	}
 	
 	@Transactional
-	public Integer setOrderStatusById(Integer orderId, String status) {
+	public Integer setOrderStatusById(Long orderId, String status) {
 		Query query = em.createQuery(
 				"UPDATE Order o SET status = :status " +
 				"WHERE o.orderId = :id");
@@ -160,7 +160,7 @@ public class OrderService {
 	}
 	
 	@Transactional
-	public Integer cancelOrderById(Integer orderId) {
+	public Integer cancelOrderById(Long orderId) {
 		Query query = em.createQuery(
 				"DELETE FROM Order o " +
 				"WHERE o.orderId = :id AND o.status = 'pending'");

@@ -34,7 +34,7 @@ public class MachineServiceableService {
 	}
 	
 	@Transactional
-	public MachineServiceable getMachineServiceableById(Integer machineServiceableId) {
+	public MachineServiceable getMachineServiceableById(Long machineServiceableId) {
 		MachineServiceable result = null;	  
 		TypedQuery<MachineServiceable> query = em.createQuery("SELECT ms FROM MachineServiceable ms"
 				+ " WHERE ms.machineServiceableId = :id", MachineServiceable.class);

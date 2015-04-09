@@ -27,7 +27,7 @@ public class Client {
 	@Id
 	@GeneratedValue
 	@Column(name = "clients_id")
-	private Integer clientId;
+	private Long clientId;
 	
 	@Column(name = "name")
 	@NotEmpty
@@ -54,11 +54,11 @@ public class Client {
 		return orders;
 	}
 	
-	public Integer getClientId() {
+	public Long getClientId() {
 		return clientId;
 	}
 	
-	public void setClientId(final Integer clientId) {
+	public void setClientId(final Long clientId) {
 		this.clientId = clientId;
 	}
 	

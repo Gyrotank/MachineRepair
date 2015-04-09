@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -6,7 +6,7 @@
 			 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <link href="../resources/css/ufd-base.css" rel="stylesheet" type="text/css" />
 <link href="../resources/css/plain.css" rel="stylesheet" type="text/css" />
@@ -218,11 +218,11 @@ return;
 }
 
 var element = document.getElementById(positionId);
-var pagerHtml = '<span onclick="' + pagerName + '.prev();" class="pg-normal"> « Prev </span> ';
+var pagerHtml = '<span onclick="' + pagerName + '.prev();" class="pg-normal"> Â« Prev </span> ';
 for (var page = 1; page <= this.pages; page++)
 pagerHtml += '<span id="pg' + tableName + page + '" class="pg-normal" onclick="' + pagerName + '.showPage(' + page + ');">' + page + '</span> ';
 
-pagerHtml += '<span onclick="' + pagerName + '.next();" class="pg-normal"> Next »</span>';
+pagerHtml += '<span onclick="' + pagerName + '.next();" class="pg-normal"> Next Â»</span>';
 element.innerHTML = pagerHtml;
 }
 }
@@ -283,7 +283,7 @@ element.innerHTML = pagerHtml;
   	
   	<div>
 	<h2>Add New Machine:</h2>
-  	<form:form method="post" commandName="machine" action="addMachine">
+  	<form:form method="post" commandName="machine" action="addMachine" accept-charset="UTF-8">
   	<table>
   		<tr>
   			<td>Machine Name: </td>
@@ -359,7 +359,7 @@ element.innerHTML = pagerHtml;
   	</table>
   	<div id="pageNavPosition2" style="padding-top: 20px" align="center">
 	</div>
-	<script type="text/javascript"><!--
+	<script type="text/javascript">
 		var pager2 = new Pager('tablepaging2', 5);
 		pager2.init();
 		pager2.showPageNav('pager2', 'pageNavPosition2');
@@ -367,7 +367,7 @@ element.innerHTML = pagerHtml;
 	</script>
   	
   	<h2>Add New Serviceable Machine:</h2>
-  	<form:form method="post" commandName="machineServiceable" action="addMachineServiceable">
+  	<form:form method="post" commandName="machineServiceable" action="addMachineServiceable" accept-charset="UTF-8">
   	<table>
   		<tr>
   			<td><label for="machineServiceableNameInput">Name: </label></td>
@@ -424,7 +424,7 @@ element.innerHTML = pagerHtml;
 	</script>
   
   	<h2>Add New Repair Type</h2>
-  	<form:form method="post" commandName="repairType" action="addRepairType">
+  	<form:form method="post" commandName="repairType" action="addRepairType" accept-charset="UTF-8">
   	<table>
   		<tr>
   			<td><label for="repairTypeNameInput">Name: </label></td>
@@ -476,7 +476,7 @@ element.innerHTML = pagerHtml;
 	</script>
   	
   	<h2>Add New User</h2>
-  	<form:form method="post" commandName="user" action="addUser">
+  	<form:form method="post" commandName="user" action="addUser" accept-charset="UTF-8">
   	<table>
   		<tr>
   			<td><label for="loginInput">Login: </label></td>
@@ -532,7 +532,7 @@ element.innerHTML = pagerHtml;
 	</script>
   	
   	<h2>Add New User Authorization</h2>
-  	<form:form method="post" commandName="userAuthorization" action="addUserAuthorization">
+  	<form:form method="post" commandName="userAuthorization" action="addUserAuthorization" accept-charset="UTF-8">
   	<table>
   		<tr>
   		<td>User: </td>  		
@@ -594,7 +594,7 @@ element.innerHTML = pagerHtml;
   	</table>
   	<div id="pageNavPosition6" style="padding-top: 20px" align="center">
 	</div>
-	<script type="text/javascript"><!--
+	<script type="text/javascript">
 		var pager6 = new Pager('tablepaging6', 5);
 		pager6.init();
 		pager6.showPageNav('pager6', 'pageNavPosition6');
@@ -602,7 +602,7 @@ element.innerHTML = pagerHtml;
 	</script>
   
   	<h2>Add New Client</h2>
-  	<form:form method="post" commandName="client" action="addClient">
+  	<form:form method="post" commandName="client" action="addClient" accept-charset="UTF-8">
   	<table>
   		<tr>
   			<td><label for="clientNameInput">Name: </label></td>
@@ -672,7 +672,7 @@ element.innerHTML = pagerHtml;
 	</script>
   
   	<h2>Add New Order</h2>
-  	<form:form method="post" commandName="order" action="addOrder">
+  	<form:form method="post" commandName="order" action="addOrder" accept-charset="UTF-8">
   	<table>
   		<tr>
   			<td>Client:</td>

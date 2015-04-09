@@ -33,14 +33,14 @@ public class ClientService {
 	}
 	
 	@Transactional
-	public List<Integer> getAllClientIds() {
-		List<Integer> result = 
-				em.createQuery("SELECT c.clientId FROM Client c", Integer.class).getResultList();
+	public List<Long> getAllClientIds() {
+		List<Long> result = 
+				em.createQuery("SELECT c.clientId FROM Client c", Long.class).getResultList();
 		return result;
 	}
 
 	@Transactional
-	public Client getClientByUserId(Integer userId) {
+	public Client getClientByUserId(Long userId) {
 		Client result = null;	  
 		TypedQuery<Client> query = em.createQuery("SELECT c FROM Client c"
 				+ " WHERE c.clientUser.userId = :id", Client.class);
@@ -53,7 +53,7 @@ public class ClientService {
 	}
 	
 	@Transactional
-	public Client getClientByUserIdWithFetching(Integer userId) {
+	public Client getClientByUserIdWithFetching(Long userId) {
 		Client result = null;	  
 		TypedQuery<Client> query = em.createQuery("SELECT c FROM Client c"
 				+ " LEFT JOIN FETCH c.clientUser"
@@ -94,7 +94,7 @@ public class ClientService {
 	}
 
 	@Transactional
-	public void add(Client c, Integer userId) {
+	public void add(Client c, Long userId) {
 		User user = em.getReference(User.class, userId);
 
 		Client newClient = new Client();

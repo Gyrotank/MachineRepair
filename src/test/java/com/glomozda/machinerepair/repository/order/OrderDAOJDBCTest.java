@@ -93,17 +93,17 @@ public class OrderDAOJDBCTest extends DAOTestsTemplate{
         cl1.setClientName("Ivan");
         final Client cl2 = new Client();
         cl2.setClientName("Petro");
-        clientService.add(cl1, 1);
-        clientService.add(cl2, 2);
+        clientService.add(cl1, (long) 1);
+        clientService.add(cl2, (long) 2);
         
         repairTypeService.add(new RepairType("Full", new BigDecimal(10000), 6));
         repairTypeService.add(new RepairType("Partial", new BigDecimal(5000), 3));
         
-        machineService.add(new Machine("SN1", 2010, 2), 1);
-        machineService.add(new Machine("SN2", 2013, 1), 2);
+        machineService.add(new Machine("SN1", 2010, 2), (long) 1);
+        machineService.add(new Machine("SN2", 2013, 1), (long) 2);
         
-        orderService.add(o1, 1, 1, 1);
-        orderService.add(o2, 2, 2, 2);        
+        orderService.add(o1, (long) 1, (long) 1, (long) 1);
+        orderService.add(o2, (long) 2, (long) 2, (long) 2);        
     }
    
     @Test
@@ -124,11 +124,11 @@ public class OrderDAOJDBCTest extends DAOTestsTemplate{
     
     @Test
     public void testGetOrderByIdWithFetching() {
-    	Assert.assertTrue(orderService.getOrderByIdWithFetching(1)
+    	Assert.assertTrue(orderService.getOrderByIdWithFetching((long) 1)
     			.getRepairType().getRepairTypeName().contentEquals("Full"));
-    	Assert.assertTrue(orderService.getOrderByIdWithFetching(1)
+    	Assert.assertTrue(orderService.getOrderByIdWithFetching((long) 1)
     			.getClient().getClientName().contentEquals("Ivan"));
-    	Assert.assertTrue(orderService.getOrderByIdWithFetching(1)
+    	Assert.assertTrue(orderService.getOrderByIdWithFetching((long) 1)
     			.getMachine().getMachineSerialNumber().contentEquals("SN1"));
     }
     
@@ -150,41 +150,41 @@ public class OrderDAOJDBCTest extends DAOTestsTemplate{
     
     @Test
     public void testGetAllForClientId() {
-    	Assert.assertTrue(orderService.getAllForClientId(1).size() == 1);
+    	Assert.assertTrue(orderService.getAllForClientId((long) 1).size() == 1);
     }
     
     @Test
     public void testGetOrdersForClientIdAndStatusWithFetching() {
-    	Assert.assertTrue(orderService.getOrdersForClientIdAndStatusWithFetching(1, "finished")
+    	Assert.assertTrue(orderService.getOrdersForClientIdAndStatusWithFetching((long) 1, "finished")
     			.size() == 1);
-    	Assert.assertTrue(orderService.getOrdersForClientIdAndStatusWithFetching(1, "finished")
+    	Assert.assertTrue(orderService.getOrdersForClientIdAndStatusWithFetching((long) 1, "finished")
     			.get(0).getRepairType().getRepairTypeName().contentEquals("Full"));
-    	Assert.assertTrue(orderService.getOrdersForClientIdAndStatusWithFetching(1, "finished")
+    	Assert.assertTrue(orderService.getOrdersForClientIdAndStatusWithFetching((long) 1, "finished")
     			.get(0).getClient().getClientName().contentEquals("Ivan"));
-    	Assert.assertTrue(orderService.getOrdersForClientIdAndStatusWithFetching(1, "finished")
+    	Assert.assertTrue(orderService.getOrdersForClientIdAndStatusWithFetching((long) 1, "finished")
     			.get(0).getMachine().getMachineSerialNumber().contentEquals("SN1"));
     }
     
     @Test
     @Ignore
     public void testConfirmOrderById() {    	
-        orderService.confirmOrderById(2);        
-        Assert.assertTrue(orderService.getOrderByIdWithFetching(2)
+        orderService.confirmOrderById((long) 2);        
+        Assert.assertTrue(orderService.getOrderByIdWithFetching((long) 2)
         		.getStatus().contentEquals("started"));
     }
     
     @Test
     @Ignore
     public void testSetOrderStatusById() {    	
-        orderService.setOrderStatusById(1, "pending");
-        Assert.assertTrue(orderService.getOrderByIdWithFetching(1)
+        orderService.setOrderStatusById((long) 1, "pending");
+        Assert.assertTrue(orderService.getOrderByIdWithFetching((long) 1)
         		.getStatus().contentEquals("pending"));
     }
     
     @Test
     @Ignore
     public void testCancelOrderById() {    	
-        orderService.cancelOrderById(2);
-        Assert.assertNull(orderService.getOrderByIdWithFetching(2));
+        orderService.cancelOrderById((long) 2);
+        Assert.assertNull(orderService.getOrderByIdWithFetching((long) 2));
     }
 }

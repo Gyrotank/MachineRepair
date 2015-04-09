@@ -20,7 +20,7 @@ public class UserAuthorization {
 	@Id
 	@GeneratedValue
 	@Column(name = "user_authorization_id")
-	private Integer userAuthorizationId;
+	private Long userAuthorizationId;
 	
 	@Column(name = "role")
 	@NotEmpty
@@ -37,11 +37,11 @@ public class UserAuthorization {
 		this.role = role;
 	}
 
-	public Integer getUserAuthorizationId() {
+	public Long getUserAuthorizationId() {
 		return userAuthorizationId;
 	}
 	
-	public void setUserAuthorizationId(final Integer userAuthorizationId) {
+	public void setUserAuthorizationId(final Long userAuthorizationId) {
 		this.userAuthorizationId = userAuthorizationId;
 	}
 

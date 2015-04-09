@@ -25,7 +25,7 @@ public class Order {
 	@Id
 	@GeneratedValue
 	@Column(name = "orders_id")
-	private Integer orderId;
+	private Long orderId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "client_id")	
@@ -59,11 +59,11 @@ public class Order {
 		this.status = status;
 	}
 	
-	public Integer getOrderId() {
+	public Long getOrderId() {
 		return orderId;
 	}
 
-	public void setOrderId(final Integer orderId) {
+	public void setOrderId(final Long orderId) {
 		this.orderId = orderId;
 	}
 

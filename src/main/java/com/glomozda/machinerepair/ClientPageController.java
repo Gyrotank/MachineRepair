@@ -11,7 +11,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -56,17 +55,17 @@ public class ClientPageController implements MessageSourceAware {
 	private String messageRepeatedRepairRepairTypeId = "";
 	
 	private String enteredRepeatedRepairSerialNumber = "";
-	private Integer selectedRepeatedRepairRepairTypeId = 0;
+	private Long selectedRepeatedRepairRepairTypeId = (long) 0;
 	
 	private String messageFirstRepairServiceableId = "";
 	private String messageFirstRepairSerialNumber = "";
 	private String messageFirstRepairYear = "";
 	private String messageFirstRepairRepairTypeId = "";
 	
-	private Integer selectedFirstRepairServiceableId = 0;
+	private Long selectedFirstRepairServiceableId = (long) 0;
 	private String enteredFirstRepairSerialNumber = "";
 	private Integer selectedFirstRepairYear = 1950;
-	private Integer selectedFirstRepairRepairTypeId = 0;
+	private Long selectedFirstRepairRepairTypeId = (long) 0;
 	
 	private MessageSource messageSource;
 	
@@ -167,14 +166,14 @@ public class ClientPageController implements MessageSourceAware {
 		messageRepeatedRepairRepairTypeId = "";
 		model.addAttribute("repeated_repair_selected_repairtype_id",
 				selectedRepeatedRepairRepairTypeId);
-		selectedRepeatedRepairRepairTypeId = 0;
+		selectedRepeatedRepairRepairTypeId = (long) 0;
 		
 		model.addAttribute("message_first_repair_serviceable_id",
 				messageFirstRepairServiceableId);
 		messageFirstRepairServiceableId = "";
 		model.addAttribute("first_repair_selected_serviceable_id",
 				selectedFirstRepairServiceableId);
-		selectedFirstRepairServiceableId = 0;
+		selectedFirstRepairServiceableId = (long) 0;
 		
 		model.addAttribute("message_first_repair_serial_number",
 				messageFirstRepairSerialNumber);
@@ -195,7 +194,7 @@ public class ClientPageController implements MessageSourceAware {
 		messageFirstRepairRepairTypeId = "";
 		model.addAttribute("first_repair_selected_repairtype_id",
 				selectedFirstRepairRepairTypeId);
-		selectedFirstRepairRepairTypeId = 0;
+		selectedFirstRepairRepairTypeId = (long) 0;
 		
 		model.addAttribute("machines_serviceable", machinesServiceable);
 		model.addAttribute("repair_types", repairTypes);
@@ -206,7 +205,7 @@ public class ClientPageController implements MessageSourceAware {
 	@RequestMapping(value = "/createorderforrepeatedrepair", method = RequestMethod.POST)
 	public String createOrderForRepeatedRepair(
 			@RequestParam("machineSerialNumber") String machineSerialNumber,
-			@RequestParam("repairTypeId") Integer repairTypeId) {		
+			@RequestParam("repairTypeId") Long repairTypeId) {		
 		
 		if (machineSerialNumber.isEmpty() || repairTypeId == 0) {
 			if (machineSerialNumber.isEmpty()) {
@@ -240,10 +239,10 @@ public class ClientPageController implements MessageSourceAware {
 	
 	@RequestMapping(value = "/createorderforfirstrepair", method = RequestMethod.POST)
 	public String createOrderForFirstRepair(
-			@RequestParam("machineServiceableId") Integer machineServiceableId,
+			@RequestParam("machineServiceableId") Long machineServiceableId,
 			@RequestParam("machineSerialNumber") String machineSerialNumber,
 			@RequestParam("machineYear") String machineYear,
-			@RequestParam("repairTypeId") Integer repairTypeId) {
+			@RequestParam("repairTypeId") Long repairTypeId) {
 		
 		if (machineServiceableId == 0 || machineSerialNumber.isEmpty()
 				|| machineYear.isEmpty()
@@ -314,7 +313,7 @@ public class ClientPageController implements MessageSourceAware {
 	}
 	
 	@RequestMapping(value = "/pay", method = RequestMethod.GET)
-	public String setOrderFinished(@RequestParam("order_id") Integer orderId) {
+	public String setOrderFinished(@RequestParam("order_id") Long orderId) {
 		orderSvc.setOrderStatusById(orderId, "finished");		
 		return "redirect:/clientpage";
 	}

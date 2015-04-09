@@ -43,7 +43,7 @@ public class UserAuthorizationService {
 	}
 
 	@Transactional
-	public void add(UserAuthorization ua, Integer userId) {
+	public void add(UserAuthorization ua, Long userId) {
 		User user = em.getReference(User.class, userId);
 		
 		UserAuthorization newUserAuthorization = new UserAuthorization();

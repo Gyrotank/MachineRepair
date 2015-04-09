@@ -1,12 +1,12 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="springForm"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Working Cabinet</title>
 
 <style>
@@ -202,11 +202,11 @@ return;
 }
 
 var element = document.getElementById(positionId);
-var pagerHtml = '<span onclick="' + pagerName + '.prev();" class="pg-normal"> « Prev </span> ';
+var pagerHtml = '<span onclick="' + pagerName + '.prev();" class="pg-normal"> Â« Prev </span> ';
 for (var page = 1; page <= this.pages; page++)
 pagerHtml += '<span id="pg' + tableName + page + '" class="pg-normal" onclick="' + pagerName + '.showPage(' + page + ');">' + page + '</span> ';
 
-pagerHtml += '<span onclick="' + pagerName + '.next();" class="pg-normal"> Next »</span>';
+pagerHtml += '<span onclick="' + pagerName + '.next();" class="pg-normal"> Next Â»</span>';
 element.innerHTML = pagerHtml;
 }
 }
@@ -289,7 +289,7 @@ element.innerHTML = pagerHtml;
   	
   	<h2>Create Order For Repeated Repair:</h2>
   	<c:out value="${message_repeated_order}"/>
-  	<form method="post" action="createorderforrepeatedrepair">
+  	<form method="post" action="createorderforrepeatedrepair" accept-charset="UTF-8">
   	<table>
   		<tr>
   		<td>S/N:</td>
@@ -343,7 +343,7 @@ element.innerHTML = pagerHtml;
   	<br><hr>
   	
   	<h2>Create Order For First Time Repair:</h2>
-  	<form method="post" action="createorderforfirstrepair">
+  	<form method="post" action="createorderforfirstrepair" accept-charset="UTF-8">
   	<table>
   		<tr>
   		<td>Machine Name:</td>

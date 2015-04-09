@@ -15,16 +15,18 @@
 
   <!-- Resolve view name into jsp file located on /WEB-INF -->
   <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-    <property name="prefix" value="/pages/" />
+    <property name="prefix" value="/WEB-INF/pages/" />
     <property name="suffix" value=".jsp" />
   </bean>
   
-  <mvc:resources mapping="/resources/**" location="/resources/js/" />
+  <mvc:resources mapping="/resources/**" location="/resources/" />
+  
+  <mvc:default-servlet-handler/>
    
   <!-- MySQL Datasource with Commons DBCP connection pooling -->
   <bean class="org.apache.commons.dbcp.BasicDataSource" id="dataSource">
     <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-    <property name="url" value="jdbc:mysql://localhost/machinerepair?user=root&amp;password=kokokoR2"/>
+    <property name="url" value="jdbc:mysql://localhost/machinerepair?user=root&amp;password=kokokoR2&amp;characterEncoding=UTF-8"/>
     <property name="username" value="root"/>
     <property name="password" value="kokokoR2"/>
   </bean>
@@ -49,6 +51,6 @@
   <!-- Message Source -->
   <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
   	<property name="basename" value="messages"/>
-  </bean>
+  </bean>  
  
 </beans>

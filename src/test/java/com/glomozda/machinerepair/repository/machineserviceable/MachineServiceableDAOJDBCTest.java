@@ -46,7 +46,7 @@ public class MachineServiceableDAOJDBCTest extends DAOTestsTemplate{
     @Test
     public void testGetMachineServiceableById() {
     	final MachineServiceable actualResult = machineServiceableService
-    			.getMachineServiceableById(1);
+    			.getMachineServiceableById((long) 1);
     	Assert.assertEquals(ms1, actualResult);
     }             
 }

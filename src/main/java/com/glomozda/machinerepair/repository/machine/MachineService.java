@@ -63,7 +63,7 @@ public class MachineService {
 	}
 
 	@Transactional
-	public void add(Machine m, Integer machineServiceableId) {
+	public void add(Machine m, Long machineServiceableId) {
 		MachineServiceable machineServiceable =
 				em.getReference(MachineServiceable.class, machineServiceableId);
 
@@ -76,7 +76,7 @@ public class MachineService {
 	}
 	
 	@Transactional	
-	public Integer incrementTimesRepairedById(Integer machineId) {
+	public Integer incrementTimesRepairedById(Long machineId) {
 		Query query = em.createQuery(
 				"UPDATE Machine m SET machineTimesRepaired = machineTimesRepaired + 1 " +
 				"WHERE m.machineId = :id");

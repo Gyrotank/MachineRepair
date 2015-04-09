@@ -1,11 +1,11 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Orders Management</title>
 
 <style>
@@ -201,11 +201,11 @@ return;
 }
 
 var element = document.getElementById(positionId);
-var pagerHtml = '<span onclick="' + pagerName + '.prev();" class="pg-normal"> « Prev </span> ';
+var pagerHtml = '<span onclick="' + pagerName + '.prev();" class="pg-normal"> Â« Prev </span> ';
 for (var page = 1; page <= this.pages; page++)
 pagerHtml += '<span id="pg' + tableName + page + '" class="pg-normal" onclick="' + pagerName + '.showPage(' + page + ');">' + page + '</span> ';
 
-pagerHtml += '<span onclick="' + pagerName + '.next();" class="pg-normal"> Next »</span>';
+pagerHtml += '<span onclick="' + pagerName + '.next();" class="pg-normal"> Next Â»</span>';
 element.innerHTML = pagerHtml;
 }
 }
@@ -256,7 +256,7 @@ element.innerHTML = pagerHtml;
 	</script>
   	
   	<h2>Manage Active Orders:</h2>
-  	<form method="post" action="listactiveordersforselectedclient">
+  	<form method="post" action="listactiveordersforselectedclient" accept-charset="UTF-8">
   		<select name="clientId" onchange="this.form.submit();">
   			<option value="0"><c:out value="-Select client-" /></option>
   			<c:forEach var="c" items="${clients}">

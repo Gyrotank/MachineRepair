@@ -38,8 +38,8 @@ public class MachineDAOJDBCTest extends DAOTestsTemplate{
         machineServiceableService.add(new MachineServiceable("M-S-1", "TM-1", "UK"));
         machineServiceableService.add(new MachineServiceable("M-S-2", "TM-2", "USA"));
         
-        machineService.add(m1, 1);
-        machineService.add(m2, 2);
+        machineService.add(m1, (long) 1);
+        machineService.add(m2, (long) 2);
     }
    
     @Test

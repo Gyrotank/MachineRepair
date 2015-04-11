@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -18,6 +20,39 @@ import com.glomozda.machinerepair.domain.machine.Machine;
 import com.glomozda.machinerepair.domain.repairtype.RepairType;
 
 @SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
+@NamedQueries({
+	@NamedQuery(name="Order.findAll", query="SELECT o FROM Order o"),
+	@NamedQuery(name="Order.findAllWithFetching",
+		query="SELECT o FROM Order o "
+			+ "LEFT JOIN FETCH o.client LEFT JOIN FETCH o.repairType "
+			+ "LEFT JOIN FETCH o.machine om "
+			+ "LEFT JOIN FETCH om.machineServiceable"),
+	@NamedQuery(name="Order.findOrderById",	query="SELECT o FROM Order o"
+			+ " WHERE o.orderId = :id"),
+	@NamedQuery(name="Order.findOrderByIdWithFetching",	query="SELECT o FROM Order o"
+			+ " LEFT JOIN FETCH o.client LEFT JOIN FETCH o.repairType"
+			+ " LEFT JOIN FETCH o.machine as om LEFT JOIN FETCH om.machineServiceable"
+			+ " WHERE o.orderId = :id"),
+	@NamedQuery(name="Order.findOrdersByStatus", query="SELECT o FROM Order o"
+			+ " WHERE o.status = :status"),
+	@NamedQuery(name="Order.findOrdersByStatusWithFetching", query="SELECT o FROM Order o"
+			+ " LEFT JOIN FETCH o.client LEFT JOIN FETCH o.repairType"
+			+ " LEFT JOIN FETCH o.machine as om LEFT JOIN FETCH om.machineServiceable"
+			+ " WHERE o.status = :status"),
+	@NamedQuery(name="Order.findOrdersByClientId", query="SELECT o FROM Order o"
+			+ " WHERE o.client.clientId = :id"),
+	@NamedQuery(name="Order.findOrdersByClientIdAndStatusWithFetching",
+		query="SELECT o FROM Order o"
+			+ " LEFT JOIN FETCH o.client LEFT JOIN FETCH o.repairType"
+			+ " LEFT JOIN FETCH o.machine as om LEFT JOIN FETCH om.machineServiceable"
+			+ " WHERE o.client.clientId = :id AND o.status = :status"),
+	@NamedQuery(name="Order.confirmOrderById", query="UPDATE Order o SET status = 'started'"
+			+ " WHERE o.orderId = :id AND o.status = 'pending'"),
+	@NamedQuery(name="Order.setOrderStatusById", query="UPDATE Order o SET status = :status "
+			+ " WHERE o.orderId = :id"),
+	@NamedQuery(name="Order.cancelOrderById", query="DELETE FROM Order o"
+			+ " WHERE o.orderId = :id AND o.status = 'pending'")
+})
 @Entity
 @Table(name = "orders")
 public class Order {

@@ -21,29 +21,29 @@ public class ClientService {
 
 	@Transactional
 	public List<Client> getAll() {
-		List<Client> result = em.createQuery("SELECT c FROM Client c", Client.class).getResultList();
+		List<Client> result = em.createNamedQuery("Client.findAll", Client.class)
+				.getResultList();
 		return result;
 	}
 	
 	@Transactional
 	public List<Client> getAllWithFetching() {
-		List<Client> result = em.createQuery("SELECT c FROM Client c"
-				+ " LEFT JOIN FETCH c.clientUser", Client.class).getResultList();
+		List<Client> result = em.createNamedQuery("Client.findAllWithFetching", Client.class)
+				.getResultList();
 		return result;
 	}
 	
 	@Transactional
 	public List<Long> getAllClientIds() {
 		List<Long> result = 
-				em.createQuery("SELECT c.clientId FROM Client c", Long.class).getResultList();
+				em.createNamedQuery("Client.findAllClientIds", Long.class).getResultList();
 		return result;
 	}
 
 	@Transactional
 	public Client getClientByUserId(Long userId) {
 		Client result = null;	  
-		TypedQuery<Client> query = em.createQuery("SELECT c FROM Client c"
-				+ " WHERE c.clientUser.userId = :id", Client.class);
+		TypedQuery<Client> query = em.createNamedQuery("Client.findClientByUserId", Client.class);
 		query.setParameter("id", userId);	  
 		try {
 			result = query.getSingleResult();
@@ -55,9 +55,8 @@ public class ClientService {
 	@Transactional
 	public Client getClientByUserIdWithFetching(Long userId) {
 		Client result = null;	  
-		TypedQuery<Client> query = em.createQuery("SELECT c FROM Client c"
-				+ " LEFT JOIN FETCH c.clientUser"
-				+ " WHERE c.clientUser.userId = :id", Client.class);
+		TypedQuery<Client> query = em.createNamedQuery(
+				"Client.findClientByUserIdWithFetching", Client.class);
 		query.setParameter("id", userId);	  
 		try {
 			result = query.getSingleResult();
@@ -69,8 +68,7 @@ public class ClientService {
 	@Transactional
 	public Client getClientByLogin(String login) {
 		Client result = null;	  
-		TypedQuery<Client> query = em.createQuery("SELECT c FROM Client c"
-				+ " WHERE c.clientUser.login = :login", Client.class);
+		TypedQuery<Client> query = em.createNamedQuery("Client.findClientByLogin", Client.class);
 		query.setParameter("login", login);	  
 		try {
 			result = query.getSingleResult();
@@ -82,9 +80,8 @@ public class ClientService {
 	@Transactional
 	public Client getClientByLoginWithFetching(String login) {
 		Client result = null;	  
-		TypedQuery<Client> query = em.createQuery("SELECT c FROM Client c"
-				+ " LEFT JOIN FETCH c.clientUser"
-				+ " WHERE c.clientUser.login = :login", Client.class);
+		TypedQuery<Client> query = em.createNamedQuery(
+				"Client.findClientByLoginWithFetching", Client.class);
 		query.setParameter("login", login);	  
 		try {
 			result = query.getSingleResult();

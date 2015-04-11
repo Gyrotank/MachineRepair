@@ -20,15 +20,15 @@ public class MachineServiceableService {
 
 	@Transactional
 	public List<MachineServiceable> getAll() {
-		List<MachineServiceable> result = em.createQuery("SELECT ms FROM MachineServiceable ms",
+		List<MachineServiceable> result = em.createNamedQuery("MachineServiceable.findAll",
 				MachineServiceable.class).getResultList();
 		return result;
 	}
 	
 	@Transactional
 	public List<MachineServiceable> getAllOrderByTrademark() {
-		List<MachineServiceable> result = em.createQuery
-				("SELECT ms FROM MachineServiceable ms ORDER BY ms.machineServiceableTrademark",
+		List<MachineServiceable> result = em.createNamedQuery
+				("MachineServiceable.findAllOrderByTrademark",
 				MachineServiceable.class).getResultList();
 		return result;
 	}
@@ -36,8 +36,8 @@ public class MachineServiceableService {
 	@Transactional
 	public MachineServiceable getMachineServiceableById(Long machineServiceableId) {
 		MachineServiceable result = null;	  
-		TypedQuery<MachineServiceable> query = em.createQuery("SELECT ms FROM MachineServiceable ms"
-				+ " WHERE ms.machineServiceableId = :id", MachineServiceable.class);
+		TypedQuery<MachineServiceable> query = em.createNamedQuery(
+				"MachineServiceable.findMachineServiceableById", MachineServiceable.class);
 		query.setParameter("id", machineServiceableId);	  
 		try {
 			result = query.getSingleResult();

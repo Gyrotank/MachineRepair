@@ -26,8 +26,8 @@ public class UserService {
 	@Transactional
 	public User getUserByLoginAndPassword(String login, String passwordText) {
 		User result = null;
-		TypedQuery<User> query = em.createQuery("SELECT u FROM User u"
-				+ " WHERE u.login = :login", User.class);
+		TypedQuery<User> query = em.createNamedQuery("User.findUserByLogin",
+				User.class);
 		query.setParameter("login", login);	  
 		try {
 			result = query.getSingleResult();
@@ -43,9 +43,8 @@ public class UserService {
 	@Transactional
 	public User getUserByLoginAndPasswordWithFetching(String login, String passwordText) {
 		User result = null;	  
-		TypedQuery<User> query = em.createQuery("SELECT u FROM User u"
-				+ " LEFT JOIN FETCH u.client"
-				+ " WHERE u.login = :login", User.class);
+		TypedQuery<User> query = em.createNamedQuery("User.findUserByLoginWithFetching",
+				User.class);
 		query.setParameter("login", login);	  
 		try {
 			result = query.getSingleResult();
@@ -61,8 +60,7 @@ public class UserService {
 	@Transactional
 	public User getUserByLogin(String login) {
 		User result = null;	  
-		TypedQuery<User> query = em.createQuery("SELECT u FROM User u"
-				+ " WHERE u.login = :login", User.class);
+		TypedQuery<User> query = em.createNamedQuery("User.findUserByLogin", User.class);
 		query.setParameter("login", login);	  
 		try {
 			result = query.getSingleResult();
@@ -74,9 +72,8 @@ public class UserService {
 	@Transactional
 	public User getUserByLoginWithFetching(String login) {
 		User result = null;	  
-		TypedQuery<User> query = em.createQuery("SELECT u FROM User u"
-				+ " LEFT JOIN FETCH u.client"
-				+ " WHERE u.login = :login", User.class);
+		TypedQuery<User> query = em.createNamedQuery("User.findUserByLoginWithFetching",
+				User.class);
 		query.setParameter("login", login);	  
 		try {
 			result = query.getSingleResult();
@@ -87,23 +84,17 @@ public class UserService {
 	
 	@Transactional
 	public User getUserById(Long userId) {
-		User result = null;	  
-		TypedQuery<User> query = em.createQuery("SELECT u FROM User u"
-				+ " WHERE u.userId = :id", User.class);
-		query.setParameter("id", userId);	  
-		try {
-			result = query.getSingleResult();
-		} catch (NoResultException nre){}
-		
+		User result = em.find(User.class, userId);
+		if (result == null) {
+			throw new NoResultException();
+		}		
 		return result;
 	}
 	
 	@Transactional
 	public User getUserByIdWithFetching(Long userId) {
 		User result = null;	  
-		TypedQuery<User> query = em.createQuery("SELECT u FROM User u"
-				+ " LEFT JOIN FETCH u.client"
-				+ " WHERE u.userId = :id", User.class);
+		TypedQuery<User> query = em.createNamedQuery("User.findUserByIdWithFetching", User.class);
 		query.setParameter("id", userId);	  
 		try {
 			result = query.getSingleResult();
@@ -114,7 +105,7 @@ public class UserService {
 
 	@Transactional
 	public List<User> getAll() {
-		List<User> result = em.createQuery("SELECT u FROM User u", User.class).getResultList();
+		List<User> result = em.createNamedQuery("User.findAll", User.class).getResultList();
 		return result;
 	}
 

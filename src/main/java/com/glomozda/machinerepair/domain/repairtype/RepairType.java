@@ -8,6 +8,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.DecimalMin;
@@ -19,6 +21,12 @@ import org.hibernate.validator.constraints.NotEmpty;
 import com.glomozda.machinerepair.domain.order.Order;
 
 @SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
+@NamedQueries({
+	@NamedQuery(name="RepairType.findAll", query="SELECT rt FROM RepairType rt"),
+	@NamedQuery(name="RepairType.findRepairTypeByName",
+		query="SELECT rt FROM RepairType rt "
+			+ "WHERE rt.repairTypeName = :rtn")
+})
 @Entity
 @Table(name = "repair_types")
 public class RepairType {

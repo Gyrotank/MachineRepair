@@ -10,6 +10,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -20,6 +22,22 @@ import com.glomozda.machinerepair.domain.order.Order;
 import com.glomozda.machinerepair.domain.user.User;
 
 @SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
+@NamedQueries({
+	@NamedQuery(name="Client.findAll", query="SELECT c FROM Client c"),
+	@NamedQuery(name="Client.findAllWithFetching", query="SELECT c FROM Client c "
+			+ "LEFT JOIN FETCH c.clientUser"),
+	@NamedQuery(name="Client.findAllClientIds", query="SELECT c.clientId FROM Client c"),
+	@NamedQuery(name="Client.findClientByUserId", query="SELECT c FROM Client c "
+			+ "WHERE c.clientUser.userId = :id"),
+	@NamedQuery(name="Client.findClientByUserIdWithFetching", query="SELECT c FROM Client c "
+			+ " LEFT JOIN FETCH c.clientUser "
+			+ "WHERE c.clientUser.userId = :id"),
+	@NamedQuery(name="Client.findClientByLogin", query="SELECT c FROM Client c "
+			+ "WHERE c.clientUser.login = :login"),
+	@NamedQuery(name="Client.findClientByLoginWithFetching", query="SELECT c FROM Client c "
+			+ " LEFT JOIN FETCH c.clientUser "
+			+ "WHERE c.clientUser.login = :login")
+})
 @Entity
 @Table(name = "clients")
 public class Client {

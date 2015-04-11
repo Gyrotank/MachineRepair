@@ -6,21 +6,11 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<link href="<c:url value="/resources/css/general.css"/>" rel="stylesheet" type="text/css" />
+
 <title>MachineRepair Home Page</title>
 
-<style>
-h3.left {
-    position: absolute;
-    left: 10px;
-    top: 0px;
-}
-
-h3.right {
-    position: absolute;
-    right: 10px;
-    top: 0px;
-}
-</style>
 </head>
 <body>
 	

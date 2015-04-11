@@ -24,7 +24,7 @@ public class LoginController {
 	
 	private String message = "";
 		  
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String activate(Model model) {
 		
 		log.info("Activating Login Page...");

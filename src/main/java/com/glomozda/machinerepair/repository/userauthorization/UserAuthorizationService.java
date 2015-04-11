@@ -20,7 +20,7 @@ public class UserAuthorizationService {
 	@Transactional
 	public List<UserAuthorization> getAll() {
 		List<UserAuthorization> result = 
-				em.createQuery("SELECT ua FROM UserAuthorization ua",
+				em.createNamedQuery("UserAuthorization.findAll",
 						UserAuthorization.class).getResultList();
 		return result;
 	}
@@ -28,8 +28,7 @@ public class UserAuthorizationService {
 	@Transactional
 	public List<UserAuthorization> getAllWithFetching() {
 		List<UserAuthorization> result = 
-				em.createQuery("SELECT ua FROM UserAuthorization ua"
-						+ " LEFT JOIN FETCH ua.user",
+				em.createNamedQuery("UserAuthorization.findAllWithFetching",
 						UserAuthorization.class).getResultList();
 		return result;
 	}
@@ -37,7 +36,7 @@ public class UserAuthorizationService {
 	@Transactional
 	public List<String> getAllRoles() {
 		List<String> result = 
-				em.createQuery("SELECT DISTINCT (ua.role) FROM UserAuthorization ua",
+				em.createNamedQuery("User.findAllRoles",
 						String.class).getResultList();
 		return result;
 	}

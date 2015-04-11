@@ -20,15 +20,16 @@ public class RepairTypeService {
 
 	@Transactional
 	public List<RepairType> getAll() {
-		List<RepairType> result = em.createQuery("SELECT rt FROM RepairType rt", RepairType.class).getResultList();
+		List<RepairType> result = em.createNamedQuery("RepairType.findAll", RepairType.class)
+				.getResultList();
 		return result;
 	}
 	
 	@Transactional
 	public RepairType getRepairTypeForName(String repairTypeName) {
 		RepairType result = null;
-		TypedQuery<RepairType> query = em.createQuery("SELECT rt FROM RepairType rt"
-				+ " WHERE rt.repairTypeName = :rtn", RepairType.class);
+		TypedQuery<RepairType> query = em.createNamedQuery("RepairType.findRepairTypeByName",
+				RepairType.class);
 		query.setParameter("rtn", repairTypeName);
 		try {
 			result = query.getSingleResult();

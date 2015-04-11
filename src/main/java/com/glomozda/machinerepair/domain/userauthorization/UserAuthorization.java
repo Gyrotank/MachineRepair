@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -14,6 +16,14 @@ import org.hibernate.validator.constraints.NotEmpty;
 import com.glomozda.machinerepair.domain.user.User;
 
 @SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
+@NamedQueries({
+	@NamedQuery(name="UserAuthorization.findAll", query="SELECT ua FROM UserAuthorization ua"),
+	@NamedQuery(name="UserAuthorization.findAllWithFetching",
+		query="SELECT ua FROM UserAuthorization ua"
+			+ " LEFT JOIN FETCH ua.user"),
+	@NamedQuery(name="User.findAllRoles", query="SELECT DISTINCT (ua.role) "
+			+ "FROM UserAuthorization ua")
+})
 @Entity
 @Table(name = "user_authorization")
 public class UserAuthorization {	

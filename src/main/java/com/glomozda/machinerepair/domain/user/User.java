@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -19,6 +21,18 @@ import com.glomozda.machinerepair.domain.client.Client;
 import com.glomozda.machinerepair.domain.userauthorization.UserAuthorization;
 
 @SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
+@NamedQueries({
+	@NamedQuery(name="User.findUserByLogin", query="SELECT u FROM User u "
+			+ "WHERE u.login = :login"),
+	@NamedQuery(name="User.findUserByLoginWithFetching",
+		query="SELECT u FROM User u "
+			+ " LEFT JOIN FETCH u.client"
+			+ " WHERE u.login = :login"),	
+	@NamedQuery(name="User.findUserByIdWithFetching", query="SELECT u FROM User u "
+			+ "LEFT JOIN FETCH u.client "
+			+ "WHERE u.userId = :id"),
+	@NamedQuery(name="User.findAll", query="SELECT u FROM User u")	
+})
 @Entity
 @Table(name = "users")
 public class User {	

@@ -11,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
@@ -22,6 +24,20 @@ import com.glomozda.machinerepair.domain.machineserviceable.MachineServiceable;
 import com.glomozda.machinerepair.domain.order.Order;
 
 @SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
+@NamedQueries({
+	@NamedQuery(name="Machine.findAll", query="SELECT m FROM Machine m"),
+	@NamedQuery(name="Machine.findAllWithFetching", query="SELECT m FROM Machine m "
+			+ "LEFT JOIN FETCH m.machineServiceable"),
+	@NamedQuery(name="Machine.findMachineBySerialNumber", query="SELECT m FROM Machine m "
+			+ "WHERE m.machineSerialNumber = :msn"),
+	@NamedQuery(name="Machine.findMachineBySerialNumberWithFetching", 
+			query="SELECT m FROM Machine m "
+			+ "LEFT JOIN FETCH m.machineServiceable "
+			+ "WHERE m.machineSerialNumber = :msn"),
+	@NamedQuery(name="Machine.incrementTimesRepairedById", query="UPDATE Machine m "
+			+ "SET m.machineTimesRepaired = m.machineTimesRepaired + 1 "
+			+ "WHERE m.machineId = :id")	
+})
 @Entity
 @Table(name = "machines")
 public class Machine {

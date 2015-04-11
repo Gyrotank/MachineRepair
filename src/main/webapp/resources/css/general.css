@@ -1,0 +1,35 @@
+@CHARSET "UTF-8";
+
+.error {
+    color: #ff0000;
+    font-style: italic;
+    font-weight: bold;
+}
+
+h3.left {
+    position: absolute;
+    left: 10px;
+    top: 0px;
+}
+
+h3.right {
+    position: absolute;
+    right: 10px;
+    top: 0px;
+}
+
+tr.odd {background-color: #EEDDEE}
+
+tr.even {background-color: #EEEEDD}
+
+#sidebar {
+  position: fixed;
+  top: 40px;
+  left: 40px;
+  width: 200px;
+  border-right:2px solid #aaa;
+}
+ 
+#content {
+  margin: 0 40px 40px 280px;
+}

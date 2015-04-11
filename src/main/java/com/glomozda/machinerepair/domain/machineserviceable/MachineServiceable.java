@@ -7,6 +7,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -15,6 +17,15 @@ import org.hibernate.validator.constraints.NotEmpty;
 import com.glomozda.machinerepair.domain.machine.Machine;
 
 @SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
+@NamedQueries({
+	@NamedQuery(name="MachineServiceable.findAll", query="SELECT ms FROM MachineServiceable ms"),
+	@NamedQuery(name="MachineServiceable.findAllOrderByTrademark",
+		query="SELECT ms FROM MachineServiceable ms "
+			+ "ORDER BY ms.machineServiceableTrademark"),
+	@NamedQuery(name="MachineServiceable.findMachineServiceableById",
+		query="SELECT ms FROM MachineServiceable ms"
+			+ " WHERE ms.machineServiceableId = :id")	
+})
 @Entity
 @Table(name = "machinesServiceable")
 public class MachineServiceable {

@@ -5,21 +5,11 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<link href="<c:url value="/resources/css/general.css"/>" rel="stylesheet" type="text/css" />
+
 <title>Log In</title>
 
-<style>
-h3.left {
-    position: absolute;
-    left: 10px;
-    top: 0px;
-}
-
-h3.right {
-    position: absolute;
-    right: 10px;
-    top: 0px;
-}
-</style>
 </head>
 <body>
 
@@ -28,9 +18,14 @@ h3.right {
 	</h3>
 	
 	<h1>Please enter login information...</h1>
-	<c:if test="${not empty param.error}">
-		<font color="red"> ERROR: ${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message} </font>
-	</c:if>  	
+	<c:choose>
+    	<c:when test="${not empty param.error}">
+        	<font color="red"> ERROR: ${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message} </font>
+    	</c:when>
+    	<c:otherwise>
+        	<font color="white"> _ </font>
+    	</c:otherwise>
+	</c:choose>
   	<form method="POST" action="<c:url value="/j_spring_security_check"/>" accept-charset="UTF-8">
 	<table>
 	<tr>

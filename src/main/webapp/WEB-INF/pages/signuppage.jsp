@@ -5,27 +5,10 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="<c:url value="/resources/css/general.css"/>" rel="stylesheet" type="text/css" />
+
 <title>Log In</title>
 
-<style>
-.error {
-    color: #ff0000;
-    font-style: italic;
-    font-weight: bold;
-}
-
-h3.left {
-    position: absolute;
-    left: 10px;
-    top: 0px;
-}
-
-h3.right {
-    position: absolute;
-    right: 10px;
-    top: 0px;
-}
-</style>
 </head>
 <body>
 
@@ -35,9 +18,16 @@ h3.right {
 	
 	<h1>Please enter registration information...</h1>
 	
-	<div class="error">
-	<c:out value="${message}"/>
-	</div>
+	<c:choose>
+    	<c:when test="${not empty message}">
+        	<div class="error">
+				<c:out value="${message}"/>
+			</div>
+    	</c:when>
+    	<c:otherwise>
+        	<font color="white"> _ </font>
+    	</c:otherwise>
+	</c:choose>
 	  	
   	<form method="post" action="signuppage/signup" accept-charset="UTF-8">
   	<table>

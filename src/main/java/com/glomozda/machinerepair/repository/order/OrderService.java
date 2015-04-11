@@ -24,15 +24,14 @@ public class OrderService {
 
 	@Transactional
 	public List<Order> getAll() {
-		List<Order> result = em.createQuery("SELECT o FROM Order o", Order.class).getResultList();
+		List<Order> result = em.createNamedQuery(
+				"Order.findAll", Order.class).getResultList();
 		return result;
 	}
 	
 	@Transactional
 	public List<Order> getAllWithFetching() {
-		List<Order> result = em.createQuery("SELECT o FROM Order o"
-				+ " LEFT JOIN FETCH o.client LEFT JOIN FETCH o.repairType"
-				+ " LEFT JOIN FETCH o.machine as om LEFT JOIN FETCH om.machineServiceable"
+		List<Order> result = em.createNamedQuery("Order.findAllWithFetching"
 				, Order.class).getResultList();
 		return result;
 	}
@@ -40,8 +39,7 @@ public class OrderService {
 	@Transactional
 	public Order getOrderById(Long orderId) {
 		Order result = null;
-		TypedQuery<Order> query = em.createQuery("SELECT o FROM Order o"				
-				+ " WHERE o.orderId = :id", Order.class);
+		TypedQuery<Order> query = em.createNamedQuery("Order.findOrderById", Order.class);
 		query.setParameter("id", orderId);	  
 		try {
 			result = query.getSingleResult();
@@ -53,10 +51,8 @@ public class OrderService {
 	@Transactional
 	public Order getOrderByIdWithFetching(Long orderId) {
 		Order result = null;
-		TypedQuery<Order> query = em.createQuery("SELECT o FROM Order o"
-				+ " LEFT JOIN FETCH o.client LEFT JOIN FETCH o.repairType"
-				+ " LEFT JOIN FETCH o.machine as om LEFT JOIN FETCH om.machineServiceable"
-				+ " WHERE o.orderId = :id", Order.class);
+		TypedQuery<Order> query = em.createNamedQuery("Order.findOrderByIdWithFetching",
+				Order.class);
 		query.setParameter("id", orderId);	  
 		try {
 			result = query.getSingleResult();
@@ -68,8 +64,7 @@ public class OrderService {
 	@Transactional
 	public List<Order> getOrdersForStatus(String status) {
 		List<Order> result = null;
-		TypedQuery<Order> query = em.createQuery("SELECT o FROM Order o"				
-				+ " WHERE o.status = :status", Order.class);
+		TypedQuery<Order> query = em.createNamedQuery("Order.findOrdersByStatus", Order.class);
 		query.setParameter("status", status);	  
 		try {
 			result = query.getResultList();
@@ -81,10 +76,8 @@ public class OrderService {
 	@Transactional
 	public List<Order> getOrdersForStatusWithFetching(String status) {
 		List<Order> result = null;
-		TypedQuery<Order> query = em.createQuery("SELECT o FROM Order o"
-				+ " LEFT JOIN FETCH o.client LEFT JOIN FETCH o.repairType"
-				+ " LEFT JOIN FETCH o.machine as om LEFT JOIN FETCH om.machineServiceable"				
-				+ " WHERE o.status = :status", Order.class);
+		TypedQuery<Order> query = em.createNamedQuery("Order.findOrdersByStatusWithFetching",
+				Order.class);
 		query.setParameter("status", status);	  
 		try {
 			result = query.getResultList();
@@ -96,8 +89,7 @@ public class OrderService {
 	@Transactional
 	public List<Order> getAllForClientId(Long clientId) {
 		List<Order> result = null;
-		TypedQuery<Order> query = em.createQuery("SELECT o FROM Order o"
-				+ " WHERE o.client.clientId = :id", Order.class);
+		TypedQuery<Order> query = em.createNamedQuery("Order.findOrdersByClientId", Order.class);
 		query.setParameter("id", clientId);	  
 		try {
 			result = query.getResultList();
@@ -109,10 +101,8 @@ public class OrderService {
 	@Transactional
 	public List<Order> getOrdersForClientIdAndStatusWithFetching(Long clientId, String status) {
 		List<Order> result = null;
-		TypedQuery<Order> query = em.createQuery("SELECT o FROM Order o"
-				+ " LEFT JOIN FETCH o.client LEFT JOIN FETCH o.repairType"
-				+ " LEFT JOIN FETCH o.machine as om LEFT JOIN FETCH om.machineServiceable"
-				+ " WHERE o.client.clientId = :id AND o.status = :status", Order.class);
+		TypedQuery<Order> query = em.createNamedQuery(
+				"Order.findOrdersByClientIdAndStatusWithFetching", Order.class);
 		query.setParameter("id", clientId);
 		query.setParameter("status", status);
 		try {
@@ -141,18 +131,14 @@ public class OrderService {
 	
 	@Transactional
 	public Integer confirmOrderById(Long orderId) {
-		Query query = em.createQuery(
-				"UPDATE Order o SET status = 'started' " +
-				"WHERE o.orderId = :id AND o.status = 'pending'");
+		Query query = em.createNamedQuery("Order.confirmOrderById");
 		int updateCount = query.setParameter("id", orderId).executeUpdate();
 		return updateCount;
 	}
 	
 	@Transactional
 	public Integer setOrderStatusById(Long orderId, String status) {
-		Query query = em.createQuery(
-				"UPDATE Order o SET status = :status " +
-				"WHERE o.orderId = :id");
+		Query query = em.createNamedQuery("Order.setOrderStatusById");
 		query.setParameter("id", orderId);
 		query.setParameter("status", status);
 		int updateCount = query.executeUpdate();
@@ -161,9 +147,7 @@ public class OrderService {
 	
 	@Transactional
 	public Integer cancelOrderById(Long orderId) {
-		Query query = em.createQuery(
-				"DELETE FROM Order o " +
-				"WHERE o.orderId = :id AND o.status = 'pending'");
+		Query query = em.createNamedQuery("Order.cancelOrderById");
 		query.setParameter("id", orderId);		
 		int deletedCount = query.executeUpdate();
 		return deletedCount;

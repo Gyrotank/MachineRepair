@@ -22,24 +22,23 @@ public class MachineService {
 
 	@Transactional
 	public List<Machine> getAll() {
-		List<Machine> result = em.createQuery(
-				"SELECT m FROM Machine m", Machine.class).getResultList();
+		List<Machine> result = em.createNamedQuery(
+				"Machine.findAll", Machine.class).getResultList();
 		return result;
 	}
 	
 	@Transactional
 	public List<Machine> getAllWithFetching() {
-		List<Machine> result = em.createQuery(
-				"SELECT m FROM Machine m"
-				+ " LEFT JOIN FETCH m.machineServiceable", Machine.class).getResultList();
+		List<Machine> result = em.createNamedQuery(
+				"Machine.findAllWithFetching", Machine.class).getResultList();
 		return result;
 	}
 	
 	@Transactional
 	public Machine getMachineForSerialNumber(String machineSerialNumber) {
 		Machine result = null;
-		TypedQuery<Machine> query = em.createQuery("SELECT m FROM Machine m"
-				+ " WHERE m.machineSerialNumber = :msn", Machine.class);
+		TypedQuery<Machine> query = em.createNamedQuery(
+				"Machine.findMachineBySerialNumber", Machine.class);
 		query.setParameter("msn", machineSerialNumber);
 		try {
 			result = query.getSingleResult();
@@ -51,9 +50,8 @@ public class MachineService {
 	@Transactional
 	public Machine getMachineForSerialNumberWithFetching(String machineSerialNumber) {
 		Machine result = null;
-		TypedQuery<Machine> query = em.createQuery("SELECT m FROM Machine m"
-				+ " LEFT JOIN FETCH m.machineServiceable"
-				+ " WHERE m.machineSerialNumber = :msn", Machine.class);
+		TypedQuery<Machine> query = em.createNamedQuery(
+				"Machine.findMachineBySerialNumberWithFetching", Machine.class);
 		query.setParameter("msn", machineSerialNumber);
 		try {
 			result = query.getSingleResult();
@@ -77,9 +75,7 @@ public class MachineService {
 	
 	@Transactional	
 	public Integer incrementTimesRepairedById(Long machineId) {
-		Query query = em.createQuery(
-				"UPDATE Machine m SET machineTimesRepaired = machineTimesRepaired + 1 " +
-				"WHERE m.machineId = :id");
+		Query query = em.createNamedQuery("Machine.incrementTimesRepairedById");
 		query.setParameter("id", machineId);		
 		int updateCount = query.executeUpdate();
 		return updateCount;		

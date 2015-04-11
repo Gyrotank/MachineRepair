@@ -6,8 +6,27 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Log In</title>
+
+<style>
+h3.left {
+    position: absolute;
+    left: 10px;
+    top: 0px;
+}
+
+h3.right {
+    position: absolute;
+    right: 10px;
+    top: 0px;
+}
+</style>
 </head>
 <body>
+
+	<h3 class = "right">
+		<a href="<c:url value="/index"/>">Back to home page</a>
+	</h3>
+	
 	<h1>Please enter login information...</h1>
 	<c:if test="${not empty param.error}">
 		<font color="red"> ERROR: ${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message} </font>

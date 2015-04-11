@@ -8,13 +8,17 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<link href="../resources/css/ufd-base.css" rel="stylesheet" type="text/css" />
-<link href="../resources/css/plain.css" rel="stylesheet" type="text/css" />
+<link href="<c:url value="/resources/css/ufd-base.css"/>" rel="stylesheet" type="text/css" />
+<link href="<c:url value="/resources/css/plain.css"/>" rel="stylesheet" type="text/css" />
+<link href="<c:url value="/resources/css/pager.css"/>" rel="stylesheet" type="text/css" />
+<%-- <link href="${pageContext.request.contextPath}/resources/css/pager.css" rel="stylesheet" /> --%>
 
-<script src="<c:url value="../resources/js/jquery-1.11.1.min.js" />"></script>
-<script src="<c:url value="../resources/js/jquery-ui.js" />"></script>
-<script src="<c:url value="../resources/js/jquery.ui.ufd.js" />"></script>
-<script src="<c:url value="../resources/js/pager.js" />"></script>
+<%-- <jsp:include page="/resources/css/pager.css"/> --%>
+
+<script src="<c:url value="/resources/js/jquery-1.11.1.min.js" />"></script>
+<script src="<c:url value="/resources/js/jquery-ui.js" />"></script>
+<script src="<c:url value="/resources/js/jquery.ui.ufd.js" />"></script>
+<script src="<c:url value="/resources/js/pager.js" />"></script>
 
 <title>Administrative Tools</title>
 <style type="text/css">

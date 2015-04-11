@@ -13,9 +13,26 @@
     font-style: italic;
     font-weight: bold;
 }
+
+h3.left {
+    position: absolute;
+    left: 10px;
+    top: 0px;
+}
+
+h3.right {
+    position: absolute;
+    right: 10px;
+    top: 0px;
+}
 </style>
 </head>
 <body>
+
+	<h3 class = "right">
+		<a href="<c:url value="/index"/>">Back to home page</a>
+	</h3>
+	
 	<h1>Please enter registration information...</h1>
 	
 	<div class="error">

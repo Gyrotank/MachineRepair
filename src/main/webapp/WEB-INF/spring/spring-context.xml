@@ -9,7 +9,7 @@
  
   <!-- Enable annotation-based Spring MVC controllers (eg: @Controller annotation) -->
   <mvc:annotation-driven/>
-   
+  
   <!-- Classpath scanning of @Component, @Service, etc annotated class -->
   <context:component-scan base-package="com.glomozda.machinerepair" />
 
@@ -17,9 +17,7 @@
   <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
     <property name="prefix" value="/WEB-INF/pages/" />
     <property name="suffix" value=".jsp" />
-  </bean>
-  
-  <mvc:resources mapping="/resources/**" location="/resources/" />
+  </bean>  
   
   <mvc:default-servlet-handler/>
    
@@ -51,6 +49,8 @@
   <!-- Message Source -->
   <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
   	<property name="basename" value="messages"/>
-  </bean>  
+  </bean>
+  
+  <mvc:resources mapping="/resources/**" location="/resources/" />  
  
 </beans>

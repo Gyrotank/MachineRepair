@@ -21,8 +21,9 @@
 <script src="<c:url value="/resources/js/pager.js" />"></script>
 
 <title>Administrative Tools</title>
-<style type="text/css">
-	</style>
+
+<style type="text/css"></style>
+	
 <style>
 .error {
     color: #ff0000;

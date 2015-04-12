@@ -18,9 +18,9 @@ h3.right {
     top: 0px;
 }
 
-tr.odd {background-color: #EEDDEE}
+/* tr.odd {background-color: #EEDDEE} */
 
-tr.even {background-color: #EEEEDD}
+/* tr.even {background-color: #EEEEDD} */
 
 #sidebar {
   position: fixed;

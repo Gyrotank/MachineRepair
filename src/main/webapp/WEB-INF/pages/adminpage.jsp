@@ -11,12 +11,14 @@
 <link href="<c:url value="/resources/css/general.css"/>" rel="stylesheet" type="text/css" />
 <link href="<c:url value="/resources/css/ufd-base.css"/>" rel="stylesheet" type="text/css" />
 <link href="<c:url value="/resources/css/plain.css"/>" rel="stylesheet" type="text/css" />
-<link href="<c:url value="/resources/css/pager.css"/>" rel="stylesheet" type="text/css" />
+<link href="<c:url value="/resources/css/bootstrap.min.css"/>" rel="stylesheet" />
+<link href="<c:url value="/resources/css/bootstrap-table.css"/>" rel="stylesheet" />
 
 <script src="<c:url value="/resources/js/jquery-1.11.1.min.js" />"></script>
 <script src="<c:url value="/resources/js/jquery-ui.js" />"></script>
 <script src="<c:url value="/resources/js/jquery.ui.ufd.js" />"></script>
-<script src="<c:url value="/resources/js/pager.js" />"></script>
+<script src="<c:url value="/resources/js/bootstrap.min.js" />"></script>
+<script src="<c:url value="/resources/js/bootstrap-table.js" />"></script>
 
 <title>Administrative Tools</title>
 
@@ -50,10 +52,20 @@
 	<div class="tabs-content">
 	<div class="content active" id="machines">
 	<h1>Machines</h1>
-	<table border="1" style="width:900px" id="tablepaging1" class="yui" align="center">
-	<tr><th align="center"></th><th align="center">M_S_Name:</th>
-	<th align="center">S/N:</th>
-	<th align="center">Year:</th><th align="center">Times Repaired:</th></tr>
+	<table data-toggle="table" 
+		data-classes="table table-hover table-condensed" 
+    	data-striped="true"
+    	data-pagination="true"
+		data-search="true"
+		border="1" style="width:900px" align="center">
+	<thead>
+	<tr><th align="center" data-sortable="true">  </th>
+	<th align="center" data-sortable="true">Name:  </th>
+	<th align="center" data-sortable="true">S/N:  </th>
+	<th align="center" data-sortable="true">Year:  </th>
+	<th align="center" data-sortable="true">Times Repaired:  </th></tr>
+	</thead>
+	<tbody>
   	<c:forEach var="m" items="${machines}" varStatus="loopStatus">    	
     <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
     	<td><c:out value="${loopStatus.index + 1}"/></td>
@@ -63,22 +75,15 @@
     	<td>${m.machineTimesRepaired}</td>    	
     </tr>
   	</c:forEach>
+  	</tbody>
   	</table>
-  	<div id="pageNavPosition1" style="padding-top: 20px" align="center">
-	</div>
-	<script type="text/javascript"><!--
-		var pager1 = new Pager('tablepaging1', 5);
-		pager1.init();
-		pager1.showPageNav('pager1', 'pageNavPosition1');
-		pager1.showPage(1);
-	</script>  	
   	
   	<div>
 	<h2>Add New Machine:</h2>
   	<form:form method="post" commandName="machine" action="addMachine" accept-charset="UTF-8">
   	<table>
   		<tr>
-  			<td>Machine Name: </td>
+  			<td><label for="machineServiceableId">Machine Name: </label></td>
   			<td>
   				<script type="text/javascript">
   					$("#machineServiceableId").ufd();
@@ -137,9 +142,19 @@
   	
   	<div class="content" id="serviceable_machines">
   	<h1>Serviceable Machines</h1>
-  	<table border="1" style="width:900px" id="tablepaging2" class="yui" align="center">
-	<tr><th align="center"></th><th align="center">Name:</th>
-	<th align="center">Trademark:</th><th align="center">Country:</th></tr>
+  	<table border="1" data-toggle="table" 
+		data-classes="table table-hover table-condensed" 
+    	data-striped="true"
+    	data-pagination="true"
+		data-search="true"
+		border="1" style="width:900px" align="center">
+	<thead>
+	<tr><th align="center" data-sortable="true"></th>
+	<th align="center" data-sortable="true">Name:</th>
+	<th align="center" data-sortable="true">Trademark:</th>
+	<th align="center" data-sortable="true">Country:</th></tr>
+	</thead>
+	<tbody>
   	<c:forEach var="ms" items="${machines_serviceable}" varStatus="loopStatus">    	
     <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
     	<td><c:out value="${loopStatus.index + 1}"/></td>
@@ -148,16 +163,10 @@
     	<td>${ms.machineServiceableCountry}</td>    	   	
     </tr>
   	</c:forEach>
+  	</tbody>
   	</table>
-  	<div id="pageNavPosition2" style="padding-top: 20px" align="center">
-	</div>
-	<script type="text/javascript">
-		var pager2 = new Pager('tablepaging2', 5);
-		pager2.init();
-		pager2.showPageNav('pager2', 'pageNavPosition2');
-		pager2.showPage(1);
-	</script>
   	
+  	<div>
   	<h2>Add New Serviceable Machine:</h2>
   	<form:form method="post" commandName="machineServiceable" action="addMachineServiceable" accept-charset="UTF-8">
   	<table>
@@ -189,14 +198,25 @@
   	</table>
   	</form:form>
   	</div>
+  	</div>
   	
   	<br><hr>
     
     <div class="content" id="repair_types">
   	<h1>Repair Types</h1>
-  	<table border="1" style="width:900px" id="tablepaging3" class="yui" align="center">
-	<tr><th align="center"></th><th align="center">Name:</th>
-	<th align="center">Price:</th><th align="center">Duration:</th></tr>
+  	<table data-toggle="table" 
+		data-classes="table table-hover table-condensed" 
+    	data-striped="true"
+    	data-pagination="true"
+		data-search="true"
+		border="1" style="width:900px" align="center">
+	<thead>
+	<tr><th align="center" data-sortable="true"></th>
+	<th align="center" data-sortable="true">Name:</th>
+	<th align="center" data-sortable="true">Price:</th>
+	<th align="center" data-sortable="true">Duration:</th></tr>
+	</thead>
+	<tbody>
   	<c:forEach var="rt" items="${repair_types}" varStatus="loopStatus">    	
     <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
     	<td><c:out value="${loopStatus.index + 1}"/></td>
@@ -205,16 +225,9 @@
     	<td>${rt.repairTypeDuration}</td>    	   	
     </tr>
   	</c:forEach>
+  	</tbody>
   	</table>
-  	<div id="pageNavPosition3" style="padding-top: 20px" align="center">
-	</div>
-	<script type="text/javascript"><!--
-		var pager3 = new Pager('tablepaging3', 5);
-		pager3.init();
-		pager3.showPageNav('pager3', 'pageNavPosition3');
-		pager3.showPage(1);
-	</script>
-  
+  	  
   	<h2>Add New Repair Type</h2>
   	<form:form method="post" commandName="repairType" action="addRepairType" accept-charset="UTF-8">
   	<table>
@@ -247,9 +260,18 @@
     
     <div class="content" id="users">
   	<h1>Users</h1>
-  	<table border="1" style="width:900px" id="tablepaging4" class="yui" align="center">
-	<tr><th align="center"></th><th align="center">Login:</th>
-	<th align="center">Password:</th></tr>
+  	<table data-toggle="table" 
+		data-classes="table table-hover table-condensed" 
+    	data-striped="true"
+    	data-pagination="true"
+		data-search="true"
+		border="1" style="width:900px" align="center">
+	<thead>
+	<tr><th align="center" data-sortable="true"></th>
+	<th align="center" data-sortable="true">Login:</th>
+	<th align="center" data-sortable="true">Password:</th></tr>
+	</thead>
+	<tbody>
   	<c:forEach var="u" items="${users}" varStatus="loopStatus">    	
     <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
     	<td><c:out value="${loopStatus.index + 1}"/></td>
@@ -257,16 +279,9 @@
     	<td>${u.password}</td>
     </tr>
   	</c:forEach>
+  	</tbody>
   	</table>
-  	<div id="pageNavPosition4" style="padding-top: 20px" align="center">
-	</div>
-	<script type="text/javascript"><!--
-		var pager4 = new Pager('tablepaging4', 5);
-		pager4.init();
-		pager4.showPageNav('pager4', 'pageNavPosition4');
-		pager4.showPage(1);
-	</script>
-  	
+  	  	
   	<h2>Add New User</h2>
   	<form:form method="post" commandName="user" action="addUser" accept-charset="UTF-8">
   	<table>
@@ -291,9 +306,18 @@
   	
   	<div class="content" id="user_auths">
   	<h1>User Authorizations</h1>
-  	<table border="1" style="width:900px" id="tablepaging5" class="yui" align="center">
-	<tr><th align="center"></th><th align="center">Login:</th>
-	<th align="center">Role:</th></tr>
+  	<table data-toggle="table" 
+		data-classes="table table-hover table-condensed" 
+    	data-striped="true"
+    	data-pagination="true"
+		data-search="true"
+		border="1" style="width:900px" align="center">
+	<thead>
+	<tr><th align="center" data-sortable="true"></th>
+	<th align="center" data-sortable="true">Login:</th>
+	<th align="center" data-sortable="true">Role:</th></tr>
+	</thead>
+	<tbody>
   	<c:forEach var="ua" items="${user_authorizations}" varStatus="loopStatus">    	
     <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
     	<td><c:out value="${loopStatus.index + 1}"/></td>
@@ -313,21 +337,14 @@
     	</td>    	    	   	
     </tr>
   	</c:forEach>
+  	</tbody>
   	</table>
-  	<div id="pageNavPosition5" style="padding-top: 20px" align="center">
-	</div>
-	<script type="text/javascript"><!--
-		var pager5 = new Pager('tablepaging5', 5);
-		pager5.init();
-		pager5.showPageNav('pager5', 'pageNavPosition5');
-		pager5.showPage(1);
-	</script>
-  	
+  	  	
   	<h2>Add New User Authorization</h2>
   	<form:form method="post" commandName="userAuthorization" action="addUserAuthorization" accept-charset="UTF-8">
   	<table>
   		<tr>
-  		<td>User: </td>  		
+  		<td><label>User: </label></td>  		
   		<td><select name="userId">
   			<option value="0"><c:out value="-Select user-" /></option>
   			<c:forEach var="u" items="${users}">
@@ -352,7 +369,7 @@
   		</td>
   		</tr>
   		<tr>  		
-  		<td>Role: </td>
+  		<td><label>Role: </label></td>
   		<td><form:select path="role">
   			<form:option value=""><c:out value="-Select role-" /></form:option>
   			<c:forEach var="r" items="${user_roles}">
@@ -373,9 +390,18 @@
   	
   	<div class="content" id="clients">  
   	<h1>Clients</h1>
-  	<table border="1" style="width:900px" id="tablepaging6" class="yui" align="center">
-	<tr><th align="center"></th><th align="center">Name:</th>
-	<th align="center">Login:</th></tr>
+  	<table data-toggle="table" 
+		data-classes="table table-hover table-condensed" 
+    	data-striped="true"
+    	data-pagination="true"
+		data-search="true"
+		border="1" style="width:900px" align="center">
+	<thead>
+	<tr><th align="center" data-sortable="true"></th>
+	<th align="center" data-sortable="true">Name:</th>
+	<th align="center" data-sortable="true">Login:</th></tr>
+	</thead>
+	<tbody>
   	<c:forEach var="c" items="${clients}" varStatus="loopStatus">    	
     <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
     	<td><c:out value="${loopStatus.index + 1}"/></td>
@@ -383,16 +409,9 @@
     	<td>${c.clientUser.login}</td>    	    	   	
     </tr>
   	</c:forEach>
+  	</tbody>
   	</table>
-  	<div id="pageNavPosition6" style="padding-top: 20px" align="center">
-	</div>
-	<script type="text/javascript">
-		var pager6 = new Pager('tablepaging6', 5);
-		pager6.init();
-		pager6.showPageNav('pager6', 'pageNavPosition6');
-		pager6.showPage(1);
-	</script>
-  
+  	  
   	<h2>Add New Client</h2>
   	<form:form method="post" commandName="client" action="addClient" accept-charset="UTF-8">
   	<table>
@@ -402,7 +421,7 @@
   			<td><form:errors path="clientName" cssClass="error" /></td>  			
   		</tr>
   		<tr>
-  			<td>User:</td>
+  			<td><label>User: </label></td>
   			<td><select name="userId">
   				<option value="0"><c:out value="-Select user-" /></option>
   				<c:forEach var="u" items="${users}">
@@ -437,11 +456,22 @@
   
     <div class="content" id="orders">
   	<h1>Orders</h1>
-  	<table border="1" style="width:900px" id="tablepaging7" class="yui" align="center">
-	<tr><th align="center"></th><th align="center">Client:</th>
-	<th align="center">Repair Type:</th><th align="center">Machine:</th>
-	<th align="center">Machine S/N:</th>
-	<th align="center">Application Date:</th><th align="center">Status:</th></tr>
+  	<table data-toggle="table" 
+		data-classes="table table-hover table-condensed" 
+    	data-striped="true"
+    	data-pagination="true"
+		data-search="true"
+		border="1" style="width:900px" align="center">
+	<thead>
+	<tr><th align="center" data-sortable="true"></th>
+	<th align="center" data-sortable="true">Client:</th>
+	<th align="center" data-sortable="true">Repair Type:</th>
+	<th align="center" data-sortable="true">Machine:</th>
+	<th align="center" data-sortable="true">Machine S/N:</th>
+	<th align="center" data-sortable="true">Application Date:</th>
+	<th align="center" data-sortable="true">Status:</th></tr>
+	</thead>
+	<tbody>
   	<c:forEach var="o" items="${orders}" varStatus="loopStatus">    	
     <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
     	<td><c:out value="${loopStatus.index + 1}"/></td>
@@ -453,21 +483,14 @@
     	<td>${o.status}</td>
     </tr>
   	</c:forEach>
+  	</tbody>
   	</table>
-  	<div id="pageNavPosition7" style="padding-top: 20px" align="center">
-	</div>
-	<script type="text/javascript"><!--
-		var pager7 = new Pager('tablepaging7', 5);
-		pager7.init();
-		pager7.showPageNav('pager7', 'pageNavPosition7');
-		pager7.showPage(1);
-	</script>
-  
+  	  
   	<h2>Add New Order</h2>
   	<form:form method="post" commandName="order" action="addOrder" accept-charset="UTF-8">
   	<table>
   		<tr>
-  			<td>Client:</td>
+  			<td><label>Client: </label></td>
   			<td><select name="clientId">
   			<option value="0"><c:out value="-Select client-" /></option>
   			<c:forEach var="c" items="${clients}">
@@ -492,7 +515,7 @@
   			</td>
   		</tr>
   		<tr>
-  			<td>RepairType:</td>
+  			<td><label>RepairType: </label></td>
   			<td><select name="repairTypeId">
   			<option value="0"><c:out value="-Select repair type-" /></option>
   			<c:forEach var="rt" items="${repair_types}">
@@ -517,7 +540,7 @@
   			</td>
   		</tr>
   		<tr>
-  			<td>Machine S/N:</td>
+  			<td><label>Machine S/N: </label></td>
   			<td><select name="machineId">
   			<option value="0"><c:out value="-Select machine-" /></option>
   			<c:forEach var="m" items="${machines}">
@@ -542,7 +565,7 @@
   			</td>
   		</tr>
   		<tr>  		
-  			<td>Start date (dd-MM-yyyy):</td>
+  			<td><label>Start date (dd-MM-yyyy): </label></td>
   			<td><input name="startDate" value="${entered_order_start}"/></td>                
   			<td>
   			<div class="error">

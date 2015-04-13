@@ -106,4 +106,27 @@ public class SignUpController {
 		
 		return "redirect:/login";
 	}
+	
+//	@RequestMapping(value = "/generate", method = RequestMethod.POST)
+//	public String generateClients() {
+//		User queryRes;
+//		
+//		for (long i = 0; i < 50000; i++) {
+//			String login = "vip" + i;
+//			String password1 = "pass" + i;
+//			String passwordHashed = encoder.encode(password1);
+//			User newUser = new User(login, password1, passwordHashed);
+//			userSvc.add(newUser);
+//			queryRes = userSvc.getUserByLoginAndPassword(login, password1);
+//			
+//			Client newClient = new Client();
+//			newClient.setClientName("Very Important Client " + i);
+//			clientSvc.add(newClient, queryRes.getUserId());
+//			
+//			UserAuthorization newUserAuthorization = new UserAuthorization("ROLE_CLIENT");
+//			userAuthorizationSvc.add(newUserAuthorization, queryRes.getUserId());
+//		}
+//		
+//		return "redirect:/signuppage";
+//	}
 }

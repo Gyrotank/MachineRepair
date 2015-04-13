@@ -54,5 +54,8 @@
   	</table>
   	</form>
   	
+<!--   	<form method="post" action="signuppage/generate" accept-charset="UTF-8"> -->
+<!--   		<button>Generate 50000 new clients</button> -->
+<!--   	</form> -->
 </body>
 </html>

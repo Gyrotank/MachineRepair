@@ -104,6 +104,9 @@ public class ClientPageController implements MessageSourceAware {
 		}		
 		
 		model.addAttribute("clientname", myClient.getClientName());
+		
+		model.addAttribute("message_past_orders", "You have no past orders yet.");
+		model.addAttribute("message_current_orders", "You have no current orders yet.");
 				
 		List<Order> myPastOrders =
 				orderSvc.getOrdersForClientIdAndStatusWithFetching(myClient.getClientId(),
@@ -124,13 +127,11 @@ public class ClientPageController implements MessageSourceAware {
 		List<MachineServiceable> machinesServiceable =
 				machineServiceableSvc.getAllOrderByTrademark();
 		
-		if (myPastOrders.isEmpty() && myCurrentOrders.isEmpty()) {
-			model.addAttribute("message", "You have no orders yet.");			
+		if (myPastOrders.isEmpty() && myCurrentOrders.isEmpty()) {			
 			model.addAttribute("my_past_orders", "");
 			model.addAttribute("my_current_orders", "");
 			model.addAttribute("my_machines_serial_numbers", myMachinesSNs);
 		} else {
-			model.addAttribute("message", "");
 			
 			if (!myPastOrders.isEmpty()) {
 				for (Order o : myPastOrders) {

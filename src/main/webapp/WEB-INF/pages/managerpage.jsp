@@ -39,39 +39,53 @@
 	
 	<div id="content">
 	<h2>Pending Orders:</h2>
-	<table data-toggle="table" 
-		data-classes="table table-hover table-condensed" 
-    	data-striped="true"
-    	data-pagination="true"
-		data-search="true"
-		data-show-columns="true"
-		border="1" style="width:900px" align="center">
-	<thead>
-	<tr><th align="center" data-sortable="true" data-switchable="false"></th>
-	<th align="center" data-sortable="true" data-switchable="false">Client:</th>
-	<th align="center" data-sortable="true" data-visible="false">RepairType:</th>
-	<th align="center" data-sortable="true" data-switchable="false">Machine S/N:</th>
-	<th align="center" data-sortable="true" data-visible="false">Machine Name:</th>
-	<th align="center" data-sortable="true" data-switchable="false">Start:</th>
-	<th align="center" data-sortable="true" data-switchable="false">Status:</th>
-	<th align="center" data-visible="false">Actions:</th></tr>
-	</thead>
-	<tbody>
-  	<c:forEach var="po" items="${pending_orders}" varStatus="loopStatus">
-  	<tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
-    	<td><c:out value="${loopStatus.index + 1}"/></td>
-    	<td>${po.client.clientName}</td> 
-    	<td>${po.repairType.repairTypeName}</td>
-    	<td>${po.machine.machineSerialNumber}</td>
-    	<td>${po.machine.machineServiceable.machineServiceableName}</td>
-    	<td>${po.start}</td>
-    	<td>${po.status}</td>
-    	<td><a href="<c:url value="confirm/?order_id=${po.orderId}" />">Confirm</a><br>
-    	<a href="<c:url value="cancel/?order_id=${po.orderId}" />">Cancel</a></td>
-    </tr>
-  	</c:forEach>
+	<c:choose>
+	<c:when test="${empty pending_orders}">
+		<br>
+		<div style="text-align: center;">
+		<span style="font-size: 18px; line-height: 18px;">
+		<c:out value="No matching records found"/>
+		<br><br><br>
+		</span>
+		</div>
+	</c:when>
+	<c:otherwise>
+		<table data-toggle="table" 
+			data-classes="table table-hover table-condensed" 
+    		data-striped="true"
+    		data-pagination="true"
+			data-search="true"
+			data-show-columns="true"
+			border="1" style="width:900px" align="center">
+		<thead>
+		<tr><th align="center" data-sortable="true" data-switchable="false"></th>
+		<th align="center" data-sortable="true" data-switchable="false">Client:</th>
+		<th align="center" data-sortable="true" data-visible="false">RepairType:</th>
+		<th align="center" data-sortable="true" data-switchable="false">Machine S/N:</th>
+		<th align="center" data-sortable="true" data-visible="false">Machine Name:</th>
+		<th align="center" data-sortable="true" data-switchable="false">Start:</th>
+		<th align="center" data-sortable="true" data-switchable="false">Status:</th>
+		<th align="center" data-visible="false">Actions:</th></tr>
+		</thead>
+		<tbody>	
+  		<c:forEach var="po" items="${pending_orders}" varStatus="loopStatus">
+  		<tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
+    		<td><c:out value="${loopStatus.index + 1}"/></td>
+    		<td>${po.client.clientName}</td> 
+    		<td>${po.repairType.repairTypeName}</td>
+    		<td>${po.machine.machineSerialNumber}</td>
+    		<td>${po.machine.machineServiceable.machineServiceableName}</td>
+    		<td>${po.start}</td>
+    		<td>${po.status}</td>
+    		<td><a href="<c:url value="confirm/?order_id=${po.orderId}" />">Confirm</a><br>
+    		<a href="<c:url value="cancel/?order_id=${po.orderId}" />">Cancel</a></td>
+    	</tr>
+  		</c:forEach>
   	</tbody>
   	</table>
+  	</c:otherwise>
+  	</c:choose>
+  	
   	  	
   	<h2>Manage Active Orders:</h2>
   	<form method="post" action="managerpage/clientpaging" accept-charset="UTF-8">
@@ -93,7 +107,7 @@
   	<br>
   	<form method="post" action="listactiveordersforselectedclient" accept-charset="UTF-8">
   		<select name="clientId" onchange="this.form.submit();">
-  			<option value="0"><c:out value="-Select client-" /></option>
+  			<option value="0"><c:out value="-Select client-" /></option>  			
   			<c:forEach var="c" items="${clients_short}">
   				<c:choose>
   					<c:when test="${selected_client_id == c.clientId}">
@@ -109,8 +123,17 @@
   				</c:choose>
   			</c:forEach>
   		</select>
-  	</form>
-  	
+  	</form>  	
+  	<c:choose>
+	<c:when test="${empty active_orders_for_selected_client}">
+		<br>
+		<div style="text-align: center;">
+		<span style="font-size: 18px; line-height: 18px;">
+		<c:out value="No matching records found"/>
+		</span>
+		</div>
+	</c:when>
+	<c:otherwise>
   	<table border="1" data-toggle="table" 
 		data-classes="table table-hover table-condensed" 
     	data-striped="true"
@@ -146,7 +169,9 @@
     </tr>
   	</c:forEach>
   	</tbody>
-  	</table>  	
+  	</table>
+  	</c:otherwise>
+  	</c:choose>
   	
 </body>
 </html>

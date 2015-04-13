@@ -26,7 +26,8 @@ import com.glomozda.machinerepair.domain.repairtype.RepairType;
 		query="SELECT o FROM Order o "
 			+ "LEFT JOIN FETCH o.client LEFT JOIN FETCH o.repairType "
 			+ "LEFT JOIN FETCH o.machine om "
-			+ "LEFT JOIN FETCH om.machineServiceable"),
+			+ "LEFT JOIN FETCH om.machineServiceable "
+			+ "ORDER BY o.start DESC"),
 	@NamedQuery(name="Order.findOrderById",	query="SELECT o FROM Order o"
 			+ " WHERE o.orderId = :id"),
 	@NamedQuery(name="Order.findOrderByIdWithFetching",	query="SELECT o FROM Order o"
@@ -51,7 +52,9 @@ import com.glomozda.machinerepair.domain.repairtype.RepairType;
 	@NamedQuery(name="Order.setOrderStatusById", query="UPDATE Order o SET status = :status "
 			+ " WHERE o.orderId = :id"),
 	@NamedQuery(name="Order.cancelOrderById", query="DELETE FROM Order o"
-			+ " WHERE o.orderId = :id AND o.status = 'pending'")
+			+ " WHERE o.orderId = :id AND o.status = 'pending'"),
+	@NamedQuery(name="Order.countAll", query="SELECT COUNT(o) "
+					+ "FROM Order o")
 })
 @Entity
 @Table(name = "orders")

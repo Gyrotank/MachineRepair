@@ -52,6 +52,22 @@
 	<div class="tabs-content">
 	<div class="content active" id="machines">
 	<h1>Machines</h1>
+	<form method="post" action="adminpage/machinepaging" accept-charset="UTF-8">
+  		<table>
+  		<tr>
+  			<td style="width:5%" align="center">records</td>  			
+  			<td style="width:10%" align="center">
+  				<input name="machinePageStart" maxlength="5" size="8"
+  				value="${machines_paging_first + 1}"/></td>  			
+  			<td style="width:5%" align="center">to</td>  			
+  			<td style="width:10%" align="center">
+  				<input name="machinePageEnd" maxlength="5" size="8"
+  				value="${machines_paging_last + 1}"/></td>
+  			<td style="width:20%" align="center">of ${machines_count} in total</td>
+  			<td style="width:50%" align="left"><button>Go</button></td>  			
+  		</tr>  		
+  		</table>
+  	</form> 
 	<table data-toggle="table" 
 		data-classes="table table-hover table-condensed" 
     	data-striped="true"
@@ -66,7 +82,7 @@
 	<th align="center" data-sortable="true">Times Repaired:  </th></tr>
 	</thead>
 	<tbody>
-  	<c:forEach var="m" items="${machines}" varStatus="loopStatus">    	
+  	<c:forEach var="m" items="${machines_short}" varStatus="loopStatus">    	
     <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
     	<td><c:out value="${loopStatus.index + 1}"/></td>
     	<td>${m.machineServiceable.machineServiceableName}</td> 
@@ -83,7 +99,9 @@
   	<form:form method="post" commandName="machine" action="addMachine" accept-charset="UTF-8">
   	<table>
   		<tr>
-  			<td><label for="machineServiceableId">Machine Name: </label></td>
+  			<td><label for="machineServiceableId">
+  				Machine Name: (from rows ${machines_paging_first + 1} 
+  							to ${machines_paging_last + 1})&nbsp</label></td>
   			<td>
   				<script type="text/javascript">
   					$("#machineServiceableId").ufd();
@@ -142,6 +160,22 @@
   	
   	<div class="content" id="serviceable_machines">
   	<h1>Serviceable Machines</h1>
+  	<form method="post" action="adminpage/machineserviceablepaging" accept-charset="UTF-8">
+  		<table>
+  		<tr>
+  			<td style="width:5%" align="center">records</td>  			
+  			<td style="width:10%" align="center">
+  				<input name="machineServiceablePageStart" maxlength="5" size="8"
+  				value="${machines_serviceable_paging_first + 1}"/></td>  			
+  			<td style="width:5%" align="center">to</td>  			
+  			<td style="width:10%" align="center">
+  				<input name="machineServiceablePageEnd" maxlength="5" size="8"
+  				value="${machines_serviceable_paging_last + 1}"/></td>
+  			<td style="width:20%" align="center">of ${machines_serviceable_count} in total</td>
+  			<td style="width:50%" align="left"><button>Go</button></td>  			
+  		</tr>  		
+  		</table>
+  	</form>
   	<table border="1" data-toggle="table" 
 		data-classes="table table-hover table-condensed" 
     	data-striped="true"
@@ -155,7 +189,7 @@
 	<th align="center" data-sortable="true">Country:</th></tr>
 	</thead>
 	<tbody>
-  	<c:forEach var="ms" items="${machines_serviceable}" varStatus="loopStatus">    	
+  	<c:forEach var="ms" items="${machines_serviceable_short}" varStatus="loopStatus">    	
     <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
     	<td><c:out value="${loopStatus.index + 1}"/></td>
     	<td>${ms.machineServiceableName}</td> 
@@ -204,6 +238,22 @@
     
     <div class="content" id="repair_types">
   	<h1>Repair Types</h1>
+  	<form method="post" action="adminpage/repairtypepaging" accept-charset="UTF-8">
+  		<table>
+  		<tr>
+  			<td style="width:5%" align="center">records</td>  			
+  			<td style="width:10%" align="center">
+  				<input name="repairTypePageStart" maxlength="5" size="8"
+  				value="${repair_types_paging_first + 1}"/></td>  			
+  			<td style="width:5%" align="center">to</td>  			
+  			<td style="width:10%" align="center">
+  				<input name="repairTypePageEnd" maxlength="5" size="8"
+  				value="${repair_types_paging_last + 1}"/></td>
+  			<td style="width:20%" align="center">of ${repair_types_count} in total</td>
+  			<td style="width:50%" align="left"><button>Go</button></td>  			
+  		</tr>  		
+  		</table>
+  	</form>
   	<table data-toggle="table" 
 		data-classes="table table-hover table-condensed" 
     	data-striped="true"
@@ -217,7 +267,7 @@
 	<th align="center" data-sortable="true">Duration:</th></tr>
 	</thead>
 	<tbody>
-  	<c:forEach var="rt" items="${repair_types}" varStatus="loopStatus">    	
+  	<c:forEach var="rt" items="${repair_types_short}" varStatus="loopStatus">    	
     <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
     	<td><c:out value="${loopStatus.index + 1}"/></td>
     	<td>${rt.repairTypeName}</td> 
@@ -260,11 +310,25 @@
     
     <div class="content" id="users">
   	<h1>Users</h1>
+  	<form method="post" action="adminpage/userpaging" accept-charset="UTF-8">
+  		<table>
+  		<tr>
+  			<td style="width:5%" align="center">records</td>  			
+  			<td style="width:10%" align="center"><input name="userPageStart" maxlength="5" size="8"
+  				value="${users_paging_first + 1}"/></td>  			
+  			<td style="width:5%" align="center">to</td>  			
+  			<td style="width:10%" align="center"><input name="userPageEnd" maxlength="5" size="8"
+  				value="${users_paging_last + 1}"/></td>
+  			<td style="width:20%" align="center">of ${users_count} in total</td>
+  			<td style="width:50%" align="left"><button>Go</button></td>  			
+  		</tr>  		
+  		</table>
+  	</form>  	
   	<table data-toggle="table" 
 		data-classes="table table-hover table-condensed" 
     	data-striped="true"
     	data-pagination="true"
-		data-search="true"
+    	data-search="true"
 		border="1" style="width:900px" align="center">
 	<thead>
 	<tr><th align="center" data-sortable="true"></th>
@@ -272,7 +336,7 @@
 	<th align="center" data-sortable="true">Password:</th></tr>
 	</thead>
 	<tbody>
-  	<c:forEach var="u" items="${users}" varStatus="loopStatus">    	
+  	<c:forEach var="u" items="${users_short}" varStatus="loopStatus">    	
     <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
     	<td><c:out value="${loopStatus.index + 1}"/></td>
     	<td>${u.login}</td> 
@@ -306,11 +370,27 @@
   	
   	<div class="content" id="user_auths">
   	<h1>User Authorizations</h1>
+  	<form method="post" action="adminpage/userauthorizationpaging" accept-charset="UTF-8">
+  		<table>
+  		<tr>
+  			<td style="width:5%" align="center">records</td>  			
+  			<td style="width:10%" align="center"><input name="userAuthorizationPageStart" 
+  				maxlength="5" size="8"
+  				value="${user_authorizations_paging_first + 1}"/></td>  			
+  			<td style="width:5%" align="center">to</td>  			
+  			<td style="width:10%" align="center"><input name="userAuthorizationPageEnd" 
+  				maxlength="5" size="8"
+  				value="${user_authorizations_paging_last + 1}"/></td>
+  			<td style="width:20%" align="center">of ${user_authorizations_count} in total</td>
+  			<td style="width:50%" align="left"><button>Go</button></td>  			
+  		</tr>  		
+  		</table>
+  	</form>
   	<table data-toggle="table" 
 		data-classes="table table-hover table-condensed" 
     	data-striped="true"
     	data-pagination="true"
-		data-search="true"
+    	data-search="true"
 		border="1" style="width:900px" align="center">
 	<thead>
 	<tr><th align="center" data-sortable="true"></th>
@@ -318,7 +398,7 @@
 	<th align="center" data-sortable="true">Role:</th></tr>
 	</thead>
 	<tbody>
-  	<c:forEach var="ua" items="${user_authorizations}" varStatus="loopStatus">    	
+  	<c:forEach var="ua" items="${user_authorizations_short}" varStatus="loopStatus">    	
     <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
     	<td><c:out value="${loopStatus.index + 1}"/></td>
     	<td>${ua.user.login}</td> 
@@ -344,19 +424,20 @@
   	<form:form method="post" commandName="userAuthorization" action="addUserAuthorization" accept-charset="UTF-8">
   	<table>
   		<tr>
-  		<td><label>User: </label></td>  		
+  		<td><label>User: (from rows ${users_paging_first + 1} 
+  							to ${users_paging_last + 1})&nbsp</label></td>  		
   		<td><select name="userId">
   			<option value="0"><c:out value="-Select user-" /></option>
-  			<c:forEach var="u" items="${users}">
+  			<c:forEach var="ua" items="${user_authorizations_short}">
   				<c:choose>
-  					<c:when test="${selected_user_authorization_user_id == u.userId}">
-  						<option selected value="${u.userId}">
-  							<c:out value="${u.login}"/>
+  					<c:when test="${selected_user_authorization_user_id == ua.user.userId}">
+  						<option selected value="${ua.user.userId}">
+  							<c:out value="${ua.user.login}"/>
   						</option>
   					</c:when>
   					<c:otherwise>
-  						<option value="${u.userId}">
-  							<c:out value="${u.login}"/>
+  						<option value="${ua.user.userId}">
+  							<c:out value="${ua.user.login}"/>
   						</option>
   					</c:otherwise>
   				</c:choose>  				
@@ -390,11 +471,25 @@
   	
   	<div class="content" id="clients">  
   	<h1>Clients</h1>
+  	<form method="post" action="adminpage/clientpaging" accept-charset="UTF-8">
+  		<table>
+  		<tr>
+  			<td style="width:5%" align="center">records</td>  			
+  			<td style="width:10%" align="center"><input name="clientPageStart" maxlength="5" size="8"
+  				value="${clients_paging_first + 1}"/></td>  			
+  			<td style="width:5%" align="center">to</td>  			
+  			<td style="width:10%" align="center"><input name="clientPageEnd" maxlength="5" size="8"
+  				value="${clients_paging_last + 1}"/></td>
+  			<td style="width:20%" align="center">of ${clients_count} in total</td>
+  			<td style="width:50%" align="left"><button>Go</button></td>  			
+  		</tr>  		
+  		</table>
+  	</form>
   	<table data-toggle="table" 
 		data-classes="table table-hover table-condensed" 
     	data-striped="true"
     	data-pagination="true"
-		data-search="true"
+    	data-search="true"
 		border="1" style="width:900px" align="center">
 	<thead>
 	<tr><th align="center" data-sortable="true"></th>
@@ -402,7 +497,7 @@
 	<th align="center" data-sortable="true">Login:</th></tr>
 	</thead>
 	<tbody>
-  	<c:forEach var="c" items="${clients}" varStatus="loopStatus">    	
+  	<c:forEach var="c" items="${clients_short}" varStatus="loopStatus">    	
     <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
     	<td><c:out value="${loopStatus.index + 1}"/></td>
     	<td>${c.clientName}</td> 
@@ -416,15 +511,16 @@
   	<form:form method="post" commandName="client" action="addClient" accept-charset="UTF-8">
   	<table>
   		<tr>
-  			<td><label for="clientNameInput">Name: </label></td>
+  			<td><label for="clientNameInput">Name:&nbsp</label></td>
   			<td><form:input path="clientName" id="clientNameInput" maxlength="50"/></td>
   			<td><form:errors path="clientName" cssClass="error" /></td>  			
   		</tr>
   		<tr>
-  			<td><label>User: </label></td>
+  			<td><label>User: (from rows ${users_paging_first + 1} 
+  							to ${users_paging_last + 1})&nbsp</label></td>
   			<td><select name="userId">
   				<option value="0"><c:out value="-Select user-" /></option>
-  				<c:forEach var="u" items="${users}">
+  				<c:forEach var="u" items="${users_short}">
   					<c:choose>
   					<c:when test="${selected_client_user_id == u.userId}">
   						<option selected value="${u.userId}">
@@ -456,6 +552,22 @@
   
     <div class="content" id="orders">
   	<h1>Orders</h1>
+  	<form method="post" action="adminpage/orderpaging" accept-charset="UTF-8">
+  		<table>
+  		<tr>
+  			<td style="width:5%" align="center">records</td>  			
+  			<td style="width:10%" align="center">
+  				<input name="orderPageStart" maxlength="5" size="8"
+  				value="${orders_paging_first + 1}"/></td>  			
+  			<td style="width:5%" align="center">to</td>  			
+  			<td style="width:10%" align="center">
+  				<input name="orderPageEnd" maxlength="5" size="8"
+  				value="${orders_paging_last + 1}"/></td>
+  			<td style="width:20%" align="center">of ${orders_count} in total</td>
+  			<td style="width:50%" align="left"><button>Go</button></td>  			
+  		</tr>  		
+  		</table>
+  	</form>
   	<table data-toggle="table" 
 		data-classes="table table-hover table-condensed" 
     	data-striped="true"
@@ -472,7 +584,7 @@
 	<th align="center" data-sortable="true">Status:</th></tr>
 	</thead>
 	<tbody>
-  	<c:forEach var="o" items="${orders}" varStatus="loopStatus">    	
+  	<c:forEach var="o" items="${orders_short}" varStatus="loopStatus">    	
     <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
     	<td><c:out value="${loopStatus.index + 1}"/></td>
     	<td>${o.client.clientName}</td> 
@@ -490,10 +602,11 @@
   	<form:form method="post" commandName="order" action="addOrder" accept-charset="UTF-8">
   	<table>
   		<tr>
-  			<td><label>Client: </label></td>
+  			<td><label>Client: (from rows ${clients_paging_first + 1} 
+  							to ${clients_paging_last + 1})&nbsp</label></td>
   			<td><select name="clientId">
   			<option value="0"><c:out value="-Select client-" /></option>
-  			<c:forEach var="c" items="${clients}">
+  			<c:forEach var="c" items="${clients_short}">
   				<c:choose>
   					<c:when test="${selected_order_client_id == c.clientId}">
   						<option selected value="${c.clientId}">
@@ -540,10 +653,11 @@
   			</td>
   		</tr>
   		<tr>
-  			<td><label>Machine S/N: </label></td>
+  			<td><label>Machine S/N: (from rows ${machines_paging_first + 1} 
+  							to ${machines_paging_last + 1})&nbsp</label></td>
   			<td><select name="machineId">
   			<option value="0"><c:out value="-Select machine-" /></option>
-  			<c:forEach var="m" items="${machines}">
+  			<c:forEach var="m" items="${machines_short}">
   				<c:choose>
   					<c:when test="${selected_order_machine_id == m.machineId}">
   						<option selected value="${m.machineId}">

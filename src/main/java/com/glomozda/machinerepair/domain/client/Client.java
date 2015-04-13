@@ -25,7 +25,8 @@ import com.glomozda.machinerepair.domain.user.User;
 @NamedQueries({
 	@NamedQuery(name="Client.findAll", query="SELECT c FROM Client c"),
 	@NamedQuery(name="Client.findAllWithFetching", query="SELECT c FROM Client c "
-			+ "LEFT JOIN FETCH c.clientUser"),
+			+ "LEFT JOIN FETCH c.clientUser "
+			+ "ORDER BY c.clientName"),
 	@NamedQuery(name="Client.findAllClientIds", query="SELECT c.clientId FROM Client c"),
 	@NamedQuery(name="Client.findClientByUserId", query="SELECT c FROM Client c "
 			+ "WHERE c.clientUser.userId = :id"),
@@ -36,7 +37,8 @@ import com.glomozda.machinerepair.domain.user.User;
 			+ "WHERE c.clientUser.login = :login"),
 	@NamedQuery(name="Client.findClientByLoginWithFetching", query="SELECT c FROM Client c "
 			+ " LEFT JOIN FETCH c.clientUser "
-			+ "WHERE c.clientUser.login = :login")
+			+ "WHERE c.clientUser.login = :login"),
+	@NamedQuery(name="Client.countAll", query="SELECT COUNT(c) FROM Client c")
 })
 @Entity
 @Table(name = "clients")

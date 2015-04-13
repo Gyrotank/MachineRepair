@@ -19,9 +19,12 @@ import com.glomozda.machinerepair.domain.user.User;
 @NamedQueries({
 	@NamedQuery(name="UserAuthorization.findAll", query="SELECT ua FROM UserAuthorization ua"),
 	@NamedQuery(name="UserAuthorization.findAllWithFetching",
-		query="SELECT ua FROM UserAuthorization ua"
-			+ " LEFT JOIN FETCH ua.user"),
-	@NamedQuery(name="User.findAllRoles", query="SELECT DISTINCT (ua.role) "
+		query="SELECT ua FROM UserAuthorization ua "
+			+ "LEFT JOIN FETCH ua.user "
+			+ "ORDER BY ua.user.login"),
+	@NamedQuery(name="UserAuthorization.findAllRoles", query="SELECT DISTINCT (ua.role) "
+			+ "FROM UserAuthorization ua"),
+	@NamedQuery(name="UserAuthorization.countAll", query="SELECT COUNT(ua) "
 			+ "FROM UserAuthorization ua")
 })
 @Entity

@@ -50,10 +50,15 @@ public class UserDAOJDBCTest extends DAOTestsTemplate{
     	userService.add(u1);
         userService.add(u2);
     }
-   
+    
     @Test
     public void testGetAll() {
     	Assert.assertTrue(userService.getAll().size() == 2);
+    }
+    
+    @Test
+    public void testGetAllWithLimits() {
+    	Assert.assertTrue(userService.getAll((long) 0, (long) 100).size() == 2);
     }
     
     @Test
@@ -93,5 +98,10 @@ public class UserDAOJDBCTest extends DAOTestsTemplate{
     	Assert.assertTrue((BCrypt.checkpw("qwerty", 
     			userService.getUserByIdWithFetching((long) 1)
     			.getPassword())));
+    }
+    
+    @Test
+    public void testGetUserCount() {
+    	Assert.assertTrue(userService.getUserCount() == 2);
     }
 }

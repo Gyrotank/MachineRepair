@@ -26,6 +26,24 @@ public class MachineServiceableService {
 	}
 	
 	@Transactional
+	public List<MachineServiceable> getAll(Long start, Long length) {
+		List<MachineServiceable> result = em.createNamedQuery("MachineServiceable.findAll",
+				MachineServiceable.class)
+				.setFirstResult(start.intValue())
+				.setMaxResults(length.intValue())
+				.getResultList();
+		return result;
+	}
+	
+	@Transactional
+	public List<MachineServiceable> getAllOrderByName() {
+		List<MachineServiceable> result = em.createNamedQuery
+				("MachineServiceable.findAllOrderByName",
+				MachineServiceable.class).getResultList();
+		return result;
+	}
+	
+	@Transactional
 	public List<MachineServiceable> getAllOrderByTrademark() {
 		List<MachineServiceable> result = em.createNamedQuery
 				("MachineServiceable.findAllOrderByTrademark",
@@ -47,7 +65,12 @@ public class MachineServiceableService {
 	}
 	
 	@Transactional
+	public Long getMachineServiceableCount() {
+		return em.createNamedQuery("MachineServiceable.countAll", Long.class).getSingleResult();
+	}
+	
+	@Transactional
 	public void add(MachineServiceable ms) {
 		em.persist(ms);
-	}	
+	}
 }

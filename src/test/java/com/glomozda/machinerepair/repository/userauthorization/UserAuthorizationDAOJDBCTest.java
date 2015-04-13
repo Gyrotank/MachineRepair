@@ -52,6 +52,11 @@ public class UserAuthorizationDAOJDBCTest extends DAOTestsTemplate{
     }
     
     @Test
+    public void testGetAllWithLimits() {
+    	Assert.assertTrue(userAuthorizationService.getAll((long) 0, (long) 100).size() == 2);
+    }
+    
+    @Test
     public void testGetAllWithFetching() {    	
     	Assert.assertTrue(userAuthorizationService.getAllWithFetching().size() == 2);
     	Assert.assertTrue(userAuthorizationService.getAllWithFetching().get(0)
@@ -61,5 +66,10 @@ public class UserAuthorizationDAOJDBCTest extends DAOTestsTemplate{
     @Test
     public void testGetAllRoles() {
     	Assert.assertTrue(userAuthorizationService.getAllRoles().size() == 2);
-    }    
+    }
+    
+    @Test
+    public void testGetUserAutorizationCount() {
+    	Assert.assertTrue(userAuthorizationService.getUserAuthorizationCount() == 2);
+    }
 }

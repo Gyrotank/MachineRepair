@@ -22,10 +22,13 @@ import com.glomozda.machinerepair.domain.order.Order;
 
 @SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
 @NamedQueries({
-	@NamedQuery(name="RepairType.findAll", query="SELECT rt FROM RepairType rt"),
+	@NamedQuery(name="RepairType.findAll", query="SELECT rt FROM RepairType rt "
+			+ "ORDER BY rt.repairTypePrice DESC"),
 	@NamedQuery(name="RepairType.findRepairTypeByName",
 		query="SELECT rt FROM RepairType rt "
-			+ "WHERE rt.repairTypeName = :rtn")
+			+ "WHERE rt.repairTypeName = :rtn"),
+	@NamedQuery(name="RepairType.countAll", query="SELECT COUNT(rt) "
+					+ "FROM RepairType rt")
 })
 @Entity
 @Table(name = "repair_types")

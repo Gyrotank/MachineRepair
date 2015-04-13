@@ -28,9 +28,29 @@ public class MachineService {
 	}
 	
 	@Transactional
+	public List<Machine> getAll(Long start, Long length) {
+		List<Machine> result = em.createNamedQuery(
+				"Machine.findAll", Machine.class)
+				.setFirstResult(start.intValue())
+				.setMaxResults(length.intValue())
+				.getResultList();
+		return result;
+	}
+	
+	@Transactional
 	public List<Machine> getAllWithFetching() {
 		List<Machine> result = em.createNamedQuery(
 				"Machine.findAllWithFetching", Machine.class).getResultList();
+		return result;
+	}
+	
+	@Transactional
+	public List<Machine> getAllWithFetching(Long start, Long length) {
+		List<Machine> result = em.createNamedQuery(
+				"Machine.findAllWithFetching", Machine.class)
+				.setFirstResult(start.intValue())
+				.setMaxResults(length.intValue())
+				.getResultList();
 		return result;
 	}
 	
@@ -79,5 +99,10 @@ public class MachineService {
 		query.setParameter("id", machineId);		
 		int updateCount = query.executeUpdate();
 		return updateCount;		
+	}
+	
+	@Transactional
+	public Long getMachineCount() {
+		return em.createNamedQuery("Machine.countAll", Long.class).getSingleResult();
 	}
 }

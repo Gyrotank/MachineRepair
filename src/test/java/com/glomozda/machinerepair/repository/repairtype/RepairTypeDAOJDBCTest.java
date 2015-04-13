@@ -39,8 +39,18 @@ public class RepairTypeDAOJDBCTest extends DAOTestsTemplate{
     }
     
     @Test
+    public void testGetAllWithLimits() {
+    	Assert.assertTrue(repairTypeService.getAll((long) 0, (long) 100).size() == 2);
+    }
+    
+    @Test
     public void testGetRepairTypeForName() {    	
     	Assert.assertTrue(repairTypeService.getRepairTypeForName("Full")
     			.getRepairTypePrice().intValue() == 10000);
-    }               
+    }
+    
+    @Test
+    public void testGetRepairTypeCount() {
+    	Assert.assertTrue(repairTypeService.getRepairTypeCount() == 2);
+    }
 }

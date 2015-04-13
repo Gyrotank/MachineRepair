@@ -18,10 +18,19 @@ public class ClientService {
    
 	@PersistenceContext
 	private EntityManager em;
-
+	
 	@Transactional
 	public List<Client> getAll() {
+		List<Client> result = em.createNamedQuery("Client.findAll", Client.class)				
+				.getResultList();
+		return result;
+	}
+	
+	@Transactional
+	public List<Client> getAll(Long start, Long length) {
 		List<Client> result = em.createNamedQuery("Client.findAll", Client.class)
+				.setFirstResult(start.intValue())
+				.setMaxResults(length.intValue())
 				.getResultList();
 		return result;
 	}
@@ -29,6 +38,15 @@ public class ClientService {
 	@Transactional
 	public List<Client> getAllWithFetching() {
 		List<Client> result = em.createNamedQuery("Client.findAllWithFetching", Client.class)
+				.getResultList();
+		return result;
+	}
+	
+	@Transactional
+	public List<Client> getAllWithFetching(Long start, Long length) {
+		List<Client> result = em.createNamedQuery("Client.findAllWithFetching", Client.class)
+				.setFirstResult(start.intValue())
+				.setMaxResults(length.intValue())
 				.getResultList();
 		return result;
 	}
@@ -88,6 +106,11 @@ public class ClientService {
 		} catch (NoResultException nre){}
 		
 		return result;
+	}
+	
+	@Transactional
+	public Long getClientCount() {
+		return em.createNamedQuery("Client.countAll", Long.class).getSingleResult();
 	}
 
 	@Transactional

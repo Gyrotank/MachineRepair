@@ -110,16 +110,32 @@ public class OrderDAOJDBCTest extends DAOTestsTemplate{
     public void testGetAll() {
     	Assert.assertTrue(orderService.getAll().size() == 2);
     }
+    
+    @Test
+    public void testGetAllWithLimits() {
+    	Assert.assertTrue(orderService.getAll((long) 0, (long) 100).size() == 2);
+    }
         
     @Test
     public void testGetAllWithFetching() {    	
     	Assert.assertTrue(orderService.getAllWithFetching().size() == 2);
     	Assert.assertTrue(orderService.getAllWithFetching().get(0)
-    			.getRepairType().getRepairTypeName().contentEquals("Full"));
+    			.getRepairType().getRepairTypeName().contentEquals("Partial"));
     	Assert.assertTrue(orderService.getAllWithFetching().get(0)
-    			.getClient().getClientName().contentEquals("Ivan"));
+    			.getClient().getClientName().contentEquals("Petro"));
     	Assert.assertTrue(orderService.getAllWithFetching().get(0)
-    			.getMachine().getMachineSerialNumber().contentEquals("SN1"));
+    			.getMachine().getMachineSerialNumber().contentEquals("SN2"));
+    }
+    
+    @Test
+    public void testGetAllWithFetchingWithLimits() {    	
+    	Assert.assertTrue(orderService.getAllWithFetching((long) 0, (long) 100).size() == 2);
+    	Assert.assertTrue(orderService.getAllWithFetching((long) 0, (long) 100).get(0)
+    			.getRepairType().getRepairTypeName().contentEquals("Partial"));
+    	Assert.assertTrue(orderService.getAllWithFetching((long) 0, (long) 100).get(0)
+    			.getClient().getClientName().contentEquals("Petro"));
+    	Assert.assertTrue(orderService.getAllWithFetching((long) 0, (long) 100).get(0)
+    			.getMachine().getMachineSerialNumber().contentEquals("SN2"));
     }
     
     @Test
@@ -163,6 +179,11 @@ public class OrderDAOJDBCTest extends DAOTestsTemplate{
     			.get(0).getClient().getClientName().contentEquals("Ivan"));
     	Assert.assertTrue(orderService.getOrdersForClientIdAndStatusWithFetching((long) 1, "finished")
     			.get(0).getMachine().getMachineSerialNumber().contentEquals("SN1"));
+    }
+    
+    @Test
+    public void testGetOrderCount() {
+    	Assert.assertTrue(orderService.getOrderCount() == 2);
     }
     
     @Test

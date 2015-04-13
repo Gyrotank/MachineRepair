@@ -25,9 +25,11 @@ import com.glomozda.machinerepair.domain.order.Order;
 
 @SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
 @NamedQueries({
-	@NamedQuery(name="Machine.findAll", query="SELECT m FROM Machine m"),
+	@NamedQuery(name="Machine.findAll", query="SELECT m FROM Machine m "
+			+ "ORDER BY m.machineSerialNumber"),
 	@NamedQuery(name="Machine.findAllWithFetching", query="SELECT m FROM Machine m "
-			+ "LEFT JOIN FETCH m.machineServiceable"),
+			+ "LEFT JOIN FETCH m.machineServiceable "
+			+ "ORDER BY m.machineServiceable.machineServiceableName"),
 	@NamedQuery(name="Machine.findMachineBySerialNumber", query="SELECT m FROM Machine m "
 			+ "WHERE m.machineSerialNumber = :msn"),
 	@NamedQuery(name="Machine.findMachineBySerialNumberWithFetching", 
@@ -36,7 +38,8 @@ import com.glomozda.machinerepair.domain.order.Order;
 			+ "WHERE m.machineSerialNumber = :msn"),
 	@NamedQuery(name="Machine.incrementTimesRepairedById", query="UPDATE Machine m "
 			+ "SET m.machineTimesRepaired = m.machineTimesRepaired + 1 "
-			+ "WHERE m.machineId = :id")	
+			+ "WHERE m.machineId = :id"),
+	@NamedQuery(name="Machine.countAll", query="SELECT COUNT(m) FROM Machine m")
 })
 @Entity
 @Table(name = "machines")
@@ -53,7 +56,7 @@ public class Machine {
 	
 	@Column(name = "serial_number")
 	@NotEmpty
-	private String  machineSerialNumber;
+	private String machineSerialNumber;
 		
 	@Column(name = "year")
 	@NotNull @Min(1950)

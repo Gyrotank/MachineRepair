@@ -26,6 +26,28 @@ public class UserAuthorizationService {
 	}
 	
 	@Transactional
+	public List<UserAuthorization> getAll(Long start, Long length) {
+		List<UserAuthorization> result = 
+				em.createNamedQuery("UserAuthorization.findAll",
+						UserAuthorization.class)
+						.setFirstResult(start.intValue())
+						.setMaxResults(length.intValue())
+						.getResultList();
+		return result;
+	}
+	
+	@Transactional
+	public List<UserAuthorization> getAllWithFetching(Long start, Long length) {
+		List<UserAuthorization> result = 
+				em.createNamedQuery("UserAuthorization.findAllWithFetching",
+						UserAuthorization.class)
+						.setFirstResult(start.intValue())
+						.setMaxResults(length.intValue())
+						.getResultList();
+		return result;
+	}
+	
+	@Transactional
 	public List<UserAuthorization> getAllWithFetching() {
 		List<UserAuthorization> result = 
 				em.createNamedQuery("UserAuthorization.findAllWithFetching",
@@ -36,9 +58,14 @@ public class UserAuthorizationService {
 	@Transactional
 	public List<String> getAllRoles() {
 		List<String> result = 
-				em.createNamedQuery("User.findAllRoles",
+				em.createNamedQuery("UserAuthorization.findAllRoles",
 						String.class).getResultList();
 		return result;
+	}
+	
+	@Transactional
+	public Long getUserAuthorizationCount() {
+		return em.createNamedQuery("UserAuthorization.countAll", Long.class).getSingleResult();
 	}
 
 	@Transactional

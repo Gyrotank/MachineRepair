@@ -30,9 +30,29 @@ public class OrderService {
 	}
 	
 	@Transactional
+	public List<Order> getAll(Long start, Long length) {
+		List<Order> result = em.createNamedQuery(
+				"Order.findAll", Order.class)
+				.setFirstResult(start.intValue())
+				.setMaxResults(length.intValue())
+				.getResultList();
+		return result;
+	}
+	
+	@Transactional
 	public List<Order> getAllWithFetching() {
-		List<Order> result = em.createNamedQuery("Order.findAllWithFetching"
-				, Order.class).getResultList();
+		List<Order> result = em.createNamedQuery("Order.findAllWithFetching",
+				Order.class).getResultList();
+		return result;
+	}
+	
+	@Transactional
+	public List<Order> getAllWithFetching(Long start, Long length) {
+		List<Order> result = em.createNamedQuery("Order.findAllWithFetching",
+				Order.class)
+				.setFirstResult(start.intValue())
+				.setMaxResults(length.intValue())
+				.getResultList();
 		return result;
 	}
 	
@@ -110,6 +130,11 @@ public class OrderService {
 		} catch (NoResultException nre){}
 		
 		return result;
+	}
+	
+	@Transactional
+	public Long getOrderCount() {
+		return em.createNamedQuery("Order.countAll", Long.class).getSingleResult();
 	}
 
 	@Transactional

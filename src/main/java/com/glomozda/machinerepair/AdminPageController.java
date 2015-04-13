@@ -68,6 +68,8 @@ public class AdminPageController implements MessageSourceAware {
 	
 	private MessageSource messageSource;
 	
+	private static final Long _defaultPageSize = (long) 25;
+	
 	private String messageMachineServiceableId = "";
 	private Long selectedMachineServiceableId = (long) 0;
 	
@@ -88,7 +90,29 @@ public class AdminPageController implements MessageSourceAware {
 
 	private String messageOrderStart = "";
 	private String enteredOrderStart = "";
+	
+	private Long machinePagingFirstIndex = (long) 0;
+	private Long machinePagingLastIndex = _defaultPageSize - 1;
+	
+	private Long machineServiceablePagingFirstIndex = (long) 0;
+	private Long machineServiceablePagingLastIndex = _defaultPageSize - 1;
+	
+	private Long repairTypePagingFirstIndex = (long) 0;
+	private Long repairTypePagingLastIndex = _defaultPageSize - 1;
+	
+	private Long userPagingFirstIndex = (long) 0;
+	private Long userPagingLastIndex = _defaultPageSize - 1;
+	
+	private Long userAuthorizationPagingFirstIndex = (long) 0;
+	private Long userAuthorizationPagingLastIndex = _defaultPageSize - 1;
+	
+	private Long clientPagingFirstIndex = (long) 0;
+	private Long clientPagingLastIndex = _defaultPageSize - 1;
+	
+	private Long orderPagingFirstIndex = (long) 0;
+	private Long orderPagingLastIndex = _defaultPageSize - 1;
 	 
+	
 	public void setMessageSource(final MessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
@@ -125,14 +149,66 @@ public class AdminPageController implements MessageSourceAware {
 			model.addAttribute("order", new Order());
 		}
 		
-		model.addAttribute("machines", machineSvc.getAllWithFetching());
-		model.addAttribute("machines_serviceable", machineServiceableSvc.getAll()); 
+		model.addAttribute("machines_short", 
+				machineSvc.getAllWithFetching(machinePagingFirstIndex, 
+						machinePagingLastIndex - machinePagingFirstIndex + 1));
+		model.addAttribute("machines_count", machineSvc.getMachineCount());
+		model.addAttribute("machines_paging_first", machinePagingFirstIndex);
+		model.addAttribute("machines_paging_last", machinePagingLastIndex);
+		
+		model.addAttribute("machines_serviceable", machineServiceableSvc.getAllOrderByName());
+		model.addAttribute("machines_serviceable_short", 
+				machineServiceableSvc.getAll(machineServiceablePagingFirstIndex, 
+					machineServiceablePagingLastIndex - machineServiceablePagingFirstIndex + 1));
+		model.addAttribute("machines_serviceable_count", 
+				machineServiceableSvc.getMachineServiceableCount());
+		model.addAttribute("machines_serviceable_paging_first", 
+				machineServiceablePagingFirstIndex);
+		model.addAttribute("machines_serviceable_paging_last", 
+				machineServiceablePagingLastIndex);
+		
 		model.addAttribute("repair_types", repairTypeSvc.getAll());
-		model.addAttribute("users", userSvc.getAll());
-		model.addAttribute("user_authorizations", userAuthorizationSvc.getAllWithFetching());
+		model.addAttribute("repair_types_short", 
+				repairTypeSvc.getAll(repairTypePagingFirstIndex, 
+						repairTypePagingLastIndex - repairTypePagingFirstIndex + 1));
+		model.addAttribute("repair_types_count", 
+				repairTypeSvc.getRepairTypeCount());
+		model.addAttribute("repair_types_paging_first", 
+				repairTypePagingFirstIndex);
+		model.addAttribute("repair_types_paging_last", 
+				repairTypePagingLastIndex);
+		
+		model.addAttribute("users_short", 
+				userSvc.getAll(userPagingFirstIndex, 
+						userPagingLastIndex - userPagingFirstIndex + 1));
+		model.addAttribute("users_count", userSvc.getUserCount());
+		model.addAttribute("users_paging_first", userPagingFirstIndex);
+		model.addAttribute("users_paging_last", userPagingLastIndex);
+		
+		model.addAttribute("user_authorizations_short", 
+				userAuthorizationSvc.getAllWithFetching(userAuthorizationPagingFirstIndex, 
+						userAuthorizationPagingLastIndex - userAuthorizationPagingFirstIndex + 1)
+						);
+		model.addAttribute("user_authorizations_count",
+				userAuthorizationSvc.getUserAuthorizationCount());
+		model.addAttribute("user_authorizations_paging_first", userAuthorizationPagingFirstIndex);
+		model.addAttribute("user_authorizations_paging_last", userAuthorizationPagingLastIndex);
+		
 		model.addAttribute("user_roles", userAuthorizationSvc.getAllRoles());
-		model.addAttribute("clients", clientSvc.getAllWithFetching());
-		model.addAttribute("orders", orderSvc.getAllWithFetching());		
+		
+		model.addAttribute("clients_short",
+				clientSvc.getAllWithFetching(clientPagingFirstIndex,
+						clientPagingLastIndex - clientPagingFirstIndex + 1));
+		model.addAttribute("clients_count", clientSvc.getClientCount());
+		model.addAttribute("clients_paging_first", clientPagingFirstIndex);
+		model.addAttribute("clients_paging_last", clientPagingLastIndex);
+		
+		model.addAttribute("orders_short", 
+				orderSvc.getAllWithFetching(orderPagingFirstIndex,
+						orderPagingLastIndex - orderPagingFirstIndex + 1));
+		model.addAttribute("orders_count", orderSvc.getOrderCount());
+		model.addAttribute("orders_paging_first", orderPagingFirstIndex);
+		model.addAttribute("orders_paging_last", orderPagingLastIndex);
 		
 		model.addAttribute("message_machineserviceable_id", messageMachineServiceableId);
 		messageMachineServiceableId = "";		
@@ -172,6 +248,38 @@ public class AdminPageController implements MessageSourceAware {
 		return "adminpage";
 	}	
 	
+	@RequestMapping(value = "/adminpage/machinepaging", method = RequestMethod.POST)
+	public String machinePaging(@RequestParam("machinePageStart") final Long machinePageStart, 
+			@RequestParam("machinePageEnd") final Long machinePageEnd) {
+		
+		long machineStart = machinePageStart.longValue() - 1;
+		long machineEnd = machinePageEnd.longValue() - 1;
+		long machineCount = machineSvc.getMachineCount();
+		
+		if (machineStart > machineEnd) {
+			long temp = machineStart;
+			machineStart = machineEnd;
+			machineEnd = temp;
+		}
+		
+		if (machineStart < 0)
+			machineStart = 0;
+		
+		if (machineStart >= machineCount)
+			machineStart = machineCount - 1;
+		
+		if (machineEnd < 0)
+			machineEnd = 0;
+		
+		if (machineEnd >= machineCount)
+			machineEnd = machineCount - 1;
+		
+		machinePagingFirstIndex = machineStart;
+		machinePagingLastIndex = machineEnd;		
+		
+		return "redirect:/adminpage#machines";
+	}
+	
 	@RequestMapping(value = "/addMachine", method = RequestMethod.POST)
 	public String addMachine(@ModelAttribute("machine") @Valid final Machine machine,
 			final BindingResult bindingResult,			
@@ -204,6 +312,39 @@ public class AdminPageController implements MessageSourceAware {
 		return "redirect:/adminpage#machines";
 	}
 	
+	@RequestMapping(value = "/adminpage/machineserviceablepaging", method = RequestMethod.POST)
+	public String machineServiceablePaging(
+			@RequestParam("machineServiceablePageStart") final Long machineServiceablePageStart, 
+			@RequestParam("machineServiceablePageEnd") final Long machineServiceablePageEnd) {
+		
+		long machineServiceableStart = machineServiceablePageStart.longValue() - 1;
+		long machineServiceableEnd = machineServiceablePageEnd.longValue() - 1;
+		long machineServiceableCount = machineServiceableSvc.getMachineServiceableCount();
+		
+		if (machineServiceableStart > machineServiceableEnd) {
+			long temp = machineServiceableStart;
+			machineServiceableStart = machineServiceableEnd;
+			machineServiceableEnd = temp;
+		}
+		
+		if (machineServiceableStart < 0)
+			machineServiceableStart = 0;
+		
+		if (machineServiceableStart >= machineServiceableCount)
+			machineServiceableStart = machineServiceableCount - 1;
+		
+		if (machineServiceableEnd < 0)
+			machineServiceableEnd = 0;
+		
+		if (machineServiceableEnd >= machineServiceableCount)
+			machineServiceableEnd = machineServiceableCount - 1;
+		
+		machineServiceablePagingFirstIndex = machineServiceableStart;
+		machineServiceablePagingLastIndex = machineServiceableEnd;		
+		
+		return "redirect:/adminpage#serviceable_machines";
+	}
+	
 	@RequestMapping(value = "/addMachineServiceable", method = RequestMethod.POST)
 	public String addMachineServiceable(
 			@ModelAttribute("machineServiceable") @Valid final MachineServiceable machineServiceable,
@@ -221,6 +362,39 @@ public class AdminPageController implements MessageSourceAware {
 		return "redirect:/adminpage#serviceable_machines";
 	}
 
+	@RequestMapping(value = "/adminpage/repairtypepaging", method = RequestMethod.POST)
+	public String repairTypePaging(
+			@RequestParam("repairTypePageStart") final Long repairTypePageStart, 
+			@RequestParam("repairTypePageEnd") final Long repairTypePageEnd) {
+		
+		long repairTypeStart = repairTypePageStart.longValue() - 1;
+		long repairTypeEnd = repairTypePageEnd.longValue() - 1;
+		long repairTypeCount = repairTypeSvc.getRepairTypeCount();
+		
+		if (repairTypeStart > repairTypeEnd) {
+			long temp = repairTypeStart;
+			repairTypeStart = repairTypeEnd;
+			repairTypeEnd = temp;
+		}
+		
+		if (repairTypeStart < 0)
+			repairTypeStart = 0;
+		
+		if (repairTypeStart >= repairTypeCount)
+			repairTypeStart = repairTypeCount - 1;
+		
+		if (repairTypeEnd < 0)
+			repairTypeEnd = 0;
+		
+		if (repairTypeEnd >= repairTypeCount)
+			repairTypeEnd = repairTypeCount - 1;
+		
+		repairTypePagingFirstIndex = repairTypeStart;
+		repairTypePagingLastIndex = repairTypeEnd;		
+		
+		return "redirect:/adminpage#repair_types";
+	}
+	
 	@RequestMapping(value = "/addRepairType", method = RequestMethod.POST)
 	public String addRepairType(
 			@ModelAttribute("repairType") @Valid final RepairType repairType,
@@ -236,6 +410,38 @@ public class AdminPageController implements MessageSourceAware {
 		
 		repairTypeSvc.add(repairType);
 		return "redirect:/adminpage#repair_types";
+	}
+	
+	@RequestMapping(value = "/adminpage/userpaging", method = RequestMethod.POST)
+	public String userPaging(@RequestParam("userPageStart") final Long userPageStart, 
+			@RequestParam("userPageEnd") final Long userPageEnd) {
+		
+		long userStart = userPageStart.longValue() - 1;
+		long userEnd = userPageEnd.longValue() - 1;
+		long userCount = userSvc.getUserCount();
+		
+		if (userStart > userEnd) {
+			long temp = userStart;
+			userStart = userEnd;
+			userEnd = temp;
+		}
+		
+		if (userStart < 0)
+			userStart = 0;
+		
+		if (userStart >= userCount)
+			userStart = userCount - 1;
+		
+		if (userEnd < 0)
+			userEnd = 0;
+		
+		if (userEnd >= userCount)
+			userEnd = userCount - 1;
+		
+		userPagingFirstIndex = userStart;
+		userPagingLastIndex = userEnd;		
+		
+		return "redirect:/adminpage#users";
 	}
 
 	@RequestMapping(value = "/addUser", method = RequestMethod.POST)
@@ -254,6 +460,39 @@ public class AdminPageController implements MessageSourceAware {
 		userSvc.add(new	User(user.getLogin(), user.getPasswordText(),
 				encoder.encode(user.getPasswordText())));
 		return "redirect:/adminpage#users";
+	}
+	
+	@RequestMapping(value = "/adminpage/userauthorizationpaging", method = RequestMethod.POST)
+	public String userAuthorizationPaging(
+			@RequestParam("userAuthorizationPageStart") final Long userAuthorizationPageStart, 
+			@RequestParam("userAuthorizationPageEnd") final Long userAuthorizationPageEnd) {
+		
+		long userAuthorizationStart = userAuthorizationPageStart.longValue() - 1;
+		long userAuthorizationEnd = userAuthorizationPageEnd.longValue() - 1;
+		long userAuthorizationCount = userAuthorizationSvc.getUserAuthorizationCount();
+		
+		if (userAuthorizationStart > userAuthorizationEnd) {
+			long temp = userAuthorizationStart;
+			userAuthorizationStart = userAuthorizationEnd;
+			userAuthorizationEnd = temp;
+		}
+		
+		if (userAuthorizationStart < 0)
+			userAuthorizationStart = 0;
+		
+		if (userAuthorizationStart >= userAuthorizationCount)
+			userAuthorizationStart = userAuthorizationCount - 1;
+		
+		if (userAuthorizationEnd < 0)
+			userAuthorizationEnd = 0;
+		
+		if (userAuthorizationEnd >= userAuthorizationCount)
+			userAuthorizationEnd = userAuthorizationCount - 1;
+		
+		userAuthorizationPagingFirstIndex = userAuthorizationStart;
+		userAuthorizationPagingLastIndex = userAuthorizationEnd;		
+		
+		return "redirect:/adminpage#user_auths";
 	}
 	
 	@RequestMapping(value = "/addUserAuthorization", method = RequestMethod.POST)
@@ -284,6 +523,38 @@ public class AdminPageController implements MessageSourceAware {
 				userId);
 		return "redirect:/adminpage#user_auths";
 	}
+	
+	@RequestMapping(value = "/adminpage/clientpaging", method = RequestMethod.POST)
+	public String clientPaging(@RequestParam("clientPageStart") final Long clientPageStart, 
+			@RequestParam("clientPageEnd") final Long clientPageEnd) {
+		
+		long clientStart = clientPageStart.longValue() - 1;
+		long clientEnd = clientPageEnd.longValue() - 1;
+		long clientCount = clientSvc.getClientCount();
+		
+		if (clientStart > clientEnd) {
+			long temp = clientStart;
+			clientStart = clientEnd;
+			clientEnd = temp;
+		}
+		
+		if (clientStart < 0)
+			clientStart = 0;
+		
+		if (clientStart >= clientCount)
+			clientStart = clientCount - 1;
+		
+		if (clientEnd < 0)
+			clientEnd = 0;
+		
+		if (clientEnd >= clientCount)
+			clientEnd = clientCount - 1;
+		
+		clientPagingFirstIndex = clientStart;
+		clientPagingLastIndex = clientEnd;		
+		
+		return "redirect:/adminpage#clients";
+	}
 
 	@RequestMapping(value = "/addClient", method = RequestMethod.POST)
 	public String addClient(@ModelAttribute("client") @Valid final Client client,
@@ -312,6 +583,38 @@ public class AdminPageController implements MessageSourceAware {
 		return "redirect:/adminpage#clients";
 	}
 
+	@RequestMapping(value = "/adminpage/orderpaging", method = RequestMethod.POST)
+	public String orderPaging(@RequestParam("orderPageStart") final Long orderPageStart, 
+			@RequestParam("orderPageEnd") final Long orderPageEnd) {
+		
+		long orderStart = orderPageStart.longValue() - 1;
+		long orderEnd = orderPageEnd.longValue() - 1;
+		long orderCount = orderSvc.getOrderCount();
+		
+		if (orderStart > orderEnd) {
+			long temp = orderStart;
+			orderStart = orderEnd;
+			orderEnd = temp;
+		}
+		
+		if (orderStart < 0)
+			orderStart = 0;
+		
+		if (orderStart >= orderCount)
+			orderStart = orderCount - 1;
+		
+		if (orderEnd < 0)
+			orderEnd = 0;
+		
+		if (orderEnd >= orderCount)
+			orderEnd = orderCount - 1;
+		
+		orderPagingFirstIndex = orderStart;
+		orderPagingLastIndex = orderEnd;		
+		
+		return "redirect:/adminpage#orders";
+	}
+	
 	@RequestMapping(value = "/addOrder", method = RequestMethod.POST)
 	public String addOrder(@ModelAttribute("order") @Valid final Order order,
 			final BindingResult bindingResult,			
@@ -382,5 +685,5 @@ public class AdminPageController implements MessageSourceAware {
 		order.setStart(startSqlDate);		
 		orderSvc.add(order, clientId, repairTypeId, machineId);
 		return "redirect:/adminpage#orders";
-	}
+	}	
 }

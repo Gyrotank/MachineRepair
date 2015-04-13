@@ -51,7 +51,7 @@ public class ClientDAOJDBCTest extends DAOTestsTemplate{
    
     @Test
     public void testGetAll() {
-    	Assert.assertTrue(clientService.getAll().size() == 2);
+    	Assert.assertTrue(clientService.getAll((long) 0, (long) 100).size() == 2);
     }
     
     @Test
@@ -88,5 +88,10 @@ public class ClientDAOJDBCTest extends DAOTestsTemplate{
     public void testGetClientByLoginWithFetching() {        
         final Client actualResult = clientService.getClientByLoginWithFetching("ivan_user");
         Assert.assertTrue(actualResult.getClientUser().getLogin().contentEquals("ivan_user"));
-    }    
+    }
+    
+    @Test
+    public void testGetClientCount() {
+    	Assert.assertTrue(clientService.getClientCount() == 2);
+    }
 }

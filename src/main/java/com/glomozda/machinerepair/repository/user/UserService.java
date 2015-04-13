@@ -102,11 +102,33 @@ public class UserService {
 		
 		return result;
 	}
-
+	
 	@Transactional
 	public List<User> getAll() {
-		List<User> result = em.createNamedQuery("User.findAll", User.class).getResultList();
+		List<User> result = em.createNamedQuery("User.findAll", User.class)				
+				.getResultList();
 		return result;
+	}
+
+	@Transactional
+	public List<User> getAll(Long start, Long length) {
+		List<User> result = em.createNamedQuery("User.findAll", User.class)
+				.setFirstResult(start.intValue())
+				.setMaxResults(length.intValue())
+				.getResultList();
+		return result;
+	}
+	
+	@Transactional
+	public List<Object[]> getAllIdsAndLogins() {
+		List<Object[]> result = em.createNamedQuery("User.findAllIdsAndLogins", Object[].class)				
+				.getResultList();
+		return result;
+	}
+	
+	@Transactional
+	public Long getUserCount() {
+		return em.createNamedQuery("User.countAll", Long.class).getSingleResult();
 	}
 
 	@Transactional

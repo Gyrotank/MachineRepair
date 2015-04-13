@@ -18,9 +18,13 @@ h3.right {
     top: 0px;
 }
 
-/* tr.odd {background-color: #EEDDEE} */
+table {
+    border-spacing: 5px;
+}
 
-/* tr.even {background-color: #EEEEDD} */
+th,td {
+    padding: 10px;
+}
 
 #sidebar {
   position: fixed;

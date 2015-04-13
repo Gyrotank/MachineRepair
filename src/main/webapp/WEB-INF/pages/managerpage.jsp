@@ -74,10 +74,27 @@
   	</table>
   	  	
   	<h2>Manage Active Orders:</h2>
+  	<form method="post" action="managerpage/clientpaging" accept-charset="UTF-8">
+  		<table>
+  		<tr>
+  			<td style="width:5%" align="center">records</td>  			
+  			<td style="width:10%" align="center">
+  				<input name="clientPageStart" maxlength="5" size="8"
+  				value="${clients_paging_first + 1}"/></td>  			
+  			<td style="width:5%" align="center">to</td>  			
+  			<td style="width:10%" align="center">
+  				<input name="clientPageEnd" maxlength="5" size="8"
+  				value="${clients_paging_last + 1}"/></td>
+  			<td style="width:20%" align="center">of ${clients_count} in total</td>
+  			<td style="width:50%" align="left"><button>Go</button></td>  			
+  		</tr>  		
+  		</table>
+  	</form>
+  	<br>
   	<form method="post" action="listactiveordersforselectedclient" accept-charset="UTF-8">
   		<select name="clientId" onchange="this.form.submit();">
   			<option value="0"><c:out value="-Select client-" /></option>
-  			<c:forEach var="c" items="${clients}">
+  			<c:forEach var="c" items="${clients_short}">
   				<c:choose>
   					<c:when test="${selected_client_id == c.clientId}">
   						<option selected value="${c.clientId}">

@@ -19,12 +19,17 @@ import com.glomozda.machinerepair.domain.machine.Machine;
 @SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
 @NamedQueries({
 	@NamedQuery(name="MachineServiceable.findAll", query="SELECT ms FROM MachineServiceable ms"),
+	@NamedQuery(name="MachineServiceable.findAllOrderByName",
+	query="SELECT ms FROM MachineServiceable ms "
+		+ "ORDER BY ms.machineServiceableName"),
 	@NamedQuery(name="MachineServiceable.findAllOrderByTrademark",
 		query="SELECT ms FROM MachineServiceable ms "
 			+ "ORDER BY ms.machineServiceableTrademark"),
 	@NamedQuery(name="MachineServiceable.findMachineServiceableById",
 		query="SELECT ms FROM MachineServiceable ms"
-			+ " WHERE ms.machineServiceableId = :id")	
+			+ " WHERE ms.machineServiceableId = :id"),
+	@NamedQuery(name="MachineServiceable.countAll", query="SELECT COUNT(ms) "
+			+ "FROM MachineServiceable ms")
 })
 @Entity
 @Table(name = "machinesServiceable")

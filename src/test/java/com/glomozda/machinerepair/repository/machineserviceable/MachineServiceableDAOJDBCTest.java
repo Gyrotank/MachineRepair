@@ -19,7 +19,7 @@ public class MachineServiceableDAOJDBCTest extends DAOTestsTemplate{
 	@Autowired
     private transient MachineServiceableService machineServiceableService;
     
-    final MachineServiceable ms1 = new MachineServiceable("M-S-1", "TM-1", "UK");
+    final MachineServiceable ms1 = new MachineServiceable("M-S-3", "TM-1", "UK");
     final MachineServiceable ms2 = new MachineServiceable("M-S-2", "ATM-2", "USA");
             
     @Before
@@ -38,6 +38,17 @@ public class MachineServiceableDAOJDBCTest extends DAOTestsTemplate{
     }
     
     @Test
+    public void testGetAllWithLimits() {
+    	Assert.assertTrue(machineServiceableService.getAll((long) 0, (long) 100).size() == 2);
+    }
+    
+    @Test
+    public void testGetAllOrderByName() {    	
+    	Assert.assertTrue(machineServiceableService.getAllOrderByName().get(0)
+    			.getMachineServiceableName().contentEquals("M-S-2"));
+    }
+    
+    @Test
     public void testGetAllOrderByTrademark() {    	
     	Assert.assertTrue(machineServiceableService.getAllOrderByTrademark().get(0)
     			.getMachineServiceableTrademark().contentEquals("ATM-2"));
@@ -48,5 +59,10 @@ public class MachineServiceableDAOJDBCTest extends DAOTestsTemplate{
     	final MachineServiceable actualResult = machineServiceableService
     			.getMachineServiceableById((long) 1);
     	Assert.assertEquals(ms1, actualResult);
-    }             
+    }
+    
+    @Test
+    public void testGetMachineServiceableCount() {
+    	Assert.assertTrue(machineServiceableService.getMachineServiceableCount() == 2);
+    }
 }

@@ -31,7 +31,11 @@ import com.glomozda.machinerepair.domain.userauthorization.UserAuthorization;
 	@NamedQuery(name="User.findUserByIdWithFetching", query="SELECT u FROM User u "
 			+ "LEFT JOIN FETCH u.client "
 			+ "WHERE u.userId = :id"),
-	@NamedQuery(name="User.findAll", query="SELECT u FROM User u")	
+	@NamedQuery(name="User.findAll", query="SELECT u FROM User u "
+			+ "ORDER BY u.login"),
+	@NamedQuery(name="User.findAllIdsAndLogins", query="SELECT u.userId, u.login FROM User u "
+					+ "ORDER BY u.login"),
+	@NamedQuery(name="User.countAll", query="SELECT COUNT(u) FROM User u")
 })
 @Entity
 @Table(name = "users")

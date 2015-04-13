@@ -46,10 +46,21 @@ public class MachineDAOJDBCTest extends DAOTestsTemplate{
     public void testGetAll() {
     	Assert.assertTrue(machineService.getAll().size() == 2);
     }
+    
+    @Test
+    public void testGetAllWithLimits() {
+    	Assert.assertTrue(machineService.getAll((long) 0, (long) 100).size() == 2);
+    }
         
     @Test
     public void testGetAllWithFetching() {    	
     	Assert.assertTrue(machineService.getAllWithFetching().get(0)
+    			.getMachineServiceable().getMachineServiceableName().contentEquals("M-S-1"));
+    }
+    
+    @Test
+    public void testGetAllWithFetchingWithLimits() {    	
+    	Assert.assertTrue(machineService.getAllWithFetching((long) 0, (long) 100).get(0)
     			.getMachineServiceable().getMachineServiceableName().contentEquals("M-S-1"));
     }
     
@@ -73,5 +84,10 @@ public class MachineDAOJDBCTest extends DAOTestsTemplate{
         		getMachineForSerialNumber("SN2").getMachineId());        
         Assert.assertEquals(2, machineService.getMachineForSerialNumber("SN2")
         		.getMachineTimesRepaired().intValue());
+    }
+    
+    @Test
+    public void testGetMachineCount() {
+    	Assert.assertTrue(machineService.getMachineCount() == 2);
     }
 }

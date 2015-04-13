@@ -45,6 +45,11 @@ public class ManagerPageController {
 	
 	private User myUser;
 	
+	private static final Long _defaultPageSize = (long) 25;
+	
+	private Long clientPagingFirstIndex = (long) 0;
+	private Long clientPagingLastIndex = _defaultPageSize - 1;
+	
 	private Long selectedClientId = (long) 0;
 	private ArrayList<Order> activeOrdersForSelectedClient = new ArrayList<Order>();
 	
@@ -62,9 +67,19 @@ public class ManagerPageController {
 				(UsernamePasswordAuthenticationToken)principal;
 		
 		model.addAttribute("pending_orders", orderSvc.getOrdersForStatusWithFetching("pending"));
+		
 		model.addAttribute("selected_client_id", selectedClientId);
+		
 		model.addAttribute("active_orders_for_selected_client", activeOrdersForSelectedClient);
-		model.addAttribute("clients", clientSvc.getAllWithFetching());
+		
+//		model.addAttribute("clients", clientSvc.getAllWithFetching());
+		model.addAttribute("clients_short",
+				clientSvc.getAllWithFetching(clientPagingFirstIndex,
+						clientPagingLastIndex - clientPagingFirstIndex + 1));
+		model.addAttribute("clients_count", clientSvc.getClientCount());
+		model.addAttribute("clients_paging_first", clientPagingFirstIndex);
+		model.addAttribute("clients_paging_last", clientPagingLastIndex);
+		
 		model.addAttribute("user_token_authorities",
 				userToken.getAuthorities().toString());
 		
@@ -94,6 +109,38 @@ public class ManagerPageController {
 			return "redirect:/managerpage";
 		}
 		orderSvc.cancelOrderById(orderId);
+		return "redirect:/managerpage";
+	}
+	
+	@RequestMapping(value = "/managerpage/clientpaging", method = RequestMethod.POST)
+	public String clientPaging(@RequestParam("clientPageStart") final Long clientPageStart, 
+			@RequestParam("clientPageEnd") final Long clientPageEnd) {
+		
+		long clientStart = clientPageStart.longValue() - 1;
+		long clientEnd = clientPageEnd.longValue() - 1;
+		long clientCount = clientSvc.getClientCount();
+		
+		if (clientStart > clientEnd) {
+			long temp = clientStart;
+			clientStart = clientEnd;
+			clientEnd = temp;
+		}
+		
+		if (clientStart < 0)
+			clientStart = 0;
+		
+		if (clientStart >= clientCount)
+			clientStart = clientCount - 1;
+		
+		if (clientEnd < 0)
+			clientEnd = 0;
+		
+		if (clientEnd >= clientCount)
+			clientEnd = clientCount - 1;
+		
+		clientPagingFirstIndex = clientStart;
+		clientPagingLastIndex = clientEnd;		
+		
 		return "redirect:/managerpage";
 	}
 	

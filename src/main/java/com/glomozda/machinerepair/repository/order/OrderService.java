@@ -93,6 +93,12 @@ public class OrderService {
 		return result;
 	}
 	
+	public Long getCountOrdersForStatus(String status) {
+		return em.createNamedQuery("Order.countOrdersByStatus", Long.class)
+				.setParameter("status", status)
+				.getSingleResult();
+	}	
+	
 	@Transactional
 	public List<Order> getOrdersForStatusWithFetching(String status) {
 		List<Order> result = null;
@@ -101,6 +107,22 @@ public class OrderService {
 		query.setParameter("status", status);	  
 		try {
 			result = query.getResultList();
+		} catch (NoResultException nre){}
+		
+		return result;
+	}
+	
+	@Transactional
+	public List<Order> getOrdersForStatusWithFetching(String status, Long start, Long length) {
+		List<Order> result = null;
+		TypedQuery<Order> query = em.createNamedQuery("Order.findOrdersByStatusWithFetching",
+				Order.class);
+		query.setParameter("status", status);	  
+		try {
+			result = query
+					.setFirstResult(start.intValue())
+					.setMaxResults(length.intValue())
+					.getResultList();
 		} catch (NoResultException nre){}
 		
 		return result;
@@ -119,6 +141,13 @@ public class OrderService {
 	}
 	
 	@Transactional
+	public Long getCountAllForClientId(Long clientId) {
+		return em.createNamedQuery("Order.countOrdersByClientId", Long.class)
+				.setParameter("id", clientId)				
+				.getSingleResult();
+	}
+	
+	@Transactional
 	public List<Order> getOrdersForClientIdAndStatusWithFetching(Long clientId, String status) {
 		List<Order> result = null;
 		TypedQuery<Order> query = em.createNamedQuery(
@@ -133,8 +162,58 @@ public class OrderService {
 	}
 	
 	@Transactional
+	public List<Order> getOrdersForClientIdAndStatusWithFetching(Long clientId, String status,
+			Long start, Long length) {
+		List<Order> result = null;
+		TypedQuery<Order> query = em.createNamedQuery(
+				"Order.findOrdersByClientIdAndStatusWithFetching", Order.class);
+		query.setParameter("id", clientId);
+		query.setParameter("status", status);
+		try {
+			result = query
+					.setFirstResult(start.intValue())
+					.setMaxResults(length.intValue())
+					.getResultList();
+		} catch (NoResultException nre){}
+		
+		return result;
+	}
+	
+	@Transactional
+	public List<Order> getCurrentOrdersForClientIdWithFetching(Long clientId,
+			Long start, Long length) {
+		List<Order> result = null;
+		TypedQuery<Order> query = em.createNamedQuery(
+				"Order.findCurrentOrdersByClientIdWithFetching", Order.class);
+		query.setParameter("id", clientId);
+		try {
+			result = query
+					.setFirstResult(start.intValue())
+					.setMaxResults(length.intValue())
+					.getResultList();
+		} catch (NoResultException nre){}
+		
+		return result;
+	}
+	
+	@Transactional
 	public Long getOrderCount() {
 		return em.createNamedQuery("Order.countAll", Long.class).getSingleResult();
+	}
+	
+	@Transactional
+	public Long getCountOrdersForClientIdAndStatus(Long clientId, String status) {
+		return em.createNamedQuery("Order.countOrdersByClientIdAndStatus", Long.class)
+				.setParameter("id", clientId)
+				.setParameter("status", status)
+				.getSingleResult();
+	}
+	
+	@Transactional
+	public Long getCountCurrentOrderForClientId(Long clientId) {
+		return em.createNamedQuery("Order.countCurrentOrdersByClientId", Long.class)
+				.setParameter("id", clientId)
+				.getSingleResult();
 	}
 
 	@Transactional
@@ -176,5 +255,5 @@ public class OrderService {
 		query.setParameter("id", orderId);		
 		int deletedCount = query.executeUpdate();
 		return deletedCount;
-	}	
+	}
 }

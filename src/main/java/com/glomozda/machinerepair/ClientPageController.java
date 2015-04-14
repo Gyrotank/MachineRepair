@@ -48,6 +48,8 @@ public class ClientPageController implements MessageSourceAware {
 	@Autowired
 	private RepairTypeService repairTypeSvc;
 	
+	private static final Long _defaultPageSize = (long) 25;
+	
 	private Client myClient;
 	
 	private String messageRepeatedRepair = "";
@@ -68,6 +70,12 @@ public class ClientPageController implements MessageSourceAware {
 	private Long selectedFirstRepairRepairTypeId = (long) 0;
 	
 	private MessageSource messageSource;
+	
+	private Long currentOrdersPagingFirstIndex = (long) 0;
+	private Long currentOrdersPagingLastIndex = _defaultPageSize - 1;
+	
+	private Long pastOrdersPagingFirstIndex = (long) 0;
+	private Long pastOrdersPagingLastIndex = _defaultPageSize - 1;
 	
 	private boolean isNonNegativeInteger(String str) {
 		if (str == null) {
@@ -107,19 +115,25 @@ public class ClientPageController implements MessageSourceAware {
 		
 		model.addAttribute("message_past_orders", "You have no past orders yet.");
 		model.addAttribute("message_current_orders", "You have no current orders yet.");
-				
+		
+		model.addAttribute("past_orders_count", 
+				orderSvc.getCountOrdersForClientIdAndStatus(myClient.getClientId(), "finished"));
 		List<Order> myPastOrders =
 				orderSvc.getOrdersForClientIdAndStatusWithFetching(myClient.getClientId(),
-						"finished");
+						"finished", pastOrdersPagingFirstIndex, 
+						pastOrdersPagingLastIndex - pastOrdersPagingFirstIndex + 1);
+		model.addAttribute("past_orders_paging_first", pastOrdersPagingFirstIndex);
+		model.addAttribute("past_orders_paging_last", pastOrdersPagingLastIndex);
+		
+		model.addAttribute("current_orders_count", 
+				orderSvc.getCountCurrentOrderForClientId(myClient.getClientId()));
 		List<Order> myCurrentOrders =
-				orderSvc.getOrdersForClientIdAndStatusWithFetching(myClient.getClientId(),
-						"pending");
-		myCurrentOrders.addAll(
-				orderSvc.getOrdersForClientIdAndStatusWithFetching(myClient.getClientId(),
-						"ready"));
-		myCurrentOrders.addAll(
-				orderSvc.getOrdersForClientIdAndStatusWithFetching(myClient.getClientId(),
-						"started"));		
+				orderSvc.getCurrentOrdersForClientIdWithFetching(myClient.getClientId(),
+						currentOrdersPagingFirstIndex, 
+						currentOrdersPagingLastIndex - currentOrdersPagingFirstIndex + 1);
+		model.addAttribute("current_orders_paging_first", currentOrdersPagingFirstIndex);
+		model.addAttribute("current_orders_paging_last", currentOrdersPagingLastIndex);
+		
 		
 		ArrayList<String> myMachinesSNs = new ArrayList<String>();
 		
@@ -152,6 +166,7 @@ public class ClientPageController implements MessageSourceAware {
 			model.addAttribute("my_current_orders", myCurrentOrders);			
 			model.addAttribute("my_machines_serial_numbers", myMachinesSNs);
 		}
+		
 		model.addAttribute("message_repeated_order", messageRepeatedRepair);
 		messageRepeatedRepair = "";
 		
@@ -311,6 +326,74 @@ public class ClientPageController implements MessageSourceAware {
 		
 		orderSvc.add(order, myClient.getClientId(), repairTypeId, m.getMachineId());
 		return "redirect:/clientpage";
+	}
+	
+	@RequestMapping(value = "/clientpage/currentorderspaging", method = RequestMethod.POST)
+	public String currentOrdersPaging(
+			@RequestParam("currentOrdersPageStart") final Long currentOrdersPageStart, 
+			@RequestParam("currentOrdersPageEnd") final Long currentOrdersPageEnd) {
+		
+		long currentOrdersStart = currentOrdersPageStart.longValue() - 1;
+		long currentOrdersEnd = currentOrdersPageEnd.longValue() - 1;
+		long currentOrdersCount = 
+				orderSvc.getCountCurrentOrderForClientId(myClient.getClientId());
+		
+		if (currentOrdersStart > currentOrdersEnd) {
+			long temp = currentOrdersStart;
+			currentOrdersStart = currentOrdersEnd;
+			currentOrdersEnd = temp;
+		}
+		
+		if (currentOrdersStart < 0)
+			currentOrdersStart = 0;
+		
+		if (currentOrdersStart >= currentOrdersCount)
+			currentOrdersStart = currentOrdersCount - 1;
+		
+		if (currentOrdersEnd < 0)
+			currentOrdersEnd = 0;
+		
+		if (currentOrdersEnd >= currentOrdersCount)
+			currentOrdersEnd = currentOrdersCount - 1;
+		
+		currentOrdersPagingFirstIndex = currentOrdersStart;
+		currentOrdersPagingLastIndex = currentOrdersEnd;		
+		
+		return "redirect:/clientpage#current_orders";
+	}
+	
+	@RequestMapping(value = "/clientpage/pastorderspaging", method = RequestMethod.POST)
+	public String pastOrdersPaging(
+			@RequestParam("pastOrdersPageStart") final Long pastOrdersPageStart, 
+			@RequestParam("pastOrdersPageEnd") final Long pastOrdersPageEnd) {
+		
+		long pastOrdersStart = pastOrdersPageStart.longValue() - 1;
+		long pastOrdersEnd = pastOrdersPageEnd.longValue() - 1;
+		long pastOrdersCount = 
+				orderSvc.getCountOrdersForClientIdAndStatus(myClient.getClientId(), "finished");
+		
+		if (pastOrdersStart > pastOrdersEnd) {
+			long temp = pastOrdersStart;
+			pastOrdersStart = pastOrdersEnd;
+			pastOrdersEnd = temp;
+		}
+		
+		if (pastOrdersStart < 0)
+			pastOrdersStart = 0;
+		
+		if (pastOrdersStart >= pastOrdersCount)
+			pastOrdersStart = pastOrdersCount - 1;
+		
+		if (pastOrdersEnd < 0)
+			pastOrdersEnd = 0;
+		
+		if (pastOrdersEnd >= pastOrdersCount)
+			pastOrdersEnd = pastOrdersCount - 1;
+		
+		pastOrdersPagingFirstIndex = pastOrdersStart;
+		pastOrdersPagingLastIndex = pastOrdersEnd;		
+		
+		return "redirect:/clientpage#past_orders";
 	}
 	
 	@RequestMapping(value = "/pay", method = RequestMethod.GET)

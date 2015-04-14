@@ -165,25 +165,122 @@ public class OrderDAOJDBCTest extends DAOTestsTemplate{
     }
     
     @Test
+    public void testGetOrdersForStatusWithFetchingWithLimits() {
+    	Assert.assertTrue(orderService
+    			.getOrdersForStatusWithFetching("finished", (long) 0, (long) 100).size() == 1);
+    	Assert.assertTrue(orderService
+    			.getOrdersForStatusWithFetching("finished", (long) 0, (long) 100).get(0)
+    			.getRepairType().getRepairTypeName().contentEquals("Full"));
+    	Assert.assertTrue(orderService
+    			.getOrdersForStatusWithFetching("finished", (long) 0, (long) 100).get(0)
+    			.getClient().getClientName().contentEquals("Ivan"));
+    	Assert.assertTrue(orderService
+    			.getOrdersForStatusWithFetching("finished", (long) 0, (long) 100).get(0)
+    			.getMachine().getMachineSerialNumber().contentEquals("SN1"));
+    }
+    
+    @Test
     public void testGetAllForClientId() {
     	Assert.assertTrue(orderService.getAllForClientId((long) 1).size() == 1);
     }
     
     @Test
     public void testGetOrdersForClientIdAndStatusWithFetching() {
-    	Assert.assertTrue(orderService.getOrdersForClientIdAndStatusWithFetching((long) 1, "finished")
+    	Assert.assertTrue(orderService.getOrdersForClientIdAndStatusWithFetching((long) 1,
+    			"finished")
     			.size() == 1);
-    	Assert.assertTrue(orderService.getOrdersForClientIdAndStatusWithFetching((long) 1, "finished")
+    	Assert.assertTrue(orderService.getOrdersForClientIdAndStatusWithFetching((long) 1,
+    			"finished")
     			.get(0).getRepairType().getRepairTypeName().contentEquals("Full"));
-    	Assert.assertTrue(orderService.getOrdersForClientIdAndStatusWithFetching((long) 1, "finished")
+    	Assert.assertTrue(orderService.getOrdersForClientIdAndStatusWithFetching((long) 1,
+    			"finished")
     			.get(0).getClient().getClientName().contentEquals("Ivan"));
-    	Assert.assertTrue(orderService.getOrdersForClientIdAndStatusWithFetching((long) 1, "finished")
+    	Assert.assertTrue(orderService.getOrdersForClientIdAndStatusWithFetching((long) 1,
+    			"finished")
     			.get(0).getMachine().getMachineSerialNumber().contentEquals("SN1"));
+    }
+    
+    @Test
+    public void testGetOrdersForClientIdAndStatusWithFetchingWithLimits() {
+    	Assert.assertTrue(orderService
+    			.getOrdersForClientIdAndStatusWithFetching((long) 1,
+    			"finished", (long) 0, (long) 100)
+    			.size() == 1);
+    	Assert.assertTrue(orderService
+    			.getOrdersForClientIdAndStatusWithFetching((long) 1,
+    			"finished", (long) 0, (long) 100)
+    			.get(0).getRepairType().getRepairTypeName().contentEquals("Full"));
+    	Assert.assertTrue(orderService
+    			.getOrdersForClientIdAndStatusWithFetching((long) 1,
+    			"finished", (long) 0, (long) 100)
+    			.get(0).getClient().getClientName().contentEquals("Ivan"));
+    	Assert.assertTrue(orderService
+    			.getOrdersForClientIdAndStatusWithFetching((long) 1,
+    			"finished", (long) 0, (long) 100)
+    			.get(0).getMachine().getMachineSerialNumber().contentEquals("SN1"));
+    }
+    
+    @Test
+    public void testGetCurrentOrdersForClientIdWithFetchingWithLimits() {
+    	Assert.assertTrue(orderService
+    			.getCurrentOrdersForClientIdWithFetching((long) 1,
+    			(long) 0, (long) 100)
+    			.size() == 0);
+    	Assert.assertTrue(orderService
+    			.getCurrentOrdersForClientIdWithFetching((long) 2,
+    			(long) 0, (long) 100)
+    			.size() == 1);
+    	Assert.assertTrue(orderService
+    			.getCurrentOrdersForClientIdWithFetching((long) 2,
+    			(long) 0, (long) 100)
+    			.get(0).getMachine().getMachineSerialNumber().contentEquals("SN2"));
     }
     
     @Test
     public void testGetOrderCount() {
     	Assert.assertTrue(orderService.getOrderCount() == 2);
+    }
+    
+    @Test
+    public void testGetOrderById() {
+    	Assert.assertTrue(orderService.getOrderById((long) 1).getStatus()
+    			.contentEquals("finished"));
+    }
+    
+    @Test
+    public void testGetCountOrdersForStatus() {
+    	Assert.assertTrue(orderService.getCountOrdersForStatus("finished") == 1);
+    	Assert.assertTrue(orderService.getCountOrdersForStatus("pending") == 1);
+    	Assert.assertTrue(orderService.getCountOrdersForStatus("started") == 0);
+    }
+    
+    @Test
+    public void testGetCountAllForClientId() {
+    	Assert.assertTrue(orderService.getCountAllForClientId((long) 1) == 1);
+    	Assert.assertTrue(orderService.getCountAllForClientId((long) 2) == 1);
+    	Assert.assertTrue(orderService.getCountAllForClientId((long) 3) == 0);
+    }
+    
+    @Test
+    public void testCountOrdersForClientIdAndStatus() {
+    	Assert.assertTrue(orderService
+    			.getCountOrdersForClientIdAndStatus((long) 1, "finished") == 1);
+    	Assert.assertTrue(orderService
+    			.getCountOrdersForClientIdAndStatus((long) 2, "pending") == 1);
+    	Assert.assertTrue(orderService
+    			.getCountOrdersForClientIdAndStatus((long) 2, "finished") == 0);
+    	Assert.assertTrue(orderService
+    			.getCountOrdersForClientIdAndStatus((long) 3, "ready") == 0);
+    }
+    
+    @Test
+    public void testCountCurrentOrderForClientId() {
+    	Assert.assertTrue(orderService
+    			.getCountCurrentOrderForClientId((long) 1) == 0);
+    	Assert.assertTrue(orderService
+    			.getCountCurrentOrderForClientId((long) 2) == 1);    	
+    	Assert.assertTrue(orderService
+    			.getCountCurrentOrderForClientId((long) 3) == 0);
     }
     
     @Test

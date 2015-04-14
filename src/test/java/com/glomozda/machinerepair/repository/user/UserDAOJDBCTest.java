@@ -62,6 +62,11 @@ public class UserDAOJDBCTest extends DAOTestsTemplate{
     }
     
     @Test
+    public void testGetAllIdsAndLogins() {
+    	Assert.assertTrue(userService.getAllIdsAndLogins().size() == 2);
+    }
+    
+    @Test
     public void testGetUserByLoginAndPassword() {    	
     	Assert.assertTrue((BCrypt.checkpw("qwerty", 
     			userService.getUserByLoginAndPassword("ivan_user", "qwerty").getPassword())));

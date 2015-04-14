@@ -36,16 +36,24 @@ import com.glomozda.machinerepair.domain.repairtype.RepairType;
 			+ " WHERE o.orderId = :id"),
 	@NamedQuery(name="Order.findOrdersByStatus", query="SELECT o FROM Order o"
 			+ " WHERE o.status = :status"),
+	@NamedQuery(name="Order.countOrdersByStatus", query="SELECT COUNT(o) FROM Order o"
+			+ " WHERE o.status = :status"),
 	@NamedQuery(name="Order.findOrdersByStatusWithFetching", query="SELECT o FROM Order o"
 			+ " LEFT JOIN FETCH o.client LEFT JOIN FETCH o.repairType"
 			+ " LEFT JOIN FETCH o.machine as om LEFT JOIN FETCH om.machineServiceable"
-			+ " WHERE o.status = :status"),
+			+ " WHERE o.status = :status"
+			+ " ORDER BY o.client.clientName"),
 	@NamedQuery(name="Order.findOrdersByClientId", query="SELECT o FROM Order o"
+			+ " WHERE o.client.clientId = :id"),
+	@NamedQuery(name="Order.countOrdersByClientId", query="SELECT Count(o) FROM Order o"
 			+ " WHERE o.client.clientId = :id"),
 	@NamedQuery(name="Order.findOrdersByClientIdAndStatusWithFetching",
 		query="SELECT o FROM Order o"
 			+ " LEFT JOIN FETCH o.client LEFT JOIN FETCH o.repairType"
 			+ " LEFT JOIN FETCH o.machine as om LEFT JOIN FETCH om.machineServiceable"
+			+ " WHERE o.client.clientId = :id AND o.status = :status"),
+	@NamedQuery(name="Order.countOrdersByClientIdAndStatus",
+		query="SELECT COUNT(o) FROM Order o"			
 			+ " WHERE o.client.clientId = :id AND o.status = :status"),
 	@NamedQuery(name="Order.confirmOrderById", query="UPDATE Order o SET status = 'started'"
 			+ " WHERE o.orderId = :id AND o.status = 'pending'"),
@@ -54,7 +62,32 @@ import com.glomozda.machinerepair.domain.repairtype.RepairType;
 	@NamedQuery(name="Order.cancelOrderById", query="DELETE FROM Order o"
 			+ " WHERE o.orderId = :id AND o.status = 'pending'"),
 	@NamedQuery(name="Order.countAll", query="SELECT COUNT(o) "
-					+ "FROM Order o")
+					+ "FROM Order o"),
+	@NamedQuery(name="Order.findCurrentOrdersByClientIdWithFetching", 
+		query="SELECT o FROM Order o"
+			+ " LEFT JOIN FETCH o.client LEFT JOIN FETCH o.repairType"
+			+ " LEFT JOIN FETCH o.machine as om LEFT JOIN FETCH om.machineServiceable"
+			+ " WHERE o IN"
+			+ " (SELECT o1 FROM Order o1"
+			+ " WHERE o1.client.clientId = :id AND o1.status = 'pending')"
+			+ " OR o IN"
+			+ " (SELECT o2 FROM Order o2"			
+			+ " WHERE o2.client.clientId = :id AND o2.status = 'ready')"
+			+ " OR o IN"
+			+ " (SELECT o3 FROM Order o3"			
+			+ " WHERE o3.client.clientId = :id AND o3.status = 'started')"),
+	@NamedQuery(name="Order.countCurrentOrdersByClientId", 
+			query="SELECT COUNT(o) FROM Order o"				
+				+ " WHERE o IN"
+				+ " (SELECT o1 FROM Order o1"		
+				+ " WHERE o1.client.clientId = :id AND o1.status = 'pending')"
+				+ " OR o IN"
+				+ " (SELECT o2 FROM Order o2"
+				+ " WHERE o2.client.clientId = :id AND o2.status = 'ready')"
+				+ " or o IN"
+				+ " (SELECT o3 FROM Order o3"
+				+ " WHERE o3.client.clientId = :id AND o3.status = 'started')")
+			
 })
 @Entity
 @Table(name = "orders")

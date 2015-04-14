@@ -191,6 +191,23 @@
 		</span>		
 	</c:when>
 	<c:otherwise>
+	<br>
+		<form method="post" action="clientpage/currentorderspaging" accept-charset="UTF-8">
+  		<table>
+  		<tr>
+  			<td style="width:5%" align="center">records</td>  			
+  			<td style="width:10%" align="center">
+  				<input name="currentOrdersPageStart" maxlength="5" size="8"
+  				value="${current_orders_paging_first + 1}"/></td>  			
+  			<td style="width:5%" align="center">to</td>  			
+  			<td style="width:10%" align="center">
+  				<input name="currentOrdersPageEnd" maxlength="5" size="8"
+  				value="${current_orders_paging_last + 1}"/></td>
+  			<td style="width:20%" align="center">of ${current_orders_count} in total</td>
+  			<td style="width:50%" align="left"><button>Go</button></td>  			
+  		</tr>  		
+  		</table>
+  		</form>
 	<table data-toggle="table" 
 		data-classes="table table-hover table-condensed" 
     	data-striped="true"
@@ -241,7 +258,24 @@
 		<br><br><br>
 		</span>		
 	</c:when>
-	<c:otherwise>	
+	<c:otherwise>
+		<br>
+		<form method="post" action="clientpage/pastorderspaging" accept-charset="UTF-8">
+  		<table>
+  		<tr>
+  			<td style="width:5%" align="center">records</td>  			
+  			<td style="width:10%" align="center">
+  				<input name="pastOrdersPageStart" maxlength="5" size="8"
+  				value="${past_orders_paging_first + 1}"/></td>  			
+  			<td style="width:5%" align="center">to</td>  			
+  			<td style="width:10%" align="center">
+  				<input name="pastOrdersPageEnd" maxlength="5" size="8"
+  				value="${past_orders_paging_last + 1}"/></td>
+  			<td style="width:20%" align="center">of ${past_orders_count} in total</td>
+  			<td style="width:50%" align="left"><button>Go</button></td>  			
+  		</tr>  		
+  		</table>
+  		</form>	
 	<table data-toggle="table" 
 		data-classes="table table-hover table-condensed" 
     	data-striped="true"

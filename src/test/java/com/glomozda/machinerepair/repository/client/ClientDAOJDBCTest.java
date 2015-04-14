@@ -51,12 +51,23 @@ public class ClientDAOJDBCTest extends DAOTestsTemplate{
    
     @Test
     public void testGetAll() {
+    	Assert.assertTrue(clientService.getAll().size() == 2);
+    }
+    
+    @Test
+    public void testGetAllWithLimits() {
     	Assert.assertTrue(clientService.getAll((long) 0, (long) 100).size() == 2);
     }
     
     @Test
     public void testGetAllWithFetching() {    	
     	Assert.assertTrue(clientService.getAllWithFetching().get(0)
+        		.getClientUser().getLogin().contentEquals("ivan_user"));
+    }
+    
+    @Test
+    public void testGetAllWithFetchingWithLimits() {    	
+    	Assert.assertTrue(clientService.getAllWithFetching((long) 0, (long) 100).get(0)
         		.getClientUser().getLogin().contentEquals("ivan_user"));
     }
     

@@ -2,6 +2,7 @@ package com.glomozda.machinerepair;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -50,8 +51,18 @@ public class ManagerPageController {
 	private Long clientPagingFirstIndex = (long) 0;
 	private Long clientPagingLastIndex = _defaultPageSize - 1;
 	
+	private Long pendingOrdersPagingFirstIndex = (long) 0;
+	private Long pendingOrdersPagingLastIndex = _defaultPageSize - 1;
+	
+	private Long startedOrdersPagingFirstIndex = (long) 0;
+	private Long startedOrdersPagingLastIndex = _defaultPageSize - 1;
+	
+	private Long readyOrdersPagingFirstIndex = (long) 0;
+	private Long readyOrdersPagingLastIndex = _defaultPageSize - 1;
+	
 	private Long selectedClientId = (long) 0;
-	private ArrayList<Order> activeOrdersForSelectedClient = new ArrayList<Order>();
+	private ArrayList<Order> startedOrdersForSelectedClient = new ArrayList<Order>();
+	private ArrayList<Order> readyOrdersForSelectedClient = new ArrayList<Order>();
 	
 	@RequestMapping(value = "/managerpage", method = RequestMethod.GET)
 	public String activate(final Principal principal, final Model model) {
@@ -66,13 +77,28 @@ public class ManagerPageController {
 		UsernamePasswordAuthenticationToken userToken =
 				(UsernamePasswordAuthenticationToken)principal;
 		
-		model.addAttribute("pending_orders", orderSvc.getOrdersForStatusWithFetching("pending"));
+		List<Order> pendingOrders = orderSvc.getOrdersForStatusWithFetching("pending",
+				pendingOrdersPagingFirstIndex,
+				pendingOrdersPagingLastIndex - pendingOrdersPagingFirstIndex + 1);
+		model.addAttribute("pending_orders", pendingOrders);
+		model.addAttribute("pending_orders_count", orderSvc.getCountOrdersForStatus("pending"));
+		model.addAttribute("pending_orders_paging_first", pendingOrdersPagingFirstIndex);
+		model.addAttribute("pending_orders_paging_last", pendingOrdersPagingLastIndex);
 		
-		model.addAttribute("selected_client_id", selectedClientId);
+		model.addAttribute("selected_client_id", selectedClientId);		
 		
-		model.addAttribute("active_orders_for_selected_client", activeOrdersForSelectedClient);
+		model.addAttribute("started_orders_for_selected_client", startedOrdersForSelectedClient);		
+		model.addAttribute("started_orders_count", 
+				orderSvc.getCountOrdersForClientIdAndStatus(selectedClientId, "started"));
+		model.addAttribute("started_orders_paging_first", startedOrdersPagingFirstIndex);
+		model.addAttribute("started_orders_paging_last", startedOrdersPagingLastIndex);
 		
-//		model.addAttribute("clients", clientSvc.getAllWithFetching());
+		model.addAttribute("ready_orders_for_selected_client", readyOrdersForSelectedClient);		
+		model.addAttribute("ready_orders_count", 
+				orderSvc.getCountOrdersForClientIdAndStatus(selectedClientId, "ready"));
+		model.addAttribute("ready_orders_paging_first", readyOrdersPagingFirstIndex);
+		model.addAttribute("ready_orders_paging_last", readyOrdersPagingLastIndex);		
+		
 		model.addAttribute("clients_short",
 				clientSvc.getAllWithFetching(clientPagingFirstIndex,
 						clientPagingLastIndex - clientPagingFirstIndex + 1));
@@ -86,30 +112,63 @@ public class ManagerPageController {
 		return "managerpage";
 	}
 	
+	@RequestMapping(value = "/managerpage/pendingorderspaging", method = RequestMethod.POST)
+	public String pendingOrdersPaging(
+			@RequestParam("pendingOrdersPageStart") final Long pendingOrdersPageStart, 
+			@RequestParam("pendingOrdersPageEnd") final Long pendingOrdersPageEnd) {
+		
+		long pendingOrdersStart = pendingOrdersPageStart.longValue() - 1;
+		long pendingOrdersEnd = pendingOrdersPageEnd.longValue() - 1;
+		long pendingOrdersCount = orderSvc.getCountOrdersForStatus("pending");
+		
+		if (pendingOrdersStart > pendingOrdersEnd) {
+			long temp = pendingOrdersStart;
+			pendingOrdersStart = pendingOrdersEnd;
+			pendingOrdersEnd = temp;
+		}
+		
+		if (pendingOrdersStart < 0)
+			pendingOrdersStart = 0;
+		
+		if (pendingOrdersStart >= pendingOrdersCount)
+			pendingOrdersStart = pendingOrdersCount - 1;
+		
+		if (pendingOrdersEnd < 0)
+			pendingOrdersEnd = 0;
+		
+		if (pendingOrdersEnd >= pendingOrdersCount)
+			pendingOrdersEnd = pendingOrdersCount - 1;
+		
+		pendingOrdersPagingFirstIndex = pendingOrdersStart;
+		pendingOrdersPagingLastIndex = pendingOrdersEnd;		
+		
+		return "redirect:/managerpage#pending_orders";
+	}
+	
 	@RequestMapping(value = "/confirm", method = RequestMethod.GET)
 	public String confirmOrder(@RequestParam("order_id") Long orderId) {
 		Order myOrder = orderSvc.getOrderById(orderId);
 		if (myOrder == null) {
-			return "redirect:/managerpage";
+			return "redirect:/managerpage#pending_orders";
 		}
 		if (!myOrder.getStatus().contentEquals("pending")) {
-			return "redirect:/managerpage";
+			return "redirect:/managerpage#pending_orders";
 		}
 		orderSvc.confirmOrderById(orderId);
-		return "redirect:/managerpage";
+		return "redirect:/managerpage#pending_orders";
 	}
 	
 	@RequestMapping(value = "/cancel", method = RequestMethod.GET)
 	public String cancelOrder(@RequestParam("order_id") Long orderId) {
 		Order myOrder = orderSvc.getOrderById(orderId);
 		if (myOrder == null) {
-			return "redirect:/managerpage";
+			return "redirect:/managerpage#pending_orders";
 		}
 		if (!myOrder.getStatus().contentEquals("pending")) {
-			return "redirect:/managerpage";
+			return "redirect:/managerpage#pending_orders";
 		}
 		orderSvc.cancelOrderById(orderId);
-		return "redirect:/managerpage";
+		return "redirect:/managerpage#pending_orders";
 	}
 	
 	@RequestMapping(value = "/managerpage/clientpaging", method = RequestMethod.POST)
@@ -139,37 +198,112 @@ public class ManagerPageController {
 			clientEnd = clientCount - 1;
 		
 		clientPagingFirstIndex = clientStart;
-		clientPagingLastIndex = clientEnd;		
+		clientPagingLastIndex = clientEnd;
 		
-		return "redirect:/managerpage";
+		selectedClientId = (long) 0;
+		startedOrdersForSelectedClient.clear();
+		readyOrdersForSelectedClient.clear();
+		
+		return "redirect:/managerpage#manage_active_orders";
+	}
+	
+	@RequestMapping(value = "/managerpage/startedorderspaging", method = RequestMethod.POST)
+	public String startedOrdersPaging(			
+			@RequestParam("startedOrdersPageStart") final Long startedOrdersPageStart, 
+			@RequestParam("startedOrdersPageEnd") final Long startedOrdersPageEnd) {
+		
+		long startedOrdersStart = startedOrdersPageStart.longValue() - 1;
+		long startedOrdersEnd = startedOrdersPageEnd.longValue() - 1;		
+		
+		if (startedOrdersStart > startedOrdersEnd) {
+			long temp = startedOrdersStart;
+			startedOrdersStart = startedOrdersEnd;
+			startedOrdersEnd = temp;
+		}
+		
+		if (startedOrdersStart < 0)
+			startedOrdersStart = 0;
+		
+		if (startedOrdersStart >= startedOrdersForSelectedClient.size())
+			startedOrdersStart = startedOrdersForSelectedClient.size() - 1;
+		
+		if (startedOrdersEnd < 0)
+			startedOrdersEnd = 0;
+		
+		if (startedOrdersEnd >= startedOrdersForSelectedClient.size())
+			startedOrdersEnd = startedOrdersForSelectedClient.size() - 1;
+		
+		startedOrdersPagingFirstIndex = startedOrdersStart;
+		startedOrdersPagingLastIndex = startedOrdersEnd;		
+		
+		return "redirect:/managerpage#manage_active_orders";
+	}
+	
+	@RequestMapping(value = "/managerpage/readyorderspaging", method = RequestMethod.POST)
+	public String readyOrdersPaging(			
+			@RequestParam("readyOrdersPageStart") final Long readyOrdersPageStart, 
+			@RequestParam("readyOrdersPageEnd") final Long readyOrdersPageEnd) {
+		
+		long readyOrdersStart = readyOrdersPageStart.longValue() - 1;
+		long readyOrdersEnd = readyOrdersPageEnd.longValue() - 1;		
+		
+		if (readyOrdersStart > readyOrdersEnd) {
+			long temp = readyOrdersStart;
+			readyOrdersStart = readyOrdersEnd;
+			readyOrdersEnd = temp;
+		}
+		
+		if (readyOrdersStart < 0)
+			readyOrdersStart = 0;
+		
+		if (readyOrdersStart >= readyOrdersForSelectedClient.size())
+			readyOrdersStart = readyOrdersForSelectedClient.size() - 1;
+		
+		if (readyOrdersEnd < 0)
+			readyOrdersEnd = 0;
+		
+		if (readyOrdersEnd >= readyOrdersForSelectedClient.size())
+			readyOrdersEnd = readyOrdersForSelectedClient.size() - 1;
+		
+		readyOrdersPagingFirstIndex = readyOrdersStart;
+		readyOrdersPagingLastIndex = readyOrdersEnd;		
+		
+		return "redirect:/managerpage#manage_active_orders";
 	}
 	
 	@RequestMapping(value = "/listactiveordersforselectedclient", method = RequestMethod.POST)
 	public String listActiveOrdersForSelectedClient(@RequestParam("clientId") Long clientId) {
-		activeOrdersForSelectedClient.clear();
+		startedOrdersForSelectedClient.clear();
+		readyOrdersForSelectedClient.clear();
 		
-		activeOrdersForSelectedClient.addAll(
-				orderSvc.getOrdersForClientIdAndStatusWithFetching(clientId, "ready"));
-		activeOrdersForSelectedClient.addAll(
-				orderSvc.getOrdersForClientIdAndStatusWithFetching(clientId, "started"));
+		startedOrdersForSelectedClient.addAll(
+				orderSvc.getOrdersForClientIdAndStatusWithFetching(clientId, "started", 
+						startedOrdersPagingFirstIndex,
+						startedOrdersPagingLastIndex - startedOrdersPagingFirstIndex + 1));
+		
+		readyOrdersForSelectedClient.addAll(
+				orderSvc.getOrdersForClientIdAndStatusWithFetching(clientId, "ready", 
+						readyOrdersPagingFirstIndex,
+						readyOrdersPagingLastIndex - readyOrdersPagingFirstIndex + 1));
+		
 		selectedClientId = clientId;
-		return "redirect:/managerpage";
-	}
+		return "redirect:/managerpage#manage_active_orders";
+	}	
 	
 	@RequestMapping(value = "/setready", method = RequestMethod.GET)
 	public String setOrderReady(@RequestParam("order_id") Long orderId) {
 		Order myOrder = orderSvc.getOrderById(orderId);
 		if (myOrder == null) {
-			return "redirect:/managerpage";
+			return "redirect:/managerpage#manage_active_orders";
 		}
 		if (!myOrder.getStatus().contentEquals("started")) {
-			return "redirect:/managerpage";
+			return "redirect:/managerpage#manage_active_orders";
 		}
 		orderSvc.setOrderStatusById(orderId, "ready");
 		myOrder = orderSvc.getOrderByIdWithFetching(orderId);
-		activeOrdersForSelectedClient.remove(
-				activeOrdersForSelectedClient.indexOf(myOrder));		
+		startedOrdersForSelectedClient.remove(
+				startedOrdersForSelectedClient.indexOf(myOrder));		
 		machineSvc.incrementTimesRepairedById(myOrder.getMachine().getMachineId());
-		return "redirect:/managerpage";
+		return "redirect:/managerpage#manage_active_orders";
 	}
 }

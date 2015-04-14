@@ -32,7 +32,8 @@
 	<h1 align = "center">ADMINISTRATIVE TOOLS</h1>
 	
 	<div id="sidebar">
-		<p><a href="<c:url value="/index"/>">Home</a></p>		
+		<p><a href="<c:url value="/index"/>">Home</a></p>
+		<hr>		
 		<p><a href="<c:url value="/managerpage"/>">Switch to orders management</a></p>
 		<hr>
 	<dl class="tabs vertical">

@@ -24,20 +24,26 @@
 <title>Orders Management</title>
 </head>
 
-<body>
-	
+<body>	
 	<h1 align = "center">ORDERS MANAGEMENT</h1>
 	
 	<div id="sidebar">
 		<p><a href="<c:url value="/index"/>">Home</a></p>
+		<hr>
 		<c:if test="${fn:contains(user_token_authorities, 'ROLE_ADMIN')}">			
-			<p><a href="<c:url value="/adminpage"/>">Switch to administrative tools</a></p>						
-		</c:if>
+			<p><a href="<c:url value="/adminpage"/>">Switch to administrative tools</a></p>
+			<hr>						
+		</c:if>		
+			<dl class="tabs vertical">
+  			<dd class="active"><a href="#pending_orders">Pending orders</a></dd>
+  			<dd><a href="#manage_active_orders">Manage active orders</a></dd>
 		<hr>
 		<p><a href="<c:url value="/logout"/>">Log out</a></p>
 	</div>	
 	
 	<div id="content">
+	<div class="tabs-content">
+	<div class="content active" id="pending_orders">
 	<h2>Pending Orders:</h2>
 	<c:choose>
 	<c:when test="${empty pending_orders}">
@@ -50,6 +56,22 @@
 		</div>
 	</c:when>
 	<c:otherwise>
+		<form method="post" action="managerpage/pendingorderspaging" accept-charset="UTF-8">
+  		<table>
+  		<tr>
+  			<td style="width:5%" align="center">records</td>  			
+  			<td style="width:10%" align="center">
+  				<input name="pendingOrdersPageStart" maxlength="5" size="8"
+  				value="${pending_orders_paging_first + 1}"/></td>  			
+  			<td style="width:5%" align="center">to</td>  			
+  			<td style="width:10%" align="center">
+  				<input name="pendingOrdersPageEnd" maxlength="5" size="8"
+  				value="${pending_orders_paging_last + 1}"/></td>
+  			<td style="width:20%" align="center">of ${pending_orders_count} in total</td>
+  			<td style="width:50%" align="left"><button>Go</button></td>  			
+  		</tr>  		
+  		</table>
+  		</form>
 		<table data-toggle="table" 
 			data-classes="table table-hover table-condensed" 
     		data-striped="true"
@@ -85,13 +107,14 @@
   	</table>
   	</c:otherwise>
   	</c:choose>
+  	</div>
   	
-  	  	
+  	<div class="content" id="manage_active_orders">
   	<h2>Manage Active Orders:</h2>
   	<form method="post" action="managerpage/clientpaging" accept-charset="UTF-8">
   		<table>
   		<tr>
-  			<td style="width:5%" align="center">records</td>  			
+  			<td style="width:5%" align="center">clients&nbsp</td>  			
   			<td style="width:10%" align="center">
   				<input name="clientPageStart" maxlength="5" size="8"
   				value="${clients_paging_first + 1}"/></td>  			
@@ -125,15 +148,32 @@
   		</select>
   	</form>  	
   	<c:choose>
-	<c:when test="${empty active_orders_for_selected_client}">
+	<c:when test="${empty started_orders_for_selected_client}">
 		<br>
 		<div style="text-align: center;">
 		<span style="font-size: 18px; line-height: 18px;">
-		<c:out value="No matching records found"/>
+		<c:out value="No started orders found"/>
 		</span>
 		</div>
 	</c:when>
 	<c:otherwise>
+		<br>
+		<form method="post" action="managerpage/startedorderspaging" accept-charset="UTF-8">
+  		<table>
+  		<tr>
+  			<td style="width:5%" align="center">records</td>  			
+  			<td style="width:10%" align="center">
+  				<input name="startedOrdersPageStart" maxlength="5" size="8"
+  				value="${started_orders_paging_first + 1}"/></td>  			
+  			<td style="width:5%" align="center">to</td>  			
+  			<td style="width:10%" align="center">
+  				<input name="startedOrdersPageEnd" maxlength="5" size="8"
+  				value="${started_orders_paging_last + 1}"/></td>
+  			<td style="width:20%" align="center">of ${started_orders_count} in total</td>
+  			<td style="width:50%" align="left"><button>Go</button></td>  			
+  		</tr>  		
+  		</table>
+  		</form>
   	<table border="1" data-toggle="table" 
 		data-classes="table table-hover table-condensed" 
     	data-striped="true"
@@ -143,7 +183,6 @@
 		border="1" style="width:900px" align="center">
 	<thead>
 	<tr><th align="center" data-sortable="true" data-switchable="false"></th>
-	<th align="center" data-sortable="true" data-switchable="false">Client:</th>
 	<th align="center" data-sortable="true" data-visible="false">RepairType:</th>
 	<th align="center" data-sortable="true" data-switchable="false">Machine S/N:</th>
 	<th align="center" data-sortable="true" data-visible="false">Machine Name:</th>
@@ -152,18 +191,17 @@
 	<th align="center" data-visible="false">Actions:</th></tr>
 	</thead>
 	<tbody>	
-  	<c:forEach var="ao" items="${active_orders_for_selected_client}" varStatus="loopStatus">
+  	<c:forEach var="so" items="${started_orders_for_selected_client}" varStatus="loopStatus">
   	<tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
-    	<td><c:out value="${loopStatus.index + 1}"/></td>
-    	<td>${ao.client.clientName}</td> 
-    	<td>${ao.repairType.repairTypeName}</td>
-    	<td>${ao.machine.machineSerialNumber}</td>
-    	<td>${ao.machine.machineServiceable.machineServiceableName}</td>
-    	<td>${ao.start}</td>
-    	<td>${ao.status}</td>
-    	<c:if test="${ao.status == 'started'}">
+    	<td><c:out value="${loopStatus.index + 1}"/></td>    	 
+    	<td>${so.repairType.repairTypeName}</td>
+    	<td>${so.machine.machineSerialNumber}</td>
+    	<td>${so.machine.machineServiceable.machineServiceableName}</td>
+    	<td>${so.start}</td>
+    	<td>${so.status}</td>
+    	<c:if test="${so.status == 'started'}">
    			<td align="center">
-   			<a href="<c:url value="setready/?order_id=${ao.orderId}" />">Set Ready</a>
+   			<a href="<c:url value="setready/?order_id=${so.orderId}" />">Set Ready</a>
    			</td>
    		</c:if>
     </tr>
@@ -172,6 +210,67 @@
   	</table>
   	</c:otherwise>
   	</c:choose>
+  	<br>
+  	<c:choose>
+	<c:when test="${empty ready_orders_for_selected_client}">
+		<br>
+		<div style="text-align: center;">
+		<span style="font-size: 18px; line-height: 18px;">
+		<c:out value="No ready orders found"/>
+		</span>
+		</div>
+	</c:when>
+	<c:otherwise>
+		<br>
+		<form method="post" action="managerpage/readyorderspaging" accept-charset="UTF-8">
+  		<table>
+  		<tr>
+  			<td style="width:5%" align="center">records</td>  			
+  			<td style="width:10%" align="center">
+  				<input name="readyOrdersPageStart" maxlength="5" size="8"
+  				value="${ready_orders_paging_first + 1}"/></td>  			
+  			<td style="width:5%" align="center">to</td>  			
+  			<td style="width:10%" align="center">
+  				<input name="readyOrdersPageEnd" maxlength="5" size="8"
+  				value="${ready_orders_paging_last + 1}"/></td>
+  			<td style="width:20%" align="center">of ${ready_orders_count} in total</td>
+  			<td style="width:50%" align="left"><button>Go</button></td>  			
+  		</tr>  		
+  		</table>
+  		</form>
+  	<table border="1" data-toggle="table" 
+		data-classes="table table-hover table-condensed" 
+    	data-striped="true"
+    	data-pagination="true"
+		data-search="true"
+		data-show-columns="true"
+		border="1" style="width:900px" align="center">
+	<thead>
+	<tr><th align="center" data-sortable="true" data-switchable="false"></th>
+	<th align="center" data-sortable="true" data-visible="false">RepairType:</th>
+	<th align="center" data-sortable="true" data-switchable="false">Machine S/N:</th>
+	<th align="center" data-sortable="true" data-visible="false">Machine Name:</th>
+	<th align="center" data-sortable="true" data-switchable="false">Start:</th>
+	<th align="center" data-sortable="true" data-switchable="false">Status:</th>	
+	</thead>
+	<tbody>	
+  	<c:forEach var="ro" items="${ready_orders_for_selected_client}" varStatus="loopStatus">
+  	<tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
+    	<td><c:out value="${loopStatus.index + 1}"/></td>    	 
+    	<td>${ro.repairType.repairTypeName}</td>
+    	<td>${ro.machine.machineSerialNumber}</td>
+    	<td>${ro.machine.machineServiceable.machineServiceableName}</td>
+    	<td>${ro.start}</td>
+    	<td>${ro.status}</td>    	
+    </tr>
+  	</c:forEach>
+  	</tbody>
+  	</table>
+  	</c:otherwise>
+  	</c:choose>
+  	</div>
+  	</div>
+  	</div>  	
   	
 </body>
 </html>

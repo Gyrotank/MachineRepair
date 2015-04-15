@@ -59,7 +59,7 @@
 		<form method="post" action="managerpage/pendingorderspaging" accept-charset="UTF-8">
   		<table>
   		<tr>
-  			<td style="width:5%" align="center">records</td>  			
+  			<td style="width:5%" align="center">orders&nbsp</td>  			
   			<td style="width:10%" align="center">
   				<input name="pendingOrdersPageStart" maxlength="5" size="8"
   				value="${pending_orders_paging_first + 1}"/></td>  			
@@ -161,7 +161,7 @@
 		<form method="post" action="managerpage/startedorderspaging" accept-charset="UTF-8">
   		<table>
   		<tr>
-  			<td style="width:5%" align="center">records</td>  			
+  			<td style="width:5%" align="center">orders&nbsp</td>  			
   			<td style="width:10%" align="center">
   				<input name="startedOrdersPageStart" maxlength="5" size="8"
   				value="${started_orders_paging_first + 1}"/></td>  			
@@ -225,7 +225,7 @@
 		<form method="post" action="managerpage/readyorderspaging" accept-charset="UTF-8">
   		<table>
   		<tr>
-  			<td style="width:5%" align="center">records</td>  			
+  			<td style="width:5%" align="center">orders&nbsp</td>  			
   			<td style="width:10%" align="center">
   				<input name="readyOrdersPageStart" maxlength="5" size="8"
   				value="${ready_orders_paging_first + 1}"/></td>  			

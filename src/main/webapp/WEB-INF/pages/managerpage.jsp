@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
@@ -21,30 +22,34 @@
 <script src="<c:url value="/resources/js/bootstrap.min.js" />"></script>
 <script src="<c:url value="/resources/js/bootstrap-table.js" />"></script>
 
-<title>Orders Management</title>
+<title><spring:message code="label.managerpage.title" /></title>
 </head>
 
 <body>	
-	<h1 align = "center">ORDERS MANAGEMENT</h1>
+	<h1 align = "center"><spring:message code="label.managerpage.header" /></h1>
 	
 	<div id="sidebar">
-		<p><a href="<c:url value="/index"/>">Home</a></p>
+		<p><a href="<c:url value="/index"/>"><spring:message code="label.managerpage.sidebar.index" /></a></p>
 		<hr>
 		<c:if test="${fn:contains(user_token_authorities, 'ROLE_ADMIN')}">			
-			<p><a href="<c:url value="/adminpage"/>">Switch to administrative tools</a></p>
+			<p><a href="<c:url value="/adminpage"/>">
+				<spring:message code="label.managerpage.sidebar.adminpage" /></a></p>
 			<hr>						
 		</c:if>		
 			<dl class="tabs vertical">
-  			<dd class="active"><a href="#pending_orders">Pending orders</a></dd>
-  			<dd><a href="#manage_active_orders">Manage active orders</a></dd>
+  			<dd class="active"><a href="#pending_orders">
+  				<spring:message code="label.managerpage.sidebar.pending" /></a></dd>
+  			<dd><a href="#manage_active_orders">
+  				<spring:message code="label.managerpage.sidebar.active" /></a></dd>
 		<hr>
-		<p><a href="<c:url value="/logout"/>">Log out</a></p>
+		<p><a href="<c:url value="/logout"/>">
+			<spring:message code="label.managerpage.sidebar.logout" /></a></p>
 	</div>	
 	
 	<div id="content">
 	<div class="tabs-content">
 	<div class="content active" id="pending_orders">
-	<h2>Pending Orders:</h2>
+	<h2><spring:message code="label.managerpage.pending" /></h2>
 	<c:choose>
 	<c:when test="${empty pending_orders}">
 		<br>
@@ -59,16 +64,21 @@
 		<form method="post" action="managerpage/pendingorderspaging" accept-charset="UTF-8">
   		<table>
   		<tr>
-  			<td style="width:5%" align="center">orders&nbsp</td>  			
+  			<td style="width:5%" align="center"><spring:message code="label.managerpage.records" /></td>  			
   			<td style="width:10%" align="center">
   				<input name="pendingOrdersPageStart" maxlength="5" size="8"
   				value="${pending_orders_paging_first + 1}"/></td>  			
-  			<td style="width:5%" align="center">to</td>  			
+  			<td style="width:5%" align="center">
+  				<spring:message code="label.managerpage.to" /></td>  			
   			<td style="width:10%" align="center">
   				<input name="pendingOrdersPageEnd" maxlength="5" size="8"
   				value="${pending_orders_paging_last + 1}"/></td>
-  			<td style="width:20%" align="center">of ${pending_orders_count} in total</td>
-  			<td style="width:50%" align="left"><button>Go</button></td>  			
+  			<td style="width:20%" align="center">
+  			<spring:message code="label.managerpage.of" />
+  			${pending_orders_count}
+  			<spring:message code="label.managerpage.total" /></td>
+  			<td style="width:50%" align="left"><button>
+  				<spring:message code="label.managerpage.buttonGo" /></button></td>  			
   		</tr>  		
   		</table>
   		</form>
@@ -81,13 +91,20 @@
 			border="1" style="width:900px" align="center">
 		<thead>
 		<tr><th align="center" data-sortable="true" data-switchable="false"></th>
-		<th align="center" data-sortable="true" data-switchable="false">Client:</th>
-		<th align="center" data-sortable="true" data-visible="false">RepairType:</th>
-		<th align="center" data-sortable="true" data-switchable="false">Machine S/N:</th>
-		<th align="center" data-sortable="true" data-visible="false">Machine Name:</th>
-		<th align="center" data-sortable="true" data-switchable="false">Start:</th>
-		<th align="center" data-sortable="true" data-switchable="false">Status:</th>
-		<th align="center" data-visible="false">Actions:</th></tr>
+		<th align="center" data-sortable="true" data-switchable="false">
+			<spring:message code="label.managerpage.pending.client" /></th>
+		<th align="center" data-sortable="true" data-visible="false">
+			<spring:message code="label.managerpage.pending.repairType" /></th>
+		<th align="center" data-sortable="true" data-switchable="false">
+			<spring:message code="label.managerpage.pending.sn" /></th>
+		<th align="center" data-sortable="true" data-visible="false">
+			<spring:message code="label.managerpage.pending.machineName" /></th>
+		<th align="center" data-sortable="true" data-switchable="false">
+			<spring:message code="label.managerpage.pending.date" /></th>
+		<th align="center" data-sortable="true" data-switchable="false">
+			<spring:message code="label.managerpage.pending.status" /></th>
+		<th align="center" data-visible="false">
+			<spring:message code="label.managerpage.pending.actions" /></th></tr>
 		</thead>
 		<tbody>	
   		<c:forEach var="po" items="${pending_orders}" varStatus="loopStatus">
@@ -99,8 +116,10 @@
     		<td>${po.machine.machineServiceable.machineServiceableName}</td>
     		<td>${po.start}</td>
     		<td>${po.status}</td>
-    		<td><a href="<c:url value="confirm/?order_id=${po.orderId}" />">Confirm</a><br>
-    		<a href="<c:url value="cancel/?order_id=${po.orderId}" />">Cancel</a></td>
+    		<td><a href="<c:url value="confirm/?order_id=${po.orderId}" />">
+    			<spring:message code="label.managerpage.pending.actions.confirm" /></a><br>
+    		<a href="<c:url value="cancel/?order_id=${po.orderId}" />">
+    			<spring:message code="label.managerpage.pending.actions.cancel" /></a></td>
     	</tr>
   		</c:forEach>
   	</tbody>
@@ -110,27 +129,35 @@
   	</div>
   	
   	<div class="content" id="manage_active_orders">
-  	<h2>Manage Active Orders:</h2>
+  	<h2><spring:message code="label.managerpage.active" /></h2>
   	<form method="post" action="managerpage/clientpaging" accept-charset="UTF-8">
   		<table>
   		<tr>
-  			<td style="width:5%" align="center">clients&nbsp</td>  			
+  			<td style="width:5%" align="center">
+  				<spring:message code="label.managerpage.records2" /></td>  			
   			<td style="width:10%" align="center">
   				<input name="clientPageStart" maxlength="5" size="8"
   				value="${clients_paging_first + 1}"/></td>  			
-  			<td style="width:5%" align="center">to</td>  			
+  			<td style="width:5%" align="center">
+  				<spring:message code="label.managerpage.to" /></td>  			
   			<td style="width:10%" align="center">
   				<input name="clientPageEnd" maxlength="5" size="8"
   				value="${clients_paging_last + 1}"/></td>
-  			<td style="width:20%" align="center">of ${clients_count} in total</td>
-  			<td style="width:50%" align="left"><button>Go</button></td>  			
+  			<td style="width:20%" align="center">
+  			<spring:message code="label.managerpage.of" />
+  			${clients_count}
+  			<spring:message code="label.managerpage.total" /></td>
+  			<td style="width:50%" align="left"><button>
+  				<spring:message code="label.managerpage.buttonGo" /></button></td>  			
   		</tr>  		
   		</table>
   	</form>
   	<br>
   	<form method="post" action="listactiveordersforselectedclient" accept-charset="UTF-8">
   		<select name="clientId" onchange="this.form.submit();">
-  			<option value="0"><c:out value="-Select client-" /></option>  			
+  			<option value="0">
+  				<spring:message code="label.managerpage.started.selectClient" />
+  			</option>  			
   			<c:forEach var="c" items="${clients_short}">
   				<c:choose>
   					<c:when test="${selected_client_id == c.clientId}">
@@ -152,7 +179,7 @@
 		<br>
 		<div style="text-align: center;">
 		<span style="font-size: 18px; line-height: 18px;">
-		<c:out value="No started orders found"/>
+			<spring:message code="label.managerpage.noStartedOrders" />
 		</span>
 		</div>
 	</c:when>
@@ -161,16 +188,22 @@
 		<form method="post" action="managerpage/startedorderspaging" accept-charset="UTF-8">
   		<table>
   		<tr>
-  			<td style="width:5%" align="center">orders&nbsp</td>  			
+  			<td style="width:5%" align="center">
+  				<spring:message code="label.managerpage.records" /></td>  			
   			<td style="width:10%" align="center">
   				<input name="startedOrdersPageStart" maxlength="5" size="8"
   				value="${started_orders_paging_first + 1}"/></td>  			
-  			<td style="width:5%" align="center">to</td>  			
+  			<td style="width:5%" align="center">
+  				<spring:message code="label.managerpage.to" /></td>  			
   			<td style="width:10%" align="center">
   				<input name="startedOrdersPageEnd" maxlength="5" size="8"
   				value="${started_orders_paging_last + 1}"/></td>
-  			<td style="width:20%" align="center">of ${started_orders_count} in total</td>
-  			<td style="width:50%" align="left"><button>Go</button></td>  			
+  			<td style="width:20%" align="center">
+  			<spring:message code="label.managerpage.of" />
+  			${started_orders_count}
+  			<spring:message code="label.managerpage.total" /></td>
+  			<td style="width:50%" align="left"><button>
+  				<spring:message code="label.managerpage.buttonGo" /></button></td>  			
   		</tr>  		
   		</table>
   		</form>
@@ -183,12 +216,18 @@
 		border="1" style="width:900px" align="center">
 	<thead>
 	<tr><th align="center" data-sortable="true" data-switchable="false"></th>
-	<th align="center" data-sortable="true" data-visible="false">RepairType:</th>
-	<th align="center" data-sortable="true" data-switchable="false">Machine S/N:</th>
-	<th align="center" data-sortable="true" data-visible="false">Machine Name:</th>
-	<th align="center" data-sortable="true" data-switchable="false">Start:</th>
-	<th align="center" data-sortable="true" data-switchable="false">Status:</th>
-	<th align="center" data-visible="false">Actions:</th></tr>
+	<th align="center" data-sortable="true" data-visible="false">
+		<spring:message code="label.managerpage.started.repairType" /></th>
+	<th align="center" data-sortable="true" data-switchable="false">
+		<spring:message code="label.managerpage.started.sn" /></th>
+	<th align="center" data-sortable="true" data-visible="false">
+		<spring:message code="label.managerpage.started.machineName" /></th>
+	<th align="center" data-sortable="true" data-switchable="false">
+		<spring:message code="label.managerpage.started.date" /></th>
+	<th align="center" data-sortable="true" data-switchable="false">
+		<spring:message code="label.managerpage.started.status" /></th>
+	<th align="center" data-visible="false">
+		<spring:message code="label.managerpage.started.actions" /></th></tr>
 	</thead>
 	<tbody>	
   	<c:forEach var="so" items="${started_orders_for_selected_client}" varStatus="loopStatus">
@@ -201,7 +240,8 @@
     	<td>${so.status}</td>
     	<c:if test="${so.status == 'started'}">
    			<td align="center">
-   			<a href="<c:url value="setready/?order_id=${so.orderId}" />">Set Ready</a>
+   			<a href="<c:url value="setready/?order_id=${so.orderId}" />">
+   				<spring:message code="label.managerpage.started.actions.setReady" /></a>
    			</td>
    		</c:if>
     </tr>
@@ -216,7 +256,7 @@
 		<br>
 		<div style="text-align: center;">
 		<span style="font-size: 18px; line-height: 18px;">
-		<c:out value="No ready orders found"/>
+		<spring:message code="label.managerpage.noReadyOrders" />
 		</span>
 		</div>
 	</c:when>
@@ -225,16 +265,22 @@
 		<form method="post" action="managerpage/readyorderspaging" accept-charset="UTF-8">
   		<table>
   		<tr>
-  			<td style="width:5%" align="center">orders&nbsp</td>  			
+  			<td style="width:5%" align="center">
+  				<spring:message code="label.managerpage.records" /></td>  			
   			<td style="width:10%" align="center">
   				<input name="readyOrdersPageStart" maxlength="5" size="8"
   				value="${ready_orders_paging_first + 1}"/></td>  			
-  			<td style="width:5%" align="center">to</td>  			
+  			<td style="width:5%" align="center">
+  				<spring:message code="label.managerpage.to" /></td>  			
   			<td style="width:10%" align="center">
   				<input name="readyOrdersPageEnd" maxlength="5" size="8"
   				value="${ready_orders_paging_last + 1}"/></td>
-  			<td style="width:20%" align="center">of ${ready_orders_count} in total</td>
-  			<td style="width:50%" align="left"><button>Go</button></td>  			
+  			<td style="width:20%" align="center">
+  			<spring:message code="label.managerpage.of" />
+  			${ready_orders_count}
+  			<spring:message code="label.managerpage.total" /></td>
+  			<td style="width:50%" align="left"><button>
+  				<spring:message code="label.managerpage.buttonGo" /></button></td>  			
   		</tr>  		
   		</table>
   		</form>
@@ -247,11 +293,16 @@
 		border="1" style="width:900px" align="center">
 	<thead>
 	<tr><th align="center" data-sortable="true" data-switchable="false"></th>
-	<th align="center" data-sortable="true" data-visible="false">RepairType:</th>
-	<th align="center" data-sortable="true" data-switchable="false">Machine S/N:</th>
-	<th align="center" data-sortable="true" data-visible="false">Machine Name:</th>
-	<th align="center" data-sortable="true" data-switchable="false">Start:</th>
-	<th align="center" data-sortable="true" data-switchable="false">Status:</th>	
+	<th align="center" data-sortable="true" data-visible="false">
+		<spring:message code="label.managerpage.ready.repairType" /></th>
+	<th align="center" data-sortable="true" data-switchable="false">
+		<spring:message code="label.managerpage.ready.sn" /></th>
+	<th align="center" data-sortable="true" data-visible="false">
+		<spring:message code="label.managerpage.ready.machineName" /></th>
+	<th align="center" data-sortable="true" data-switchable="false">
+		<spring:message code="label.managerpage.ready.date" /></th>
+	<th align="center" data-sortable="true" data-switchable="false">
+		<spring:message code="label.managerpage.ready.status" /></th>	
 	</thead>
 	<tbody>	
   	<c:forEach var="ro" items="${ready_orders_for_selected_client}" varStatus="loopStatus">

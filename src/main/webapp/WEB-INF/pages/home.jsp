@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%> 
@@ -9,45 +10,50 @@
 
 <link href="<c:url value="/resources/css/general.css"/>" rel="stylesheet" type="text/css" />
 
-<title>MachineRepair Home Page</title>
+<title><spring:message code="label.homepage.title" /></title>
 
 </head>
 <body>
 	
 	<h3 class = "left">
 		<c:if test="${login != ''}">
-			Welcome, ${login}!
+			<spring:message code="label.homepage.welcome" /> ${login}!
 		</c:if>
 	</h3>
 	
 	<h3 class = "right">
 		<c:if test="${login == ''}">
-   			<a href="${pageContext.servletContext.contextPath}/login">Log In</a>&emsp;
-   			<a href="${pageContext.servletContext.contextPath}/signuppage">Sign Up</a>&emsp;
+   			<a href="${pageContext.servletContext.contextPath}/login">
+   			<spring:message code="label.homepage.login" /></a>&emsp;
+   			<a href="${pageContext.servletContext.contextPath}/signuppage">
+   			<spring:message code="label.homepage.signup" /></a>&emsp;
 		</c:if>
 		
 		<c:if test="${login != ''}">
-			<a href="<c:url value="/logout"/>">Log out</a>
+			<a href="<c:url value="/logout"/>"><spring:message code="label.homepage.logout" /></a>
 		</c:if>
 	</h3>
 	<br>
 	<center>
-		<h1>MachineRepair Inc.</h1>
+		<h1><spring:message code="label.homepage.header" /></h1>
 	</center>
 	
 	<c:if test="${fn:contains(user_token_authorities, 'ROLE_MANAGER')
 					|| fn:contains(user_token_authorities, 'ROLE_ADMIN')}">
-		<a href="${pageContext.servletContext.contextPath}/managerpage">Manager Tools</a>
+		<a href="${pageContext.servletContext.contextPath}/managerpage">
+			<spring:message code="label.homepage.managerTools" /></a>
 		<br>				
 	</c:if>
 	<c:if test="${fn:contains(user_token_authorities, 'ROLE_ADMIN')}">
 		<br>
-		<a href="${pageContext.servletContext.contextPath}/adminpage">Admin Tools</a>
+		<a href="${pageContext.servletContext.contextPath}/adminpage">
+			<spring:message code="label.homepage.adminTools" /></a>
 	</c:if>
 	<c:if test="${fn:contains(user_token_authorities, 'ROLE_CLIENT')
 				&& not fn:contains(user_token_authorities, 'ROLE_MANAGER')
 				&& not fn:contains(user_token_authorities, 'ROLE_ADMIN')}">
-		<a href="${pageContext.servletContext.contextPath}/clientpage">Personal Cabinet</a>		
+		<a href="${pageContext.servletContext.contextPath}/clientpage">
+			<spring:message code="label.homepage.personalCabinet" /></a>		
 	</c:if>		
 	
 </body>

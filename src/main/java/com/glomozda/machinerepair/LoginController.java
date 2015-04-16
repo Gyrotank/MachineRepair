@@ -1,5 +1,7 @@
 package com.glomozda.machinerepair;
 
+import java.util.Locale;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,10 +27,11 @@ public class LoginController {
 	private String message = "";
 		  
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public String activate(Model model) {
+	public String activate(final Locale locale, final Model model) {
 		
 		log.info("Activating Login Page...");
 		
+		model.addAttribute("locale", locale.toString());
 		model.addAttribute("message", message);
 		message = "";
 		return "login";

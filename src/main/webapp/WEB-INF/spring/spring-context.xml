@@ -1,56 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+<beans:beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
   xmlns:tx="http://www.springframework.org/schema/tx"
-  xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
-        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+  xmlns:beans="http://www.springframework.org/schema/beans"
+  xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd        
         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
  
   <!-- Enable annotation-based Spring MVC controllers (eg: @Controller annotation) -->
-  <mvc:annotation-driven/>
+  <annotation-driven/>
   
-  <!-- Classpath scanning of @Component, @Service, etc annotated class -->
-  <context:component-scan base-package="com.glomozda.machinerepair" />
-
   <!-- Resolve view name into jsp file located on /WEB-INF -->
-  <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-    <property name="prefix" value="/WEB-INF/pages/" />
-    <property name="suffix" value=".jsp" />
-  </bean>  
+  <beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <beans:property name="prefix" value="/WEB-INF/pages/" />
+    <beans:property name="suffix" value=".jsp" />
+  </beans:bean>  
   
-  <mvc:default-servlet-handler/>
+  <default-servlet-handler/>
    
   <!-- MySQL Datasource with Commons DBCP connection pooling -->
-  <bean class="org.apache.commons.dbcp.BasicDataSource" id="dataSource">
-    <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-    <property name="url" value="jdbc:mysql://localhost:3306/machinerepair?characterEncoding=UTF-8"/>
-    <property name="username" value="root"/>
-    <property name="password" value=""/>
-  </bean>
+  <beans:bean class="org.apache.commons.dbcp.BasicDataSource" id="dataSource">
+    <beans:property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+    <beans:property name="url" value="jdbc:mysql://localhost/machinerepair?user=root&amp;password=kokokoR2&amp;characterEncoding=UTF-8"/>
+    <beans:property name="username" value="root"/>
+    <beans:property name="password" value="kokokoR2"/>
+  </beans:bean>
    
   <!-- EntityManagerFactory -->
-  <bean class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" id="entityManagerFactory">
-    <property name="persistenceUnitName" value="persistenceUnit"/>
-    <property name="dataSource" ref="dataSource"/>
-  </bean>
+  <beans:bean class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" id="entityManagerFactory">
+    <beans:property name="persistenceUnitName" value="persistenceUnit"/>
+    <beans:property name="dataSource" ref="dataSource"/>
+  </beans:bean>
    
   <!-- Transaction Manager -->
-  <bean class="org.springframework.orm.jpa.JpaTransactionManager" id="transactionManager">
-    <property name="entityManagerFactory" ref="entityManagerFactory"/>
-  </bean>
+  <beans:bean class="org.springframework.orm.jpa.JpaTransactionManager" id="transactionManager">
+    <beans:property name="entityManagerFactory" ref="entityManagerFactory"/>
+  </beans:bean>
   
   <!-- Password Encoder -->
-  <bean class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" id="encoder"/>
+  <beans:bean class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" id="encoder"/>
    
   <!-- Enable @Transactional annotation -->
   <tx:annotation-driven/>
   
   <!-- Message Source -->
-  <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
-  	<property name="basename" value="messages"/>
-  </bean>
+  <beans:bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+  	<beans:property name="basename" value="messages"/>
+  </beans:bean>
   
-  <mvc:resources mapping="/resources/**" location="/resources/" />  
+  <resources mapping="/resources/**" location="/resources/" />
+  
+<!--   <beans:bean id="localeResolver" -->
+<!--     class="org.springframework.web.servlet.i18n.SessionLocaleResolver"> -->
+<!--     <beans:property name="defaultLocale" value="en" /> -->
+<!--   </beans:bean> -->
+  
+  <beans:bean id="localeResolver"
+        class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+        <beans:property name="defaultLocale" value="en" />
+        <beans:property name="cookieName" value="localeCookie"></beans:property>
+        <beans:property name="cookieMaxAge" value="36000"></beans:property>
+  </beans:bean>
+  
+  <interceptors>
+        <beans:bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+            <beans:property name="paramName" value="locale" />
+        </beans:bean>
+   </interceptors>
+    
+  <!-- Classpath scanning of @Component, @Service, etc annotated class -->
+  <context:component-scan base-package="com.glomozda.machinerepair" />
  
-</beans>
+</beans:beans>

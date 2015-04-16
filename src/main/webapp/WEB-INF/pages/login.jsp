@@ -14,14 +14,36 @@
 </head>
 <body>
 
-	<h3 class = "right">
-		<a href="<c:url value="/index"/>"><spring:message code="label.loginpage.back" /></a>
+	<h3 class = "left">
+		<a href="<c:url value="/index"/>"><spring:message code="label.loginpage.back" /></a>		
 	</h3>
 	
-	<h1><spring:message code="label.loginpage.header" /></h1>
+	<h3 class = "right">
+	<c:choose>
+  			<c:when test="${locale == 'en'}">
+  				<a href="?locale=en"><img src="resources/images/usa.png" width="40"></a>
+  			</c:when>
+  			<c:otherwise>
+  				<a href="?locale=en"><img src="resources/images/usa.png" width="32"></a>
+  			</c:otherwise>
+		</c:choose>
+		<c:choose>
+  			<c:when test="${locale == 'ru'}">
+  				<a href="?locale=ru"><img src="resources/images/rus.png" width="40"></a>
+  			</c:when>
+  			<c:otherwise>
+  				<a href="?locale=ru"><img src="resources/images/rus.png" width="32"></a>
+  			</c:otherwise>
+		</c:choose>		
+		<br>
+	</h3>
+	
+	<h1><br><spring:message code="label.loginpage.header" /></h1>
 	<c:choose>
     	<c:when test="${not empty param.error}">
-        	<font color="red"> ERROR: ${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message} </font>
+        	<div class="error">
+        		${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message}
+        	</div>
     	</c:when>
     	<c:otherwise>
         	<font color="white"> _ </font>
@@ -42,8 +64,9 @@
 		<td><input type="checkbox" name="_spring_security_remember_me" /></td>
 	</tr>
 	<tr>
-		<td colspan="2" align="right"><input type="submit" value="Login" />
-		<input type="reset" value="Reset" /></td>
+		<td colspan="2" align="right"><input type="submit" 
+			value="<spring:message code="label.loginpage.buttonLogin" />" />
+		<input type="reset" value="<spring:message code="label.loginpage.buttonReset" />" /></td>
 	</tr>
 	</table>
 </form>

@@ -1,7 +1,11 @@
 package com.glomozda.machinerepair;
 
+import java.util.Locale;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceAware;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,10 +22,12 @@ import com.glomozda.machinerepair.repository.userauthorization.UserAuthorization
 
 @Controller
 @RequestMapping("/signuppage")
-public class SignUpController {
+public class SignUpController implements MessageSourceAware {
 	
 	static Logger log = Logger.getLogger(LoginController.class.getName());
-
+	
+	private MessageSource messageSource;
+	
 	@Autowired
 	private UserService userSvc;
 	
@@ -34,14 +40,20 @@ public class SignUpController {
 	@Autowired
 	private PasswordEncoder encoder;
 	
+	public void setMessageSource(final MessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+	
 	private String message = "";
 	private String enteredName = "";
 	private String enteredLogin = "";
 	  
 	@RequestMapping(method = RequestMethod.GET)
-	public String activate(Model model) {
+	public String activate(final Locale locale, final Model model) {
 		
 		log.info("Activating SignUp Page...");
+		
+		model.addAttribute("locale", locale.toString());
 		
 		model.addAttribute("message", message);
 		message = "";
@@ -59,7 +71,8 @@ public class SignUpController {
 	public String signUp(@RequestParam("name") String name,
 			@RequestParam("login") String login,
 			@RequestParam("password1") String password1,
-			@RequestParam("password2") String password2) {
+			@RequestParam("password2") String password2,
+			Locale locale) {
 		
 		User queryRes;
 		
@@ -67,28 +80,33 @@ public class SignUpController {
 		enteredLogin = login;
 		
 		if (name.isEmpty()) {
-			message = "Name can't be empty!";			
+			message = messageSource.getMessage("error.signuppage.nameEmpty", null,
+					locale);
 			return "redirect:/signuppage"; 
 		}
 		
 		if (login.isEmpty()) {
-			message = "Login can't be empty!";			
+			message = messageSource.getMessage("error.signuppage.loginEmpty", null,
+					locale);
 			return "redirect:/signuppage"; 
 		}
 		
 		if (password1.isEmpty()) {
-			message = "Password can't be empty!";			
+			message = messageSource.getMessage("error.signuppage.passwordEmpty", null,
+					locale);
 			return "redirect:/signuppage"; 
 		}
 		
 		if (!password1.contentEquals(password2)) {
-			message = "Passwords don't match!";			
+			message = messageSource.getMessage("error.signuppage.passwordsNotMatch", null,
+					locale);
 			return "redirect:/signuppage"; 
 		}
 		
 		queryRes = userSvc.getUserByLogin(login);
 		if (queryRes != null) {
-			message = "Login is in use already!";			
+			message = messageSource.getMessage("error.signuppage.loginInUse", null,
+					locale);
 			return "redirect:/signuppage"; 
 		}
 		
@@ -103,7 +121,7 @@ public class SignUpController {
 		
 		UserAuthorization newUserAuthorization = new UserAuthorization("ROLE_CLIENT");
 		userAuthorizationSvc.add(newUserAuthorization, queryRes.getUserId());
-		
+				
 		return "redirect:/login";
 	}
 	

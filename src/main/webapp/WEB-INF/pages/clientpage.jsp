@@ -22,6 +22,15 @@
 <script src="<c:url value="/resources/js/jquery.ui.ufd.js" />"></script>
 <script src="<c:url value="/resources/js/bootstrap.min.js" />"></script>
 <script src="<c:url value="/resources/js/bootstrap-table.js" />"></script>
+<script src="<c:url value="/resources/js/bootstrap-table-en-US.js" />"></script>
+<c:choose>
+  	<c:when test="${locale == 'ru'}">
+  		<script src="<c:url value="/resources/js/bootstrap-table-ru-RU.js" />"></script>
+  	</c:when>
+  	<c:otherwise>
+  		<script src="<c:url value="/resources/js/bootstrap-table-en-US.js" />"></script>
+  	</c:otherwise>
+</c:choose>
 
 <title><spring:message code="label.clientpage.title" /></title>
 
@@ -30,6 +39,26 @@
 <body>
 	<jsp:useBean id="now" class="java.util.Date" />
 	<fmt:formatDate var="current_year" value="${now}" pattern="yyyy" />
+	
+	<h3 class = "right">
+	<c:choose>
+  			<c:when test="${locale == 'en'}">
+  				<a href="?locale=en"><img src="resources/images/usa.png" width="40"></a>
+  			</c:when>
+  			<c:otherwise>
+  				<a href="?locale=en"><img src="resources/images/usa.png" width="32"></a>
+  			</c:otherwise>
+		</c:choose>
+		<c:choose>
+  			<c:when test="${locale == 'ru'}">
+  				<a href="?locale=ru"><img src="resources/images/rus.png" width="40"></a>
+  			</c:when>
+  			<c:otherwise>
+  				<a href="?locale=ru"><img src="resources/images/rus.png" width="32"></a>
+  			</c:otherwise>
+		</c:choose>		
+		<br>
+	</h3>
 		
 	<div id="sidebar">
 		<p><a href="<c:url value="/index"/>"><spring:message code="label.clientpage.sidebar.index" /></a>
@@ -248,7 +277,8 @@
     	<td>${co.status}</td>
     	<c:if test="${co.status == 'ready'}">
    			<td align="center">
-   			<a href="<c:url value="pay/?order_id=${co.orderId}" />">Pay</a>
+   			<a href="<c:url value="pay/?order_id=${co.orderId}" />">
+   				<spring:message code="label.clientpage.yourOrders.actions.pay" /></a>
    			</td>
 		</c:if>    	
     </tr>

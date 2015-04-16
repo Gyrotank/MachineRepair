@@ -102,7 +102,7 @@ public class ClientPageController implements MessageSourceAware {
 	}
 	
 	@RequestMapping(value = "/clientpage", method = RequestMethod.GET)
-	public String activate(final Principal principal, final Model model) {
+	public String activate(final Locale locale, final Principal principal, final Model model) {
 		
 		log.info("Activating Client Page for " + principal.getName() + "...");
 		
@@ -110,6 +110,8 @@ public class ClientPageController implements MessageSourceAware {
 		if (null == myClient) {
 			return "redirect:/index";
 		}		
+		
+		model.addAttribute("locale", locale.toString());
 		
 		model.addAttribute("clientname", myClient.getClientName());
 		
@@ -221,18 +223,19 @@ public class ClientPageController implements MessageSourceAware {
 	@RequestMapping(value = "/createorderforrepeatedrepair", method = RequestMethod.POST)
 	public String createOrderForRepeatedRepair(
 			@RequestParam("machineSerialNumber") String machineSerialNumber,
-			@RequestParam("repairTypeId") Long repairTypeId) {		
+			@RequestParam("repairTypeId") Long repairTypeId,
+			final Locale locale) {		
 		
 		if (machineSerialNumber.isEmpty() || repairTypeId == 0) {
 			if (machineSerialNumber.isEmpty()) {
 				messageRepeatedRepairSerialNumber = 
 						messageSource.getMessage("error.clientpage.repeatedRepairSerialNumber",
-								null, Locale.getDefault());
+								null, locale);
 			}
 			if (repairTypeId == 0) {
 				messageRepeatedRepairRepairTypeId =
 						messageSource.getMessage("error.clientpage.repeatedRepairRepairTypeId",
-								null, Locale.getDefault());
+								null, locale);
 			}
 			
 			enteredRepeatedRepairSerialNumber = machineSerialNumber;
@@ -258,7 +261,8 @@ public class ClientPageController implements MessageSourceAware {
 			@RequestParam("machineServiceableId") Long machineServiceableId,
 			@RequestParam("machineSerialNumber") String machineSerialNumber,
 			@RequestParam("machineYear") String machineYear,
-			@RequestParam("repairTypeId") Long repairTypeId) {
+			@RequestParam("repairTypeId") Long repairTypeId,
+			final Locale locale) {
 		
 		if (machineServiceableId == 0 || machineSerialNumber.isEmpty()
 				|| machineYear.isEmpty()
@@ -270,40 +274,40 @@ public class ClientPageController implements MessageSourceAware {
 			if (machineServiceableId == 0) {
 				messageFirstRepairServiceableId = 
 						messageSource.getMessage("error.clientpage.firstRepairServiceableId",
-								null, Locale.getDefault());
+								null, locale);
 			}
 			if (machineSerialNumber.isEmpty()) {
 				messageFirstRepairSerialNumber =
 						messageSource.getMessage("error.clientpage.firstRepairSerialNumber",
-								null, Locale.getDefault());
+								null, locale);
 			}
 			if (machineYear.isEmpty()) {
 				messageFirstRepairYear = 
 						messageSource.getMessage("error.clientpage.firstRepairYear",
-								null, Locale.getDefault());
+								null, locale);
 			}
 			if (!isNonNegativeInteger(machineYear.toString())) {
 				messageFirstRepairYear = 
 						messageSource.getMessage("error.clientpage.firstRepairYearFormat",
-								null, Locale.getDefault());
+								null, locale);
 			}
 			if (isNonNegativeInteger(machineYear.toString())) {
 				if (Integer.parseInt(machineYear) < 1950) {
 					messageFirstRepairYear = 
 							messageSource.getMessage("Min.machine.machineYear",
-									null, Locale.getDefault());
+								null, locale);
 				}
 				if (Integer.parseInt(machineYear) >
 				java.util.Calendar.getInstance().get(Calendar.YEAR)) {
 					messageFirstRepairYear = 
 							messageSource.getMessage("error.clientpage.firstRepairYearFuture",
-									null, Locale.getDefault());
+								null, locale);
 				}
 			}
 			if (repairTypeId == 0) {
 				messageFirstRepairRepairTypeId = 
 						messageSource.getMessage("error.clientpage.firstRepairRepairTypeId",
-								null, Locale.getDefault());
+								null, locale);
 			}			
 						
 			selectedFirstRepairServiceableId = machineServiceableId;

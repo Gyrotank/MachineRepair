@@ -3,6 +3,7 @@ package com.glomozda.machinerepair;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -65,7 +66,7 @@ public class ManagerPageController {
 	private ArrayList<Order> readyOrdersForSelectedClient = new ArrayList<Order>();
 	
 	@RequestMapping(value = "/managerpage", method = RequestMethod.GET)
-	public String activate(final Principal principal, final Model model) {
+	public String activate(final Locale locale, final Principal principal, final Model model) {
 		
 		log.info("Activating Manager Page for " + principal.getName() + "...");
 		
@@ -73,6 +74,8 @@ public class ManagerPageController {
 		if (null == myUser) {
 			return "redirect:/index";
 		}
+		
+		model.addAttribute("locale", locale.toString());
 		
 		UsernamePasswordAuthenticationToken userToken =
 				(UsernamePasswordAuthenticationToken)principal;

@@ -118,14 +118,17 @@ public class AdminPageController implements MessageSourceAware {
 	}
 	
 	@RequestMapping(value = "/adminpage", method = RequestMethod.GET)
-	public String activate(final Principal principal, final Model model) {
+	public String activate(final Locale locale, final Principal principal, final Model model) {
 		
 		log.info("Activating Admin Page for " + principal.getName() + "...");
+		log.info("Locale is " + locale.toString());
 		
 		myUser = userSvc.getUserByLogin(principal.getName());
 		if (null == myUser) {
 			return "redirect:/index";
 		}
+		
+		model.addAttribute("locale", locale.toString());
 		
 		if (!model.containsAttribute("machine")) {
 			model.addAttribute("machine", new Machine());
@@ -284,7 +287,8 @@ public class AdminPageController implements MessageSourceAware {
 	public String addMachine(@ModelAttribute("machine") @Valid final Machine machine,
 			final BindingResult bindingResult,			
 			final RedirectAttributes redirectAttributes,			
-			@RequestParam("machineServiceableId") final Long machineServiceableId) {
+			@RequestParam("machineServiceableId") final Long machineServiceableId,
+			final Locale locale) {
 		
 		if (machine.getMachineYear() != null)
 			if (machine.getMachineYear() > java.util.Calendar.getInstance().get(Calendar.YEAR)) {
@@ -295,7 +299,7 @@ public class AdminPageController implements MessageSourceAware {
 			if (machineServiceableId == 0) {
 				messageMachineServiceableId = 
 						messageSource.getMessage("error.adminpage.machineServiceableId", null,
-								Locale.getDefault());
+								locale);
 			}			
 
 			if (bindingResult.hasErrors()) {
@@ -500,13 +504,14 @@ public class AdminPageController implements MessageSourceAware {
 		(@ModelAttribute("userAuthorization") @Valid final UserAuthorization userAuthorization,
 			final BindingResult bindingResult,			
 			final RedirectAttributes redirectAttributes,
-			@RequestParam("userId") final Long userId) {
+			@RequestParam("userId") final Long userId,
+			final Locale locale) {
 		
 		if (userId == 0 || bindingResult.hasErrors()) {
 			if (userId == 0) {
 				messageUserAuthorizationUserId = 
 						messageSource.getMessage("error.adminpage.userId", null,
-								Locale.getDefault());			
+								locale);			
 			}
 
 			if (bindingResult.hasErrors()) {
@@ -560,13 +565,14 @@ public class AdminPageController implements MessageSourceAware {
 	public String addClient(@ModelAttribute("client") @Valid final Client client,
 			final BindingResult bindingResult,			
 			final RedirectAttributes redirectAttributes,
-			@RequestParam("userId") final Long userId) {
+			@RequestParam("userId") final Long userId,
+			final Locale locale) {
 		
 		if (userId == 0 || bindingResult.hasErrors()) {
 			if (userId == 0) {
 				messageClientUserId = 
 						messageSource.getMessage("error.adminpage.userId", null,
-								Locale.getDefault());			
+								locale);			
 			}
 
 			if (bindingResult.hasErrors()) {
@@ -622,7 +628,8 @@ public class AdminPageController implements MessageSourceAware {
 			@RequestParam("clientId") final Long clientId, 
 			@RequestParam("repairTypeId") final Long repairTypeId, 
 			@RequestParam("machineId") final Long machineId,
-			@RequestParam("startDate") final String startDate) {
+			@RequestParam("startDate") final String startDate,
+			final Locale locale) {
 		
 		java.sql.Date startSqlDate = new java.sql.Date(0);
 		
@@ -648,25 +655,25 @@ public class AdminPageController implements MessageSourceAware {
 			if (clientId == 0) {
 				messageOrderClientId = 
 						messageSource.getMessage("error.adminpage.clientId", null,
-								Locale.getDefault());			
+								locale);			
 			}
 
 			if (repairTypeId == 0) {
 				messageOrderRepairTypeId = 
 						messageSource.getMessage("error.adminpage.repairTypeId", null,
-								Locale.getDefault());			
+								locale);			
 			}
 
 			if (machineId == 0) {
 				messageOrderMachineId = 
 						messageSource.getMessage("error.adminpage.machineId", null,
-								Locale.getDefault());			
+								locale);			
 			}
 			
 			if (startSqlDate == null) {
 				messageOrderStart = 
 						messageSource.getMessage("typeMismatch.order.start", null,
-								Locale.getDefault());
+								locale);
 			}
 
 			if (bindingResult.hasErrors()) {

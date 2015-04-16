@@ -14,11 +14,31 @@
 </head>
 <body>
 
-	<h3 class = "right">
+	<h3 class = "left">
 		<a href="<c:url value="/index"/>"><spring:message code="label.signuppage.back" /></a>
 	</h3>
 	
-	<h1><spring:message code="label.signuppage.header" /></h1>
+	<h3 class = "right">
+	<c:choose>
+  			<c:when test="${locale == 'en'}">
+  				<a href="?locale=en"><img src="resources/images/usa.png" width="40"></a>
+  			</c:when>
+  			<c:otherwise>
+  				<a href="?locale=en"><img src="resources/images/usa.png" width="32"></a>
+  			</c:otherwise>
+		</c:choose>
+		<c:choose>
+  			<c:when test="${locale == 'ru'}">
+  				<a href="?locale=ru"><img src="resources/images/rus.png" width="40"></a>
+  			</c:when>
+  			<c:otherwise>
+  				<a href="?locale=ru"><img src="resources/images/rus.png" width="32"></a>
+  			</c:otherwise>
+		</c:choose>		
+		<br>
+	</h3>
+	
+	<h1><br><spring:message code="label.signuppage.header" /></h1>
 	
 	<c:choose>
     	<c:when test="${not empty message}">

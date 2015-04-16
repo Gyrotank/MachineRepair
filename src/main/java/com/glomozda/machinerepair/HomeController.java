@@ -1,6 +1,7 @@
 package com.glomozda.machinerepair;
 
 import java.security.Principal;
+import java.util.Locale;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +21,7 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
-	public String activate(Model model, Principal principal) {
+	public String activate(final Locale locale, final Model model, final Principal principal) {
 		
 		String login = "";
 		String userTokenAuthorities = "";
@@ -34,6 +35,8 @@ public class HomeController {
 		} else {
 			log.info("Activating Home Page (no principal)...");
 		}
+		log.info("Locale is " + locale);
+		model.addAttribute("locale", locale.toString());
 	    model.addAttribute("login", login);
 	    model.addAttribute("user_token_authorities", userTokenAuthorities);
 	    return "home";

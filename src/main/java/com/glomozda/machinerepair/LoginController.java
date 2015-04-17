@@ -8,8 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.glomozda.machinerepair.repository.client.ClientService;
-import com.glomozda.machinerepair.repository.user.UserService;
+import com.glomozda.machinerepair.service.client.ClientService;
+import com.glomozda.machinerepair.service.user.UserService;
 
 import org.apache.log4j.Logger;
 
@@ -29,7 +29,7 @@ public class LoginController {
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String activate(final Locale locale, final Model model) {
 		
-		log.info("Activating Login Page...");
+//		log.info("Activating Login Page...");
 		
 		model.addAttribute("locale", locale.toString());
 		model.addAttribute("message", message);

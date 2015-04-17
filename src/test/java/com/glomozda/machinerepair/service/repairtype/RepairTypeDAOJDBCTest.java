@@ -1,4 +1,4 @@
-package com.glomozda.machinerepair.repository.repairtype;
+package com.glomozda.machinerepair.service.repairtype;
 
 import java.math.BigDecimal;
 
@@ -10,7 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.glomozda.machinerepair.domain.repairtype.RepairType;
-import com.glomozda.machinerepair.repository.DAOTestsTemplate;
+import com.glomozda.machinerepair.service.DAOTestsTemplate;
 
 @SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
 @ContextConfiguration(locations = "classpath:spring-context-test.xml")

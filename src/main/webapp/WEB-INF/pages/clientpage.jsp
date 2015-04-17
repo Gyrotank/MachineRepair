@@ -40,8 +40,8 @@
 	<jsp:useBean id="now" class="java.util.Date" />
 	<fmt:formatDate var="current_year" value="${now}" pattern="yyyy" />
 	
-	<h3 class = "right">
-	<c:choose>
+	<div id="sidebar">
+		<c:choose>
   			<c:when test="${locale == 'en'}">
   				<a href="?locale=en"><img src="resources/images/usa.png" width="40"></a>
   			</c:when>
@@ -56,13 +56,10 @@
   			<c:otherwise>
   				<a href="?locale=ru"><img src="resources/images/rus.png" width="32"></a>
   			</c:otherwise>
-		</c:choose>		
-		<br>
-	</h3>
-		
-	<div id="sidebar">
+		</c:choose>
+		<hr class="style-seven">
 		<p><a href="<c:url value="/index"/>"><spring:message code="label.clientpage.sidebar.index" /></a>
-		<hr>
+		<hr class="style-seven">
 			<dl class="tabs vertical">
   			<dd class="active"><a href="#create_orders">
   				<spring:message code="label.clientpage.sidebar.createOrders" /></a></dd>
@@ -71,7 +68,7 @@
   			<dd><a href="#past_orders">
   				<spring:message code="label.clientpage.sidebar.pastOrders" /></a></dd>  			
 		</dl>
-		<hr>
+		<hr class="style-seven">
 		<p><a href="<c:url value="/logout"/>"><spring:message code="label.clientpage.sidebar.logout" /></a></p>
 	</div>
 	
@@ -211,7 +208,7 @@
   	</c:otherwise>
   	</c:choose>
   	</div>  	  	
-  	<br>
+  	<br><hr class="style-seven">
 	
 	<div class="content" id="current_orders">	  		
 	<h2><spring:message code="label.clientpage.yourCurrentOrders" /></h2>
@@ -289,7 +286,7 @@
   	</c:choose>
   	</div>
   	
-  	<br><hr>
+  	<br><hr class="style-seven">
   	
   	<div class="content" id="past_orders">
   	<h2><spring:message code="label.clientpage.yourPastOrders" /></h2>

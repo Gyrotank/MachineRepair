@@ -2,20 +2,20 @@ package com.glomozda.machinerepair.repository.client;
 
 import java.util.List;
 
-import com.glomozda.machinerepair.domain.client.*;
-import com.glomozda.machinerepair.domain.user.*;
-
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.stereotype.Service;
 
-@Service
-public class ClientService {
-   
+import com.glomozda.machinerepair.domain.client.Client;
+import com.glomozda.machinerepair.domain.user.User;
+
+@Repository
+public class ClientRepository {
+	
 	@PersistenceContext
 	private EntityManager em;
 	

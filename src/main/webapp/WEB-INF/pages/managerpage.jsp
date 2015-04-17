@@ -37,8 +37,8 @@
 <body>	
 	<h1 align = "center"><spring:message code="label.managerpage.header" /></h1>
 	
-	<h3 class = "right">
-	<c:choose>
+	<div id="sidebar">
+		<c:choose>
   			<c:when test="${locale == 'en'}">
   				<a href="?locale=en"><img src="resources/images/usa.png" width="40"></a>
   			</c:when>
@@ -53,24 +53,21 @@
   			<c:otherwise>
   				<a href="?locale=ru"><img src="resources/images/rus.png" width="32"></a>
   			</c:otherwise>
-		</c:choose>		
-		<br>
-	</h3>
-	
-	<div id="sidebar">
+		</c:choose>
+		<hr class="style-seven">
 		<p><a href="<c:url value="/index"/>"><spring:message code="label.managerpage.sidebar.index" /></a></p>
-		<hr>
+		<hr class="style-seven">
 		<c:if test="${fn:contains(user_token_authorities, 'ROLE_ADMIN')}">			
 			<p><a href="<c:url value="/adminpage"/>">
 				<spring:message code="label.managerpage.sidebar.adminpage" /></a></p>
-			<hr>						
+			<hr class="style-seven">						
 		</c:if>		
 			<dl class="tabs vertical">
   			<dd class="active"><a href="#pending_orders">
   				<spring:message code="label.managerpage.sidebar.pending" /></a></dd>
   			<dd><a href="#manage_active_orders">
   				<spring:message code="label.managerpage.sidebar.active" /></a></dd>
-		<hr>
+		<hr class="style-seven">
 		<p><a href="<c:url value="/logout"/>">
 			<spring:message code="label.managerpage.sidebar.logout" /></a></p>
 	</div>	
@@ -156,6 +153,8 @@
   	</c:otherwise>
   	</c:choose>
   	</div>
+  	
+  	<hr class="style-seven">
   	
   	<div class="content" id="manage_active_orders">
   	<h2><spring:message code="label.managerpage.active" /></h2>

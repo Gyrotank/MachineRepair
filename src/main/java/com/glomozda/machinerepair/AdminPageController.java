@@ -27,13 +27,13 @@ import com.glomozda.machinerepair.domain.order.Order;
 import com.glomozda.machinerepair.domain.repairtype.RepairType;
 import com.glomozda.machinerepair.domain.user.User;
 import com.glomozda.machinerepair.domain.userauthorization.UserAuthorization;
-import com.glomozda.machinerepair.repository.client.ClientService;
-import com.glomozda.machinerepair.repository.machine.MachineService;
-import com.glomozda.machinerepair.repository.machineserviceable.MachineServiceableService;
-import com.glomozda.machinerepair.repository.order.OrderService;
-import com.glomozda.machinerepair.repository.repairtype.RepairTypeService;
-import com.glomozda.machinerepair.repository.user.UserService;
-import com.glomozda.machinerepair.repository.userauthorization.UserAuthorizationService;
+import com.glomozda.machinerepair.service.client.ClientService;
+import com.glomozda.machinerepair.service.machine.MachineService;
+import com.glomozda.machinerepair.service.machineserviceable.MachineServiceableService;
+import com.glomozda.machinerepair.service.order.OrderService;
+import com.glomozda.machinerepair.service.repairtype.RepairTypeService;
+import com.glomozda.machinerepair.service.user.UserService;
+import com.glomozda.machinerepair.service.userauthorization.UserAuthorizationService;
 
 @Controller
 public class AdminPageController implements MessageSourceAware {
@@ -120,8 +120,8 @@ public class AdminPageController implements MessageSourceAware {
 	@RequestMapping(value = "/adminpage", method = RequestMethod.GET)
 	public String activate(final Locale locale, final Principal principal, final Model model) {
 		
-		log.info("Activating Admin Page for " + principal.getName() + "...");
-		log.info("Locale is " + locale.toString());
+//		log.info("Activating Admin Page for " + principal.getName() + "...");
+//		log.info("Locale is " + locale.toString());
 		
 		myUser = userSvc.getUserByLogin(principal.getName());
 		if (null == myUser) {
@@ -255,8 +255,21 @@ public class AdminPageController implements MessageSourceAware {
 	public String machinePaging(@RequestParam("machinePageStart") final Long machinePageStart, 
 			@RequestParam("machinePageEnd") final Long machinePageEnd) {
 		
-		long machineStart = machinePageStart.longValue() - 1;
-		long machineEnd = machinePageEnd.longValue() - 1;
+		long machineStart;
+		long machineEnd;
+		
+		if (machinePageStart == null) {
+			machineStart = (long) 0;
+		} else {
+			machineStart = machinePageStart.longValue() - 1;
+		}
+		
+		if (machinePageEnd == null) {
+			machineEnd = (long) 0;
+		} else {
+			machineEnd = machinePageEnd.longValue() - 1;
+		}		
+		
 		long machineCount = machineSvc.getMachineCount();
 		
 		if (machineStart > machineEnd) {
@@ -321,8 +334,21 @@ public class AdminPageController implements MessageSourceAware {
 			@RequestParam("machineServiceablePageStart") final Long machineServiceablePageStart, 
 			@RequestParam("machineServiceablePageEnd") final Long machineServiceablePageEnd) {
 		
-		long machineServiceableStart = machineServiceablePageStart.longValue() - 1;
-		long machineServiceableEnd = machineServiceablePageEnd.longValue() - 1;
+		long machineServiceableStart;
+		long machineServiceableEnd;
+		
+		if (machineServiceablePageStart == null) {
+			machineServiceableStart = (long) 0;
+		} else {
+			machineServiceableStart = machineServiceablePageStart.longValue() - 1;
+		}
+		
+		if (machineServiceablePageEnd == null) {
+			machineServiceableEnd = (long) 0;
+		} else {
+			machineServiceableEnd = machineServiceablePageEnd.longValue() - 1;
+		}		
+		
 		long machineServiceableCount = machineServiceableSvc.getMachineServiceableCount();
 		
 		if (machineServiceableStart > machineServiceableEnd) {
@@ -371,8 +397,21 @@ public class AdminPageController implements MessageSourceAware {
 			@RequestParam("repairTypePageStart") final Long repairTypePageStart, 
 			@RequestParam("repairTypePageEnd") final Long repairTypePageEnd) {
 		
-		long repairTypeStart = repairTypePageStart.longValue() - 1;
-		long repairTypeEnd = repairTypePageEnd.longValue() - 1;
+		long repairTypeStart;
+		long repairTypeEnd;
+		
+		if (repairTypePageStart == null) {
+			repairTypeStart = (long) 0;
+		} else {
+			repairTypeStart = repairTypePageStart.longValue() - 1;
+		}
+		
+		if (repairTypePageEnd == null) {
+			repairTypeEnd = (long) 0;
+		} else {
+			repairTypeEnd = repairTypePageEnd.longValue() - 1;
+		}
+		
 		long repairTypeCount = repairTypeSvc.getRepairTypeCount();
 		
 		if (repairTypeStart > repairTypeEnd) {
@@ -420,8 +459,21 @@ public class AdminPageController implements MessageSourceAware {
 	public String userPaging(@RequestParam("userPageStart") final Long userPageStart, 
 			@RequestParam("userPageEnd") final Long userPageEnd) {
 		
-		long userStart = userPageStart.longValue() - 1;
-		long userEnd = userPageEnd.longValue() - 1;
+		long userStart;
+		long userEnd;
+		
+		if (userPageStart == null) {
+			userStart = (long) 0;
+		} else {
+			userStart = userPageStart.longValue() - 1;
+		}
+		
+		if (userPageEnd == null) {
+			userEnd = (long) 0;
+		} else {
+			userEnd = userPageEnd.longValue() - 1;
+		}
+		
 		long userCount = userSvc.getUserCount();
 		
 		if (userStart > userEnd) {
@@ -471,8 +523,21 @@ public class AdminPageController implements MessageSourceAware {
 			@RequestParam("userAuthorizationPageStart") final Long userAuthorizationPageStart, 
 			@RequestParam("userAuthorizationPageEnd") final Long userAuthorizationPageEnd) {
 		
-		long userAuthorizationStart = userAuthorizationPageStart.longValue() - 1;
-		long userAuthorizationEnd = userAuthorizationPageEnd.longValue() - 1;
+		long userAuthorizationStart;
+		long userAuthorizationEnd;
+		
+		if (userAuthorizationPageStart == null) {
+			userAuthorizationStart = (long) 0;
+		} else {
+			userAuthorizationStart = userAuthorizationPageStart.longValue() - 1;
+		}
+		
+		if (userAuthorizationPageEnd == null) {
+			userAuthorizationEnd = (long) 0;
+		} else {
+			userAuthorizationEnd = userAuthorizationPageEnd.longValue() - 1;
+		}
+		
 		long userAuthorizationCount = userAuthorizationSvc.getUserAuthorizationCount();
 		
 		if (userAuthorizationStart > userAuthorizationEnd) {
@@ -533,8 +598,21 @@ public class AdminPageController implements MessageSourceAware {
 	public String clientPaging(@RequestParam("clientPageStart") final Long clientPageStart, 
 			@RequestParam("clientPageEnd") final Long clientPageEnd) {
 		
-		long clientStart = clientPageStart.longValue() - 1;
-		long clientEnd = clientPageEnd.longValue() - 1;
+		long clientStart;
+		long clientEnd;
+		
+		if (clientPageStart == null) {
+			clientStart = (long) 0;
+		} else {
+			clientStart = clientPageStart.longValue() - 1;
+		}
+		
+		if (clientPageEnd == null) {
+			clientEnd = (long) 0;
+		} else {
+			clientEnd = clientPageEnd.longValue() - 1;
+		}
+		
 		long clientCount = clientSvc.getClientCount();
 		
 		if (clientStart > clientEnd) {
@@ -593,8 +671,21 @@ public class AdminPageController implements MessageSourceAware {
 	public String orderPaging(@RequestParam("orderPageStart") final Long orderPageStart, 
 			@RequestParam("orderPageEnd") final Long orderPageEnd) {
 		
-		long orderStart = orderPageStart.longValue() - 1;
-		long orderEnd = orderPageEnd.longValue() - 1;
+		long orderStart;
+		long orderEnd;
+		
+		if (orderPageStart == null) {
+			orderStart = (long) 0;
+		} else {
+			orderStart = orderPageStart.longValue() - 1;
+		}
+		
+		if (orderPageEnd == null) {
+			orderEnd = (long) 0;
+		} else {
+			orderEnd = orderPageEnd.longValue() - 1;
+		}
+		
 		long orderCount = orderSvc.getOrderCount();
 		
 		if (orderStart > orderEnd) {

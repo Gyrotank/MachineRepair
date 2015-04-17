@@ -20,11 +20,11 @@ import com.glomozda.machinerepair.domain.machine.Machine;
 import com.glomozda.machinerepair.domain.machineserviceable.MachineServiceable;
 import com.glomozda.machinerepair.domain.order.Order;
 import com.glomozda.machinerepair.domain.repairtype.RepairType;
-import com.glomozda.machinerepair.repository.client.ClientService;
-import com.glomozda.machinerepair.repository.machine.MachineService;
-import com.glomozda.machinerepair.repository.machineserviceable.MachineServiceableService;
-import com.glomozda.machinerepair.repository.order.OrderService;
-import com.glomozda.machinerepair.repository.repairtype.RepairTypeService;
+import com.glomozda.machinerepair.service.client.ClientService;
+import com.glomozda.machinerepair.service.machine.MachineService;
+import com.glomozda.machinerepair.service.machineserviceable.MachineServiceableService;
+import com.glomozda.machinerepair.service.order.OrderService;
+import com.glomozda.machinerepair.service.repairtype.RepairTypeService;
 
 import org.apache.log4j.Logger;
 
@@ -104,7 +104,7 @@ public class ClientPageController implements MessageSourceAware {
 	@RequestMapping(value = "/clientpage", method = RequestMethod.GET)
 	public String activate(final Locale locale, final Principal principal, final Model model) {
 		
-		log.info("Activating Client Page for " + principal.getName() + "...");
+//		log.info("Activating Client Page for " + principal.getName() + "...");
 		
 		myClient = clientSvc.getClientByLoginWithFetching(principal.getName());
 		if (null == myClient) {
@@ -337,8 +337,21 @@ public class ClientPageController implements MessageSourceAware {
 			@RequestParam("currentOrdersPageStart") final Long currentOrdersPageStart, 
 			@RequestParam("currentOrdersPageEnd") final Long currentOrdersPageEnd) {
 		
-		long currentOrdersStart = currentOrdersPageStart.longValue() - 1;
-		long currentOrdersEnd = currentOrdersPageEnd.longValue() - 1;
+		long currentOrdersStart;
+		long currentOrdersEnd;
+		
+		if (currentOrdersPageStart == null) {
+			currentOrdersStart = (long) 0;
+		} else {
+			currentOrdersStart = currentOrdersPageStart.longValue() - 1;
+		}
+		
+		if (currentOrdersPageEnd == null) {
+			currentOrdersEnd = (long) 0;
+		} else {
+			currentOrdersEnd = currentOrdersPageEnd.longValue() - 1;
+		}		
+		
 		long currentOrdersCount = 
 				orderSvc.getCountCurrentOrderForClientId(myClient.getClientId());
 		
@@ -371,8 +384,21 @@ public class ClientPageController implements MessageSourceAware {
 			@RequestParam("pastOrdersPageStart") final Long pastOrdersPageStart, 
 			@RequestParam("pastOrdersPageEnd") final Long pastOrdersPageEnd) {
 		
-		long pastOrdersStart = pastOrdersPageStart.longValue() - 1;
-		long pastOrdersEnd = pastOrdersPageEnd.longValue() - 1;
+		long pastOrdersStart;
+		long pastOrdersEnd;
+		
+		if (pastOrdersPageStart == null) {
+			pastOrdersStart = (long) 0;
+		} else {
+			pastOrdersStart = pastOrdersPageStart.longValue() - 1;
+		}
+		
+		if (pastOrdersPageEnd == null) {
+			pastOrdersEnd = (long) 0;
+		} else {
+			pastOrdersEnd = pastOrdersPageEnd.longValue() - 1;
+		}
+		
 		long pastOrdersCount = 
 				orderSvc.getCountOrdersForClientIdAndStatus(myClient.getClientId(), "finished");
 		

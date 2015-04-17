@@ -37,8 +37,10 @@
 	
 	<jsp:useBean id="now" class="java.util.Date" />
 	<fmt:formatDate var="current_year" value="${now}" pattern="yyyy" />
+		
+	<h1 align = "center"><spring:message code="label.adminpage.header" /></h1>
 	
-	<h3 class = "right">
+	<div id="sidebar">
 		<c:choose>
   			<c:when test="${locale == 'en'}">
   				<a href="?locale=en"><img src="resources/images/usa.png" width="40"></a>
@@ -54,19 +56,14 @@
   			<c:otherwise>
   				<a href="?locale=ru"><img src="resources/images/rus.png" width="32"></a>
   			</c:otherwise>
-		</c:choose>		
-		<br>
-	</h3>
-	
-	<h1 align = "center"><spring:message code="label.adminpage.header" /></h1>
-	
-	<div id="sidebar">
+		</c:choose>
+		<hr class="style-seven">
 		<p><a href="<c:url value="/index"/>">
 			<spring:message code="label.adminpage.sidebar.index" /></a></p>
-		<hr>		
+		<hr class="style-seven">		
 		<p><a href="<c:url value="/managerpage"/>">
 			<spring:message code="label.adminpage.sidebar.managerpage" /></a></p>
-		<hr>
+		<hr class="style-seven">
 	<dl class="tabs vertical">
   		<dd class="active"><a href="#machines">
 			<spring:message code="label.adminpage.sidebar.machines" /></a></dd>
@@ -83,7 +80,7 @@
   		<dd><a href="#orders">
 			<spring:message code="label.adminpage.sidebar.orders" /></a></dd>
 	</dl>
-		<hr>
+		<hr class="style-seven">
 		<p><a href="<c:url value="/logout"/>">
 			<spring:message code="label.adminpage.sidebar.logout" /></a></p>
 	</div>
@@ -216,7 +213,7 @@
   	</div>
   	</div>
   	
-  	<br><hr>
+  	<br><hr class="style-seven">
   	
   	<div class="content" id="serviceable_machines">
   	<h1><spring:message code="label.adminpage.serviceableMachines" /></h1>
@@ -310,7 +307,7 @@
   	</div>
   	</div>
   	
-  	<br><hr>
+  	<br><hr class="style-seven">
     
     <div class="content" id="repair_types">
   	<h1><spring:message code="label.adminpage.repairTypes" /></h1>
@@ -403,7 +400,7 @@
   	</form:form>
   	</div>
   	
-  	<br><hr>
+  	<br><hr class="style-seven">
     
     <div class="content" id="users">
   	<h1><spring:message code="label.adminpage.users" /></h1>
@@ -476,7 +473,7 @@
   	</form:form>
   	</div>
   	
-  	<br><hr>
+  	<br><hr class="style-seven">
   	
   	<div class="content" id="user_auths">
   	<h1><spring:message code="label.adminpage.userAuthorizations" /></h1>
@@ -599,7 +596,7 @@
   	</form:form>
   	</div>
   	
-  	<br><hr>
+  	<br><hr class="style-seven">
   	
   	<div class="content" id="clients">  
   	<h1><spring:message code="label.adminpage.clients" /></h1>
@@ -703,7 +700,7 @@
   	</form:form>
   	</div>
   	
-  	<br><hr>
+  	<br><hr class="style-seven">
   
     <div class="content" id="orders">
   	<h1><spring:message code="label.adminpage.orders" /></h1>

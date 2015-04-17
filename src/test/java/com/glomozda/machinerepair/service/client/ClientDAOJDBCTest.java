@@ -1,4 +1,4 @@
-package com.glomozda.machinerepair.repository.client;
+package com.glomozda.machinerepair.service.client;
 
 import java.util.Arrays;
 
@@ -13,8 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.glomozda.machinerepair.domain.client.Client;
 import com.glomozda.machinerepair.domain.user.User;
-import com.glomozda.machinerepair.repository.DAOTestsTemplate;
-import com.glomozda.machinerepair.repository.user.UserService;
+import com.glomozda.machinerepair.service.DAOTestsTemplate;
+import com.glomozda.machinerepair.service.user.UserService;
 
 @SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
 @RunWith(SpringJUnit4ClassRunner.class)

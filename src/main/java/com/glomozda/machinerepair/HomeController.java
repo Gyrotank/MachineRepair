@@ -31,11 +31,11 @@ public class HomeController {
 			userToken = (UsernamePasswordAuthenticationToken)principal;
 			login = userToken.getName();
 			userTokenAuthorities = userToken.getAuthorities().toString();
-			log.info("Activating Home Page for " + login + "...");
+//			log.info("Activating Home Page for " + login + "...");
 		} else {
-			log.info("Activating Home Page (no principal)...");
+//			log.info("Activating Home Page (no principal)...");
 		}
-		log.info("Locale is " + locale);
+//		log.info("Locale is " + locale);
 		model.addAttribute("locale", locale.toString());
 	    model.addAttribute("login", login);
 	    model.addAttribute("user_token_authorities", userTokenAuthorities);

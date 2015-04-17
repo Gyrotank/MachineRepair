@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.glomozda.machinerepair.domain.client.Client;
 import com.glomozda.machinerepair.domain.user.User;
 import com.glomozda.machinerepair.domain.userauthorization.UserAuthorization;
-import com.glomozda.machinerepair.repository.client.ClientService;
-import com.glomozda.machinerepair.repository.user.UserService;
-import com.glomozda.machinerepair.repository.userauthorization.UserAuthorizationService;
+import com.glomozda.machinerepair.service.client.ClientService;
+import com.glomozda.machinerepair.service.user.UserService;
+import com.glomozda.machinerepair.service.userauthorization.UserAuthorizationService;
 
 @Controller
 @RequestMapping("/signuppage")
@@ -51,7 +51,7 @@ public class SignUpController implements MessageSourceAware {
 	@RequestMapping(method = RequestMethod.GET)
 	public String activate(final Locale locale, final Model model) {
 		
-		log.info("Activating SignUp Page...");
+//		log.info("Activating SignUp Page...");
 		
 		model.addAttribute("locale", locale.toString());
 		

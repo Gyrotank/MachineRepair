@@ -5,14 +5,14 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.glomozda.machinerepair.domain.user.User;
 import com.glomozda.machinerepair.domain.userauthorization.UserAuthorization;
 
-@Service
-public class UserAuthorizationService {
+@Repository
+public class UserAuthorizationRepository {
 	
 	@PersistenceContext
 	private EntityManager em;

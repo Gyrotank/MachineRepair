@@ -2,19 +2,19 @@ package com.glomozda.machinerepair.repository.repairtype;
 
 import java.util.List;
 
-import com.glomozda.machinerepair.domain.repairtype.*;
-
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.stereotype.Service;
 
-@Service
-public class RepairTypeService {
-   
+import com.glomozda.machinerepair.domain.repairtype.RepairType;
+
+@Repository
+public class RepairTypeRepository {
+	
 	@PersistenceContext
 	private EntityManager em;
 
@@ -56,4 +56,5 @@ public class RepairTypeService {
 	public void add(RepairType rt) {
 		em.persist(rt);
 	}
+
 }

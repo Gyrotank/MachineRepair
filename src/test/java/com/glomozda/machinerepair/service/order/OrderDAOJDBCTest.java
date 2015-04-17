@@ -1,4 +1,4 @@
-package com.glomozda.machinerepair.repository.order;
+package com.glomozda.machinerepair.service.order;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
@@ -17,12 +17,12 @@ import com.glomozda.machinerepair.domain.machineserviceable.MachineServiceable;
 import com.glomozda.machinerepair.domain.order.Order;
 import com.glomozda.machinerepair.domain.repairtype.RepairType;
 import com.glomozda.machinerepair.domain.user.User;
-import com.glomozda.machinerepair.repository.DAOTestsTemplate;
-import com.glomozda.machinerepair.repository.client.ClientService;
-import com.glomozda.machinerepair.repository.machine.MachineService;
-import com.glomozda.machinerepair.repository.machineserviceable.MachineServiceableService;
-import com.glomozda.machinerepair.repository.repairtype.RepairTypeService;
-import com.glomozda.machinerepair.repository.user.UserService;
+import com.glomozda.machinerepair.service.DAOTestsTemplate;
+import com.glomozda.machinerepair.service.client.ClientService;
+import com.glomozda.machinerepair.service.machine.MachineService;
+import com.glomozda.machinerepair.service.machineserviceable.MachineServiceableService;
+import com.glomozda.machinerepair.service.repairtype.RepairTypeService;
+import com.glomozda.machinerepair.service.user.UserService;
 
 @SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
 @ContextConfiguration(locations = "classpath:spring-context-test.xml")

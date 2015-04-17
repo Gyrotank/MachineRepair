@@ -2,23 +2,23 @@ package com.glomozda.machinerepair.repository.order;
 
 import java.util.List;
 
-import com.glomozda.machinerepair.domain.client.Client;
-import com.glomozda.machinerepair.domain.machine.Machine;
-import com.glomozda.machinerepair.domain.order.*;
-import com.glomozda.machinerepair.domain.repairtype.RepairType;
-
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.stereotype.Service;
 
-@Service
-public class OrderService {
-   
+import com.glomozda.machinerepair.domain.client.Client;
+import com.glomozda.machinerepair.domain.machine.Machine;
+import com.glomozda.machinerepair.domain.order.Order;
+import com.glomozda.machinerepair.domain.repairtype.RepairType;
+
+@Repository
+public class OrderRepository {
+	
 	@PersistenceContext
 	private EntityManager em;
 
@@ -256,4 +256,5 @@ public class OrderService {
 		int deletedCount = query.executeUpdate();
 		return deletedCount;
 	}
+
 }

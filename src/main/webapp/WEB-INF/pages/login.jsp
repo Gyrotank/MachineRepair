@@ -53,11 +53,11 @@
 	<table>
 	<tr>
 		<td align="right"><spring:message code="label.loginpage.login" /></td>
-		<td><input type="text" name="login" /></td>
+		<td><input type="text" maxlength="50" name="login" /></td>
 	</tr>
 	<tr>
 		<td align="right"><spring:message code="label.loginpage.password" /></td>
-		<td><input type="password" name="password" /></td>
+		<td><input type="password" maxlength="50" name="password" /></td>
 	</tr>
 	<tr>
 		<td align="right"><spring:message code="label.loginpage.remember" /></td>

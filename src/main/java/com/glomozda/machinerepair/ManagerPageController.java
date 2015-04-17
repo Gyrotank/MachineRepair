@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.glomozda.machinerepair.domain.order.Order;
 import com.glomozda.machinerepair.domain.user.User;
-import com.glomozda.machinerepair.repository.client.ClientService;
-import com.glomozda.machinerepair.repository.machine.MachineService;
-import com.glomozda.machinerepair.repository.order.OrderService;
-import com.glomozda.machinerepair.repository.user.UserService;
+import com.glomozda.machinerepair.service.client.ClientService;
+import com.glomozda.machinerepair.service.machine.MachineService;
+import com.glomozda.machinerepair.service.order.OrderService;
+import com.glomozda.machinerepair.service.user.UserService;
 
 import org.apache.log4j.Logger;
 
@@ -68,7 +68,7 @@ public class ManagerPageController {
 	@RequestMapping(value = "/managerpage", method = RequestMethod.GET)
 	public String activate(final Locale locale, final Principal principal, final Model model) {
 		
-		log.info("Activating Manager Page for " + principal.getName() + "...");
+//		log.info("Activating Manager Page for " + principal.getName() + "...");
 		
 		myUser = userSvc.getUserByLogin(principal.getName());
 		if (null == myUser) {
@@ -120,8 +120,21 @@ public class ManagerPageController {
 			@RequestParam("pendingOrdersPageStart") final Long pendingOrdersPageStart, 
 			@RequestParam("pendingOrdersPageEnd") final Long pendingOrdersPageEnd) {
 		
-		long pendingOrdersStart = pendingOrdersPageStart.longValue() - 1;
-		long pendingOrdersEnd = pendingOrdersPageEnd.longValue() - 1;
+		long pendingOrdersStart;
+		long pendingOrdersEnd;
+		
+		if (pendingOrdersPageStart == null) {
+			pendingOrdersStart = (long) 0;
+		} else {
+			pendingOrdersStart = pendingOrdersPageStart.longValue() - 1;
+		}
+		
+		if (pendingOrdersPageEnd == null) {
+			pendingOrdersEnd = (long) 0;
+		} else {
+			pendingOrdersEnd = pendingOrdersPageEnd.longValue() - 1;
+		}
+		
 		long pendingOrdersCount = orderSvc.getCountOrdersForStatus("pending");
 		
 		if (pendingOrdersStart > pendingOrdersEnd) {
@@ -178,8 +191,21 @@ public class ManagerPageController {
 	public String clientPaging(@RequestParam("clientPageStart") final Long clientPageStart, 
 			@RequestParam("clientPageEnd") final Long clientPageEnd) {
 		
-		long clientStart = clientPageStart.longValue() - 1;
-		long clientEnd = clientPageEnd.longValue() - 1;
+		long clientStart;
+		long clientEnd;
+		
+		if (clientPageStart == null) {
+			clientStart = (long) 0;
+		} else {
+			clientStart = clientPageStart.longValue() - 1;
+		}
+		
+		if (clientPageEnd == null) {
+			clientEnd = (long) 0;
+		} else {
+			clientEnd = clientPageEnd.longValue() - 1;
+		}
+		
 		long clientCount = clientSvc.getClientCount();
 		
 		if (clientStart > clientEnd) {
@@ -215,8 +241,20 @@ public class ManagerPageController {
 			@RequestParam("startedOrdersPageStart") final Long startedOrdersPageStart, 
 			@RequestParam("startedOrdersPageEnd") final Long startedOrdersPageEnd) {
 		
-		long startedOrdersStart = startedOrdersPageStart.longValue() - 1;
-		long startedOrdersEnd = startedOrdersPageEnd.longValue() - 1;		
+		long startedOrdersStart;
+		long startedOrdersEnd;
+		
+		if (startedOrdersPageStart == null) {
+			startedOrdersStart = (long) 0;
+		} else {
+			startedOrdersStart = startedOrdersPageStart.longValue() - 1;
+		}
+		
+		if (startedOrdersPageEnd == null) {
+			startedOrdersEnd = (long) 0;
+		} else {
+			startedOrdersEnd = startedOrdersPageEnd.longValue() - 1;
+		}
 		
 		if (startedOrdersStart > startedOrdersEnd) {
 			long temp = startedOrdersStart;
@@ -247,8 +285,20 @@ public class ManagerPageController {
 			@RequestParam("readyOrdersPageStart") final Long readyOrdersPageStart, 
 			@RequestParam("readyOrdersPageEnd") final Long readyOrdersPageEnd) {
 		
-		long readyOrdersStart = readyOrdersPageStart.longValue() - 1;
-		long readyOrdersEnd = readyOrdersPageEnd.longValue() - 1;		
+		long readyOrdersStart;
+		long readyOrdersEnd;
+		
+		if (readyOrdersPageStart == null) {
+			readyOrdersStart = (long) 0;
+		} else {
+			readyOrdersStart = readyOrdersPageStart.longValue() - 1;
+		}
+		
+		if (readyOrdersPageEnd == null) {
+			readyOrdersEnd = (long) 0;
+		} else {
+			readyOrdersEnd = readyOrdersPageEnd.longValue() - 1;
+		}
 		
 		if (readyOrdersStart > readyOrdersEnd) {
 			long temp = readyOrdersStart;

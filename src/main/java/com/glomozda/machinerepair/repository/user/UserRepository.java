@@ -2,21 +2,21 @@ package com.glomozda.machinerepair.repository.user;
 
 import java.util.List;
 
-import com.glomozda.machinerepair.domain.user.*;
-
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-@Service
-public class UserService {
+import com.glomozda.machinerepair.domain.user.User;
 
+@Repository
+public class UserRepository {
+	
 	@PersistenceContext
 	private EntityManager em;
 	
@@ -134,5 +134,5 @@ public class UserService {
 	@Transactional
 	public void add(User u) {
 		em.persist(u);
-	}	
+	}
 }

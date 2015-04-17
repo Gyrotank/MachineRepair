@@ -1,4 +1,4 @@
-package com.glomozda.machinerepair.repository.machine;
+package com.glomozda.machinerepair.service.machine;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -10,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.glomozda.machinerepair.domain.machine.Machine;
 import com.glomozda.machinerepair.domain.machineserviceable.MachineServiceable;
-import com.glomozda.machinerepair.repository.DAOTestsTemplate;
-import com.glomozda.machinerepair.repository.machineserviceable.MachineServiceableService;
+import com.glomozda.machinerepair.service.DAOTestsTemplate;
+import com.glomozda.machinerepair.service.machineserviceable.MachineServiceableService;
 
 @SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
 @ContextConfiguration(locations = "classpath:spring-context-test.xml")

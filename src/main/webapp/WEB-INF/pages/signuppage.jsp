@@ -55,19 +55,19 @@
   	<table>
   		<tr>
   			<td><spring:message code="label.signuppage.name" /></td>
-  			<td><input type="text" name="name" value="${entered_name}"/></td>
+  			<td><input type="text" name="name" maxlength="50" value="${entered_name}"/></td>
   		</tr>
   		<tr>
   			<td><spring:message code="label.signuppage.login" /></td>
-  			<td><input type="text" name="login" value="${entered_login}"/></td>
+  			<td><input type="text" name="login" maxlength="50" value="${entered_login}"/></td>
   		</tr>
   		<tr>
   			<td><spring:message code="label.signuppage.password" /></td>
-  			<td><input type="password" name="password1"/></td>
+  			<td><input type="password" maxlength="50" name="password1"/></td>
   		</tr>
   		<tr>
   			<td><spring:message code="label.signuppage.repeatPassword" /></td>
-  			<td><input type="password" name="password2"/></td>
+  			<td><input type="password" maxlength="50" name="password2"/></td>
   		</tr>
   		<tr>
   			<td><button><spring:message code="label.signuppage.buttonRegister" /></button></td>

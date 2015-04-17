@@ -2,19 +2,19 @@ package com.glomozda.machinerepair.repository.machineserviceable;
 
 import java.util.List;
 
-import com.glomozda.machinerepair.domain.machineserviceable.MachineServiceable;
-
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.stereotype.Service;
 
-@Service
-public class MachineServiceableService {
-   
+import com.glomozda.machinerepair.domain.machineserviceable.MachineServiceable;
+
+@Repository
+public class MachineServiceableRepository {
+	
 	@PersistenceContext
 	private EntityManager em;
 
@@ -73,4 +73,5 @@ public class MachineServiceableService {
 	public void add(MachineServiceable ms) {
 		em.persist(ms);
 	}
+
 }

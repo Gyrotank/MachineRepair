@@ -19,8 +19,8 @@ public class MachineServiceableDAOJDBCTest extends DAOTestsTemplate{
 	@Autowired
     private transient MachineServiceableService machineServiceableService;
     
-    final MachineServiceable ms1 = new MachineServiceable("M-S-3", "TM-1", "UK");
-    final MachineServiceable ms2 = new MachineServiceable("M-S-2", "ATM-2", "USA");
+    final MachineServiceable ms1 = new MachineServiceable("M-S-3", "TM-1", "UK", "ба");
+    final MachineServiceable ms2 = new MachineServiceable("M-S-2", "ATM-2", "USA", "яью");
             
     @Before
     public void prepareDB(){

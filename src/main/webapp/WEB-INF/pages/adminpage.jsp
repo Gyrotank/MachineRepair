@@ -260,7 +260,16 @@
     	<td><c:out value="${loopStatus.index + 1}"/></td>
     	<td>${ms.machineServiceableName}</td> 
     	<td>${ms.machineServiceableTrademark}</td>
-    	<td>${ms.machineServiceableCountry}</td>    	   	
+    	<td>
+    		<c:choose>
+    			<c:when test="${locale == 'ru'}">
+    				${ms.machineServiceableCountryRu}
+    			</c:when>
+    			<c:otherwise>
+    				${ms.machineServiceableCountry}
+    			</c:otherwise>
+    		</c:choose>
+    	</td>    	   	
     </tr>
   	</c:forEach>
   	</tbody>
@@ -289,13 +298,23 @@
   		</tr>
   		<tr>
   			<td><label for="machineServiceableCountryInput">
-  			<spring:message code="label.adminpage.serviceableMachines.country" />
+  			<spring:message code="label.adminpage.serviceableMachines.countryForm" />
   			</label></td>
   			<td>
   			<form:input path="machineServiceableCountry" id="machineServiceableCountryInput"
   					maxlength="50"/>
   			</td>
   			<td><form:errors path="machineServiceableCountry" cssClass="error" /></td>  			
+  		</tr>
+  		<tr>
+  			<td><label for="machineServiceableCountryRuInput">
+  			<spring:message code="label.adminpage.serviceableMachines.countryRu" />
+  			</label></td>
+  			<td>
+  			<form:input path="machineServiceableCountryRu" id="machineServiceableCountryRuInput"
+  					maxlength="50"/>
+  			</td>
+  			<td><form:errors path="machineServiceableCountryRu" cssClass="error" /></td>  			
   		</tr>
   		<tr> 		
   			<td><button>
@@ -357,7 +376,16 @@
   	<c:forEach var="rt" items="${repair_types_short}" varStatus="loopStatus">    	
     <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
     	<td><c:out value="${loopStatus.index + 1}"/></td>
-    	<td>${rt.repairTypeName}</td> 
+    	<td>    		
+    		<c:choose>
+    			<c:when test="${locale == 'ru'}">
+    				${rt.repairTypeNameRu}
+    			</c:when>
+    			<c:otherwise>
+    				${rt.repairTypeName}
+    			</c:otherwise>
+    		</c:choose>
+    	</td> 
     	<td>${rt.repairTypePrice}</td>
     	<td>${rt.repairTypeDuration}</td>    	   	
     </tr>
@@ -371,11 +399,19 @@
   	<table>
   		<tr>
   			<td><label for="repairTypeNameInput">
-  				<spring:message code="label.adminpage.repairTypes.name" />
+  				<spring:message code="label.adminpage.repairTypes.nameForm" />
   			</label></td>
   			<td><form:input path="repairTypeName" id="repairTypeNameInput"
   					maxlength="20"/></td>
   			<td><form:errors path="repairTypeName" cssClass="error" /></td>  			
+  		</tr>
+  		<tr>
+  			<td><label for="repairTypeNameInputRu">
+  				<spring:message code="label.adminpage.repairTypes.nameRu" />
+  			</label></td>
+  			<td><form:input path="repairTypeNameRu" id="repairTypeNameInputRu"
+  					maxlength="20"/></td>
+  			<td><form:errors path="repairTypeNameRu" cssClass="error" /></td>  			
   		</tr>
   		<tr>
   			<td><label for="repairTypePriceInput">
@@ -519,15 +555,26 @@
     	<td>${ua.user.login}</td> 
     	<td>
     		<c:choose>
-  				<c:when test="${ua.role == 'ROLE_ADMIN'}">
-  					<c:out value="Administrator"/>  					
+  				<c:when test="${ua.role == 'ROLE_ADMIN' && locale == 'ru'}">
+  					<c:out value="Администратор"/>
   				</c:when>
-  				<c:when test="${ua.role == 'ROLE_MANAGER'}">
-  					<c:out value="Manager"/>  					
+  				<c:when test="${ua.role == 'ROLE_MANAGER' && locale == 'ru'}">
+  					<c:out value="Менеджер"/>
   				</c:when>
-  				<c:otherwise>
-  					<c:out value="Client"/>  					
-  				</c:otherwise>
+  				<c:when test="${ua.role == 'ROLE_CLIENT' && locale == 'ru'}">
+  					<c:out value="Клиент"/>
+  				</c:when>
+  			</c:choose>
+    		<c:choose>
+  				<c:when test="${ua.role == 'ROLE_ADMIN' && locale == 'en'}">
+  					<c:out value="Administrator"/>
+  				</c:when>
+  				<c:when test="${ua.role == 'ROLE_MANAGER' && locale == 'en'}">
+  					<c:out value="Manager"/>
+  				</c:when>
+  				<c:when test="${ua.role == 'ROLE_CLIENT' && locale == 'en'}">
+  					<c:out value="Client"/>
+  				</c:when>
   			</c:choose>
     	</td>    	    	   	
     </tr>
@@ -549,16 +596,16 @@
   			<option value="0">
   				<spring:message code="label.adminpage.addNewUserAuthorization.selectUser" />
   			</option>
-  			<c:forEach var="ua" items="${user_authorizations_short}">
+  			<c:forEach var="uau" items="${user_authorizations_short_users}">
   				<c:choose>
-  					<c:when test="${selected_user_authorization_user_id == ua.user.userId}">
-  						<option selected value="${ua.user.userId}">
-  							<c:out value="${ua.user.login}"/>
+  					<c:when test="${selected_user_authorization_user_id == uau.userId}">
+  						<option selected value="${uau.userId}">
+  							<c:out value="${uau.login}"/>
   						</option>
   					</c:when>
   					<c:otherwise>
-  						<option value="${ua.user.userId}">
-  							<c:out value="${ua.user.login}"/>
+  						<option value="${uau.userId}">
+  							<c:out value="${uau.login}"/>
   						</option>
   					</c:otherwise>
   				</c:choose>  				
@@ -582,7 +629,29 @@
   			</form:option>
   			<c:forEach var="r" items="${user_roles}">
   				<form:option value="${r}">
-  					<c:out value="${r}"/></form:option>
+  					<c:choose>
+  					<c:when test="${r == 'ROLE_ADMIN' && locale == 'ru'}">
+  						<c:out value="Администратор"/>
+  					</c:when>
+  					<c:when test="${r == 'ROLE_MANAGER' && locale == 'ru'}">
+  						<c:out value="Менеджер"/>
+	  				</c:when>
+  					<c:when test="${r == 'ROLE_CLIENT' && locale == 'ru'}">
+  						<c:out value="Клиент"/>
+  					</c:when>
+  					</c:choose>
+    				<c:choose>
+  					<c:when test="${r == 'ROLE_ADMIN' && locale == 'en'}">
+	  					<c:out value="Administrator"/>
+  					</c:when>
+  					<c:when test="${r == 'ROLE_MANAGER' && locale == 'en'}">
+  						<c:out value="Manager"/>
+  					</c:when>
+	  				<c:when test="${r == 'ROLE_CLIENT' && locale == 'en'}">
+  						<c:out value="Client"/>
+  					</c:when>
+  				</c:choose>
+  				</form:option>
   			</c:forEach>
   		</form:select></td>
   		<td><form:errors path="role" cssClass="error" /></td>
@@ -761,11 +830,49 @@
     <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
     	<td><c:out value="${loopStatus.index + 1}"/></td>
     	<td>${o.client.clientName}</td> 
-    	<td>${o.repairType.repairTypeName}</td>
+    	<td>    		
+    		<c:choose>
+    			<c:when test="${locale == 'ru'}">
+    				${o.repairType.repairTypeNameRu}
+    			</c:when>
+    			<c:otherwise>
+    				${o.repairType.repairTypeName}
+    			</c:otherwise>
+    		</c:choose>
+    	</td>
     	<td>${o.machine.machineServiceable.machineServiceableName}</td>
     	<td>${o.machine.machineSerialNumber}</td>
     	<td>${o.start.date}-${o.start.month + 1}-${o.start.year + 1900}</td>
-    	<td>${o.status}</td>
+    	<td>    		
+    		<c:choose>
+  				<c:when test="${o.status == 'pending' && locale == 'ru'}">
+  					<c:out value="в обработке"/>
+  				</c:when>
+  				<c:when test="${o.status == 'started' && locale == 'ru'}">
+  					<c:out value="выполняется"/>
+	  			</c:when>
+  				<c:when test="${o.status == 'ready' && locale == 'ru'}">
+  					<c:out value="готов"/>
+  				</c:when>
+  				<c:when test="${o.status == 'finished' && locale == 'ru'}">
+  					<c:out value="завершен"/>
+  				</c:when>
+  				</c:choose>
+    			<c:choose>
+  				<c:when test="${o.status == 'pending' && locale == 'en'}">
+	  				<c:out value="pending"/>
+  				</c:when>
+  				<c:when test="${o.status == 'started' && locale == 'en'}">
+  					<c:out value="started"/>
+  				</c:when>
+	  			<c:when test="${o.status == 'ready' && locale == 'en'}">
+  					<c:out value="ready"/>
+  				</c:when>
+  				<c:when test="${o.status == 'finished' && locale == 'en'}">
+  					<c:out value="finished"/>
+  				</c:when>
+  			</c:choose>
+    	</td>
     </tr>
   	</c:forEach>
   	</tbody>
@@ -817,12 +924,26 @@
   				<c:choose>
   					<c:when test="${selected_order_repair_type_id == rt.repairTypeId}">
   						<option selected value="${rt.repairTypeId}">
-  							<c:out value="${rt.repairTypeName}"/>
+  							<c:choose>
+    							<c:when test="${locale == 'ru'}">
+    								<c:out value="${rt.repairTypeNameRu}"/>
+    							</c:when>
+    							<c:otherwise>
+    								<c:out value="${rt.repairTypeName}"/>
+    							</c:otherwise>
+    						</c:choose>  							
   						</option>
   					</c:when>
   					<c:otherwise>
   						<option value="${rt.repairTypeId}">
-  							<c:out value="${rt.repairTypeName}"/>
+  							<c:choose>
+    							<c:when test="${locale == 'ru'}">
+    								<c:out value="${rt.repairTypeNameRu}"/>
+    							</c:when>
+    							<c:otherwise>
+    								<c:out value="${rt.repairTypeName}"/>
+    							</c:otherwise>
+    						</c:choose> 
   						</option>
   					</c:otherwise>
   				</c:choose>  				
@@ -883,10 +1004,46 @@
   				<form:option value="">
   					<spring:message code="label.adminpage.addNewOrder.selectStatus" />
   				</form:option>
-  				<form:option value="pending"><c:out value="pending" /></form:option>
-  				<form:option value="started"><c:out value="started" /></form:option>
-  				<form:option value="ready"><c:out value="ready" /></form:option>
-  				<form:option value="finished"><c:out value="finished" /></form:option>
+  				<form:option value="pending">  					
+  					<c:choose>
+    					<c:when test="${locale == 'ru'}">
+    						<c:out value="в обработке"/>
+    					</c:when>
+    					<c:otherwise>
+    						<c:out value="pending"/>
+    					</c:otherwise>
+    				</c:choose>
+  				</form:option>
+  				<form:option value="started">  					
+  					<c:choose>
+    					<c:when test="${locale == 'ru'}">
+    						<c:out value="выполняется"/>
+    					</c:when>
+    					<c:otherwise>
+    						<c:out value="started" />
+    					</c:otherwise>
+    				</c:choose>
+  				</form:option>
+  				<form:option value="ready">
+  					<c:choose>
+    					<c:when test="${locale == 'ru'}">
+    						<c:out value="готов"/>
+    					</c:when>
+    					<c:otherwise>
+    						<c:out value="ready" />
+    					</c:otherwise>
+    				</c:choose>
+  				</form:option>
+  				<form:option value="finished">
+  					<c:choose>
+    					<c:when test="${locale == 'ru'}">
+    						<c:out value="завершен"/>
+    					</c:when>
+    					<c:otherwise>
+    						<c:out value="finished" />
+    					</c:otherwise>
+    				</c:choose>
+  				</form:option>
   			</form:select></td>
   			<td><form:errors path="status" cssClass="error" /></td>  			
   		</tr>

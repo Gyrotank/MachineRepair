@@ -35,8 +35,8 @@ public class MachineDAOJDBCTest extends DAOTestsTemplate{
         jdbcTemplate.execute("ALTER TABLE Machines_Serviceable "
         		+ "ALTER COLUMN machines_serviceable_id RESTART WITH 1");        
         
-        machineServiceableService.add(new MachineServiceable("M-S-1", "TM-1", "UK"));
-        machineServiceableService.add(new MachineServiceable("M-S-2", "TM-2", "USA"));
+        machineServiceableService.add(new MachineServiceable("M-S-1", "TM-1", "UK", "ÂÁ"));
+        machineServiceableService.add(new MachineServiceable("M-S-2", "TM-2", "USA", "ÑØÀ"));
         
         machineService.add(m1, (long) 1);
         machineService.add(m2, (long) 2);

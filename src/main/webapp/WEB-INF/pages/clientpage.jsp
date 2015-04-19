@@ -127,13 +127,27 @@
   		<c:forEach var="rt" items="${repair_types}">
   			<c:choose>
   			<c:when test="${first_repair_selected_repairtype_id == rt.repairTypeId}">
-  				<option selected value="${rt.repairTypeId}">
-  				<c:out value="${rt.repairTypeName} (${rt.repairTypePrice})" />
+  				<option selected value="${rt.repairTypeId}">  				
+  				<c:choose>
+    				<c:when test="${locale == 'ru'}">
+    					<c:out value="${rt.repairTypeNameRu} (${rt.repairTypePrice})"/>
+    				</c:when>
+    				<c:otherwise>
+    					<c:out value="${rt.repairTypeName} (${rt.repairTypePrice})" />
+    				</c:otherwise>
+    			</c:choose>
   				</option>
   			</c:when>
   			<c:otherwise>
   				<option value="${rt.repairTypeId}">
-  				<c:out value="${rt.repairTypeName} (${rt.repairTypePrice})" />
+  				<c:choose>
+    				<c:when test="${locale == 'ru'}">
+    					<c:out value="${rt.repairTypeNameRu} (${rt.repairTypePrice})"/>
+    				</c:when>
+    				<c:otherwise>
+    					<c:out value="${rt.repairTypeName} (${rt.repairTypePrice})" />
+    				</c:otherwise>
+    			</c:choose>
   				</option>
   			</c:otherwise>
   			</c:choose>  			
@@ -183,14 +197,28 @@
 		<option value="0"><spring:message code="label.clientpage.createRepeatedOrder.selectRepairType" /></option>
   		<c:forEach var="rt" items="${repair_types}">
   			<c:choose>
-  			<c:when test="${repeated_repair_selected_repairtype_id == rt.repairTypeId}">
-  				<option selected value="${rt.repairTypeId}">
-  				<c:out value="${rt.repairTypeName} (${rt.repairTypePrice})" />
+  			<c:when test="${first_repair_selected_repairtype_id == rt.repairTypeId}">
+  				<option selected value="${rt.repairTypeId}">  				
+  				<c:choose>
+    				<c:when test="${locale == 'ru'}">
+    					<c:out value="${rt.repairTypeNameRu} (${rt.repairTypePrice})"/>
+    				</c:when>
+    				<c:otherwise>
+    					<c:out value="${rt.repairTypeName} (${rt.repairTypePrice})" />
+    				</c:otherwise>
+    			</c:choose>
   				</option>
   			</c:when>
   			<c:otherwise>
   				<option value="${rt.repairTypeId}">
-  				<c:out value="${rt.repairTypeName} (${rt.repairTypePrice})" />
+  				<c:choose>
+    				<c:when test="${locale == 'ru'}">
+    					<c:out value="${rt.repairTypeNameRu} (${rt.repairTypePrice})"/>
+    				</c:when>
+    				<c:otherwise>
+    					<c:out value="${rt.repairTypeName} (${rt.repairTypePrice})" />
+    				</c:otherwise>
+    			</c:choose>
   				</option>
   			</c:otherwise>
   			</c:choose>
@@ -267,11 +295,49 @@
   	<c:forEach var="co" items="${my_current_orders}" varStatus="loopStatus">
   	<tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
     	<td><c:out value="${loopStatus.index + 1}"/></td>    	 
-    	<td>${co.repairType.repairTypeName}</td>
+    	<td>
+    		<c:choose>
+    			<c:when test="${locale == 'ru'}">
+    				${co.repairType.repairTypeNameRu}
+    			</c:when>
+    			<c:otherwise>
+    				${co.repairType.repairTypeName}
+    			</c:otherwise>
+    		</c:choose>
+    	</td>
     	<td>${co.machine.machineSerialNumber}</td>
     	<td>${co.machine.machineServiceable.machineServiceableName}</td>
     	<td>${co.start}</td>
-    	<td>${co.status}</td>
+    	<td>
+    		<c:choose>
+  				<c:when test="${co.status == 'pending' && locale == 'ru'}">
+  					<c:out value="в обработке"/>
+  				</c:when>
+  				<c:when test="${co.status == 'started' && locale == 'ru'}">
+  					<c:out value="выполняется"/>
+	  			</c:when>
+  				<c:when test="${co.status == 'ready' && locale == 'ru'}">
+  					<c:out value="готов"/>
+  				</c:when>
+  				<c:when test="${co.status == 'finished' && locale == 'ru'}">
+  					<c:out value="завершен"/>
+  				</c:when>
+  				</c:choose>
+    			<c:choose>
+  				<c:when test="${co.status == 'pending' && locale == 'en'}">
+	  				<c:out value="pending"/>
+  				</c:when>
+  				<c:when test="${co.status == 'started' && locale == 'en'}">
+  					<c:out value="started"/>
+  				</c:when>
+	  			<c:when test="${co.status == 'ready' && locale == 'en'}">
+  					<c:out value="ready"/>
+  				</c:when>
+  				<c:when test="${co.status == 'finished' && locale == 'en'}">
+  					<c:out value="finished"/>
+  				</c:when>
+  			</c:choose>
+    	</td>
     	<c:if test="${co.status == 'ready'}">
    			<td align="center">
    			<a href="<c:url value="pay/?order_id=${co.orderId}" />">
@@ -337,11 +403,49 @@
   	<c:forEach var="po" items="${my_past_orders}" varStatus="loopStatus">
   	<tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
     	<td><c:out value="${loopStatus.index + 1}"/></td>    	 
-    	<td>${po.repairType.repairTypeName}</td>
+    	<td>
+    		<c:choose>
+    			<c:when test="${locale == 'ru'}">
+    				${po.repairType.repairTypeNameRu}
+    			</c:when>
+    			<c:otherwise>
+    				${po.repairType.repairTypeName}
+    			</c:otherwise>
+    		</c:choose>
+    	</td>
     	<td>${po.machine.machineSerialNumber}</td>
     	<td>${po.machine.machineServiceable.machineServiceableName}</td>
     	<td>${po.start}</td>
-    	<td>${po.status}</td>    	
+    	<td>
+    		<c:choose>
+  				<c:when test="${po.status == 'pending' && locale == 'ru'}">
+  					<c:out value="в обработке"/>
+  				</c:when>
+  				<c:when test="${po.status == 'started' && locale == 'ru'}">
+  					<c:out value="выполняется"/>
+	  			</c:when>
+  				<c:when test="${po.status == 'ready' && locale == 'ru'}">
+  					<c:out value="готов"/>
+  				</c:when>
+  				<c:when test="${po.status == 'finished' && locale == 'ru'}">
+  					<c:out value="завершен"/>
+  				</c:when>
+  				</c:choose>
+    			<c:choose>
+  				<c:when test="${po.status == 'pending' && locale == 'en'}">
+	  				<c:out value="pending"/>
+  				</c:when>
+  				<c:when test="${po.status == 'started' && locale == 'en'}">
+  					<c:out value="started"/>
+  				</c:when>
+	  			<c:when test="${po.status == 'ready' && locale == 'en'}">
+  					<c:out value="ready"/>
+  				</c:when>
+  				<c:when test="${po.status == 'finished' && locale == 'en'}">
+  					<c:out value="finished"/>
+  				</c:when>
+  			</c:choose>
+    	</td>    	
     </tr>
   	</c:forEach>
   	</tbody>

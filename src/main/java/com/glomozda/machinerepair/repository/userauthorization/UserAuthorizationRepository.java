@@ -1,5 +1,6 @@
 package com.glomozda.machinerepair.repository.userauthorization;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -44,6 +45,22 @@ public class UserAuthorizationRepository {
 						.setFirstResult(start.intValue())
 						.setMaxResults(length.intValue())
 						.getResultList();
+		return result;
+	}
+	
+	@Transactional
+	public LinkedHashSet<User> getDistinctUsersWithFetching(Long start, Long length) {
+		List<UserAuthorization> query_result = 
+				em.createNamedQuery("UserAuthorization.findAllWithFetching",
+						UserAuthorization.class)
+						.setFirstResult(start.intValue())
+						.setMaxResults(length.intValue())						
+						.getResultList();
+		LinkedHashSet<User> result = 
+				new LinkedHashSet<User>();
+		for (UserAuthorization ua : query_result) {
+			result.add(ua.getUser());
+		}
 		return result;
 	}
 	

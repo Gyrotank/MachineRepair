@@ -40,7 +40,11 @@ public class RepairType {
 	
 	@Column(name = "name")
 	@NotEmpty
-	private String  repairTypeName;
+	private String repairTypeName;
+	
+	@Column(name = "name_ru")
+	@NotEmpty
+	private String repairTypeNameRu;
 	
 	@Column(name = "price")
 	@NotNull @DecimalMin("0.0")
@@ -56,9 +60,11 @@ public class RepairType {
 	public RepairType(){
 	}
 
-	public RepairType(final String repairTypeName, final BigDecimal repairTypePrice,
+	public RepairType(final String repairTypeName, final String repairTypeNameRu, 
+			final BigDecimal repairTypePrice,
     		final Integer repairTypeDuration) {
-        this.repairTypeName = repairTypeName;        
+        this.repairTypeName = repairTypeName;
+        this.repairTypeNameRu = repairTypeNameRu;
         this.repairTypePrice = repairTypePrice;
         this.repairTypeDuration = repairTypeDuration;
     }
@@ -82,7 +88,15 @@ public class RepairType {
         this.repairTypeName = repairTypeName;
     }
 
-    public BigDecimal getRepairTypePrice() {
+    public String getRepairTypeNameRu() {
+		return repairTypeNameRu;
+	}
+
+	public void setRepairTypeNameRu(String repairTypeNameRu) {
+		this.repairTypeNameRu = repairTypeNameRu;
+	}
+
+	public BigDecimal getRepairTypePrice() {
         return repairTypePrice;
     }
 
@@ -110,6 +124,7 @@ public class RepairType {
     public int hashCode() {
         int hash = 3;
         hash = 13 * hash + (this.repairTypeName != null ? this.repairTypeName.hashCode() : 0);
+        hash = 13 * hash + (this.repairTypeNameRu != null ? this.repairTypeNameRu.hashCode() : 0);
         hash = 13 * hash + (this.repairTypePrice != null ? this.repairTypePrice.hashCode() : 0);
         return hash;
     }
@@ -123,13 +138,22 @@ public class RepairType {
             return false;
         }
         final RepairType other = (RepairType) obj;
-        if ((this.repairTypeName == null) ? other.repairTypeName != null : !this.repairTypeName.equals(other.repairTypeName)) {
+        if ((this.repairTypeName == null) ? other.repairTypeName != null 
+        		: !this.repairTypeName.equals(other.repairTypeName)) {
             return false;
         }
-        if (this.repairTypePrice != other.repairTypePrice && (this.repairTypePrice == null || !this.repairTypePrice.equals(other.repairTypePrice))) {
+        if ((this.repairTypeNameRu == null) ? other.repairTypeNameRu != null 
+        		: !this.repairTypeNameRu.equals(other.repairTypeNameRu)) {
             return false;
         }
-        if (this.repairTypeDuration != other.repairTypeDuration && (this.repairTypeDuration == null || !this.repairTypeDuration.equals(other.repairTypeDuration))) {
+        if (this.repairTypePrice != other.repairTypePrice 
+        		&& (this.repairTypePrice == null 
+        		|| !this.repairTypePrice.equals(other.repairTypePrice))) {
+            return false;
+        }
+        if (this.repairTypeDuration != other.repairTypeDuration 
+        		&& (this.repairTypeDuration == null 
+        		|| !this.repairTypeDuration.equals(other.repairTypeDuration))) {
             return false;
         }
         return true;
@@ -137,7 +161,12 @@ public class RepairType {
     
     @Override
     public String toString() {
-        return "repairType{" + "repairTypeId=" + repairTypeId + ", repairTypeName=" + repairTypeName + ", repairTypePrice=" + repairTypePrice + ", repairTypeDuration=" + repairTypeDuration + '}'+"\n";
+        return "repairType{" + 
+        		"repairTypeId=" + repairTypeId + 
+        		", repairTypeName=" + repairTypeName +
+        		", repairTypeNameRu=" + repairTypeNameRu + 
+        		", repairTypePrice=" + repairTypePrice + 
+        		", repairTypeDuration=" + repairTypeDuration + '}'+"\n";
     }
 	    
 }

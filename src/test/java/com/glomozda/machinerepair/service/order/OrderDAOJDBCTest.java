@@ -80,8 +80,8 @@ public class OrderDAOJDBCTest extends DAOTestsTemplate{
         userService.add(new User("ivan_user", "qwerty", "qwerty_encoded"));
         userService.add(new User("petro_user", "12345", "12345_encoded"));
         
-        machineServiceableService.add(new MachineServiceable("M-S-1", "TM-1", "UK"));
-        machineServiceableService.add(new MachineServiceable("M-S-2", "TM-2", "USA"));
+        machineServiceableService.add(new MachineServiceable("M-S-1", "TM-1", "UK", "ВБ"));
+        machineServiceableService.add(new MachineServiceable("M-S-2", "TM-2", "USA", "США"));
         
         cal.set(2000, 10, 7);
         o1.setStart(new java.sql.Date(cal.getTimeInMillis()));
@@ -96,8 +96,8 @@ public class OrderDAOJDBCTest extends DAOTestsTemplate{
         clientService.add(cl1, (long) 1);
         clientService.add(cl2, (long) 2);
         
-        repairTypeService.add(new RepairType("Full", new BigDecimal(10000), 6));
-        repairTypeService.add(new RepairType("Partial", new BigDecimal(5000), 3));
+        repairTypeService.add(new RepairType("Full", "Полный", new BigDecimal(10000), 6));
+        repairTypeService.add(new RepairType("Partial", "Частичный", new BigDecimal(5000), 3));
         
         machineService.add(new Machine("SN1", 2010, 2), (long) 1);
         machineService.add(new Machine("SN2", 2013, 1), (long) 2);

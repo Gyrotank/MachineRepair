@@ -50,6 +50,10 @@ public class MachineServiceable {
 	@Column(name = "country")
 	@NotEmpty
 	private String  machineServiceableCountry;
+	
+	@Column(name = "country_ru")
+	@NotEmpty
+	private String  machineServiceableCountryRu;
 		
 	@OneToMany(mappedBy = "machineServiceable")
 	private List<Machine> machines = new ArrayList<Machine>();
@@ -58,11 +62,14 @@ public class MachineServiceable {
 	}
 
 	public MachineServiceable(final String machineServiceableName,
-			final String machineServiceableTrademark, final String machineServiceableCountry) {
+			final String machineServiceableTrademark,
+			final String machineServiceableCountry,
+			final String machineServiceableCountryRu) {
 		
 		this.machineServiceableName = machineServiceableName;
 		this.machineServiceableTrademark = machineServiceableTrademark;
 		this.machineServiceableCountry = machineServiceableCountry;				
+		this.machineServiceableCountryRu = machineServiceableCountryRu;
 	}
 	
 	public Long getMachineServiceableId() {
@@ -97,6 +104,14 @@ public class MachineServiceable {
 		this.machineServiceableCountry = machineServiceableCountry;
 	}
 	
+	public String getMachineServiceableCountryRu() {
+		return machineServiceableCountryRu;
+	}
+
+	public void setMachineServiceableCountryRu(String machineServiceableCountryRu) {
+		this.machineServiceableCountryRu = machineServiceableCountryRu;
+	}
+
 	public void addMachine(final Machine machine) {
         this.machines.add(machine);
         if (machine.getMachineServiceable() != this) {
@@ -111,9 +126,14 @@ public class MachineServiceable {
 	@Override
 	public int hashCode() {
 		int hash = 3;
-		hash = 13 * hash + (this.machineServiceableName != null ? this.machineServiceableName.hashCode() : 0);
-		hash = 13 * hash + (this.machineServiceableTrademark != null ? this.machineServiceableTrademark.hashCode() : 0);
-		hash = 13 * hash + (this.machineServiceableCountry != null ? this.machineServiceableCountry.hashCode() : 0);
+		hash = 13 * hash + (this.machineServiceableName != null 
+				? this.machineServiceableName.hashCode() : 0);
+		hash = 13 * hash + (this.machineServiceableTrademark != null 
+				? this.machineServiceableTrademark.hashCode() : 0);
+		hash = 13 * hash + (this.machineServiceableCountry != null 
+				? this.machineServiceableCountry.hashCode() : 0);
+		hash = 13 * hash + (this.machineServiceableCountryRu != null 
+				? this.machineServiceableCountryRu.hashCode() : 0);
 		return hash;
 	}
 
@@ -126,21 +146,37 @@ public class MachineServiceable {
 			return false;
 		}
 		final MachineServiceable other = (MachineServiceable) obj;
-		if ((this.machineServiceableName == null) ? other.machineServiceableName != null : !this.machineServiceableName.equals(other.machineServiceableName)) {
+		if ((this.machineServiceableName == null) 
+				? other.machineServiceableName != null 
+				: !this.machineServiceableName.equals(other.machineServiceableName)) {
 			return false;
 		}
-		if (this.machineServiceableTrademark != other.machineServiceableTrademark && (this.machineServiceableTrademark == null || !this.machineServiceableTrademark.equals(other.machineServiceableTrademark))) {
+		if (this.machineServiceableTrademark != other.machineServiceableTrademark 
+				&& (this.machineServiceableTrademark == null 
+				|| !this.machineServiceableTrademark.equals(other.machineServiceableTrademark))) {
 			return false;
 		}
-		if (this.machineServiceableCountry != other.machineServiceableCountry && (this.machineServiceableCountry == null || !this.machineServiceableCountry.equals(other.machineServiceableCountry))) {
+		if (this.machineServiceableCountry != other.machineServiceableCountry 
+				&& (this.machineServiceableCountry == null 
+				|| !this.machineServiceableCountry.equals(other.machineServiceableCountry))) {
 			return false;
-		}				
+		}
+		if (this.machineServiceableCountryRu != other.machineServiceableCountryRu 
+				&& (this.machineServiceableCountryRu == null 
+				|| !this.machineServiceableCountryRu.equals(other.machineServiceableCountryRu))) {
+			return false;
+		}
 		return true;
 	}    
 
 	@Override
 	public String toString() {
-		return "machineServiceable{" + "machineServiceableId=" + machineServiceableId + ", machineServiceableName=" + machineServiceableName + ", machineServiceableTrademark=" + machineServiceableTrademark + ", machineServiceableCountry=" + machineServiceableCountry + '}'+"\n";
+		return "machineServiceable{" + 
+				"machineServiceableId=" + machineServiceableId + 
+				", machineServiceableName=" + machineServiceableName + 
+				", machineServiceableTrademark=" + machineServiceableTrademark +
+				", machineServiceableCountry=" + machineServiceableCountry +
+				", machineServiceableCountryRu=" + machineServiceableCountryRu + '}'+"\n";
 	}
 	    
 }

@@ -127,8 +127,6 @@
 			<spring:message code="label.managerpage.pending.machineName" /></th>
 		<th align="center" data-sortable="true" data-switchable="false">
 			<spring:message code="label.managerpage.pending.date" /></th>
-		<th align="center" data-sortable="true" data-switchable="false">
-			<spring:message code="label.managerpage.pending.status" /></th>
 		<th align="center" data-visible="false">
 			<spring:message code="label.managerpage.pending.actions" /></th></tr>
 		</thead>
@@ -137,11 +135,19 @@
   		<tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
     		<td><c:out value="${loopStatus.index + 1}"/></td>
     		<td>${po.client.clientName}</td> 
-    		<td>${po.repairType.repairTypeName}</td>
+    		<td>    			
+    			<c:choose>
+    			<c:when test="${locale == 'ru'}">
+    				${po.repairType.repairTypeNameRu}
+    			</c:when>
+    			<c:otherwise>
+    				${po.repairType.repairTypeName}
+    			</c:otherwise>
+    			</c:choose>
+    		</td>
     		<td>${po.machine.machineSerialNumber}</td>
     		<td>${po.machine.machineServiceable.machineServiceableName}</td>
-    		<td>${po.start}</td>
-    		<td>${po.status}</td>
+    		<td>${po.start}</td>    		
     		<td><a href="<c:url value="confirm/?order_id=${po.orderId}" />">
     			<spring:message code="label.managerpage.pending.actions.confirm" /></a><br>
     		<a href="<c:url value="cancel/?order_id=${po.orderId}" />">
@@ -261,11 +267,49 @@
   	<c:forEach var="so" items="${started_orders_for_selected_client}" varStatus="loopStatus">
   	<tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
     	<td><c:out value="${loopStatus.index + 1}"/></td>    	 
-    	<td>${so.repairType.repairTypeName}</td>
+    	<td>
+    		<c:choose>
+    			<c:when test="${locale == 'ru'}">
+    				${so.repairType.repairTypeNameRu}
+    			</c:when>
+    			<c:otherwise>
+    				${so.repairType.repairTypeName}
+    			</c:otherwise>
+    		</c:choose>
+    	</td>
     	<td>${so.machine.machineSerialNumber}</td>
     	<td>${so.machine.machineServiceable.machineServiceableName}</td>
     	<td>${so.start}</td>
-    	<td>${so.status}</td>
+    	<td>
+    		<c:choose>
+  				<c:when test="${so.status == 'pending' && locale == 'ru'}">
+  					<c:out value="в обработке"/>
+  				</c:when>
+  				<c:when test="${so.status == 'started' && locale == 'ru'}">
+  					<c:out value="выполняется"/>
+	  			</c:when>
+  				<c:when test="${so.status == 'ready' && locale == 'ru'}">
+  					<c:out value="готов"/>
+  				</c:when>
+  				<c:when test="${so.status == 'finished' && locale == 'ru'}">
+  					<c:out value="завершен"/>
+  				</c:when>
+  				</c:choose>
+    			<c:choose>
+  				<c:when test="${so.status == 'pending' && locale == 'en'}">
+	  				<c:out value="pending"/>
+  				</c:when>
+  				<c:when test="${so.status == 'started' && locale == 'en'}">
+  					<c:out value="started"/>
+  				</c:when>
+	  			<c:when test="${so.status == 'ready' && locale == 'en'}">
+  					<c:out value="ready"/>
+  				</c:when>
+  				<c:when test="${so.status == 'finished' && locale == 'en'}">
+  					<c:out value="finished"/>
+  				</c:when>
+  			</c:choose>
+    	</td>
     	<c:if test="${so.status == 'started'}">
    			<td align="center">
    			<a href="<c:url value="setready/?order_id=${so.orderId}" />">
@@ -336,11 +380,49 @@
   	<c:forEach var="ro" items="${ready_orders_for_selected_client}" varStatus="loopStatus">
   	<tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
     	<td><c:out value="${loopStatus.index + 1}"/></td>    	 
-    	<td>${ro.repairType.repairTypeName}</td>
+    	<td>
+    		<c:choose>
+    			<c:when test="${locale == 'ru'}">
+    				${ro.repairType.repairTypeNameRu}
+    			</c:when>
+    			<c:otherwise>
+    				${ro.repairType.repairTypeName}
+    			</c:otherwise>
+    		</c:choose>
+    	</td>
     	<td>${ro.machine.machineSerialNumber}</td>
     	<td>${ro.machine.machineServiceable.machineServiceableName}</td>
     	<td>${ro.start}</td>
-    	<td>${ro.status}</td>    	
+    	<td>
+    		<c:choose>
+  				<c:when test="${ro.status == 'pending' && locale == 'ru'}">
+  					<c:out value="в обработке"/>
+  				</c:when>
+  				<c:when test="${ro.status == 'started' && locale == 'ru'}">
+  					<c:out value="выполняется"/>
+	  			</c:when>
+  				<c:when test="${ro.status == 'ready' && locale == 'ru'}">
+  					<c:out value="готов"/>
+  				</c:when>
+  				<c:when test="${ro.status == 'finished' && locale == 'ru'}">
+  					<c:out value="завершен"/>
+  				</c:when>
+  				</c:choose>
+    			<c:choose>
+  				<c:when test="${ro.status == 'pending' && locale == 'en'}">
+	  				<c:out value="pending"/>
+  				</c:when>
+  				<c:when test="${ro.status == 'started' && locale == 'en'}">
+  					<c:out value="started"/>
+  				</c:when>
+	  			<c:when test="${ro.status == 'ready' && locale == 'en'}">
+  					<c:out value="ready"/>
+  				</c:when>
+  				<c:when test="${ro.status == 'finished' && locale == 'en'}">
+  					<c:out value="finished"/>
+  				</c:when>
+  			</c:choose>
+    	</td>    	
     </tr>
   	</c:forEach>
   	</tbody>

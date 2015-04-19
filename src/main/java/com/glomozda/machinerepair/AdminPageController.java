@@ -192,6 +192,10 @@ public class AdminPageController implements MessageSourceAware {
 				userAuthorizationSvc.getAllWithFetching(userAuthorizationPagingFirstIndex, 
 						userAuthorizationPagingLastIndex - userAuthorizationPagingFirstIndex + 1)
 						);
+		model.addAttribute("user_authorizations_short_users", 
+				userAuthorizationSvc.getDistinctUsersWithFetching(userAuthorizationPagingFirstIndex, 
+						userAuthorizationPagingLastIndex - userAuthorizationPagingFirstIndex + 1)
+				);
 		model.addAttribute("user_authorizations_count",
 				userAuthorizationSvc.getUserAuthorizationCount());
 		model.addAttribute("user_authorizations_paging_first", userAuthorizationPagingFirstIndex);

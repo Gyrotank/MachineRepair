@@ -1,11 +1,13 @@
 package com.glomozda.machinerepair.service.userauthorization;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.glomozda.machinerepair.domain.user.User;
 import com.glomozda.machinerepair.domain.userauthorization.UserAuthorization;
 import com.glomozda.machinerepair.repository.userauthorization.UserAuthorizationRepository;
 
@@ -33,6 +35,11 @@ public class UserAuthorizationService {
 	@Transactional
 	public List<UserAuthorization> getAllWithFetching() {
 		return userAuthorizationRepository.getAllWithFetching();
+	}
+	
+	@Transactional
+	public LinkedHashSet<User> getDistinctUsersWithFetching(Long start, Long length) {
+		return userAuthorizationRepository.getDistinctUsersWithFetching(start, length);
 	}
 	
 	@Transactional

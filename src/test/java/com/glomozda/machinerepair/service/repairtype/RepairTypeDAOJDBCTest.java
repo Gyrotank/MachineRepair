@@ -20,8 +20,8 @@ public class RepairTypeDAOJDBCTest extends DAOTestsTemplate{
 	@Autowired
     private transient RepairTypeService repairTypeService;
     
-    final RepairType rt1 = new RepairType("Full", new BigDecimal(10000), 6);
-    final RepairType rt2 = new RepairType("Partial", new BigDecimal(5000), 3);
+    final RepairType rt1 = new RepairType("Full", "Полный", new BigDecimal(10000), 6);
+    final RepairType rt2 = new RepairType("Partial", "Частичный", new BigDecimal(5000), 3);
             
     @Before
     public void prepareDB(){

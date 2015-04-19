@@ -108,8 +108,8 @@ public class OrderService {
 	}
 
 	@Transactional
-	public void add(Order o, Long clientId, Long repairTypeId, Long machineId) {
-		orderRepository.add(o, clientId, repairTypeId, machineId);
+	public Boolean add(Order o, Long clientId, Long repairTypeId, Long machineId) {
+		return orderRepository.add(o, clientId, repairTypeId, machineId);
 	}
 	
 	@Transactional

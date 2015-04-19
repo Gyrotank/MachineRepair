@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
@@ -344,7 +346,18 @@ public class AdminPageController implements MessageSourceAware {
 			return "redirect:/adminpage#machines";
 		}
 		
-		machineSvc.add(machine, machineServiceableId);
+		if (machineSvc.add(machine, machineServiceableId)) {
+			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+					messageSource.getMessage("popup.adminpage.machineAdded", null,
+							locale));
+		} else {
+			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+					messageSource.getMessage("popup.adminpage.machineNotAdded", null,
+							locale),
+					messageSource.getMessage("popup.adminpage.machineNotAddedTitle", null,
+							locale),
+                    JOptionPane.ERROR_MESSAGE);
+		}
 		return "redirect:/adminpage#machines";
 	}
 	
@@ -398,7 +411,8 @@ public class AdminPageController implements MessageSourceAware {
 	public String addMachineServiceable(
 			@ModelAttribute("machineServiceable") @Valid final MachineServiceable machineServiceable,
 			final BindingResult bindingResult,			
-			final RedirectAttributes redirectAttributes) {
+			final RedirectAttributes redirectAttributes,
+			final Locale locale) {
 		
 		if (bindingResult.hasErrors()) {
 			redirectAttributes.addFlashAttribute
@@ -407,7 +421,19 @@ public class AdminPageController implements MessageSourceAware {
 			return "redirect:/adminpage#serviceable_machines";
 		}
 		
-		machineServiceableSvc.add(machineServiceable);
+		if (machineServiceableSvc.add(machineServiceable)) {
+			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+					messageSource.getMessage("popup.adminpage.machineServiceableAdded", null,
+							locale));
+		} else {
+			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+					messageSource.getMessage("popup.adminpage.machineServiceableNotAdded", null,
+							locale),
+					messageSource.getMessage("popup.adminpage.machineServiceableNotAddedTitle",
+							null,
+							locale),
+                    JOptionPane.ERROR_MESSAGE);
+		}
 		return "redirect:/adminpage#serviceable_machines";
 	}
 
@@ -461,7 +487,8 @@ public class AdminPageController implements MessageSourceAware {
 	public String addRepairType(
 			@ModelAttribute("repairType") @Valid final RepairType repairType,
 			final BindingResult bindingResult,			
-			final RedirectAttributes redirectAttributes) {
+			final RedirectAttributes redirectAttributes,
+			final Locale locale) {
 		
 		if (bindingResult.hasErrors()) {
 			redirectAttributes.addFlashAttribute
@@ -470,7 +497,19 @@ public class AdminPageController implements MessageSourceAware {
 			return "redirect:/adminpage#repair_types";
 		}
 		
-		repairTypeSvc.add(repairType);
+		if (repairTypeSvc.add(repairType)) {
+			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+					messageSource.getMessage("popup.adminpage.repairTypeAdded", null,
+							locale));
+		} else {
+			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+					messageSource.getMessage("popup.adminpage.repairTypeNotAdded", null,
+							locale),
+					messageSource.getMessage("popup.adminpage.repairTypeNotAddedTitle",
+							null,
+							locale),
+                    JOptionPane.ERROR_MESSAGE);
+		}
 		return "redirect:/adminpage#repair_types";
 	}
 	
@@ -523,7 +562,8 @@ public class AdminPageController implements MessageSourceAware {
 	public String addUser(
 			@ModelAttribute("user") @Valid final User user,
 			final BindingResult bindingResult,			
-			final RedirectAttributes redirectAttributes) {
+			final RedirectAttributes redirectAttributes,
+			final Locale locale) {
 		
 		if (bindingResult.hasErrors()) {
 			redirectAttributes.addFlashAttribute
@@ -532,8 +572,20 @@ public class AdminPageController implements MessageSourceAware {
 			return "redirect:/adminpage#users";
 		}
 		
-		userSvc.add(new	User(user.getLogin(), user.getPasswordText(),
-				encoder.encode(user.getPasswordText())));
+		if (userSvc.add(new	User(user.getLogin(), user.getPasswordText(),
+				encoder.encode(user.getPasswordText())))) {
+			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+					messageSource.getMessage("popup.adminpage.userAdded", null,
+							locale));
+		} else {
+			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+					messageSource.getMessage("popup.adminpage.userNotAdded", null,
+							locale),
+					messageSource.getMessage("popup.adminpage.userNotAddedTitle",
+							null,
+							locale),
+                    JOptionPane.ERROR_MESSAGE);
+		}
 		return "redirect:/adminpage#users";
 	}
 	
@@ -617,8 +669,20 @@ public class AdminPageController implements MessageSourceAware {
 			return "redirect:/adminpage#user_auths";
 		}
 		
-		userAuthorizationSvc.add(new UserAuthorization(userAuthorization.getRole()),
-				userId);
+		if (userAuthorizationSvc.add(new UserAuthorization(userAuthorization.getRole()),
+				userId)) {
+			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+					messageSource.getMessage("popup.adminpage.userAuthorizationAdded", null,
+							locale));
+		} else {
+			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+					messageSource.getMessage("popup.adminpage.userAuthorizationNotAdded", null,
+							locale),
+					messageSource.getMessage("popup.adminpage.userAuthorizationNotAddedTitle",
+							null,
+							locale),
+                    JOptionPane.ERROR_MESSAGE);
+		}
 		return "redirect:/adminpage#user_auths";
 	}
 	
@@ -691,7 +755,19 @@ public class AdminPageController implements MessageSourceAware {
 			return "redirect:/adminpage#clients";
 		}
 		
-		clientSvc.add(client, userId);
+		if (clientSvc.add(client, userId)) {
+			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+					messageSource.getMessage("popup.adminpage.clientAdded", null,
+							locale));
+		} else {
+			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+					messageSource.getMessage("popup.adminpage.clientNotAdded", null,
+							locale),
+					messageSource.getMessage("popup.adminpage.clientNotAddedTitle",
+							null,
+							locale),
+                    JOptionPane.ERROR_MESSAGE);
+		}
 		return "redirect:/adminpage#clients";
 	}
 
@@ -823,7 +899,20 @@ public class AdminPageController implements MessageSourceAware {
 		}
 		
 		order.setStart(startSqlDate);		
-		orderSvc.add(order, clientId, repairTypeId, machineId);
+		
+		if (orderSvc.add(order, clientId, repairTypeId, machineId)) {
+			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+					messageSource.getMessage("popup.adminpage.orderAdded", null,
+							locale));
+		} else {
+			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+					messageSource.getMessage("popup.adminpage.orderNotAdded", null,
+							locale),
+					messageSource.getMessage("popup.adminpage.orderNotAddedTitle",
+							null,
+							locale),
+                    JOptionPane.ERROR_MESSAGE);
+		}
 		return "redirect:/adminpage#orders";
 	}	
 }

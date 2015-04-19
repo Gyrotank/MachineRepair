@@ -53,8 +53,13 @@ public class RepairTypeRepository {
 	}
 
 	@Transactional
-	public void add(RepairType rt) {
+	public Boolean add(RepairType rt) {
 		em.persist(rt);
+		if (em.contains(rt)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }

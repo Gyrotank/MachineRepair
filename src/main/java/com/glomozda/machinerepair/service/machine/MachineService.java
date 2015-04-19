@@ -46,8 +46,8 @@ public class MachineService {
 	}
 
 	@Transactional
-	public void add(Machine m, Long machineServiceableId) {
-		machineRepository.add(m, machineServiceableId);
+	public Boolean add(Machine m, Long machineServiceableId) {
+		return machineRepository.add(m, machineServiceableId);
 	}
 	
 	@Transactional	

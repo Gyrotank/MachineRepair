@@ -114,12 +114,18 @@ public class ClientRepository {
 	}
 
 	@Transactional
-	public void add(Client c, Long userId) {
+	public Boolean add(Client c, Long userId) {
 		User user = em.getReference(User.class, userId);
 
 		Client newClient = new Client();
 		newClient.setClientName(c.getClientName());
 		newClient.setClientUser(user);
-		em.persist(newClient);	  
+		em.persist(newClient);
+		
+		if (em.contains(newClient)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

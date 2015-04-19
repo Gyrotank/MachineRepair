@@ -6,6 +6,9 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
@@ -136,6 +139,9 @@ public class ClientPageController implements MessageSourceAware {
 		model.addAttribute("current_orders_paging_first", currentOrdersPagingFirstIndex);
 		model.addAttribute("current_orders_paging_last", currentOrdersPagingLastIndex);
 		
+		model.addAttribute("dialog_pay_order",
+				messageSource.getMessage("label.clientpage.yourOrders.actions.pay.dialog", null,
+				locale));
 		
 		ArrayList<String> myMachinesSNs = new ArrayList<String>();
 		
@@ -250,9 +256,23 @@ public class ClientPageController implements MessageSourceAware {
 		}		
 		
 		Order order = new Order(new java.sql.Date(new java.util.Date().getTime()));
+		order.setManager("-");
 		
-		orderSvc.add(order, myClient.getClientId(),
-				repairTypeId, machine.getMachineId());
+		if (orderSvc.add(order, myClient.getClientId(),
+				repairTypeId, machine.getMachineId())) {
+			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+					messageSource.getMessage("popup.clientpage.orderAdded", null,
+							locale));
+		} else {
+			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+					messageSource.getMessage("popup.clientpage.orderNotAdded", null,
+							locale),
+					messageSource.getMessage("popup.clientpage.orderNotAddedTitle",
+							null,
+							locale),
+                    JOptionPane.ERROR_MESSAGE);
+		}
+		
 		return "redirect:/clientpage";
 	}
 	
@@ -327,8 +347,23 @@ public class ClientPageController implements MessageSourceAware {
 		m = machineSvc.getMachineForSerialNumberWithFetching(machineSerialNumber);
 		
 		Order order = new Order(new java.sql.Date(new java.util.Date().getTime()));
+		order.setManager("-");
 		
-		orderSvc.add(order, myClient.getClientId(), repairTypeId, m.getMachineId());
+//		log.info(order.toString());
+		
+		if (orderSvc.add(order, myClient.getClientId(), repairTypeId, m.getMachineId())) {
+			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+					messageSource.getMessage("popup.clientpage.orderAdded", null,
+							locale));
+		} else {
+			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+					messageSource.getMessage("popup.clientpage.orderNotAdded", null,
+							locale),
+					messageSource.getMessage("popup.clientpage.orderNotAddedTitle",
+							null,
+							locale),
+                    JOptionPane.ERROR_MESSAGE);
+		}
 		return "redirect:/clientpage";
 	}
 	

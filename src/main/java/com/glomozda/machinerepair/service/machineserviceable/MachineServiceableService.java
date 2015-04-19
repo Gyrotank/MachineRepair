@@ -46,7 +46,7 @@ public class MachineServiceableService {
 	}
 	
 	@Transactional
-	public void add(MachineServiceable ms) {
-		machineServiceableRepository.add(ms);
+	public Boolean add(MachineServiceable ms) {
+		return machineServiceableRepository.add(ms);
 	}
 }

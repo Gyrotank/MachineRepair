@@ -63,7 +63,7 @@ public class UserAuthorizationService {
 	}
 
 	@Transactional
-	public void add(UserAuthorization ua, Long userId) {
-		userAuthorizationRepository.add(ua, userId);
+	public Boolean add(UserAuthorization ua, Long userId) {
+		return userAuthorizationRepository.add(ua, userId);
 	}
 }

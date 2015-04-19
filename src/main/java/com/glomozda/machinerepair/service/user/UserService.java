@@ -70,7 +70,7 @@ public class UserService {
 	}
 
 	@Transactional
-	public void add(User u) {
-		userRepository.add(u);
+	public Boolean add(User u) {
+		return userRepository.add(u);
 	}	
 }

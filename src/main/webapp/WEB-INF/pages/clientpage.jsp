@@ -340,7 +340,8 @@
     	</td>
     	<c:if test="${co.status == 'ready'}">
    			<td align="center">
-   			<a href="<c:url value="pay/?order_id=${co.orderId}" />">
+   			<a href="<c:url value="pay/?order_id=${co.orderId}" />"
+   				onclick="return confirm('${dialog_pay_order} ${co.repairType.repairTypePrice}?')">
    				<spring:message code="label.clientpage.yourOrders.actions.pay" /></a>
    			</td>
 		</c:if>    	

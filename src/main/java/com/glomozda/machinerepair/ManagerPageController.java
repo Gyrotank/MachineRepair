@@ -9,6 +9,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceAware;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,7 +28,7 @@ import com.glomozda.machinerepair.service.user.UserService;
 import org.apache.log4j.Logger;
 
 @Controller
-public class ManagerPageController {
+public class ManagerPageController implements MessageSourceAware {
 	
 	static Logger log = Logger.getLogger(ManagerPageController.class.getName());
 	
@@ -47,6 +49,8 @@ public class ManagerPageController {
 	
 	private User myUser;
 	
+	private MessageSource messageSource;
+	
 	private static final Long _defaultPageSize = (long) 25;
 	
 	private Long clientPagingFirstIndex = (long) 0;
@@ -64,6 +68,10 @@ public class ManagerPageController {
 	private Long selectedClientId = (long) 0;
 	private ArrayList<Order> startedOrdersForSelectedClient = new ArrayList<Order>();
 	private ArrayList<Order> readyOrdersForSelectedClient = new ArrayList<Order>();
+	
+	public void setMessageSource(final MessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
 	
 	@RequestMapping(value = "/managerpage", method = RequestMethod.GET)
 	public String activate(final Locale locale, final Principal principal, final Model model) {
@@ -88,6 +96,16 @@ public class ManagerPageController {
 		model.addAttribute("pending_orders_paging_first", pendingOrdersPagingFirstIndex);
 		model.addAttribute("pending_orders_paging_last", pendingOrdersPagingLastIndex);
 		
+		model.addAttribute("dialog_confirm_order",
+				messageSource.getMessage("label.managerpage.pending.actions.confirm.dialog", null,
+				locale));
+		model.addAttribute("dialog_cancel_order",
+				messageSource.getMessage("label.managerpage.pending.actions.cancel.dialog", null,
+				locale));
+		model.addAttribute("dialog_setready_order",
+				messageSource.getMessage("label.managerpage.started.actions.setReady.dialog", null,
+				locale));
+		
 		model.addAttribute("selected_client_id", selectedClientId);		
 		
 		model.addAttribute("started_orders_for_selected_client", startedOrdersForSelectedClient);		
@@ -107,7 +125,7 @@ public class ManagerPageController {
 						clientPagingLastIndex - clientPagingFirstIndex + 1));
 		model.addAttribute("clients_count", clientSvc.getClientCount());
 		model.addAttribute("clients_paging_first", clientPagingFirstIndex);
-		model.addAttribute("clients_paging_last", clientPagingLastIndex);
+		model.addAttribute("clients_paging_last", clientPagingLastIndex);		
 		
 		model.addAttribute("user_token_authorities",
 				userToken.getAuthorities().toString());

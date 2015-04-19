@@ -86,8 +86,10 @@ public class OrderDAOJDBCTest extends DAOTestsTemplate{
         cal.set(2000, 10, 7);
         o1.setStart(new java.sql.Date(cal.getTimeInMillis()));
         o1.setStatus("finished");
+        o1.setManager("Manager");
         o2.setStart(new java.sql.Date(new java.util.Date().getTime()));
         o2.setStatus("pending");
+        o2.setManager("Manager");
         
         final Client cl1 = new Client();
         cl1.setClientName("Ivan");

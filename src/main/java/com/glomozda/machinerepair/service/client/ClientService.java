@@ -66,7 +66,7 @@ public class ClientService {
 	}
 
 	@Transactional
-	public void add(Client c, Long userId) {
-		clientRepository.add(c, userId);
+	public Boolean add(Client c, Long userId) {
+		return clientRepository.add(c, userId);
 	}
 }

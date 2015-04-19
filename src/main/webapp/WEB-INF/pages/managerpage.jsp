@@ -148,9 +148,11 @@
     		<td>${po.machine.machineSerialNumber}</td>
     		<td>${po.machine.machineServiceable.machineServiceableName}</td>
     		<td>${po.start}</td>    		
-    		<td><a href="<c:url value="confirm/?order_id=${po.orderId}" />">
+    		<td><a href="<c:url value="confirm/?order_id=${po.orderId}"/>" 
+    			onclick="return confirm('${dialog_confirm_order}')">
     			<spring:message code="label.managerpage.pending.actions.confirm" /></a><br>
-    		<a href="<c:url value="cancel/?order_id=${po.orderId}" />">
+    		<a href="<c:url value="cancel/?order_id=${po.orderId}" />"
+    			onclick="return confirm('${dialog_cancel_order}')">
     			<spring:message code="label.managerpage.pending.actions.cancel" /></a></td>
     	</tr>
   		</c:forEach>
@@ -315,7 +317,8 @@
     	<td>${so.manager}</td>
     	<c:if test="${so.status == 'started'}">
    			<td align="center">
-   			<a href="<c:url value="setready/?order_id=${so.orderId}" />">
+   			<a href="<c:url value="setready/?order_id=${so.orderId}" />"
+   				onclick="return confirm('${dialog_setready_order}')">
    				<spring:message code="label.managerpage.started.actions.setReady" /></a>
    			</td>
    		</c:if>

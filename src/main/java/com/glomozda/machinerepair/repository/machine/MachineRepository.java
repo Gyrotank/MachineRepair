@@ -81,7 +81,7 @@ public class MachineRepository {
 	}
 
 	@Transactional
-	public void add(Machine m, Long machineServiceableId) {
+	public Boolean add(Machine m, Long machineServiceableId) {
 		MachineServiceable machineServiceable =
 				em.getReference(MachineServiceable.class, machineServiceableId);
 
@@ -91,6 +91,11 @@ public class MachineRepository {
 		newMachine.setMachineTimesRepaired(m.getMachineTimesRepaired());
 		newMachine.setMachineServiceable(machineServiceable);
 		em.persist(newMachine);
+		if (em.contains(newMachine)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	@Transactional	

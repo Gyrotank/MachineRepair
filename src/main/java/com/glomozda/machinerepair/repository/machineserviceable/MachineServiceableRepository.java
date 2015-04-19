@@ -70,8 +70,13 @@ public class MachineServiceableRepository {
 	}
 	
 	@Transactional
-	public void add(MachineServiceable ms) {
+	public Boolean add(MachineServiceable ms) {
 		em.persist(ms);
+		if (em.contains(ms)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }

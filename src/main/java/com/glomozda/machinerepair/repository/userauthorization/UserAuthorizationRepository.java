@@ -117,7 +117,7 @@ public class UserAuthorizationRepository {
 	}
 
 	@Transactional
-	public void add(UserAuthorization ua, Long userId) {
+	public Boolean add(UserAuthorization ua, Long userId) {
 		User user = em.getReference(User.class, userId);
 		
 		UserAuthorization newUserAuthorization = new UserAuthorization();
@@ -125,5 +125,11 @@ public class UserAuthorizationRepository {
 		newUserAuthorization.setUser(user);
 		
 		em.persist(newUserAuthorization);
+		
+		if (em.contains(newUserAuthorization)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

@@ -217,7 +217,7 @@ public class OrderRepository {
 	}
 
 	@Transactional
-	public void add(Order o, Long clientId, Long repairTypeId, Long machineId) {
+	public Boolean add(Order o, Long clientId, Long repairTypeId, Long machineId) {
 
 		Client client = em.getReference(Client.class, clientId);
 		RepairType repairType = em.getReference(RepairType.class, repairTypeId);
@@ -227,12 +227,17 @@ public class OrderRepository {
 		newOrder.setClient(client);
 		newOrder.setRepairType(repairType);
 		newOrder.setMachine(machine);
-		newOrder.setStart(o.getStart());
-		newOrder.setStatus(o.getStatus());
+		newOrder.setStart(o.getStart());		
 		newOrder.setStatus(o.getStatus());
 		newOrder.setManager(o.getManager());
 		
 		em.persist(newOrder);
+		
+		if (em.contains(newOrder)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	@Transactional

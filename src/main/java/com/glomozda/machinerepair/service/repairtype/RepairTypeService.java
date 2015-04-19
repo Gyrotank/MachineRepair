@@ -36,7 +36,7 @@ public class RepairTypeService {
 	}
 
 	@Transactional
-	public void add(RepairType rt) {
-		repairTypeRepository.add(rt);
+	public Boolean add(RepairType rt) {
+		return repairTypeRepository.add(rt);
 	}
 }

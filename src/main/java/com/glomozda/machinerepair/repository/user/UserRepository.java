@@ -132,7 +132,12 @@ public class UserRepository {
 	}
 
 	@Transactional
-	public void add(User u) {
+	public Boolean add(User u) {
 		em.persist(u);
+		if (em.contains(u)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

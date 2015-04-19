@@ -113,8 +113,8 @@ public class OrderService {
 	}
 	
 	@Transactional
-	public Integer confirmOrderById(Long orderId) {
-		return orderRepository.confirmOrderById(orderId);
+	public Integer confirmOrderById(Long orderId, String manager) {
+		return orderRepository.confirmOrderById(orderId, manager);
 	}
 	
 	@Transactional

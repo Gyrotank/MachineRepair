@@ -2,6 +2,7 @@ package com.glomozda.machinerepair;
 
 import java.security.Principal;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import javax.validation.Valid;
@@ -87,6 +88,9 @@ public class AdminPageController implements MessageSourceAware {
 	
 	private String messageOrderMachineId = "";
 	private Long selectedOrderMachineId = (long) 0;
+	
+	private String messageOrderManager = "";
+	private String selectedOrderManager = "-";
 
 	private String messageOrderStart = "";
 	private String enteredOrderStart = "";
@@ -193,9 +197,15 @@ public class AdminPageController implements MessageSourceAware {
 						userAuthorizationPagingLastIndex - userAuthorizationPagingFirstIndex + 1)
 						);
 		model.addAttribute("user_authorizations_short_users", 
-				userAuthorizationSvc.getDistinctUsersWithFetching(userAuthorizationPagingFirstIndex, 
+				userAuthorizationSvc
+					.getDistinctUsersWithFetching(userAuthorizationPagingFirstIndex, 
 						userAuthorizationPagingLastIndex - userAuthorizationPagingFirstIndex + 1)
 				);
+		
+		List<String> managers = userAuthorizationSvc.getUserLoginsForRole("ROLE_MANAGER");
+		managers.addAll(userAuthorizationSvc.getUserLoginsForRole("ROLE_ADMIN"));
+		java.util.Collections.sort(managers);
+		model.addAttribute("user_authorizations_managers", managers);
 		model.addAttribute("user_authorizations_count",
 				userAuthorizationSvc.getUserAuthorizationCount());
 		model.addAttribute("user_authorizations_paging_first", userAuthorizationPagingFirstIndex);
@@ -251,6 +261,11 @@ public class AdminPageController implements MessageSourceAware {
 		messageOrderStart = "";
 		model.addAttribute("entered_order_start", enteredOrderStart);
 		enteredOrderStart = "";
+		
+		model.addAttribute("message_order_manager", messageOrderManager);
+		messageOrderManager = "";
+		model.addAttribute("selected_order_manager", selectedOrderManager);
+		selectedOrderManager = "-";
 		
 		return "adminpage";
 	}	
@@ -593,6 +608,15 @@ public class AdminPageController implements MessageSourceAware {
 			return "redirect:/adminpage#user_auths";
 		}
 		
+		if (userAuthorizationSvc
+			.getUserAuthorizationForUserIdAndRole(userId, userAuthorization.getRole()) != null) {
+				messageUserAuthorizationUserId = 
+					messageSource.getMessage("error.adminpage.userAuthorizationExists", null,
+							locale);
+			selectedUserAuthorizationUserId = userId;
+			return "redirect:/adminpage#user_auths";
+		}
+		
 		userAuthorizationSvc.add(new UserAuthorization(userAuthorization.getRole()),
 				userId);
 		return "redirect:/adminpage#user_auths";
@@ -723,7 +747,7 @@ public class AdminPageController implements MessageSourceAware {
 			@RequestParam("clientId") final Long clientId, 
 			@RequestParam("repairTypeId") final Long repairTypeId, 
 			@RequestParam("machineId") final Long machineId,
-			@RequestParam("startDate") final String startDate,
+			@RequestParam("startDate") final String startDate,			
 			final Locale locale) {
 		
 		java.sql.Date startSqlDate = new java.sql.Date(0);
@@ -781,6 +805,20 @@ public class AdminPageController implements MessageSourceAware {
 			selectedOrderRepairTypeId = repairTypeId;
 			selectedOrderMachineId = machineId;
 			enteredOrderStart = startDate;
+			selectedOrderManager = order.getManager();
+			return "redirect:/adminpage#orders";
+		}
+		
+		if (order.getManager().contentEquals("-") 
+				& !order.getStatus().contentEquals("pending")) {
+			messageOrderManager = 
+					messageSource.getMessage("error.adminpage.managerRequired", null,
+							locale);
+			selectedOrderClientId = clientId;
+			selectedOrderRepairTypeId = repairTypeId;
+			selectedOrderMachineId = machineId;
+			enteredOrderStart = startDate;
+			selectedOrderManager = order.getManager();
 			return "redirect:/adminpage#orders";
 		}
 		

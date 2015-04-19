@@ -33,7 +33,8 @@ CREATE TABLE Orders(
     repair_type_id bigint,
     machine_id bigint,
     start date,
-    status varchar(10),    
+    status varchar(10),
+    manager varchar(10),
     PRIMARY KEY (orders_id)
 );
 

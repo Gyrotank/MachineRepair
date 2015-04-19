@@ -75,10 +75,10 @@ public class ManagerPageController {
 			return "redirect:/index";
 		}
 		
-		model.addAttribute("locale", locale.toString());
-		
 		UsernamePasswordAuthenticationToken userToken =
 				(UsernamePasswordAuthenticationToken)principal;
+		
+		model.addAttribute("locale", locale.toString());
 		
 		List<Order> pendingOrders = orderSvc.getOrdersForStatusWithFetching("pending",
 				pendingOrdersPagingFirstIndex,
@@ -170,7 +170,7 @@ public class ManagerPageController {
 		if (!myOrder.getStatus().contentEquals("pending")) {
 			return "redirect:/managerpage#pending_orders";
 		}
-		orderSvc.confirmOrderById(orderId);
+		orderSvc.confirmOrderById(orderId, myUser.getLogin());
 		return "redirect:/managerpage#pending_orders";
 	}
 	

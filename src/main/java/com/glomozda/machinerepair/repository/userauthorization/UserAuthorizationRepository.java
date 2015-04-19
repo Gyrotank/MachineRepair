@@ -1,9 +1,11 @@
 package com.glomozda.machinerepair.repository.userauthorization;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
@@ -78,6 +80,35 @@ public class UserAuthorizationRepository {
 				em.createNamedQuery("UserAuthorization.findAllRoles",
 						String.class).getResultList();
 		return result;
+	}
+	
+	@Transactional
+	public UserAuthorization getUserAuthorizationForUserIdAndRole(Long userId, String role) {
+		UserAuthorization result = null;
+		try {
+		result = 
+				em.createNamedQuery("UserAuthorization.findUserAuthorizationForUserIdAndRole",
+						UserAuthorization.class)
+						.setParameter("id", userId)
+						.setParameter("role", role)
+						.getSingleResult();
+		} catch (NoResultException nre){}
+		return result;
+	}
+	
+	@Transactional
+	public List<String> getUserLoginsForRole(String role) {
+		List<UserAuthorization> queryResult = 
+				em.createNamedQuery("UserAuthorization.findUserAuthorizationForRole",
+						UserAuthorization.class)
+						.setParameter("role", role)
+						.getResultList();
+		
+		List<String> result = new ArrayList<String>();		
+		for (UserAuthorization ua : queryResult) {
+			result.add(ua.getUser().getLogin());
+		}
+		return result;		
 	}
 	
 	@Transactional

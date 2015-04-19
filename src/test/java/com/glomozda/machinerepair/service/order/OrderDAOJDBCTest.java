@@ -286,7 +286,7 @@ public class OrderDAOJDBCTest extends DAOTestsTemplate{
     @Test
     @Ignore
     public void testConfirmOrderById() {    	
-        orderService.confirmOrderById((long) 2);        
+        orderService.confirmOrderById((long) 2, "Some Manager");        
         Assert.assertTrue(orderService.getOrderByIdWithFetching((long) 2)
         		.getStatus().contentEquals("started"));
     }

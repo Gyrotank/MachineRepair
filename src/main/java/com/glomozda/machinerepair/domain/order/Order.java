@@ -55,7 +55,8 @@ import com.glomozda.machinerepair.domain.repairtype.RepairType;
 	@NamedQuery(name="Order.countOrdersByClientIdAndStatus",
 		query="SELECT COUNT(o) FROM Order o"			
 			+ " WHERE o.client.clientId = :id AND o.status = :status"),
-	@NamedQuery(name="Order.confirmOrderById", query="UPDATE Order o SET status = 'started'"
+	@NamedQuery(name="Order.confirmOrderById", 
+		query="UPDATE Order o SET status = 'started', manager = :manager"
 			+ " WHERE o.orderId = :id AND o.status = 'pending'"),
 	@NamedQuery(name="Order.setOrderStatusById", query="UPDATE Order o SET status = :status "
 			+ " WHERE o.orderId = :id"),
@@ -117,17 +118,23 @@ public class Order {
 	@NotEmpty
 	private String status;
 	
+	@Column(name = "manager")
+	@NotEmpty
+	private String manager;
+	
 	public Order(){
 	}
 
 	public Order(final Date start) {		
 		this.start = start;
 		this.status = "pending";
+		this.manager = "-";
 	}
 	
 	public Order(final Date start, final String status) {		
 		this.start = start;
 		this.status = status;
+		this.manager = "-";
 	}
 	
 	public Long getOrderId() {
@@ -189,6 +196,14 @@ public class Order {
 		this.status = status;
 	}
 
+	public String getManager() {
+		return manager;
+	}
+
+	public void setManager(String manager) {
+		this.manager = manager;
+	}
+
 	@Override
 	public int hashCode() {
 		int hash = 3;
@@ -196,6 +211,7 @@ public class Order {
 		hash = 13 * hash + (this.repairType != null ? this.repairType.getRepairTypeId().hashCode() : 0);
 		hash = 13 * hash + (this.machine != null ? this.machine.getMachineId().hashCode() : 0);
 		hash = 13 * hash + (this.start != null ? this.start.hashCode() : 0);
+		hash = 13 * hash + (this.manager != null ? this.manager.hashCode() : 0);
 		return hash;
 	}
 
@@ -211,13 +227,19 @@ public class Order {
 		if ((this.client == null) ? other.client != null : !this.client.equals(other.client)) {
 			return false;
 		}
-		if ((this.repairType == null) ? other.repairType != null : !this.repairType.equals(other.repairType)) {
+		if ((this.repairType == null) ? other.repairType != null 
+				: !this.repairType.equals(other.repairType)) {
 			return false;
 		}
-		if ((this.machine == null) ? other.machine != null : !this.machine.equals(other.machine)) {
+		if ((this.machine == null) ? other.machine != null 
+				: !this.machine.equals(other.machine)) {
 			return false;
 		}
 		if ((this.start == null) ? other.start != null : !this.start.equals(other.start)) {
+			return false;
+		}
+		if ((this.manager == null) ? other.manager != null 
+				: !this.manager.equals(other.manager)) {
 			return false;
 		}
 		return true;
@@ -242,7 +264,7 @@ public class Order {
 		} else {
 			res += ", machineId=" + machine.getMachineId();
 		}
-		res += ", start=" + start + ", status=" + status + '}'+"\n";				
+		res += ", start=" + start + ", status=" + status + ", manager=" + manager + '}'+"\n";				
 		
 		return res;
 	}

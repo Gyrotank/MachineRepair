@@ -24,6 +24,14 @@ import com.glomozda.machinerepair.domain.user.User;
 			+ "ORDER BY ua.user.login"),
 	@NamedQuery(name="UserAuthorization.findAllRoles", query="SELECT DISTINCT (ua.role) "
 			+ "FROM UserAuthorization ua"),
+	@NamedQuery(name="UserAuthorization.findUserAuthorizationForUserIdAndRole",
+		query="SELECT ua FROM UserAuthorization ua "
+			+ "LEFT JOIN FETCH ua.user "
+			+ "WHERE ua.user.userId = :id AND ua.role = :role"),
+	@NamedQuery(name="UserAuthorization.findUserAuthorizationForRole",
+		query="SELECT ua FROM UserAuthorization ua "
+			+ "LEFT JOIN FETCH ua.user "
+			+ "WHERE ua.role = :role"),
 	@NamedQuery(name="UserAuthorization.countAll", query="SELECT COUNT(ua) "
 			+ "FROM UserAuthorization ua")
 })

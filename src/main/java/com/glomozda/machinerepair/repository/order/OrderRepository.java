@@ -229,14 +229,19 @@ public class OrderRepository {
 		newOrder.setMachine(machine);
 		newOrder.setStart(o.getStart());
 		newOrder.setStatus(o.getStatus());
+		newOrder.setStatus(o.getStatus());
+		newOrder.setManager(o.getManager());
 		
 		em.persist(newOrder);
 	}
 	
 	@Transactional
-	public Integer confirmOrderById(Long orderId) {
+	public Integer confirmOrderById(Long orderId, String manager) {
 		Query query = em.createNamedQuery("Order.confirmOrderById");
-		int updateCount = query.setParameter("id", orderId).executeUpdate();
+		int updateCount = query
+							.setParameter("id", orderId)
+							.setParameter("manager", manager)
+							.executeUpdate();
 		return updateCount;
 	}
 	

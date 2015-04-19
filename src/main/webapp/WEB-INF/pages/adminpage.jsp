@@ -823,6 +823,9 @@
 	</th>
 	<th align="center" data-sortable="true">
 		<spring:message code="label.adminpage.orders.status" />
+	</th>
+	<th align="center" data-sortable="true">
+		<spring:message code="label.adminpage.orders.manager" />
 	</th></tr>
 	</thead>
 	<tbody>
@@ -873,6 +876,7 @@
   				</c:when>
   			</c:choose>
     	</td>
+    	<td>${o.manager}</td>
     </tr>
   	</c:forEach>
   	</tbody>
@@ -1046,6 +1050,35 @@
   				</form:option>
   			</form:select></td>
   			<td><form:errors path="status" cssClass="error" /></td>  			
+  		</tr>
+  		<tr>
+  			<td>
+  				<label><spring:message code="label.adminpage.addNewOrder.manager" /></label>
+  			</td>
+  			<td><select name="manager">
+  			<option value="-">
+  				<spring:message code="label.adminpage.addNewOrder.selectManager" />
+  			</option>
+  			<c:forEach var="man" items="${user_authorizations_managers}">
+  				<c:choose>
+  					<c:when test="${selected_order_manager == man}">
+  						<option selected value="${man}">
+  							<c:out value="${man}"/>
+  						</option>
+  					</c:when>
+  					<c:otherwise>
+  						<option value="${man}">
+  							<c:out value="${man}"/>
+  						</option>
+  					</c:otherwise>
+  				</c:choose>  				
+  			</c:forEach>
+  			</select></td>
+  			<td>
+  			<div class="error">
+  				<c:out value="${message_order_manager}"/>
+  			</div>
+  			</td>
   		</tr>
   		<tr>  
   			<td><button>

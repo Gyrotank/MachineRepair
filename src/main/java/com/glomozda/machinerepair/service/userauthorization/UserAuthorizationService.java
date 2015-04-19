@@ -48,6 +48,16 @@ public class UserAuthorizationService {
 	}
 	
 	@Transactional
+	public UserAuthorization getUserAuthorizationForUserIdAndRole(Long userId, String role) {
+		return userAuthorizationRepository.getUserAuthorizationForUserIdAndRole(userId, role);
+	}
+	
+	@Transactional
+	public List<String> getUserLoginsForRole(String role) {
+		return userAuthorizationRepository.getUserLoginsForRole(role);
+	}
+	
+	@Transactional
 	public Long getUserAuthorizationCount() {
 		return userAuthorizationRepository.getUserAuthorizationCount();
 	}

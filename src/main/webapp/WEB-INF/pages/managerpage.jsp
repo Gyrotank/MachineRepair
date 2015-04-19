@@ -261,6 +261,8 @@
 	<th align="center" data-sortable="true" data-switchable="false">
 		<spring:message code="label.managerpage.started.status" /></th>
 	<th align="center" data-visible="false">
+		<spring:message code="label.managerpage.started.manager" /></th>
+	<th align="center" data-visible="false">
 		<spring:message code="label.managerpage.started.actions" /></th></tr>
 	</thead>
 	<tbody>	
@@ -310,6 +312,7 @@
   				</c:when>
   			</c:choose>
     	</td>
+    	<td>${so.manager}</td>
     	<c:if test="${so.status == 'started'}">
    			<td align="center">
    			<a href="<c:url value="setready/?order_id=${so.orderId}" />">
@@ -374,7 +377,9 @@
 	<th align="center" data-sortable="true" data-switchable="false">
 		<spring:message code="label.managerpage.ready.date" /></th>
 	<th align="center" data-sortable="true" data-switchable="false">
-		<spring:message code="label.managerpage.ready.status" /></th>	
+		<spring:message code="label.managerpage.ready.status" /></th>
+	<th align="center" data-visible="false">
+		<spring:message code="label.managerpage.ready.manager" /></th></tr>	
 	</thead>
 	<tbody>	
   	<c:forEach var="ro" items="${ready_orders_for_selected_client}" varStatus="loopStatus">
@@ -422,7 +427,8 @@
   					<c:out value="finished"/>
   				</c:when>
   			</c:choose>
-    	</td>    	
+    	</td>
+    	<td>${ro.manager}</td>    	
     </tr>
   	</c:forEach>
   	</tbody>

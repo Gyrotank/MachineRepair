@@ -1,5 +1,7 @@
 package com.glomozda.machinerepair.service.userauthorization;
 
+import javax.persistence.NoResultException;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -76,6 +78,18 @@ public class UserAuthorizationDAOJDBCTest extends DAOTestsTemplate{
     public void testGetAllRoles() {
     	Assert.assertTrue(userAuthorizationService.getAllRoles().size() == 2);
     }
+    
+    @Test
+    public void testGetUserAuthorizationForUserIdAndRoleExisting() {
+    	Assert.assertTrue(userAuthorizationService
+    			.getUserAuthorizationForUserIdAndRole((long) 1, "ROLE_ADMIN") != null);    	
+    }
+    
+    @Test
+    public void testGetUserAuthorizationForUserIdAndRoleNonExisting() {
+    	Assert.assertTrue(userAuthorizationService
+    			.getUserAuthorizationForUserIdAndRole((long) 1, "ROLE_MANAGER") == null);    	
+    }    
     
     @Test
     public void testGetUserAutorizationCount() {

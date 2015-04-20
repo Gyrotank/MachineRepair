@@ -491,21 +491,66 @@
 		data-classes="table table-hover table-condensed" 
     	data-striped="true"
     	data-pagination="true"
-    	data-search="true"
+    	data-search="true"    	
 		border="1" style="width:900px" align="center">
 	<thead>
 	<tr><th align="center" data-sortable="true"></th>
 	<th align="center" data-sortable="true">
 		<spring:message code="label.adminpage.users.login" /></th>
 	<th align="center" data-sortable="true">
-		<spring:message code="label.adminpage.users.password" /></th></tr>
+		<spring:message code="label.adminpage.users.password" /></th>
+	<th align="center">
+		<spring:message code="label.adminpage.users.actions" /></th></tr>
 	</thead>
 	<tbody>
   	<c:forEach var="u" items="${users_short}" varStatus="loopStatus">    	
     <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
-    	<td><c:out value="${loopStatus.index + 1}"/></td>
-    	<td>${u.login}</td> 
-    	<td>${u.password}</td>
+    	<td>
+    		<c:choose>
+  			<c:when test="${u.enabled == 0}">
+  				<div class="disabled">
+					<c:out value="${loopStatus.index + 1}"/>
+				</div>
+  			</c:when>
+  			<c:otherwise>
+  				<c:out value="${loopStatus.index + 1}"/>
+  			</c:otherwise>
+			</c:choose>    		
+    	</td>
+    	<td>
+    		<c:choose>
+  			<c:when test="${u.enabled == 0}">
+  				<div class="disabled">
+					${u.login}
+				</div>
+  			</c:when>
+  			<c:otherwise>
+  				${u.login}
+  			</c:otherwise>
+			</c:choose>    		
+    	</td> 
+    	<td>
+    		<c:choose>
+  			<c:when test="${u.enabled == 0}">
+  				<div class="disabled">
+					${u.password}
+				</div>
+  			</c:when>
+  			<c:otherwise>
+  				${u.password}
+  			</c:otherwise>
+			</c:choose>    		
+    	</td>
+    	<td>
+    		<c:choose>
+  			<c:when test="${u.enabled == 0}">
+  				<spring:message code="label.adminpage.users.actions.enable" />
+  			</c:when>
+  			<c:otherwise>
+  				<spring:message code="label.adminpage.users.actions.disable" />
+  			</c:otherwise>
+			</c:choose>    		
+    	</td>
     </tr>
   	</c:forEach>
   	</tbody>

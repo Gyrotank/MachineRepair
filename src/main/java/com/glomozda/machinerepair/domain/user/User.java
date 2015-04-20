@@ -15,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.glomozda.machinerepair.domain.client.Client;
@@ -56,6 +57,10 @@ public class User {
 	@NotEmpty
 	private String passwordText;
 	
+	@Column(name = "enabled")
+	@NotEmpty
+	private Byte enabled;
+	
 	@OneToOne(fetch = FetchType.LAZY, mappedBy="clientUser")
 	private Client client;
 	
@@ -69,6 +74,7 @@ public class User {
 		this.login = login;
 		this.passwordText = passwordText;		
 		this.password = password;
+		this.enabled = 1;
 	}	
 	
 	public Long getUserId() {
@@ -109,6 +115,14 @@ public class User {
 
 	public void setClient(Client client) {
 		this.client = client;
+	}
+
+	public Byte getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Byte enabled) {
+		this.enabled = enabled;
 	}
 
 	public List<UserAuthorization> getUserAuthorizations() {

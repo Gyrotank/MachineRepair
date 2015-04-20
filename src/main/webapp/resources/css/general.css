@@ -12,6 +12,10 @@
     font-weight: bold;
 }
 
+.disabled {
+	color: #aeaeae;
+}
+
 h3.left {
     position: absolute;
     left: 10px;

@@ -5,8 +5,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
@@ -72,6 +70,21 @@ public class AdminPageController implements MessageSourceAware {
 	private MessageSource messageSource;
 	
 	private static final Long _defaultPageSize = (long) 25;
+	
+	private String messageMachineAdded = "";
+	private String messageMachineNotAdded = "";
+	private String messageMachineServiceableAdded = "";
+	private String messageMachineServiceableNotAdded = "";
+	private String messageRepairTypeAdded = "";
+	private String messageRepairTypeNotAdded = "";
+	private String messageUserAdded = "";
+	private String messageUserNotAdded = "";
+	private String messageUserAuthorizationAdded = "";
+	private String messageUserAuthorizationNotAdded = "";
+	private String messageClientAdded = "";
+	private String messageClientNotAdded = "";
+	private String messageOrderAdded = "";
+	private String messageOrderNotAdded = "";	
 	
 	private String messageMachineServiceableId = "";
 	private Long selectedMachineServiceableId = (long) 0;
@@ -229,6 +242,46 @@ public class AdminPageController implements MessageSourceAware {
 		model.addAttribute("orders_paging_first", orderPagingFirstIndex);
 		model.addAttribute("orders_paging_last", orderPagingLastIndex);
 		
+		model.addAttribute("message_machine_added", messageMachineAdded);
+		messageMachineAdded = "";
+		model.addAttribute("message_machine_not_added", messageMachineNotAdded);
+		messageMachineNotAdded = "";
+		model.addAttribute("message_machine_serviceable_added", messageMachineServiceableAdded);
+		messageMachineServiceableAdded = "";
+		model.addAttribute("message_machine_serviceable_not_added",
+				messageMachineServiceableNotAdded);
+		messageMachineServiceableNotAdded = "";
+		model.addAttribute("message_repair_type_added",
+				messageRepairTypeAdded);
+		messageRepairTypeAdded = "";
+		model.addAttribute("message_repair_type_not_added",
+				messageRepairTypeNotAdded);
+		messageRepairTypeNotAdded = "";
+		model.addAttribute("message_user_added",
+				messageUserAdded);
+		messageUserAdded = "";
+		model.addAttribute("message_user_not_added",
+				messageUserNotAdded);
+		messageUserNotAdded = "";
+		model.addAttribute("message_user_authorization_added",
+				messageUserAuthorizationAdded);
+		messageUserAuthorizationAdded = "";
+		model.addAttribute("message_user_authorization_not_added",
+				messageUserAuthorizationNotAdded);
+		messageUserAuthorizationNotAdded = "";
+		model.addAttribute("message_client_added",
+				messageClientAdded);
+		messageClientAdded = "";
+		model.addAttribute("message_client_not_added",
+				messageClientNotAdded);
+		messageClientNotAdded = "";
+		model.addAttribute("message_order_added",
+				messageOrderAdded);
+		messageOrderAdded = "";
+		model.addAttribute("message_order_not_added",
+				messageOrderNotAdded);
+		messageOrderNotAdded = "";
+		
 		model.addAttribute("message_machineserviceable_id", messageMachineServiceableId);
 		messageMachineServiceableId = "";		
 		model.addAttribute("selected_machineserviceable_id", selectedMachineServiceableId);
@@ -347,16 +400,13 @@ public class AdminPageController implements MessageSourceAware {
 		}
 		
 		if (machineSvc.add(machine, machineServiceableId)) {
-			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+			messageMachineAdded =
 					messageSource.getMessage("popup.adminpage.machineAdded", null,
-							locale));
+							locale);
 		} else {
-			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+			messageMachineNotAdded = 
 					messageSource.getMessage("popup.adminpage.machineNotAdded", null,
-							locale),
-					messageSource.getMessage("popup.adminpage.machineNotAddedTitle", null,
-							locale),
-                    JOptionPane.ERROR_MESSAGE);
+							locale);
 		}
 		return "redirect:/adminpage#machines";
 	}
@@ -422,18 +472,14 @@ public class AdminPageController implements MessageSourceAware {
 		}
 		
 		if (machineServiceableSvc.add(machineServiceable)) {
-			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+			messageMachineServiceableAdded =
 					messageSource.getMessage("popup.adminpage.machineServiceableAdded", null,
-							locale));
+							locale);
 		} else {
-			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+			messageMachineServiceableNotAdded = 
 					messageSource.getMessage("popup.adminpage.machineServiceableNotAdded", null,
-							locale),
-					messageSource.getMessage("popup.adminpage.machineServiceableNotAddedTitle",
-							null,
-							locale),
-                    JOptionPane.ERROR_MESSAGE);
-		}
+							locale);
+		}		
 		return "redirect:/adminpage#serviceable_machines";
 	}
 
@@ -498,18 +544,14 @@ public class AdminPageController implements MessageSourceAware {
 		}
 		
 		if (repairTypeSvc.add(repairType)) {
-			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+			messageRepairTypeAdded =
 					messageSource.getMessage("popup.adminpage.repairTypeAdded", null,
-							locale));
+							locale);
 		} else {
-			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+			messageRepairTypeNotAdded = 
 					messageSource.getMessage("popup.adminpage.repairTypeNotAdded", null,
-							locale),
-					messageSource.getMessage("popup.adminpage.repairTypeNotAddedTitle",
-							null,
-							locale),
-                    JOptionPane.ERROR_MESSAGE);
-		}
+							locale);
+		}		
 		return "redirect:/adminpage#repair_types";
 	}
 	
@@ -574,17 +616,13 @@ public class AdminPageController implements MessageSourceAware {
 		
 		if (userSvc.add(new	User(user.getLogin(), user.getPasswordText(),
 				encoder.encode(user.getPasswordText())))) {
-			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+			messageUserAdded =
 					messageSource.getMessage("popup.adminpage.userAdded", null,
-							locale));
+							locale);
 		} else {
-			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+			messageUserNotAdded = 
 					messageSource.getMessage("popup.adminpage.userNotAdded", null,
-							locale),
-					messageSource.getMessage("popup.adminpage.userNotAddedTitle",
-							null,
-							locale),
-                    JOptionPane.ERROR_MESSAGE);
+							locale);
 		}
 		return "redirect:/adminpage#users";
 	}
@@ -671,18 +709,14 @@ public class AdminPageController implements MessageSourceAware {
 		
 		if (userAuthorizationSvc.add(new UserAuthorization(userAuthorization.getRole()),
 				userId)) {
-			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+			messageUserAuthorizationAdded =
 					messageSource.getMessage("popup.adminpage.userAuthorizationAdded", null,
-							locale));
+							locale);
 		} else {
-			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+			messageUserAuthorizationNotAdded = 
 					messageSource.getMessage("popup.adminpage.userAuthorizationNotAdded", null,
-							locale),
-					messageSource.getMessage("popup.adminpage.userAuthorizationNotAddedTitle",
-							null,
-							locale),
-                    JOptionPane.ERROR_MESSAGE);
-		}
+							locale);
+		}		
 		return "redirect:/adminpage#user_auths";
 	}
 	
@@ -756,18 +790,14 @@ public class AdminPageController implements MessageSourceAware {
 		}
 		
 		if (clientSvc.add(client, userId)) {
-			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+			messageClientAdded =
 					messageSource.getMessage("popup.adminpage.clientAdded", null,
-							locale));
+							locale);
 		} else {
-			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+			messageClientNotAdded = 
 					messageSource.getMessage("popup.adminpage.clientNotAdded", null,
-							locale),
-					messageSource.getMessage("popup.adminpage.clientNotAddedTitle",
-							null,
-							locale),
-                    JOptionPane.ERROR_MESSAGE);
-		}
+							locale);
+		}		
 		return "redirect:/adminpage#clients";
 	}
 
@@ -901,18 +931,14 @@ public class AdminPageController implements MessageSourceAware {
 		order.setStart(startSqlDate);		
 		
 		if (orderSvc.add(order, clientId, repairTypeId, machineId)) {
-			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+			messageOrderAdded =
 					messageSource.getMessage("popup.adminpage.orderAdded", null,
-							locale));
+							locale);
 		} else {
-			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+			messageOrderNotAdded = 
 					messageSource.getMessage("popup.adminpage.orderNotAdded", null,
-							locale),
-					messageSource.getMessage("popup.adminpage.orderNotAddedTitle",
-							null,
-							locale),
-                    JOptionPane.ERROR_MESSAGE);
-		}
+							locale);
+		}		
 		return "redirect:/adminpage#orders";
 	}	
 }

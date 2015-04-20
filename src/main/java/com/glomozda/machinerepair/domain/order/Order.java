@@ -52,6 +52,11 @@ import com.glomozda.machinerepair.domain.repairtype.RepairType;
 			+ " LEFT JOIN FETCH o.client LEFT JOIN FETCH o.repairType"
 			+ " LEFT JOIN FETCH o.machine as om LEFT JOIN FETCH om.machineServiceable"
 			+ " WHERE o.client.clientId = :id AND o.status = :status"),
+	@NamedQuery(name="Order.findOrderByClientIdAndMachineSNAndNotFinished",
+		query="SELECT o FROM Order o"			
+			+ " WHERE o.client.clientId = :id"
+			+ " AND o.machine.machineSerialNumber = :sn"
+			+ " AND o.status != 'finished'"),
 	@NamedQuery(name="Order.countOrdersByClientIdAndStatus",
 		query="SELECT COUNT(o) FROM Order o"			
 			+ " WHERE o.client.clientId = :id AND o.status = :status"),

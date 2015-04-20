@@ -7,6 +7,8 @@ import java.util.Locale;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+//import javax.swing.JFrame;
+//import javax.swing.JOptionPane;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -51,6 +53,9 @@ public class ManagerPageController implements MessageSourceAware {
 	
 	private MessageSource messageSource;
 	
+	private String messageConfirmFailed = "";
+	private String messageCancelFailed = "";
+	
 	private static final Long _defaultPageSize = (long) 25;
 	
 	private Long clientPagingFirstIndex = (long) 0;
@@ -87,6 +92,11 @@ public class ManagerPageController implements MessageSourceAware {
 				(UsernamePasswordAuthenticationToken)principal;
 		
 		model.addAttribute("locale", locale.toString());
+		
+		model.addAttribute("message_confirm_failed", messageConfirmFailed);
+		messageConfirmFailed = "";
+		model.addAttribute("message_cancel_failed", messageCancelFailed);
+		messageCancelFailed = "";
 		
 		List<Order> pendingOrders = orderSvc.getOrdersForStatusWithFetching("pending",
 				pendingOrdersPagingFirstIndex,
@@ -180,12 +190,20 @@ public class ManagerPageController implements MessageSourceAware {
 	}
 	
 	@RequestMapping(value = "/confirm", method = RequestMethod.GET)
-	public String confirmOrder(@RequestParam("order_id") Long orderId) {
+	public String confirmOrder(@RequestParam("order_id") Long orderId, final Locale locale) {
 		Order myOrder = orderSvc.getOrderById(orderId);
-		if (myOrder == null) {
+		if (myOrder == null) {			
+			messageConfirmFailed = 
+					messageSource
+					.getMessage("popup.managerpage.pending.actions.confirm.failed.orderNotExists",
+							null, locale);
 			return "redirect:/managerpage#pending_orders";
 		}
-		if (!myOrder.getStatus().contentEquals("pending")) {
+		if (!myOrder.getStatus().contentEquals("pending")) {			
+			messageConfirmFailed = 
+					messageSource
+					.getMessage("popup.managerpage.pending.actions.confirm.failed.orderNotPending",
+							null, locale);
 			return "redirect:/managerpage#pending_orders";
 		}
 		orderSvc.confirmOrderById(orderId, myUser.getLogin());
@@ -193,12 +211,20 @@ public class ManagerPageController implements MessageSourceAware {
 	}
 	
 	@RequestMapping(value = "/cancel", method = RequestMethod.GET)
-	public String cancelOrder(@RequestParam("order_id") Long orderId) {
+	public String cancelOrder(@RequestParam("order_id") Long orderId, final Locale locale) {
 		Order myOrder = orderSvc.getOrderById(orderId);
 		if (myOrder == null) {
-			return "redirect:/managerpage#pending_orders";
+			messageCancelFailed = 
+					messageSource
+					.getMessage("popup.managerpage.pending.actions.cancel.failed.orderNotExists",
+							null, locale);
+			return "redirect:/managerpage#pending_orders";			
 		}
 		if (!myOrder.getStatus().contentEquals("pending")) {
+			messageCancelFailed = 
+					messageSource
+					.getMessage("popup.managerpage.pending.actions.cancel.failed.orderNotPending",
+							null, locale);			
 			return "redirect:/managerpage#pending_orders";
 		}
 		orderSvc.cancelOrderById(orderId);

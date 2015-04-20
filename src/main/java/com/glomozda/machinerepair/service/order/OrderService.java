@@ -87,6 +87,13 @@ public class OrderService {
 	}
 	
 	@Transactional
+	public List<Order> getOrderByClientIdAndMachineSNAndNotFinished(Long clientId,
+			String serialNumber) {
+		return orderRepository
+				.getOrderByClientIdAndMachineSNAndNotFinished(clientId, serialNumber);
+	}
+	
+	@Transactional
 	public List<Order> getCurrentOrdersForClientIdWithFetching(Long clientId,
 			Long start, Long length) {
 		return orderRepository.getCurrentOrdersForClientIdWithFetching(clientId, start, length);

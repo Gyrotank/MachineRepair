@@ -180,6 +180,22 @@ public class OrderRepository {
 	}
 	
 	@Transactional
+	public List<Order> getOrderByClientIdAndMachineSNAndNotFinished(Long clientId,
+			String serialNumber) {
+		List<Order> result = null;
+		TypedQuery<Order> query = em.createNamedQuery(
+				"Order.findOrderByClientIdAndMachineSNAndNotFinished",
+				Order.class);
+		query.setParameter("id", clientId);
+		query.setParameter("sn", serialNumber);
+		try {
+			result = query.getResultList();
+		} catch (NoResultException nre){}
+		
+		return result;
+	}
+	
+	@Transactional
 	public List<Order> getCurrentOrdersForClientIdWithFetching(Long clientId,
 			Long start, Long length) {
 		List<Order> result = null;

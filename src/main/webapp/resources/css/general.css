@@ -6,6 +6,12 @@
     font-weight: bold;
 }
 
+.success {
+	color: #55cc33;
+    font-style: italic;
+    font-weight: bold;
+}
+
 h3.left {
     position: absolute;
     left: 10px;

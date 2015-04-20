@@ -75,7 +75,7 @@
 	<div id="content">
 	<div class="tabs-content">
 	<div class="content active" id="pending_orders">
-	<h2><spring:message code="label.managerpage.pending" /></h2>
+	<h2><spring:message code="label.managerpage.pending" /></h2>	
 	<c:choose>
 	<c:when test="${empty pending_orders}">
 		<br>
@@ -87,6 +87,9 @@
 		</div>
 	</c:when>
 	<c:otherwise>
+	<div class="error">
+  		<c:out value="${message_confirm_failed}"/><c:out value="${message_cancel_failed}"/>
+  	</div>
 		<form method="post" action="managerpage/pendingorderspaging" accept-charset="UTF-8">
   		<table>
   		<tr>

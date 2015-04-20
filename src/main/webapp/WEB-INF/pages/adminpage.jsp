@@ -89,6 +89,12 @@
 	<div class="tabs-content">
 	<div class="content active" id="machines">
 	<h1><spring:message code="label.adminpage.machines" /></h1>
+	<div class="success">
+  		<c:out value="${message_machine_added}"/>
+  	</div>
+  	<div class="error">
+  		<c:out value="${message_machine_not_added}"/>
+  	</div>
 	<form method="post" action="adminpage/machinepaging" accept-charset="UTF-8">
   		<table>
   		<tr>
@@ -217,6 +223,12 @@
   	
   	<div class="content" id="serviceable_machines">
   	<h1><spring:message code="label.adminpage.serviceableMachines" /></h1>
+  	<div class="success">
+  		<c:out value="${message_machine_serviceable_added}"/>
+  	</div>
+  	<div class="error">
+  		<c:out value="${message_machine_serviceable_not_added}"/>
+  	</div>
   	<form method="post" action="adminpage/machineserviceablepaging" accept-charset="UTF-8">
   		<table>
   		<tr>
@@ -330,6 +342,12 @@
     
     <div class="content" id="repair_types">
   	<h1><spring:message code="label.adminpage.repairTypes" /></h1>
+  	<div class="success">
+  		<c:out value="${message_repair_type_added}"/>
+  	</div>
+  	<div class="error">
+  		<c:out value="${message_repair_type_not_added}"/>
+  	</div>
   	<form method="post" action="adminpage/repairtypepaging" accept-charset="UTF-8">
   		<table>
   		<tr>
@@ -440,6 +458,12 @@
     
     <div class="content" id="users">
   	<h1><spring:message code="label.adminpage.users" /></h1>
+  	<div class="success">
+  		<c:out value="${message_user_added}"/>
+  	</div>
+  	<div class="error">
+  		<c:out value="${message_user_not_added}"/>
+  	</div>
   	<form method="post" action="adminpage/userpaging" accept-charset="UTF-8">
   		<table>
   		<tr>
@@ -513,6 +537,12 @@
   	
   	<div class="content" id="user_auths">
   	<h1><spring:message code="label.adminpage.userAuthorizations" /></h1>
+  	<div class="success">
+  		<c:out value="${message_user_authorization_added}"/>
+  	</div>
+  	<div class="error">
+  		<c:out value="${message_user_authorization_not_added}"/>
+  	</div>
   	<form method="post" action="adminpage/userauthorizationpaging" accept-charset="UTF-8">
   		<table>
   		<tr>
@@ -669,6 +699,12 @@
   	
   	<div class="content" id="clients">  
   	<h1><spring:message code="label.adminpage.clients" /></h1>
+  	<div class="success">
+  		<c:out value="${message_client_added}"/>
+  	</div>
+  	<div class="error">
+  		<c:out value="${message_client_not_added}"/>
+  	</div>
   	<form method="post" action="adminpage/clientpaging" accept-charset="UTF-8">
   		<table>
   		<tr>
@@ -773,6 +809,12 @@
   
     <div class="content" id="orders">
   	<h1><spring:message code="label.adminpage.orders" /></h1>
+  	<div class="success">
+  		<c:out value="${message_order_added}"/>
+  	</div>
+  	<div class="error">
+  		<c:out value="${message_order_not_added}"/>
+  	</div>
   	<form method="post" action="adminpage/orderpaging" accept-charset="UTF-8">
   		<table>
   		<tr>

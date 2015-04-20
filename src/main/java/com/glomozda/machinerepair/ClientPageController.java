@@ -6,8 +6,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+//import javax.swing.JFrame;
+//import javax.swing.JOptionPane;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -58,6 +58,8 @@ public class ClientPageController implements MessageSourceAware {
 	private String messageRepeatedRepair = "";
 	private String messageRepeatedRepairSerialNumber = "";
 	private String messageRepeatedRepairRepairTypeId = "";
+	private String messageRepeatedRepairCreated = "";
+	private String messageRepeatedRepairNotCreated = "";
 	
 	private String enteredRepeatedRepairSerialNumber = "";
 	private Long selectedRepeatedRepairRepairTypeId = (long) 0;
@@ -66,6 +68,8 @@ public class ClientPageController implements MessageSourceAware {
 	private String messageFirstRepairSerialNumber = "";
 	private String messageFirstRepairYear = "";
 	private String messageFirstRepairRepairTypeId = "";
+	private String messageFirstRepairCreated = "";
+	private String messageFirstRepairNotCreated = "";
 	
 	private Long selectedFirstRepairServiceableId = (long) 0;
 	private String enteredFirstRepairSerialNumber = "";
@@ -175,9 +179,19 @@ public class ClientPageController implements MessageSourceAware {
 			model.addAttribute("my_machines_serial_numbers", myMachinesSNs);
 		}
 		
+		model.addAttribute("message_repeated_repair_created", messageRepeatedRepairCreated);
+		messageRepeatedRepairCreated = "";
+		model.addAttribute("message_repeated_repair_not_created",
+				messageRepeatedRepairNotCreated);
+		messageRepeatedRepairNotCreated = "";
+		model.addAttribute("message_first_repair_created", messageFirstRepairCreated);
+		messageFirstRepairCreated = "";
+		model.addAttribute("message_first_repair_not_created", messageFirstRepairNotCreated);
+		messageFirstRepairNotCreated = "";
+		
 		model.addAttribute("message_repeated_order", messageRepeatedRepair);
 		messageRepeatedRepair = "";
-		
+				
 		model.addAttribute("message_repeated_repair_serial_number",
 				messageRepeatedRepairSerialNumber);
 		messageRepeatedRepairSerialNumber = "";
@@ -253,26 +267,38 @@ public class ClientPageController implements MessageSourceAware {
 		if (null == machine) {
 			messageRepeatedRepair = "Error fetching machine ID";
 			return "redirect:/clientpage";
-		}		
+		}
+		
+//		log.info("Adding repeated order...");
+//		log.info(orderSvc
+//				.getOrderByClientIdAndMachineSNAndNotFinished
+//				(myClient.getClientId(), machineSerialNumber));
+		
+		if (!orderSvc
+				.getOrderByClientIdAndMachineSNAndNotFinished
+					(myClient.getClientId(), machineSerialNumber).isEmpty()) {
+//			log.info("Order exists already...");
+			messageRepeatedRepairNotCreated = 
+					messageSource.getMessage("popup.clientpage.orderExistsForSN", null,
+							locale);			
+			return "redirect:/clientpage";
+		}
 		
 		Order order = new Order(new java.sql.Date(new java.util.Date().getTime()));
 		order.setManager("-");
 		
+//		log.info("Order not exists yet...");		
+		
 		if (orderSvc.add(order, myClient.getClientId(),
 				repairTypeId, machine.getMachineId())) {
-			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+			messageRepeatedRepairCreated =
 					messageSource.getMessage("popup.clientpage.orderAdded", null,
-							locale));
+							locale);
 		} else {
-			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+			messageRepeatedRepairNotCreated = 
 					messageSource.getMessage("popup.clientpage.orderNotAdded", null,
-							locale),
-					messageSource.getMessage("popup.clientpage.orderNotAddedTitle",
-							null,
-							locale),
-                    JOptionPane.ERROR_MESSAGE);
-		}
-		
+							locale);
+		}		
 		return "redirect:/clientpage";
 	}
 	
@@ -341,6 +367,13 @@ public class ClientPageController implements MessageSourceAware {
 			return "redirect:/clientpage";
 		}
 		
+		if (machineSvc.getMachineForSerialNumber(machineSerialNumber) != null) {			
+			messageFirstRepairNotCreated = 
+					messageSource.getMessage("popup.clientpage.machineExistsForSN", null,
+							locale);
+			return "redirect:/clientpage";
+		}
+		
 		Machine m = new Machine(machineSerialNumber, Integer.parseInt(machineYear));
 		machineSvc.add(m, machineServiceableId);
 		
@@ -352,17 +385,13 @@ public class ClientPageController implements MessageSourceAware {
 //		log.info(order.toString());
 		
 		if (orderSvc.add(order, myClient.getClientId(), repairTypeId, m.getMachineId())) {
-			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+			messageRepeatedRepairCreated =
 					messageSource.getMessage("popup.clientpage.orderAdded", null,
-							locale));
+							locale);
 		} else {
-			JOptionPane.showMessageDialog(new JFrame("Dialog"),
+			messageRepeatedRepairNotCreated = 
 					messageSource.getMessage("popup.clientpage.orderNotAdded", null,
-							locale),
-					messageSource.getMessage("popup.clientpage.orderNotAddedTitle",
-							null,
-							locale),
-                    JOptionPane.ERROR_MESSAGE);
+							locale);
 		}
 		return "redirect:/clientpage";
 	}

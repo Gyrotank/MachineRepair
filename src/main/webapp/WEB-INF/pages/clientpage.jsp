@@ -79,6 +79,12 @@
 	<div class="tabs-content">
 	<div class="content active" id="create_orders">
 	<h2><spring:message code="label.clientpage.createFirstTimeOrder" /></h2>
+	<div class="success">
+  		<c:out value="${message_first_repair_created}"/>
+  	</div>
+  	<div class="error">
+  		<c:out value="${message_first_repair_not_created}"/>
+  	</div>
   	<form method="post" action="createorderforfirstrepair" accept-charset="UTF-8">
   	<table>
   		<tr>
@@ -168,6 +174,12 @@
 	</c:when>
 	<c:otherwise>
   	<h2><spring:message code="label.clientpage.createRepeatedOrder" /></h2>
+  		<div class="success">
+  		<c:out value="${message_repeated_repair_created}"/>
+  	</div>
+  	<div class="error">
+  		<c:out value="${message_repeated_repair_not_created}"/>
+  	</div>
   	<c:out value="${message_repeated_order}"/>
   	<form method="post" action="createorderforrepeatedrepair" accept-charset="UTF-8">
   	<table>

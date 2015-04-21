@@ -26,7 +26,7 @@ public class UserService {
 	
 	@Transactional
 	public User getUserByLoginAndPasswordWithFetching(String login, String passwordText) {
-		return userRepository.getUserByLoginAndPassword(login, passwordText);
+		return userRepository.getUserByLoginAndPasswordWithFetching(login, passwordText);
 	}
 	
 	@Transactional

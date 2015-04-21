@@ -47,7 +47,7 @@ public class OrderService {
 	
 	@Transactional
 	public List<Order> getOrdersForStatus(String status) {
-		return orderRepository.getOrdersForStatusWithFetching(status);
+		return orderRepository.getOrdersForStatus(status);
 	}
 	
 	public Long getCountOrdersForStatus(String status) {
@@ -87,10 +87,10 @@ public class OrderService {
 	}
 	
 	@Transactional
-	public List<Order> getOrderByClientIdAndMachineSNAndNotFinished(Long clientId,
+	public List<Order> getOrdersByClientIdAndMachineSNAndNotFinished(Long clientId,
 			String serialNumber) {
 		return orderRepository
-				.getOrderByClientIdAndMachineSNAndNotFinished(clientId, serialNumber);
+				.getOrdersByClientIdAndMachineSNAndNotFinished(clientId, serialNumber);
 	}
 	
 	@Transactional

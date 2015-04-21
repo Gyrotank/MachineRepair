@@ -95,4 +95,20 @@ public class UserAuthorizationDAOJDBCTest extends DAOTestsTemplate{
     public void testGetUserAutorizationCount() {
     	Assert.assertTrue(userAuthorizationService.getUserAuthorizationCount() == 2);
     }
+    
+    @Test
+    public void testGetDistinctUsersWithFetching() {
+    	userAuthorizationService.add(new UserAuthorization("ROLE_CLIENT"), (long) 1);
+    	Assert.assertTrue(userAuthorizationService
+    			.getDistinctUsersWithFetching((long) 1, (long) 100).size() == 2);
+    }
+    
+    @Test
+    public void testGetUserLoginsForRole() {
+    	userAuthorizationService.add(new UserAuthorization("ROLE_CLIENT"), (long) 1);
+    	Assert.assertTrue(userAuthorizationService
+    			.getUserLoginsForRole("ROLE_CLIENT").size() == 2);
+    	Assert.assertTrue(userAuthorizationService
+    			.getUserLoginsForRole("ROLE_ADMIN").get(0).contentEquals("ivan_user"));
+    }
 }

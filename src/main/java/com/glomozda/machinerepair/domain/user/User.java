@@ -58,7 +58,6 @@ public class User {
 	private String passwordText;
 	
 	@Column(name = "enabled")
-	@NotEmpty
 	private Byte enabled;
 	
 	@OneToOne(fetch = FetchType.LAZY, mappedBy="clientUser")

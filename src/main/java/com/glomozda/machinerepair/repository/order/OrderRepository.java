@@ -180,7 +180,7 @@ public class OrderRepository {
 	}
 	
 	@Transactional
-	public List<Order> getOrderByClientIdAndMachineSNAndNotFinished(Long clientId,
+	public List<Order> getOrdersByClientIdAndMachineSNAndNotFinished(Long clientId,
 			String serialNumber) {
 		List<Order> result = null;
 		TypedQuery<Order> query = em.createNamedQuery(

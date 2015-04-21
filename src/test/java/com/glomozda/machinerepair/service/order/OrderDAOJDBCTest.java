@@ -80,8 +80,8 @@ public class OrderDAOJDBCTest extends DAOTestsTemplate{
         userService.add(new User("ivan_user", "qwerty", "qwerty_encoded"));
         userService.add(new User("petro_user", "12345", "12345_encoded"));
         
-        machineServiceableService.add(new MachineServiceable("M-S-1", "TM-1", "UK", "¬¡"));
-        machineServiceableService.add(new MachineServiceable("M-S-2", "TM-2", "USA", "—ÿ¿"));
+        machineServiceableService.add(new MachineServiceable("M-S-1", "TM-1", "UK", "–í–ë"));
+        machineServiceableService.add(new MachineServiceable("M-S-2", "TM-2", "USA", "–°–®–ê"));
         
         cal.set(2000, 10, 7);
         o1.setStart(new java.sql.Date(cal.getTimeInMillis()));
@@ -98,8 +98,8 @@ public class OrderDAOJDBCTest extends DAOTestsTemplate{
         clientService.add(cl1, (long) 1);
         clientService.add(cl2, (long) 2);
         
-        repairTypeService.add(new RepairType("Full", "œÓÎÌ˚È", new BigDecimal(10000), 6));
-        repairTypeService.add(new RepairType("Partial", "◊‡ÒÚË˜Ì˚È", new BigDecimal(5000), 3));
+        repairTypeService.add(new RepairType("Full", "–ü–æ–ª–Ω—ã–π", new BigDecimal(10000), 6));
+        repairTypeService.add(new RepairType("Partial", "–ß–∞—Å—Ç–∏—á–Ω—ã–π", new BigDecimal(5000), 3));
         
         machineService.add(new Machine("SN1", 2010, 2), (long) 1);
         machineService.add(new Machine("SN2", 2013, 1), (long) 2);
@@ -283,6 +283,16 @@ public class OrderDAOJDBCTest extends DAOTestsTemplate{
     			.getCountCurrentOrderForClientId((long) 2) == 1);    	
     	Assert.assertTrue(orderService
     			.getCountCurrentOrderForClientId((long) 3) == 0);
+    }
+    
+    @Test
+    public void testGetOrdersByClientIdAndMachineSNAndNotFinished() {
+    	Assert.assertTrue(orderService
+    			.getOrdersByClientIdAndMachineSNAndNotFinished((long) 1, "SN1")
+    			.size() == 0);
+    	Assert.assertTrue(orderService
+    			.getOrdersByClientIdAndMachineSNAndNotFinished((long) 2, "SN2")
+    			.size() == 1);
     }
     
     @Test

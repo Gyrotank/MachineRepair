@@ -84,11 +84,11 @@ public class UserRepository {
 	
 	@Transactional
 	public User getUserById(Long userId) {
-		User result = em.find(User.class, userId);
-		if (result == null) {
-			throw new NoResultException();
-		}		
-		return result;
+		return em.find(User.class, userId);
+//		if (result == null) {
+//			throw new NoResultException();
+//		}		
+//		return result;
 	}
 	
 	@Transactional

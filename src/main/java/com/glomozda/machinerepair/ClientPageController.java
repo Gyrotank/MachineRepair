@@ -272,7 +272,7 @@ public class ClientPageController implements MessageSourceAware {
 //				(myClient.getClientId(), machineSerialNumber));
 		
 		if (!orderSvc
-				.getOrderByClientIdAndMachineSNAndNotFinished
+				.getOrdersByClientIdAndMachineSNAndNotFinished
 					(myClient.getClientId(), machineSerialNumber).isEmpty()) {
 //			log.info("Order exists already...");
 			messageRepeatedRepairNotCreated = 

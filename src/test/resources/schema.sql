@@ -54,6 +54,7 @@ CREATE TABLE Users(
     login varchar(10),
     password varchar(64),
     password_text varchar(10),
+    enabled tinyint,
     PRIMARY KEY (users_id)
 );
 

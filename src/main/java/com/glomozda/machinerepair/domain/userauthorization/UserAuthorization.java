@@ -17,7 +17,8 @@ import com.glomozda.machinerepair.domain.user.User;
 
 @SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
 @NamedQueries({
-	@NamedQuery(name="UserAuthorization.findAll", query="SELECT ua FROM UserAuthorization ua"),
+	@NamedQuery(name="UserAuthorization.findAll", query="SELECT ua FROM UserAuthorization ua "
+			+ "ORDER BY ua.user.login"),
 	@NamedQuery(name="UserAuthorization.findAllWithFetching",
 		query="SELECT ua FROM UserAuthorization ua "
 			+ "LEFT JOIN FETCH ua.user "
@@ -45,7 +46,7 @@ public class UserAuthorization {
 	
 	@Column(name = "role")
 	@NotEmpty
-	private String role;
+	private String role;	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
@@ -72,8 +73,8 @@ public class UserAuthorization {
 
 	public void setRole(final String role) {
 		this.role = role;
-	}
-	
+	}	
+
 	public User getUser() {
 		return user;
 	}

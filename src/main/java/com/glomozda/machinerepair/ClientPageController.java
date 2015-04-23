@@ -67,6 +67,8 @@ public class ClientPageController implements MessageSourceAware {
 	private String messageFirstRepairRepairTypeId = "";
 	private String messageFirstRepairCreated = "";
 	private String messageFirstRepairNotCreated = "";
+	private String messagePaymentFailed = "";
+	private String messagePaymentSucceeded = "";
 	
 	private Long selectedFirstRepairServiceableId = (long) 0;
 	private String enteredFirstRepairSerialNumber = "";
@@ -185,6 +187,10 @@ public class ClientPageController implements MessageSourceAware {
 		messageFirstRepairCreated = "";
 		model.addAttribute("message_first_repair_not_created", messageFirstRepairNotCreated);
 		messageFirstRepairNotCreated = "";
+		model.addAttribute("message_payment_failed", messagePaymentFailed);
+		messagePaymentFailed = "";
+		model.addAttribute("message_payment_succeeded", messagePaymentSucceeded);
+		messagePaymentSucceeded = "";
 		
 		model.addAttribute("message_repeated_order", messageRepeatedRepair);
 		messageRepeatedRepair = "";
@@ -488,8 +494,28 @@ public class ClientPageController implements MessageSourceAware {
 	}
 	
 	@RequestMapping(value = "/pay", method = RequestMethod.GET)
-	public String setOrderFinished(@RequestParam("order_id") Long orderId) {
-		orderSvc.setOrderStatusById(orderId, "finished");		
-		return "redirect:/clientpage";
+	public String payForOrder(@RequestParam("order_id") Long orderId, final Locale locale) {
+		Order myOrder = orderSvc.getOrderById(orderId);
+		if (myOrder == null) {			
+			messagePaymentFailed = 
+					messageSource
+					.getMessage("popup.clientpage.yourOrders.actions.pay.orderNotExists",
+							null, locale);
+			return "redirect:/clientpage#current_orders";
+		}
+		if (!myOrder.getStatus().contentEquals("ready")) {			
+			messagePaymentFailed = 
+					messageSource
+					.getMessage("popup.clientpage.yourOrders.actions.pay.orderNotReady",
+							null, locale);
+			return "redirect:/clientpage#current_orders";
+		}
+		
+		orderSvc.setOrderStatusById(orderId, "finished");
+		messagePaymentSucceeded = 
+				messageSource
+				.getMessage("popup.clientpage.yourOrders.actions.pay.success",
+						null, locale);
+		return "redirect:/clientpage#current_orders";
 	}
 }

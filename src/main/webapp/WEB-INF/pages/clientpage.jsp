@@ -252,6 +252,12 @@
 	
 	<div class="content" id="current_orders">	  		
 	<h2><spring:message code="label.clientpage.yourCurrentOrders" /></h2>
+	<div class="success">
+  		<c:out value="${message_payment_succeeded}"/>
+  	</div>
+	<div class="error">
+  		<c:out value="${message_payment_failed}"/>
+  	</div>
 	<c:choose>
 	<c:when test="${empty my_current_orders}">
 		<br>
@@ -260,7 +266,7 @@
 		<br><br>
 		</span>		
 	</c:when>
-	<c:otherwise>
+	<c:otherwise>	
 	<br>
 		<form method="post" action="clientpage/currentorderspaging" accept-charset="UTF-8">
   		<table>
@@ -300,7 +306,7 @@
 		<spring:message code="label.clientpage.yourOrders.date" /></th>
 	<th align="center" data-sortable="true" data-switchable="false">
 		<spring:message code="label.clientpage.yourOrders.status" /></th>
-	<th align="center" data-visible="false">
+	<th align="center" data-switchable="false">
 		<spring:message code="label.clientpage.yourOrders.actions" /></th></tr>
 	</thead>
 	<tbody>

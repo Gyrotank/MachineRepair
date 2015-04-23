@@ -55,6 +55,10 @@ public class ManagerPageController implements MessageSourceAware {
 	
 	private String messageConfirmFailed = "";
 	private String messageCancelFailed = "";
+	private String messageSetReadyFailed = "";
+	private String messageConfirmSucceeded = "";
+	private String messageCancelSucceeded = "";
+	private String messageSetReadySucceeded = "";
 	
 	private static final Long _defaultPageSize = (long) 25;
 	
@@ -97,6 +101,14 @@ public class ManagerPageController implements MessageSourceAware {
 		messageConfirmFailed = "";
 		model.addAttribute("message_cancel_failed", messageCancelFailed);
 		messageCancelFailed = "";
+		model.addAttribute("message_set_ready_failed", messageSetReadyFailed);
+		messageSetReadyFailed = "";
+		model.addAttribute("message_confirm_succeeded", messageConfirmSucceeded);
+		messageConfirmSucceeded = "";
+		model.addAttribute("message_cancel_succeeded", messageCancelSucceeded);
+		messageCancelSucceeded = "";
+		model.addAttribute("message_set_ready_succeeded", messageSetReadySucceeded);
+		messageSetReadySucceeded = "";
 		
 		List<Order> pendingOrders = orderSvc.getOrdersForStatusWithFetching("pending",
 				pendingOrdersPagingFirstIndex,
@@ -207,6 +219,15 @@ public class ManagerPageController implements MessageSourceAware {
 			return "redirect:/managerpage#pending_orders";
 		}
 		orderSvc.confirmOrderById(orderId, myUser.getLogin());
+		messageConfirmSucceeded = 
+				messageSource
+				.getMessage("popup.managerpage.pending.actions.confirm.succeeded",
+						null, locale);
+		Order confirmedOrder = orderSvc.getOrderByIdWithFetching(orderId);
+		if (confirmedOrder.getClient().getClientId().longValue()
+				== selectedClientId.longValue()) {
+			startedOrdersForSelectedClient.add(confirmedOrder);
+		}
 		return "redirect:/managerpage#pending_orders";
 	}
 	
@@ -228,6 +249,10 @@ public class ManagerPageController implements MessageSourceAware {
 			return "redirect:/managerpage#pending_orders";
 		}
 		orderSvc.cancelOrderById(orderId);
+		messageCancelSucceeded = 
+				messageSource
+				.getMessage("popup.managerpage.pending.actions.cancel.succeeded",
+						null, locale);
 		return "redirect:/managerpage#pending_orders";
 	}
 	
@@ -388,12 +413,21 @@ public class ManagerPageController implements MessageSourceAware {
 	}	
 	
 	@RequestMapping(value = "/setready", method = RequestMethod.GET)
-	public String setOrderReady(@RequestParam("order_id") Long orderId) {
+	public String setOrderReady(@RequestParam("order_id") Long orderId, final Locale locale) {
 		Order myOrder = orderSvc.getOrderById(orderId);
 		if (myOrder == null) {
+			messageSetReadyFailed = 
+					messageSource
+					.getMessage("popup.managerpage.started.actions.setReady.failed.orderNotExists",
+							null, locale);
 			return "redirect:/managerpage#manage_active_orders";
 		}
 		if (!myOrder.getStatus().contentEquals("started")) {
+			messageSetReadyFailed = 
+					messageSource
+					.getMessage(
+							"popup.managerpage.started.actions.setReady.failed.orderNotStarted",
+							null, locale);
 			return "redirect:/managerpage#manage_active_orders";
 		}
 		orderSvc.setOrderStatusById(orderId, "ready");
@@ -401,6 +435,11 @@ public class ManagerPageController implements MessageSourceAware {
 		startedOrdersForSelectedClient.remove(
 				startedOrdersForSelectedClient.indexOf(myOrder));		
 		machineSvc.incrementTimesRepairedById(myOrder.getMachine().getMachineId());
+		readyOrdersForSelectedClient.add(myOrder);
+		messageSetReadySucceeded = 
+				messageSource
+				.getMessage("popup.managerpage.started.actions.setReady.succeeded",
+						null, locale);
 		return "redirect:/managerpage#manage_active_orders";
 	}
 }

@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
+import org.hibernate.SQLQuery;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,7 +65,7 @@ public class UserAuthorizationRepository {
 			result.add(ua.getUser());
 		}
 		return result;
-	}
+	}	
 	
 	@Transactional
 	public List<UserAuthorization> getAllWithFetching() {

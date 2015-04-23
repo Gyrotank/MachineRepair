@@ -75,7 +75,13 @@
 	<div id="content">
 	<div class="tabs-content">
 	<div class="content active" id="pending_orders">
-	<h2><spring:message code="label.managerpage.pending" /></h2>	
+	<h2><spring:message code="label.managerpage.pending" /></h2>
+		<div class="success">
+  			<c:out value="${message_confirm_succeeded}"/><c:out value="${message_cancel_succeeded}"/>
+  		</div>
+		<div class="error">
+  			<c:out value="${message_confirm_failed}"/><c:out value="${message_cancel_failed}"/>
+  		</div>
 	<c:choose>
 	<c:when test="${empty pending_orders}">
 		<br>
@@ -86,10 +92,7 @@
 		</span>
 		</div>
 	</c:when>
-	<c:otherwise>
-	<div class="error">
-  		<c:out value="${message_confirm_failed}"/><c:out value="${message_cancel_failed}"/>
-  	</div>
+	<c:otherwise>		
 		<form method="post" action="managerpage/pendingorderspaging" accept-charset="UTF-8">
   		<table>
   		<tr>
@@ -130,7 +133,7 @@
 			<spring:message code="label.managerpage.pending.machineName" /></th>
 		<th align="center" data-sortable="true" data-switchable="false">
 			<spring:message code="label.managerpage.pending.date" /></th>
-		<th align="center" data-visible="false">
+		<th align="center" data-switchable="false">
 			<spring:message code="label.managerpage.pending.actions" /></th></tr>
 		</thead>
 		<tbody>	
@@ -169,6 +172,12 @@
   	
   	<div class="content" id="manage_active_orders">
   	<h2><spring:message code="label.managerpage.active" /></h2>
+  		<div class="success">
+  			<c:out value="${message_set_ready_succeeded}"/>
+  		</div>
+		<div class="error">
+  			<c:out value="${message_set_ready_failed}"/>
+  		</div>
   	<form method="post" action="managerpage/clientpaging" accept-charset="UTF-8">
   		<table>
   		<tr>
@@ -222,7 +231,7 @@
 		</span>
 		</div>
 	</c:when>
-	<c:otherwise>
+	<c:otherwise>		
 		<br>
 		<form method="post" action="managerpage/startedorderspaging" accept-charset="UTF-8">
   		<table>
@@ -267,7 +276,7 @@
 		<spring:message code="label.managerpage.started.status" /></th>
 	<th align="center" data-visible="false">
 		<spring:message code="label.managerpage.started.manager" /></th>
-	<th align="center" data-visible="false">
+	<th align="center" data-switchable="false">
 		<spring:message code="label.managerpage.started.actions" /></th></tr>
 	</thead>
 	<tbody>	

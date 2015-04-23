@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.glomozda.machinerepair.domain.user.User;
 import com.glomozda.machinerepair.domain.userauthorization.UserAuthorization;
+import com.glomozda.machinerepair.domain.userrole.UserRole;
 
 @Repository
 public class UserAuthorizationRepository {
@@ -76,10 +77,10 @@ public class UserAuthorizationRepository {
 	}
 	
 	@Transactional
-	public List<String> getAllRoles() {
-		List<String> result = 
+	public List<UserRole> getAllRoles() {
+		List<UserRole> result = 
 				em.createNamedQuery("UserAuthorization.findAllRoles",
-						String.class).getResultList();
+						UserRole.class).getResultList();
 		return result;
 	}
 	

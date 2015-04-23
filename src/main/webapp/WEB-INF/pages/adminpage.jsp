@@ -630,27 +630,13 @@
     	<td>${ua.user.login}</td> 
     	<td>
     		<c:choose>
-  				<c:when test="${ua.role == 'ROLE_ADMIN' && locale == 'ru'}">
-  					<c:out value="Администратор"/>
+  				<c:when test="${locale == 'ru'}">
+  					<c:out value="${ua.role.descRu}"/>
   				</c:when>
-  				<c:when test="${ua.role == 'ROLE_MANAGER' && locale == 'ru'}">
-  					<c:out value="Менеджер"/>
-  				</c:when>
-  				<c:when test="${ua.role == 'ROLE_CLIENT' && locale == 'ru'}">
-  					<c:out value="Клиент"/>
-  				</c:when>
-  			</c:choose>
-    		<c:choose>
-  				<c:when test="${ua.role == 'ROLE_ADMIN' && locale == 'en'}">
-  					<c:out value="Administrator"/>
-  				</c:when>
-  				<c:when test="${ua.role == 'ROLE_MANAGER' && locale == 'en'}">
-  					<c:out value="Manager"/>
-  				</c:when>
-  				<c:when test="${ua.role == 'ROLE_CLIENT' && locale == 'en'}">
-  					<c:out value="Client"/>
-  				</c:when>
-  			</c:choose>
+  				<c:otherwise>
+  					<c:out value="${ua.role.descEn}"/>
+  				</c:otherwise>  				
+  			</c:choose>    		
     	</td>    	    	   	
     </tr>
   	</c:forEach>
@@ -696,40 +682,30 @@
   		<td><label>
   		<spring:message code="label.adminpage.userAuthorizations.role" />
   		</label></td>
-  		<td><form:select path="role">
-  			<form:option value="">
+  		<td><select name="role">
+  			<option value="">
   				<label>
   					<spring:message code="label.adminpage.addNewUserAuthorization.selectRole" />
   				</label>
-  			</form:option>
+  			</option>
   			<c:forEach var="r" items="${user_roles}">
-  				<form:option value="${r}">
+  				<option value="${r.role}">
   					<c:choose>
-  					<c:when test="${r == 'ROLE_ADMIN' && locale == 'ru'}">
-  						<c:out value="Администратор"/>
+  					<c:when test="${locale == 'ru'}">
+  						<c:out value="${r.descRu}"/>
   					</c:when>
-  					<c:when test="${r == 'ROLE_MANAGER' && locale == 'ru'}">
-  						<c:out value="Менеджер"/>
-	  				</c:when>
-  					<c:when test="${r == 'ROLE_CLIENT' && locale == 'ru'}">
-  						<c:out value="Клиент"/>
-  					</c:when>
-  					</c:choose>
-    				<c:choose>
-  					<c:when test="${r == 'ROLE_ADMIN' && locale == 'en'}">
-	  					<c:out value="Administrator"/>
-  					</c:when>
-  					<c:when test="${r == 'ROLE_MANAGER' && locale == 'en'}">
-  						<c:out value="Manager"/>
-  					</c:when>
-	  				<c:when test="${r == 'ROLE_CLIENT' && locale == 'en'}">
-  						<c:out value="Client"/>
-  					</c:when>
-  				</c:choose>
-  				</form:option>
+  					<c:otherwise>
+  						<c:out value="${r.descEn}"/>
+	  				</c:otherwise>  					
+  					</c:choose>    				
+  				</option>
   			</c:forEach>
-  		</form:select></td>
-  		<td><form:errors path="role" cssClass="error" /></td>
+  		</select></td>
+  		<td>
+  			<div class="error">
+  				<c:out value="${message_user_authorization_role}"/>
+  			</div>
+  		</td>
   		</tr>
   		<tr>  		  
   		<td><button>

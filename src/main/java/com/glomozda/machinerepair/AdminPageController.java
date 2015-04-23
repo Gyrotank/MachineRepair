@@ -1,6 +1,7 @@
 package com.glomozda.machinerepair;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -28,6 +29,7 @@ import com.glomozda.machinerepair.domain.order.Order;
 import com.glomozda.machinerepair.domain.repairtype.RepairType;
 import com.glomozda.machinerepair.domain.user.User;
 import com.glomozda.machinerepair.domain.userauthorization.UserAuthorization;
+import com.glomozda.machinerepair.domain.userrole.UserRole;
 import com.glomozda.machinerepair.service.client.ClientService;
 import com.glomozda.machinerepair.service.machine.MachineService;
 import com.glomozda.machinerepair.service.machineserviceable.MachineServiceableService;
@@ -90,6 +92,7 @@ public class AdminPageController implements MessageSourceAware {
 	private Long selectedMachineServiceableId = (long) 0;
 	
 	private String messageUserAuthorizationUserId = "";
+	private String messageUserAuthorizationRole = "";
 	private Long selectedUserAuthorizationUserId = (long) 0;
 
 	private String messageClientUserId = "";
@@ -207,11 +210,28 @@ public class AdminPageController implements MessageSourceAware {
 		model.addAttribute("users_paging_first", userPagingFirstIndex);
 		model.addAttribute("users_paging_last", userPagingLastIndex);
 		
-		
-		model.addAttribute("user_authorizations_short", 
-				userAuthorizationSvc.getAllWithFetching(userAuthorizationPagingFirstIndex, 
-						userAuthorizationPagingLastIndex - userAuthorizationPagingFirstIndex + 1)
-						);
+		List<UserAuthorization> uas = userAuthorizationSvc
+				.getAllWithFetching(userAuthorizationPagingFirstIndex, 
+				userAuthorizationPagingLastIndex - userAuthorizationPagingFirstIndex + 1);
+		List<UserAuthorization> uash = new ArrayList<UserAuthorization>();
+		for (UserAuthorization ua : uas) {
+			if (uash.isEmpty()) {
+				uash.add(ua);				
+				continue;
+			}
+			if (uash.get(uash.size() - 1).getUser().getLogin()
+					.contentEquals(ua.getUser().getLogin())) {
+				uash.get(uash.size() - 1).getRole()
+					.setDescEn(uash.get(uash.size() - 1).getRole().getDescEn()
+							.concat(", " + ua.getRole().getDescEn()));
+				uash.get(uash.size() - 1).getRole()
+					.setDescRu(uash.get(uash.size() - 1).getRole().getDescRu()
+						.concat(", " + ua.getRole().getDescRu()));
+				continue;
+			}
+			uash.add(ua);
+		}		
+		model.addAttribute("user_authorizations_short", uash);
 		model.addAttribute("user_authorizations_short_users", 
 				userAuthorizationSvc
 					.getDistinctUsersWithFetching(userAuthorizationPagingFirstIndex, 
@@ -289,7 +309,9 @@ public class AdminPageController implements MessageSourceAware {
 		selectedMachineServiceableId = (long) 0;
 		
 		model.addAttribute("message_user_authorization_user_id", messageUserAuthorizationUserId);
-		messageUserAuthorizationUserId = "";		
+		messageUserAuthorizationUserId = "";
+		model.addAttribute("message_user_authorization_role", messageUserAuthorizationRole);
+		messageUserAuthorizationRole = "";
 		model.addAttribute("selected_user_authorization_user_id", selectedUserAuthorizationUserId);
 		selectedUserAuthorizationUserId = (long) 0;
 		
@@ -680,6 +702,7 @@ public class AdminPageController implements MessageSourceAware {
 			final BindingResult bindingResult,			
 			final RedirectAttributes redirectAttributes,
 			@RequestParam("userId") final Long userId,
+			@RequestParam("role") final String role,
 			final Locale locale) {
 		
 		if (userId == 0 || bindingResult.hasErrors()) {
@@ -699,8 +722,17 @@ public class AdminPageController implements MessageSourceAware {
 			return "redirect:/adminpage#user_auths";
 		}
 		
+		if (role.isEmpty()) {
+			messageUserAuthorizationRole = 
+					messageSource.getMessage("error.adminpage.userAuthorizationNoRoleChosen", null,
+							locale);
+			selectedUserAuthorizationUserId = userId;
+			return "redirect:/adminpage#user_auths";
+		}
+		
 		if (userAuthorizationSvc
-			.getUserAuthorizationForUserIdAndRole(userId, userAuthorization.getRole()) != null) {
+			.getUserAuthorizationForUserIdAndRole(userId,
+					userAuthorization.getRole().getRole()) != null) {
 				messageUserAuthorizationUserId = 
 					messageSource.getMessage("error.adminpage.userAuthorizationExists", null,
 							locale);
@@ -708,8 +740,8 @@ public class AdminPageController implements MessageSourceAware {
 			return "redirect:/adminpage#user_auths";
 		}
 		
-		if (userAuthorizationSvc.add(new UserAuthorization(userAuthorization.getRole()),
-				userId)) {
+		if (userAuthorizationSvc.add(
+				new UserAuthorization(new UserRole(role)), userId)) {
 			messageUserAuthorizationAdded =
 					messageSource.getMessage("popup.adminpage.userAuthorizationAdded", null,
 							locale);

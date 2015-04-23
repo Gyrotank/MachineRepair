@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.glomozda.machinerepair.domain.user.User;
 import com.glomozda.machinerepair.domain.userauthorization.UserAuthorization;
+import com.glomozda.machinerepair.domain.userrole.UserRole;
 import com.glomozda.machinerepair.service.DAOTestsTemplate;
 import com.glomozda.machinerepair.service.user.UserService;
 
@@ -44,8 +45,11 @@ public class UserAuthorizationDAOJDBCTest extends DAOTestsTemplate{
     	userService.add(u1);
         userService.add(u2);
         
-        userAuthorizationService.add(new UserAuthorization("ROLE_ADMIN"), (long) 1);
-        userAuthorizationService.add(new UserAuthorization("ROLE_CLIENT"), (long) 2);
+        UserRole ur1 = new UserRole("ROLE_ADMIN");
+        UserRole ur2 = new UserRole("ROLE_CLIENT");
+        
+        userAuthorizationService.add(new UserAuthorization(ur1), (long) 1);
+        userAuthorizationService.add(new UserAuthorization(ur2), (long) 2);
     }
    
     @Test
@@ -98,14 +102,14 @@ public class UserAuthorizationDAOJDBCTest extends DAOTestsTemplate{
     
     @Test
     public void testGetDistinctUsersWithFetching() {
-    	userAuthorizationService.add(new UserAuthorization("ROLE_CLIENT"), (long) 1);
+    	userAuthorizationService.add(new UserAuthorization(new UserRole("ROLE_CLIENT")), (long) 1);
     	Assert.assertTrue(userAuthorizationService
     			.getDistinctUsersWithFetching((long) 1, (long) 100).size() == 2);
     }
     
     @Test
     public void testGetUserLoginsForRole() {
-    	userAuthorizationService.add(new UserAuthorization("ROLE_CLIENT"), (long) 1);
+    	userAuthorizationService.add(new UserAuthorization(new UserRole("ROLE_CLIENT")), (long) 1);
     	Assert.assertTrue(userAuthorizationService
     			.getUserLoginsForRole("ROLE_CLIENT").size() == 2);
     	Assert.assertTrue(userAuthorizationService

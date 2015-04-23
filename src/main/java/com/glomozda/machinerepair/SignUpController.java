@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.glomozda.machinerepair.domain.client.Client;
 import com.glomozda.machinerepair.domain.user.User;
 import com.glomozda.machinerepair.domain.userauthorization.UserAuthorization;
+import com.glomozda.machinerepair.domain.userrole.UserRole;
 import com.glomozda.machinerepair.service.client.ClientService;
 import com.glomozda.machinerepair.service.user.UserService;
 import com.glomozda.machinerepair.service.userauthorization.UserAuthorizationService;
@@ -119,7 +120,8 @@ public class SignUpController implements MessageSourceAware {
 		newClient.setClientName(name);
 		clientSvc.add(newClient, queryRes.getUserId());
 		
-		UserAuthorization newUserAuthorization = new UserAuthorization("ROLE_CLIENT");
+		UserAuthorization newUserAuthorization = 
+				new UserAuthorization(new UserRole("ROLE_CLIENT"));
 		userAuthorizationSvc.add(newUserAuthorization, queryRes.getUserId());
 				
 		return "redirect:/login";

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.glomozda.machinerepair.domain.user.User;
 import com.glomozda.machinerepair.domain.userauthorization.UserAuthorization;
+import com.glomozda.machinerepair.domain.userrole.UserRole;
 import com.glomozda.machinerepair.repository.userauthorization.UserAuthorizationRepository;
 
 @Service
@@ -43,7 +44,7 @@ public class UserAuthorizationService {
 	}
 	
 	@Transactional
-	public List<String> getAllRoles() {
+	public List<UserRole> getAllRoles() {
 		return userAuthorizationRepository.getAllRoles();
 	}
 	

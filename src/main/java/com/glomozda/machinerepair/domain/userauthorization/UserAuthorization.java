@@ -1,6 +1,7 @@
 package com.glomozda.machinerepair.domain.userauthorization;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -14,25 +15,26 @@ import javax.persistence.Table;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.glomozda.machinerepair.domain.user.User;
+import com.glomozda.machinerepair.domain.userrole.UserRole;
 
 @SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
 @NamedQueries({
 	@NamedQuery(name="UserAuthorization.findAll", query="SELECT ua FROM UserAuthorization ua "
-			+ "ORDER BY ua.user.login"),
+			+ "ORDER BY ua.user.login, ua.role.role"),
 	@NamedQuery(name="UserAuthorization.findAllWithFetching",
 		query="SELECT ua FROM UserAuthorization ua "
 			+ "LEFT JOIN FETCH ua.user "
-			+ "ORDER BY ua.user.login"),
+			+ "ORDER BY ua.user.login, ua.role.role"),
 	@NamedQuery(name="UserAuthorization.findAllRoles", query="SELECT DISTINCT (ua.role) "
 			+ "FROM UserAuthorization ua"),
 	@NamedQuery(name="UserAuthorization.findUserAuthorizationForUserIdAndRole",
 		query="SELECT ua FROM UserAuthorization ua "
 			+ "LEFT JOIN FETCH ua.user "
-			+ "WHERE ua.user.userId = :id AND ua.role = :role"),
+			+ "WHERE ua.user.userId = :id AND ua.role.role = :role"),
 	@NamedQuery(name="UserAuthorization.findUserAuthorizationForRole",
 		query="SELECT ua FROM UserAuthorization ua "
 			+ "LEFT JOIN FETCH ua.user "
-			+ "WHERE ua.role = :role"),
+			+ "WHERE ua.role.role = :role"),
 	@NamedQuery(name="UserAuthorization.countAll", query="SELECT COUNT(ua) "
 			+ "FROM UserAuthorization ua")
 })
@@ -44,9 +46,12 @@ public class UserAuthorization {
 	@Column(name = "user_authorization_id")
 	private Long userAuthorizationId;
 	
-	@Column(name = "role")
-	@NotEmpty
-	private String role;	
+//	@Column(name = "role")
+//	@NotEmpty
+//	private String role;
+	
+	@Embedded
+	private UserRole role;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
@@ -55,7 +60,7 @@ public class UserAuthorization {
 	public UserAuthorization() {
 	}
 	
-	public UserAuthorization(String role) {
+	public UserAuthorization(UserRole role) {
 		this.role = role;
 	}
 
@@ -67,11 +72,11 @@ public class UserAuthorization {
 		this.userAuthorizationId = userAuthorizationId;
 	}
 
-	public String getRole() {
+	public UserRole getRole() {
 		return role;
 	}
 
-	public void setRole(final String role) {
+	public void setRole(final UserRole role) {
 		this.role = role;
 	}	
 

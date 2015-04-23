@@ -63,5 +63,7 @@ CREATE TABLE User_Authorization(
                                          (START WITH 1, INCREMENT BY 1) NOT NULL,
     user_id bigint,
     role varchar(50),
+    desc_en varchar(50),
+    desc_ru varchar(50),
     PRIMARY KEY (user_authorization_id)
 );

@@ -35,7 +35,9 @@ import com.glomozda.machinerepair.domain.userauthorization.UserAuthorization;
 	@NamedQuery(name="User.findAll", query="SELECT u FROM User u "
 			+ "ORDER BY u.login"),
 	@NamedQuery(name="User.findAllIdsAndLogins", query="SELECT u.userId, u.login FROM User u "
-					+ "ORDER BY u.login"),
+			+ "ORDER BY u.login"),
+	@NamedQuery(name="User.setUserEnabledById", query="UPDATE User u SET enabled = :enabled "
+			+ " WHERE u.userId = :id"),
 	@NamedQuery(name="User.countAll", query="SELECT COUNT(u) FROM User u")
 })
 @Entity

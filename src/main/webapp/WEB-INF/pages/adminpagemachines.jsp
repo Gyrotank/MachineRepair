@@ -129,7 +129,11 @@
 	<th align="center" data-sortable="true">
 		<spring:message code="label.adminpage.machines.year" /></th>
 	<th align="center" data-sortable="true">
-		<spring:message code="label.adminpage.machines.timesRepaired" /></th></tr>
+		<spring:message code="label.adminpage.machines.timesRepaired" /></th>
+	<th align="center" data-sortable="false">
+		<spring:message code="label.adminpage.machines.actions" />
+	</th>
+	</tr>
 	</thead>
 	<tbody>
   	<c:forEach var="m" items="${machines_short}" varStatus="loopStatus">    	
@@ -138,7 +142,15 @@
     	<td>${m.machineServiceable.machineServiceableName}</td> 
     	<td>${m.machineSerialNumber}</td>
     	<td>${m.machineYear}</td>
-    	<td>${m.machineTimesRepaired}</td>    	
+    	<td>${m.machineTimesRepaired}</td>
+    	<td>
+    		<a href="<c:url value="edit/?machine_id=${m.machineId}"/>" 
+    			onclick="editMachine()">
+  				<img src="resources/images/edit.png" width="24"></a>
+			<a href="<c:url value="delete/?machine_id=${m.machineId}"/>" 
+    			onclick="editMachine()">
+  				<img src="resources/images/delete.png" width="24"></a>
+    	</td>
     </tr>
   	</c:forEach>
   	</tbody>

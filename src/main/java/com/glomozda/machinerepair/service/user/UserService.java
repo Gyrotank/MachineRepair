@@ -68,6 +68,11 @@ public class UserService {
 	public Long getUserCount() {
 		return userRepository.getUserCount();
 	}
+	
+	@Transactional
+	public Integer setUserEnabledById(Long userId, Byte enabled) {
+		return userRepository.setUserEnabledById(userId, enabled);
+	}
 
 	@Transactional
 	public Boolean add(User u) {

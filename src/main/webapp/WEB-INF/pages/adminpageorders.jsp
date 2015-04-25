@@ -147,7 +147,11 @@
 	</th>
 	<th align="center" data-sortable="true">
 		<spring:message code="label.adminpage.orders.manager" />
-	</th></tr>
+	</th>
+	<th align="center" data-sortable="false">
+		<spring:message code="label.adminpage.orders.actions" />
+	</th>
+	</tr>
 	</thead>
 	<tbody>
   	<c:forEach var="o" items="${orders_short}" varStatus="loopStatus">    	
@@ -198,6 +202,14 @@
   			</c:choose>
     	</td>
     	<td>${o.manager}</td>
+    	<td>
+    		<a href="<c:url value="edit/?order_id=${o.orderId}"/>" 
+    			onclick="editOrder()">
+  				<img src="resources/images/edit.png" width="24"></a>
+			<a href="<c:url value="delete/?machine_id=${o.orderId}"/>" 
+    			onclick="editOrder()">
+  				<img src="resources/images/delete.png" width="24"></a>
+    	</td>
     </tr>
   	</c:forEach>
   	</tbody>

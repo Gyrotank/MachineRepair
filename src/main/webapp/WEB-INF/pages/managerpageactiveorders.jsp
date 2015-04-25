@@ -240,7 +240,7 @@
    			<td align="center">
    			<a href="<c:url value="setready/?order_id=${so.orderId}" />"
    				onclick="return confirm('${dialog_setready_order}')">
-   				<spring:message code="label.managerpage.started.actions.setReady" /></a>
+   				<img src="resources/images/set_ready.png" width="24"></a>
    			</td>
    		</c:if>
     </tr>

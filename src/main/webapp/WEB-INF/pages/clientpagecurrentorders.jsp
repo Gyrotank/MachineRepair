@@ -183,11 +183,18 @@
   				</c:when>
   			</c:choose>
     	</td>
-    	<c:if test="${co.status == 'ready'}">
+    	<c:if test="${co.status == 'ready' && locale == 'en'}">
    			<td align="center">
    			<a href="<c:url value="pay/?order_id=${co.orderId}" />"
    				onclick="return confirm('${dialog_pay_order} ${co.repairType.repairTypePrice}?')">
-   				<spring:message code="label.clientpage.yourOrders.actions.pay" /></a>
+   				<img src="resources/images/pay_en.png" width="24"></a>
+   			</td>
+		</c:if>
+		<c:if test="${co.status == 'ready' && locale == 'ru'}">
+   			<td align="center">
+   			<a href="<c:url value="pay/?order_id=${co.orderId}" />"
+   				onclick="return confirm('${dialog_pay_order} ${co.repairType.repairTypePrice}?')">
+   				<img src="resources/images/pay_ru.png" width="24"></a>
    			</td>
 		</c:if>    	
     </tr>

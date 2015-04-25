@@ -21,6 +21,7 @@
 <script src="<c:url value="/resources/js/jquery.ui.ufd.js" />"></script>
 <script src="<c:url value="/resources/js/bootstrap.min.js" />"></script>
 <script src="<c:url value="/resources/js/bootstrap-table.js" />"></script>
+<script src="<c:url value="/resources/js/adminpage-edit-scripts.js" />"></script>
 <c:choose>
   	<c:when test="${locale == 'ru'}">
   		<script src="<c:url value="/resources/js/bootstrap-table-ru-RU.js" />"></script>
@@ -131,6 +132,9 @@
 	</th>
 	<th align="center" data-sortable="true">
 		<spring:message code="label.adminpage.clients.login" />
+	</th>
+	<th align="center" data-sortable="false">
+		<spring:message code="label.adminpage.clients.actions" />
 	</th></tr>
 	</thead>
 	<tbody>
@@ -138,7 +142,15 @@
     <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
     	<td><c:out value="${loopStatus.index + 1}"/></td>
     	<td>${c.clientName}</td> 
-    	<td>${c.clientUser.login}</td>    	    	   	
+    	<td>${c.clientUser.login}</td>
+    	<td>
+    		<a href="<c:url value="edit/?client_id=${c.clientId}"/>" 
+    			onclick="editClient()">
+  				<img src="resources/images/edit.png" width="24"></a>
+			<a href="<c:url value="delete/?client_id=${c.clientId}"/>" 
+    			onclick="editClient()">
+  				<img src="resources/images/delete.png" width="24"></a>
+    	</td>
     </tr>
   	</c:forEach>
   	</tbody>

@@ -90,10 +90,12 @@
   	<h1><spring:message code="label.adminpage.users" /></h1>
   	<div class="success">
   		<c:out value="${message_user_added}"/>
+  		<c:out value="${message_enable_disable_succeeded}"/>  		
   	</div>
   	<div class="error">
   		<c:out value="${message_user_not_added}"/>
-  	</div>
+  		<c:out value="${message_enable_disable_failed}"/>  		
+  	</div>	
   	<form method="post" action="adminpageusers/userpaging" accept-charset="UTF-8">
   		<table>
   		<tr>
@@ -174,10 +176,16 @@
     	<td>
     		<c:choose>
   			<c:when test="${u.enabled == 0}">
-  				<spring:message code="label.adminpage.users.actions.enable" />
+  				<a href="<c:url value="enable/?user_id=${u.userId}"/>" 
+    			onclick="return confirm('${dialog_enable_user}')">
+  				<img src="resources/images/enable.png" width="24">
+  				</a>
   			</c:when>
   			<c:otherwise>
-  				<spring:message code="label.adminpage.users.actions.disable" />
+  				<a href="<c:url value="disable/?user_id=${u.userId}"/>" 
+    			onclick="return confirm('${dialog_disable_user}')">
+  				<img src="resources/images/disable.png" width="24">
+  				</a>
   			</c:otherwise>
 			</c:choose>    		
     	</td>

@@ -130,7 +130,10 @@
 	<th align="center" data-sortable="true">
 		<spring:message code="label.adminpage.serviceableMachines.trademark" /></th>
 	<th align="center" data-sortable="true">
-		<spring:message code="label.adminpage.serviceableMachines.country" /></th></tr>
+		<spring:message code="label.adminpage.serviceableMachines.country" /></th>
+	<th align="center" data-sortable="false">
+		<spring:message code="label.adminpage.serviceableMachines.actions" />
+	</th></tr>
 	</thead>
 	<tbody>
   	<c:forEach var="ms" items="${machines_serviceable_short}" varStatus="loopStatus">    	
@@ -147,7 +150,15 @@
     				${ms.machineServiceableCountry}
     			</c:otherwise>
     		</c:choose>
-    	</td>    	   	
+    	</td>
+    	<td>
+    		<a href="<c:url value="edit/?machine_serviceable_id=${ms.machineServiceableId}"/>" 
+    			onclick="editMachineServiceable()">
+  				<img src="resources/images/edit.png" width="24"></a>
+			<a href="<c:url value="delete/?machine_serviceable_id=${ms.machineServiceableId}"/>" 
+    			onclick="editMachineServiceable()">
+  				<img src="resources/images/delete.png" width="24"></a>
+    	</td>
     </tr>
   	</c:forEach>
   	</tbody>

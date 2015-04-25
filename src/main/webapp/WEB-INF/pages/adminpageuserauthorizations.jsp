@@ -127,7 +127,10 @@
 	<th align="center" data-sortable="true">
 		<spring:message code="label.adminpage.userAuthorizations.login" /></th>
 	<th align="center" data-sortable="true">
-		<spring:message code="label.adminpage.userAuthorizations.role" /></th></tr>
+		<spring:message code="label.adminpage.userAuthorizations.role" /></th>
+	<th align="center" data-sortable="false">
+		<spring:message code="label.adminpage.userAuthorizations.actions" />
+	</th></tr>
 	</thead>
 	<tbody>
   	<c:forEach var="ua" items="${user_authorizations_short}" varStatus="loopStatus">    	
@@ -143,7 +146,15 @@
   					<c:out value="${ua.role.descEn}"/>
   				</c:otherwise>  				
   			</c:choose>    		
-    	</td>    	    	   	
+    	</td>
+    	<td>
+    		<a href="<c:url value="edit/?user_authorization_id=${ua.userAuthorizationId}"/>" 
+    			onclick="editUserAuthorization()">
+  				<img src="resources/images/edit.png" width="24"></a>
+			<a href="<c:url value="delete/?user_authorization_id=${ua.userAuthorizationId}"/>" 
+    			onclick="editUserAuthorization()">
+  				<img src="resources/images/delete.png" width="24"></a>
+    	</td>
     </tr>
   	</c:forEach>
   	</tbody>

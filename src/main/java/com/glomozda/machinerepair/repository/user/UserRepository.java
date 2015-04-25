@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,6 +130,15 @@ public class UserRepository {
 	@Transactional
 	public Long getUserCount() {
 		return em.createNamedQuery("User.countAll", Long.class).getSingleResult();
+	}
+	
+	@Transactional
+	public Integer setUserEnabledById(Long userId, Byte enabled) {
+		Query query = em.createNamedQuery("User.setUserEnabledById");
+		query.setParameter("id", userId);
+		query.setParameter("enabled", enabled);
+		int updateCount = query.executeUpdate();
+		return updateCount;
 	}
 
 	@Transactional

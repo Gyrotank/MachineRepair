@@ -134,7 +134,11 @@
 	</th>
 	<th align="center" data-sortable="true">
 		<spring:message code="label.adminpage.repairTypes.duration" />
-	</th></tr>
+	</th>
+	<th align="center" data-sortable="false">
+		<spring:message code="label.adminpage.repairTypes.actions" />
+	</th>
+	</tr>
 	</thead>
 	<tbody>
   	<c:forEach var="rt" items="${repair_types_short}" varStatus="loopStatus">    	
@@ -151,7 +155,15 @@
     		</c:choose>
     	</td> 
     	<td>${rt.repairTypePrice}</td>
-    	<td>${rt.repairTypeDuration}</td>    	   	
+    	<td>${rt.repairTypeDuration}</td>
+    	<td>
+    		<a href="<c:url value="edit/?repair_type_id=${rt.repairTypeId}"/>" 
+    			onclick="editRepairType()">
+  				<img src="resources/images/edit.png" width="24"></a>
+			<a href="<c:url value="delete/?repair_type_id=${rt.repairTypeId}"/>" 
+    			onclick="editRepairType()">
+  				<img src="resources/images/delete.png" width="24"></a>
+    	</td>
     </tr>
   	</c:forEach>
   	</tbody>

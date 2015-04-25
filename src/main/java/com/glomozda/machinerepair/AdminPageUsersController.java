@@ -43,6 +43,9 @@ public class AdminPageUsersController implements MessageSourceAware {
 	
 	private static final Long _defaultPageSize = (long) 25;
 	
+	private String messageEnableDisableFailed = "";
+	private String messageEnableDisableSucceeded = "";
+	
 	private String messageUserAdded = "";
 	private String messageUserNotAdded = "";
 	
@@ -74,6 +77,20 @@ public class AdminPageUsersController implements MessageSourceAware {
 		model.addAttribute("users_count", userSvc.getUserCount());
 		model.addAttribute("users_paging_first", userPagingFirstIndex);
 		model.addAttribute("users_paging_last", userPagingLastIndex);
+		
+		model.addAttribute("dialog_enable_user",
+				messageSource.getMessage("label.adminpage.users.actions.enable.dialog", null,
+				locale));
+		model.addAttribute("dialog_disable_user",
+				messageSource.getMessage("label.adminpage.users.actions.disable.dialog", null,
+				locale));
+		
+		model.addAttribute("message_enable_disable_failed",
+				messageEnableDisableFailed);
+		messageEnableDisableFailed = "";
+		model.addAttribute("message_enable_disable_succeeded",
+				messageEnableDisableSucceeded);
+		messageEnableDisableSucceeded = "";
 		
 		model.addAttribute("message_user_added",
 				messageUserAdded);
@@ -127,6 +144,77 @@ public class AdminPageUsersController implements MessageSourceAware {
 		userPagingFirstIndex = userStart;
 		userPagingLastIndex = userEnd;		
 		
+		return "redirect:/adminpageusers";
+	}
+	
+	@RequestMapping(value = "/enable", method = RequestMethod.GET)
+	public String enableUser(@RequestParam("user_id") Long userId, final Locale locale) {
+		User userInQuestion = userSvc.getUserById(userId);
+		if (userInQuestion == null) {			
+			messageEnableDisableFailed = 
+					messageSource
+					.getMessage("popup.adminpage.users.actions.failed.userNotExists",
+							null, locale);
+			return "redirect:/adminpageusers";
+		}
+		if (userInQuestion.getEnabled() != 0) {			
+			messageEnableDisableFailed = 
+					messageSource
+					.getMessage("popup.adminpage.users.actions.failed.userNotDisabled",
+							null, locale);
+			return "redirect:/adminpageusers";
+		}
+		
+		if (userSvc.setUserEnabledById(userId, (byte) 1) == 1) {
+			messageEnableDisableSucceeded = 
+				messageSource
+				.getMessage("popup.adminpage.users.actions.succeeded",
+						null, locale);
+		} else {
+			messageEnableDisableFailed = 
+					messageSource
+					.getMessage("popup.adminpage.users.actions.failed.updateFailed",
+							null, locale);
+		}
+		return "redirect:/adminpageusers";
+	}
+	
+	@RequestMapping(value = "/disable", method = RequestMethod.GET)
+	public String disableUser(@RequestParam("user_id") Long userId, final Locale locale) {
+		User userInQuestion = userSvc.getUserById(userId);
+		if (userInQuestion == null) {			
+			messageEnableDisableFailed = 
+					messageSource
+					.getMessage("popup.adminpage.users.actions.failed.userNotExists",
+							null, locale);
+			return "redirect:/adminpageusers";
+		}
+		if (userInQuestion.getLogin().contentEquals(myUser.getLogin())) {		
+			messageEnableDisableFailed = 
+					messageSource
+					.getMessage("popup.adminpage.users.actions.failed.sameUser",
+							null, locale);
+			return "redirect:/adminpageusers";
+		}
+		if (userInQuestion.getEnabled() != 1) {
+			messageEnableDisableFailed = 
+					messageSource
+					.getMessage("popup.adminpage.users.actions.failed.userNotEnabled",
+							null, locale);
+			return "redirect:/adminpageusers";
+		}
+		
+		if (userSvc.setUserEnabledById(userId, (byte) 0) == 1) {
+			messageEnableDisableSucceeded = 
+				messageSource
+				.getMessage("popup.adminpage.users.actions.succeeded",
+						null, locale);
+		} else {
+			messageEnableDisableFailed = 
+					messageSource
+					.getMessage("popup.adminpage.users.actions.failed.updateFailed",
+							null, locale);
+		}
 		return "redirect:/adminpageusers";
 	}
 	

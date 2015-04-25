@@ -37,7 +37,7 @@
 	
 	<jsp:useBean id="now" class="java.util.Date" />
 	<fmt:formatDate var="current_year" value="${now}" pattern="yyyy" />
-		
+	
 	<h1 align = "center"><spring:message code="label.adminpage.header" /></h1>
 	
 	<div id="sidebar">
@@ -65,7 +65,9 @@
 			<spring:message code="label.adminpage.sidebar.managerpage" /></a></p>
 		<hr class="style-seven">
 	<dl class="tabs vertical">
-  		<dd class="active"><a href="<c:url value="/adminpagemachines"/>">
+		<dd class="active"><a href="<c:url value="/adminpage"/>">
+			<spring:message code="label.adminpage.sidebar.dashboard" /></a></dd>
+  		<dd><a href="<c:url value="/adminpagemachines"/>">
 			<spring:message code="label.adminpage.sidebar.machines" /></a></dd>
   		<dd><a href="<c:url value="/adminpagemachinesserviceable"/>">
 			<spring:message code="label.adminpage.sidebar.serviceableMachines" /></a></dd>

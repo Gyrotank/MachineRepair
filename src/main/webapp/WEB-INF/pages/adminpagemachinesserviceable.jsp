@@ -61,7 +61,9 @@
 			<spring:message code="label.adminpage.sidebar.managerpage" /></a></p>
 		<hr class="style-seven">
 	<dl class="tabs vertical">
-  		<dd class="active"><a href="<c:url value="/adminpagemachines"/>">
+  		<dd class="active"><a href="<c:url value="/adminpage"/>">
+			<spring:message code="label.adminpage.sidebar.dashboard" /></a></dd>
+  		<dd><a href="<c:url value="/adminpagemachines"/>">
 			<spring:message code="label.adminpage.sidebar.machines" /></a></dd>
   		<dd><a href="<c:url value="/adminpagemachinesserviceable"/>">
 			<spring:message code="label.adminpage.sidebar.serviceableMachines" /></a></dd>

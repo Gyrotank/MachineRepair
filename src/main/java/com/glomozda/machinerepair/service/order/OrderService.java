@@ -94,6 +94,11 @@ public class OrderService {
 	}
 	
 	@Transactional
+	public List<Order> getCurrentOrdersForClientIdWithFetching(Long clientId) {
+		return orderRepository.getCurrentOrdersForClientIdWithFetching(clientId);
+	}
+	
+	@Transactional
 	public List<Order> getCurrentOrdersForClientIdWithFetching(Long clientId,
 			Long start, Long length) {
 		return orderRepository.getCurrentOrdersForClientIdWithFetching(clientId, start, length);

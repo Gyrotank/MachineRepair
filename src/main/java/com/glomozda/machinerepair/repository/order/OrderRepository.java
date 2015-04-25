@@ -196,6 +196,20 @@ public class OrderRepository {
 	}
 	
 	@Transactional
+	public List<Order> getCurrentOrdersForClientIdWithFetching(Long clientId) {
+		List<Order> result = null;
+		TypedQuery<Order> query = em.createNamedQuery(
+				"Order.findCurrentOrdersByClientIdWithFetching", Order.class);
+		query.setParameter("id", clientId);
+		try {
+			result = query					
+					.getResultList();
+		} catch (NoResultException nre){}
+		
+		return result;
+	}
+	
+	@Transactional
 	public List<Order> getCurrentOrdersForClientIdWithFetching(Long clientId,
 			Long start, Long length) {
 		List<Order> result = null;

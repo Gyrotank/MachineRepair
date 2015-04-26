@@ -26,7 +26,7 @@ import com.glomozda.machinerepair.service.user.UserService;
 @Controller
 public class AdminPageClientsController implements MessageSourceAware {
 	
-	static Logger log = Logger.getLogger(AdminPageController.class.getName());
+	static Logger log = Logger.getLogger(AdminPageClientsController.class.getName());
 	
 	@Autowired
 	private UserService userSvc;

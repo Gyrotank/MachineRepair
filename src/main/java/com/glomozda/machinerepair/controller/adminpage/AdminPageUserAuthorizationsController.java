@@ -29,7 +29,7 @@ import com.glomozda.machinerepair.service.userauthorization.UserAuthorizationSer
 @Controller
 public class AdminPageUserAuthorizationsController implements MessageSourceAware {
 	
-	static Logger log = Logger.getLogger(AdminPageController.class.getName());
+	static Logger log = Logger.getLogger(AdminPageUserAuthorizationsController.class.getName());
 	
 	@Autowired
 	private UserAuthorizationService userAuthorizationSvc;

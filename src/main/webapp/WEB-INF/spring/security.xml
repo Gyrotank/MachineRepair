@@ -7,8 +7,11 @@
                  http://www.springframework.org/schema/security 
                  http://www.springframework.org/schema/security/spring-security-3.2.xsd"> 
 
+<http pattern="/error/**" security="none"/>
 
-<http access-denied-page="/error403.jsp"> 
+<!-- <http access-denied-page="/error403.jsp"> -->
+
+<http auto-config="true"> 
    <intercept-url pattern="/index*" access="ROLE_CLIENT,ROLE_ANONYMOUS"/> 
    <intercept-url pattern="/clientpage*" access="ROLE_CLIENT"/>
    <intercept-url pattern="/managerpage*" access="ROLE_MANAGER,ROLE_ADMIN"/>

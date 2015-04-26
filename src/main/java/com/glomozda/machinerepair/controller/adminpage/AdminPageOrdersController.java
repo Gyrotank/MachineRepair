@@ -32,7 +32,7 @@ import com.glomozda.machinerepair.service.userauthorization.UserAuthorizationSer
 @Controller
 public class AdminPageOrdersController implements MessageSourceAware {
 	
-	static Logger log = Logger.getLogger(AdminPageController.class.getName());
+	static Logger log = Logger.getLogger(AdminPageOrdersController.class.getName());
 	
 	@Autowired
 	private MachineService machineSvc;

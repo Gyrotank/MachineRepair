@@ -1,4 +1,4 @@
-package com.glomozda.machinerepair;
+package com.glomozda.machinerepair.controller.managerpage;
 
 import java.security.Principal;
 import java.util.ArrayList;

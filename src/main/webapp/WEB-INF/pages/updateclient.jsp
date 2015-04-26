@@ -40,18 +40,26 @@
 	<div id="sidebar">
 		<c:choose>
   			<c:when test="${locale == 'en'}">
-  				<a href="?locale=en"><img src="resources/images/usa.png" width="40"></a>
+  				<a href="?locale=en&amp;client-id=${client.clientId}">
+  				<img src="${pageContext.servletContext.contextPath}/resources/images/usa.png" 
+  					width="40"></a>
   			</c:when>
   			<c:otherwise>
-  				<a href="?locale=en"><img src="resources/images/usa.png" width="32"></a>
+  				<a href="?locale=en&amp;client-id=${client.clientId}">
+  				<img src="${pageContext.servletContext.contextPath}/resources/images/usa.png" 
+  					width="32"></a>
   			</c:otherwise>
 		</c:choose>
 		<c:choose>
   			<c:when test="${locale == 'ru'}">
-  				<a href="?locale=ru"><img src="resources/images/rus.png" width="40"></a>
+  				<a href="?locale=ru&amp;client-id=${client.clientId}">
+  				<img src="${pageContext.servletContext.contextPath}/resources/images/rus.png" 
+  					width="40"></a>
   			</c:when>
   			<c:otherwise>
-  				<a href="?locale=ru"><img src="resources/images/rus.png" width="32"></a>
+  				<a href="?locale=ru&amp;client-id=${client.clientId}">
+  				<img src="${pageContext.servletContext.contextPath}/resources/images/rus.png" 
+  					width="32"></a>
   			</c:otherwise>
 		</c:choose>
 		<hr class="style-seven">
@@ -86,78 +94,9 @@
 	
 	<div id="content">
 	<div class="tabs-content">
-	<div class="content" id="clients">  
-  	<h1><spring:message code="label.adminpage.clients" /></h1>
-  	<div class="success">
-  		<c:out value="${message_client_added}"/>
-  	</div>
-  	<div class="error">
-  		<c:out value="${message_client_not_added}"/>
-  	</div>
-  	<form method="post" action="adminpageclients/clientpaging" accept-charset="UTF-8">
-  		<table>
-  		<tr>
-  			<td style="width:5%" align="center">
-  				<spring:message code="label.adminpage.records" />
-  			</td>  			
-  			<td style="width:10%" align="center">
-  				<input name="clientPageStart" maxlength="5" size="8"
-  				value="${clients_paging_first + 1}"/></td>  			
-  			<td style="width:5%" align="center">
-  				<spring:message code="label.adminpage.to" />
-  			</td>  			
-  			<td style="width:10%" align="center">
-  				<input name="clientPageEnd" maxlength="5" size="8"
-  				value="${clients_paging_last + 1}"/></td>
-  			<td style="width:20%" align="center">
-  			<spring:message code="label.adminpage.of" />
-  			${clients_count}
-  			<spring:message code="label.adminpage.total" /></td>
-  			<td style="width:50%" align="left"><button>
-  				<spring:message code="label.adminpage.buttonGo" />
-  			</button></td>  			
-  		</tr>  		
-  		</table>
-  	</form>
-  	<table data-toggle="table" 
-		data-classes="table table-hover table-condensed" 
-    	data-striped="true"
-    	data-pagination="true"
-    	data-search="true"
-		border="1" style="width:900px" align="center">
-	<thead>
-	<tr><th align="center" data-sortable="true"></th>
-	<th align="center" data-sortable="true">
-		<spring:message code="label.adminpage.clients.name" />
-	</th>
-	<th align="center" data-sortable="true">
-		<spring:message code="label.adminpage.clients.login" />
-	</th>
-	<th align="center" data-sortable="false">
-		<spring:message code="label.adminpage.clients.actions" />
-	</th></tr>
-	</thead>
-	<tbody>
-  	<c:forEach var="c" items="${clients_short}" varStatus="loopStatus">    	
-    <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
-    	<td><c:out value="${loopStatus.index + 1}"/></td>
-    	<td>${c.clientName}</td> 
-    	<td>${c.clientUser.login}</td>
-    	<td>
-    		<a href="<c:url value="/updateclient/?client-id=${c.clientId}"/>">
-  				<img src="resources/images/edit.png" width="24"></a>
-			<a href="<c:url value="/deleteclient/?client-id=${c.clientId}"/>"
-				onclick="return confirm('${dialog_delete_client}')">
-  				<img src="resources/images/delete.png" width="24"></a>
-    	</td>
-    </tr>
-  	</c:forEach>
-  	</tbody>
-  	</table>
-  	
-  	<a name="add_new_client"></a>
-  	<h2><spring:message code="label.adminpage.addNewClient" /></h2>
-  	<form:form method="post" commandName="client" action="addClient" accept-charset="UTF-8">
+	<div class="content">
+	<h2><spring:message code="label.adminpage.updateClient" /></h2>
+	<form:form method="post" commandName="client" action="updateClient" accept-charset="UTF-8">
   	<table>
   		<tr>
   			<td><label for="clientNameInput">
@@ -165,44 +104,25 @@
   			</label></td>
   			<td><form:input path="clientName" id="clientNameInput" maxlength="50"/></td>
   			<td><form:errors path="clientName" cssClass="error" /></td>  			
-  		</tr>
-  		<tr>
-  			<td><label><spring:message code="label.adminpage.addNewClient.user" /></label></td>
-  			<td><select name="userId">
-  				<option value="0">
-  					<spring:message code="label.adminpage.addNewClient.selectUser" />
-  				</option>
-<!-- !!!ONLY 100 USERS ARE FETCHED AS OF NOW!!! -->
-  				<c:forEach var="u" items="${users}">
-  					<c:choose>
-  					<c:when test="${selected_client_user_id == u.userId}">
-  						<option selected value="${u.userId}">
-  							<c:out value="${u.login}"/>
-  						</option>
-  					</c:when>
-  					<c:otherwise>
-  						<option value="${u.userId}">
-  							<c:out value="${u.login}"/>
-  						</option>
-  					</c:otherwise>
-  					</c:choose>  					
-  				</c:forEach>
-  			</select></td>
-  			<td>
-  			<div class="error">
-  				<c:out value="${message_client_user_id}"/>
-  			</div>
-  			</td>
-  		</tr>
+  		</tr>  		
   		<tr>  		
   			<td><button>
-  				<spring:message code="label.adminpage.buttonAdd" />
+  				<spring:message code="label.adminpage.buttonUpdate" />
   			</button></td>
   		</tr>
   	</table>
   	</form:form>
+  	<div class="success">
+  		<c:out value="${message_client_updated}"/>
   	</div>
+	<div class="error">
+  		<c:out value="${message_client_not_updated}"/>
   	</div>
+  	<div class="info">
+  		<c:out value="${message_client_no_changes}"/>
   	</div>
+	</div>
+	</div>
+	</div>
 </body>
 </html>

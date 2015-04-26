@@ -38,6 +38,8 @@ import com.glomozda.machinerepair.domain.user.User;
 	@NamedQuery(name="Client.findClientByLoginWithFetching", query="SELECT c FROM Client c "
 			+ " LEFT JOIN FETCH c.clientUser "
 			+ "WHERE c.clientUser.login = :login"),
+	@NamedQuery(name="Client.setClientNameById", query="UPDATE Client c SET clientName = :name "
+			+ " WHERE c.clientId = :id"),
 	@NamedQuery(name="Client.countAll", query="SELECT COUNT(c) FROM Client c")
 })
 @Entity

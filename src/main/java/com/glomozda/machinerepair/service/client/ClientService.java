@@ -39,6 +39,11 @@ public class ClientService {
 	public List<Long> getAllClientIds() {
 		return clientRepository.getAllClientIds();
 	}
+	
+	@Transactional
+	public Client getClientById(Long clientId) {
+		return clientRepository.getClientById(clientId);
+	}
 
 	@Transactional
 	public Client getClientByUserId(Long userId) {
@@ -68,5 +73,10 @@ public class ClientService {
 	@Transactional
 	public Boolean add(Client c, Long userId) {
 		return clientRepository.add(c, userId);
+	}
+	
+	@Transactional
+	public Integer updateClientNameById(Long clientId, String name) {
+		return clientRepository.updateClientNameById(clientId, name);
 	}
 }

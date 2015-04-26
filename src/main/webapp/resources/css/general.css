@@ -12,6 +12,12 @@
     font-weight: bold;
 }
 
+.info {
+	color: #0000ff;
+    font-style: italic;
+    font-weight: bold;
+}
+
 .disabled {
 	color: #ff0000;
 }

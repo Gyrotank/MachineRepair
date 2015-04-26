@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
@@ -56,6 +57,11 @@ public class ClientRepository {
 		List<Long> result = 
 				em.createNamedQuery("Client.findAllClientIds", Long.class).getResultList();
 		return result;
+	}
+	
+	@Transactional
+	public Client getClientById(Long clientId) {
+		return em.find(Client.class, clientId);
 	}
 
 	@Transactional
@@ -127,5 +133,14 @@ public class ClientRepository {
 		} else {
 			return false;
 		}
+	}
+	
+	@Transactional
+	public Integer updateClientNameById(Long clientId, String name) {
+		Query query = em.createNamedQuery("Client.setClientNameById");
+		query.setParameter("id", clientId);
+		query.setParameter("name", name);
+		int updateCount = query.executeUpdate();
+		return updateCount;
 	}
 }

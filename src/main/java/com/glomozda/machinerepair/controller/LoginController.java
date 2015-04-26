@@ -1,4 +1,4 @@
-package com.glomozda.machinerepair;
+package com.glomozda.machinerepair.controller;
 
 import java.util.Locale;
 

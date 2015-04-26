@@ -1,4 +1,4 @@
-package com.glomozda.machinerepair;
+package com.glomozda.machinerepair.controller.adminpage;
 
 import java.security.Principal;
 import java.util.Locale;
@@ -89,6 +89,10 @@ public class AdminPageClientsController implements MessageSourceAware {
 		model.addAttribute("selected_client_user_id", selectedClientUserId);
 		selectedClientUserId = (long) 0;
 		
+		model.addAttribute("dialog_delete_client",
+				messageSource.getMessage("label.adminpage.clients.actions.delete.dialog", null,
+				locale));
+		
 		return "adminpageclients";
 	}
 	
@@ -170,6 +174,22 @@ public class AdminPageClientsController implements MessageSourceAware {
 					messageSource.getMessage("popup.adminpage.clientNotAdded", null,
 							locale);
 		}		
+		return "redirect:/adminpageclients";
+	}
+	
+	@RequestMapping(value = "/deleteclient", method = RequestMethod.GET)
+	public String deleteClient(@RequestParam("client-id") final Long clientId,
+			final Locale locale) {
+		
+//		if (clientSvc.add(client, userId)) {
+//			messageClientAdded =
+//					messageSource.getMessage("popup.adminpage.clientAdded", null,
+//							locale);
+//		} else {
+//			messageClientNotAdded = 
+//					messageSource.getMessage("popup.adminpage.clientNotAdded", null,
+//							locale);
+//		}		
 		return "redirect:/adminpageclients";
 	}
 }

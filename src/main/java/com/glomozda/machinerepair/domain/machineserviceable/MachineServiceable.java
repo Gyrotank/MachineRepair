@@ -29,7 +29,14 @@ import com.glomozda.machinerepair.domain.machine.Machine;
 		query="SELECT ms FROM MachineServiceable ms"
 			+ " WHERE ms.machineServiceableId = :id"),
 	@NamedQuery(name="MachineServiceable.countAll", query="SELECT COUNT(ms) "
-			+ "FROM MachineServiceable ms")
+			+ "FROM MachineServiceable ms"),
+	@NamedQuery(name="MachineServiceable.updateMachineServiceableById", 
+		query="UPDATE MachineServiceable ms "
+			+ "SET ms.machineServiceableName = :name, "
+			+ "ms.machineServiceableTrademark = :trademark, "
+			+ "ms.machineServiceableCountry = :country,"
+			+ "ms.machineServiceableCountryRu = :country_ru "
+			+ "WHERE ms.machineServiceableId = :id")
 })
 @Entity
 @Table(name = "machinesServiceable")

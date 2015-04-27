@@ -61,5 +61,10 @@ public class RepairTypeRepository {
 			return false;
 		}
 	}
+	
+	@Transactional
+	public RepairType getRepairTypeById(Long repairTypeId) {
+		return em.find(RepairType.class, repairTypeId);
+	}
 
 }

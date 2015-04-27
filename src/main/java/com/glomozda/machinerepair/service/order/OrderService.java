@@ -138,4 +138,9 @@ public class OrderService {
 	public Integer cancelOrderById(Long orderId) {
 		return orderRepository.cancelOrderById(orderId);
 	}
+	
+	@Transactional
+	public Integer updateOrderById(Long orderId, Order order) {
+		return orderRepository.updateOrderById(orderId, order);
+	}
 }

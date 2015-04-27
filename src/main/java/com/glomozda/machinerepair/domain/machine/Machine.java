@@ -1,7 +1,6 @@
 package com.glomozda.machinerepair.domain.machine;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -38,6 +37,11 @@ import com.glomozda.machinerepair.domain.order.Order;
 			+ "WHERE m.machineSerialNumber = :msn"),
 	@NamedQuery(name="Machine.incrementTimesRepairedById", query="UPDATE Machine m "
 			+ "SET m.machineTimesRepaired = m.machineTimesRepaired + 1 "
+			+ "WHERE m.machineId = :id"),
+	@NamedQuery(name="Machine.updateMachineById", query="UPDATE Machine m "
+			+ "SET m.machineSerialNumber = :msn, "
+			+ "m.machineYear = :year, "
+			+ "m.machineTimesRepaired = :times_repaired "
 			+ "WHERE m.machineId = :id"),
 	@NamedQuery(name="Machine.countAll", query="SELECT COUNT(m) FROM Machine m")
 })

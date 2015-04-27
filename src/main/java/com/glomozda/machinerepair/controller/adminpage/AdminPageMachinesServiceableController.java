@@ -79,7 +79,12 @@ public class AdminPageMachinesServiceableController implements
 		messageMachineServiceableAdded = "";
 		model.addAttribute("message_machine_serviceable_not_added",
 				messageMachineServiceableNotAdded);
-		messageMachineServiceableNotAdded = "";		
+		messageMachineServiceableNotAdded = "";
+		
+		model.addAttribute("dialog_delete_machine_serviceable",
+				messageSource.getMessage(
+						"label.adminpage.serviceableMachines.actions.delete.dialog", null,
+				locale));
 				
 		return "adminpagemachinesserviceable";
 	}
@@ -154,6 +159,23 @@ public class AdminPageMachinesServiceableController implements
 					messageSource.getMessage("popup.adminpage.machineServiceableNotAdded", null,
 							locale);
 		}		
+		return "redirect:/adminpagemachinesserviceable";
+	}
+	
+	@RequestMapping(value = "/deletemachineserviceable", method = RequestMethod.GET)
+	public String deleteMachine(
+			@RequestParam("machine-serviceable-id") final Long machineServiceableId,
+			final Locale locale) {
+		
+//		if (clientSvc.add(client, userId)) {
+//			messageClientAdded =
+//					messageSource.getMessage("popup.adminpage.clientAdded", null,
+//							locale);
+//		} else {
+//			messageClientNotAdded = 
+//					messageSource.getMessage("popup.adminpage.clientNotAdded", null,
+//							locale);
+//		}		
 		return "redirect:/adminpagemachinesserviceable";
 	}
 }

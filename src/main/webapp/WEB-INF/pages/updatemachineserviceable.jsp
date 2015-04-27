@@ -21,6 +21,8 @@
 <script src="<c:url value="/resources/js/jquery.ui.ufd.js" />"></script>
 <script src="<c:url value="/resources/js/bootstrap.min.js" />"></script>
 <script src="<c:url value="/resources/js/bootstrap-table.js" />"></script>
+<script src="<c:url value="/resources/js/adminpage-edit-scripts.js" />"></script>
+
 <c:choose>
   	<c:when test="${locale == 'ru'}">
   		<script src="<c:url value="/resources/js/bootstrap-table-ru-RU.js" />"></script>
@@ -39,18 +41,26 @@
 	<div id="sidebar">
 		<c:choose>
   			<c:when test="${locale == 'en'}">
-  				<a href="?locale=en"><img src="resources/images/usa.png" width="40"></a>
+  				<a href="?locale=en&amp;machine-serviceable-id=${machineServiceable.machineServiceableId}">
+  				<img src="${pageContext.servletContext.contextPath}/resources/images/usa.png" 
+  					width="40"></a>
   			</c:when>
   			<c:otherwise>
-  				<a href="?locale=en"><img src="resources/images/usa.png" width="32"></a>
+  				<a href="?locale=en&amp;machine-serviceable-id=${machineServiceable.machineServiceableId}">
+  				<img src="${pageContext.servletContext.contextPath}/resources/images/usa.png" 
+  					width="32"></a>
   			</c:otherwise>
 		</c:choose>
 		<c:choose>
   			<c:when test="${locale == 'ru'}">
-  				<a href="?locale=ru"><img src="resources/images/rus.png" width="40"></a>
+  				<a href="?locale=ru&amp;machine-serviceable-id=${machineServiceable.machineServiceableId}">
+  				<img src="${pageContext.servletContext.contextPath}/resources/images/rus.png" 
+  					width="40"></a>
   			</c:when>
   			<c:otherwise>
-  				<a href="?locale=ru"><img src="resources/images/rus.png" width="32"></a>
+  				<a href="?locale=ru&amp;machine-serviceable-id=${machineServiceable.machineServiceableId}">
+  				<img src="${pageContext.servletContext.contextPath}/resources/images/rus.png" 
+  					width="32"></a>
   			</c:otherwise>
 		</c:choose>
 		<hr class="style-seven">
@@ -85,105 +95,33 @@
 	
 	<div id="content">
 	<div class="tabs-content">
-		
-  	<div class="content" id="serviceable_machines">
-  	<h1><spring:message code="label.adminpage.serviceableMachines" /></h1>
-  	<div class="success">
-  		<c:out value="${message_machine_serviceable_added}"/>
-  	</div>
-  	<div class="error">
-  		<c:out value="${message_machine_serviceable_not_added}"/>
-  	</div>
-  	<form method="post" action="adminpagemachinesserviceable/machineserviceablepaging" 
-  		accept-charset="UTF-8">
-  		<table>
-  		<tr>
-  			<td style="width:5%" align="center">
-  				<spring:message code="label.adminpage.records" /></td>  			
-  			<td style="width:10%" align="center">
-  				<input name="machineServiceablePageStart" maxlength="5" size="8"
-  				value="${machines_serviceable_paging_first + 1}"/></td>  			
-  			<td style="width:5%" align="center">
-  				<spring:message code="label.adminpage.to" /></td>  			
-  			<td style="width:10%" align="center">
-  				<input name="machineServiceablePageEnd" maxlength="5" size="8"
-  				value="${machines_serviceable_paging_last + 1}"/></td>
-  			<td style="width:20%" align="center">
-  				<spring:message code="label.adminpage.of" />
-  				${machines_serviceable_count}
-  				<spring:message code="label.adminpage.total" /></td>
-  			<td style="width:50%" align="left">
-  			<button><spring:message code="label.adminpage.buttonGo" /></button></td>
-  		</tr>  		
-  		</table>
-  	</form>
-  	<table border="1" data-toggle="table" 
-		data-classes="table table-hover table-condensed" 
-    	data-striped="true"
-    	data-pagination="true"
-		data-search="true"
-		border="1" style="width:900px" align="center">
-	<thead>
-	<tr><th align="center" data-sortable="true"></th>
-	<th align="center" data-sortable="true">
-		<spring:message code="label.adminpage.serviceableMachines.name" /></th>
-	<th align="center" data-sortable="true">
-		<spring:message code="label.adminpage.serviceableMachines.trademark" /></th>
-	<th align="center" data-sortable="true">
-		<spring:message code="label.adminpage.serviceableMachines.country" /></th>
-	<th align="center" data-sortable="false">
-		<spring:message code="label.adminpage.serviceableMachines.actions" />
-	</th></tr>
-	</thead>
-	<tbody>
-  	<c:forEach var="ms" items="${machines_serviceable_short}" varStatus="loopStatus">    	
-    <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
-    	<td><c:out value="${loopStatus.index + 1}"/></td>
-    	<td>${ms.machineServiceableName}</td> 
-    	<td>${ms.machineServiceableTrademark}</td>
-    	<td>
-    		<c:choose>
-    			<c:when test="${locale == 'ru'}">
-    				${ms.machineServiceableCountryRu}
-    			</c:when>
-    			<c:otherwise>
-    				${ms.machineServiceableCountry}
-    			</c:otherwise>
-    		</c:choose>
-    	</td>
-    	<td>
-    		<a href="<c:url 
-    			value="/updatemachineserviceable/?machine-serviceable-id=${ms.machineServiceableId}"/>">
-  				<img src="resources/images/edit.png" width="24"></a>
-			<a href="<c:url 
-				value="deletemachineserviceable/?machine-serviceable-id=${ms.machineServiceableId}"/>" 
-    			onclick="return confirm('${dialog_delete_machine_serviceable}')">
-  				<img src="resources/images/delete.png" width="24"></a>
-    	</td>
-    </tr>
-  	</c:forEach>
-  	</tbody>
-  	</table>
-  	
-  	<div>
-  	<a name="add_new_serviceable_machine"></a>
-  	<h2><spring:message code="label.adminpage.addNewServiceableMachine" /></h2>
-  	<form:form method="post" commandName="machineServiceable" action="addMachineServiceable" accept-charset="UTF-8">
+	<div class="content">
+	<h2><spring:message code="label.adminpage.updateMachineServiceable" /></h2>
+	<form:form method="post" commandName="machineServiceable" 
+		action="updateMachineServiceable" accept-charset="UTF-8">
   	<table>
   		<tr>
   			<td><label for="machineServiceableNameInput">
   				<spring:message code="label.adminpage.serviceableMachines.name" /></label></td>
+  			<td>
+  				<input value="${machineServiceableCurrent.machineServiceableName}" maxlength="50" 
+  					size="50" readonly="readonly" disabled="disabled"/>
+  			</td>
   			<td><form:input path="machineServiceableName" id="machineServiceableNameInput"
-  					maxlength="50"/></td>
+  					size="50" maxlength="50"/></td>
   			<td><form:errors path="machineServiceableName" cssClass="error" /></td>  			
   		</tr>
   		<tr>
-  			<td><label for="machineServiceableNameInput">
+  			<td><label for="machineServiceableNameTrademark">
   				<spring:message code="label.adminpage.serviceableMachines.trademark" />
   				</label></td>
   			<td>
+  				<input value="${machineServiceableCurrent.machineServiceableTrademark}" 
+  					size="50" maxlength="50" readonly="readonly" disabled="disabled"/>
+  			</td>
+  			<td>
   			<form:input path="machineServiceableTrademark" id="machineServiceableTrademarkInput"
-  					maxlength="50"/>
+  					size="50" maxlength="50"/>
   			</td>
   			<td><form:errors path="machineServiceableTrademark" cssClass="error" /></td>
   		</tr>
@@ -192,8 +130,12 @@
   			<spring:message code="label.adminpage.serviceableMachines.countryForm" />
   			</label></td>
   			<td>
+  				<input value="${machineServiceableCurrent.machineServiceableCountry}" 
+  					size="50" maxlength="50" readonly="readonly" disabled="disabled"/>
+  			</td>
+  			<td>
   			<form:input path="machineServiceableCountry" id="machineServiceableCountryInput"
-  					maxlength="50"/>
+  					size="50" maxlength="50"/>
   			</td>
   			<td><form:errors path="machineServiceableCountry" cssClass="error" /></td>  			
   		</tr>
@@ -202,21 +144,33 @@
   			<spring:message code="label.adminpage.serviceableMachines.countryRu" />
   			</label></td>
   			<td>
+  				<input value="${machineServiceableCurrent.machineServiceableCountryRu}" 
+  					size="50" maxlength="50" readonly="readonly" disabled="disabled"/>
+  			</td>
+  			<td>
   			<form:input path="machineServiceableCountryRu" id="machineServiceableCountryRuInput"
-  					maxlength="50"/>
+  					size="50" maxlength="50"/>
   			</td>
   			<td><form:errors path="machineServiceableCountryRu" cssClass="error" /></td>  			
   		</tr>
   		<tr> 		
   			<td><button>
-  			<spring:message code="label.adminpage.buttonAdd" />
+  			<spring:message code="label.adminpage.buttonUpdate" />
   			</button></td>
   		</tr>
   	</table>
   	</form:form>
+  	<div class="success">
+  		<c:out value="${message_machine_serviceable_updated}"/>
   	</div>
+	<div class="error">
+  		<c:out value="${message_machine_serviceable_not_updated}"/>
   	</div>
+  	<div class="info">
+  		<c:out value="${message_machine_serviceable_no_changes}"/>
   	</div>
-  	</div>
+	</div>
+	</div>
+	</div>
 </body>
 </html>

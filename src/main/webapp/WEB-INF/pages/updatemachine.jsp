@@ -40,24 +40,24 @@
 	<div id="sidebar">
 		<c:choose>
   			<c:when test="${locale == 'en'}">
-  				<a href="?locale=en&amp;client-id=${client.clientId}">
+  				<a href="?locale=en&amp;machine-id=${machine.machineId}">
   				<img src="${pageContext.servletContext.contextPath}/resources/images/usa.png" 
   					width="40"></a>
   			</c:when>
   			<c:otherwise>
-  				<a href="?locale=en&amp;client-id=${client.clientId}">
+  				<a href="?locale=en&amp;machine-id=${machine.machineId}">
   				<img src="${pageContext.servletContext.contextPath}/resources/images/usa.png" 
   					width="32"></a>
   			</c:otherwise>
 		</c:choose>
 		<c:choose>
   			<c:when test="${locale == 'ru'}">
-  				<a href="?locale=ru&amp;client-id=${client.clientId}">
+  				<a href="?locale=ru&amp;machine-id=${machine.machineId}">
   				<img src="${pageContext.servletContext.contextPath}/resources/images/rus.png" 
   					width="40"></a>
   			</c:when>
   			<c:otherwise>
-  				<a href="?locale=ru&amp;client-id=${client.clientId}">
+  				<a href="?locale=ru&amp;machine-id=${machine.machineId}">
   				<img src="${pageContext.servletContext.contextPath}/resources/images/rus.png" 
   					width="32"></a>
   			</c:otherwise>
@@ -95,35 +95,59 @@
 	<div id="content">
 	<div class="tabs-content">
 	<div class="content">
-	<h2><spring:message code="label.adminpage.updateClient" /></h2>
-	<form:form method="post" commandName="client" action="updateClient" accept-charset="UTF-8">
-  	<table>
+	<h2><spring:message code="label.adminpage.updateMachine" /></h2>
+	<form:form method="post" commandName="machine" action="updateMachine" accept-charset="UTF-8">
+  	<table>  		
   		<tr>
-  			<td><label for="clientNameInput">
-  				<spring:message code="label.adminpage.clients.name" />
+  			<td><label for="machineSerialNumberInput">
+  				<spring:message code="label.adminpage.addNewMachine.sn" />
+  				</label></td>
+  			<td>
+  				<input value="${machineCurrent.machineSerialNumber}" maxlength="32" 
+  					size="32" readonly="readonly" disabled="disabled"/>
+  			</td>
+  			<td><form:input path="machineSerialNumber" id="machineSerialNumberInput"
+  					size="32" maxlength="32" /></td>
+  			<td><form:errors path="machineSerialNumber" cssClass="error" /></td>
+  		</tr>
+  		<tr>  		
+  			<td><label for="machineYearInput">
+  			<spring:message code="label.adminpage.addNewMachine.year" />
   			</label></td>
   			<td>
-  				<input value="${clientCurrent.clientName}"	maxlength="50" size="50"
+  				<input value="${machineCurrent.machineYear}"	maxlength="4" size="4"
   					readonly="readonly" disabled="disabled"/>
   			</td>
-  			<td><form:input path="clientName" id="clientNameInput" maxlength="50" size="50"/></td>
-  			<td><form:errors path="clientName" cssClass="error" /></td>  			
-  		</tr>  		
-  		<tr>  		
-  			<td><button>
-  				<spring:message code="label.adminpage.buttonUpdate" />
-  			</button></td>
+  			<td><form:input size="4" minlength="4" maxlength="4"
+  				 path="machineYear" id="machineYearInput"/></td>
+  			<td><form:errors path="machineYear" cssClass="error" /></td>  			
+		</tr>
+		<tr>
+  			<td><label for="machineTimesRepairedInput">
+  			<spring:message code="label.adminpage.addNewMachine.timesRepaired" />
+  			</label></td>
+  			<td>
+  				<input value="${machineCurrent.machineTimesRepaired}"	maxlength="3" size="3"
+  					readonly="readonly" disabled="disabled"/>
+  			</td>
+  			<td><form:input size="3" maxlength="3"
+  				 path="machineTimesRepaired" id="machineTimesRepairedInput"/></td>
+  			<td><form:errors path="machineTimesRepaired" cssClass="error" /></td>  		
+  		</tr>
+  		<tr>
+  			<td><button><spring:message code="label.adminpage.buttonUpdate" />
+  				</button></td>
   		</tr>
   	</table>
   	</form:form>
   	<div class="success">
-  		<c:out value="${message_client_updated}"/>
+  		<c:out value="${message_machine_updated}"/>
   	</div>
 	<div class="error">
-  		<c:out value="${message_client_not_updated}"/>
+  		<c:out value="${message_machine_not_updated}"/>
   	</div>
   	<div class="info">
-  		<c:out value="${message_client_no_changes}"/>
+  		<c:out value="${message_machine_no_changes}"/>
   	</div>
 	</div>
 	</div>

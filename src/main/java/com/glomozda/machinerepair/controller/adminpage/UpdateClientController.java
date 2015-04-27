@@ -67,8 +67,14 @@ public class UpdateClientController implements MessageSourceAware {
 		}
 		
 		myClient = clientSvc.getClientById(clientId);
-				
-		model.addAttribute("client", myClient);
+		
+		if (!model.containsAttribute("clientCurrent")) {
+			model.addAttribute("clientCurrent", myClient);
+		}
+		
+		if (!model.containsAttribute("client")) {
+			model.addAttribute("client", myClient);
+		}
 		
 		model.addAttribute("message_client_not_updated",
 				messageClientUpdateFailed);

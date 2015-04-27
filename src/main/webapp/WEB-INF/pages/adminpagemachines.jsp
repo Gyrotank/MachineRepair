@@ -144,11 +144,10 @@
     	<td>${m.machineYear}</td>
     	<td>${m.machineTimesRepaired}</td>
     	<td>
-    		<a href="<c:url value="edit/?machine_id=${m.machineId}"/>" 
-    			onclick="editMachine()">
+    		<a href="<c:url value="/updatemachine/?machine-id=${m.machineId}"/>">
   				<img src="resources/images/edit.png" width="24"></a>
-			<a href="<c:url value="delete/?machine_id=${m.machineId}"/>" 
-    			onclick="editMachine()">
+			<a href="<c:url value="/deletemachine/?machine-id=${m.machineId}"/>" 
+    			onclick="return confirm('${dialog_delete_machine}')">
   				<img src="resources/images/delete.png" width="24"></a>
     	</td>
     </tr>

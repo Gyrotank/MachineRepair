@@ -49,4 +49,11 @@ public class MachineServiceableService {
 	public Boolean add(MachineServiceable ms) {
 		return machineServiceableRepository.add(ms);
 	}
+	
+	@Transactional
+	public Integer updateMachineServiceableById(Long machineServiceableId,
+			MachineServiceable machineServiceable) {
+		return machineServiceableRepository.updateMachineServiceableById(machineServiceableId,
+				machineServiceable);
+	}
 }

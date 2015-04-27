@@ -3,9 +3,8 @@ package com.glomozda.machinerepair.repository.machineserviceable;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,15 +52,7 @@ public class MachineServiceableRepository {
 	
 	@Transactional
 	public MachineServiceable getMachineServiceableById(Long machineServiceableId) {
-		MachineServiceable result = null;	  
-		TypedQuery<MachineServiceable> query = em.createNamedQuery(
-				"MachineServiceable.findMachineServiceableById", MachineServiceable.class);
-		query.setParameter("id", machineServiceableId);	  
-		try {
-			result = query.getSingleResult();
-		} catch (NoResultException nre){}
-		
-		return result;
+		return em.find(MachineServiceable.class, machineServiceableId);
 	}
 	
 	@Transactional
@@ -77,6 +68,19 @@ public class MachineServiceableRepository {
 		} else {
 			return false;
 		}
+	}
+	
+	@Transactional
+	public Integer updateMachineServiceableById(Long machineServiceableId,
+			MachineServiceable machineServiceable) {
+		Query query = em.createNamedQuery("MachineServiceable.updateMachineServiceableById");
+		query.setParameter("id", machineServiceableId);
+		query.setParameter("name", machineServiceable.getMachineServiceableName());
+		query.setParameter("trademark", machineServiceable.getMachineServiceableTrademark());
+		query.setParameter("country", machineServiceable.getMachineServiceableCountry());
+		query.setParameter("country_ru", machineServiceable.getMachineServiceableCountryRu());
+		int updateCount = query.executeUpdate();
+		return updateCount;
 	}
 
 }

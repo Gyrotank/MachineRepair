@@ -91,6 +91,10 @@ public class AdminPageMachinesController implements MessageSourceAware {
 		selectedMachineServiceableId = (long) 0;
 		model.addAttribute("machines_serviceable", machineServiceableSvc.getAllOrderByName());
 		
+		model.addAttribute("dialog_delete_machine",
+				messageSource.getMessage("label.adminpage.machines.actions.delete.dialog", null,
+				locale));
+		
 		return "adminpagemachines";
 	}
 	
@@ -177,6 +181,22 @@ public class AdminPageMachinesController implements MessageSourceAware {
 					messageSource.getMessage("popup.adminpage.machineNotAdded", null,
 							locale);
 		}
+		return "redirect:/adminpagemachines";
+	}
+	
+	@RequestMapping(value = "/deletemachine", method = RequestMethod.GET)
+	public String deleteMachine(@RequestParam("machine-id") final Long machineId,
+			final Locale locale) {
+		
+//		if (clientSvc.add(client, userId)) {
+//			messageClientAdded =
+//					messageSource.getMessage("popup.adminpage.clientAdded", null,
+//							locale);
+//		} else {
+//			messageClientNotAdded = 
+//					messageSource.getMessage("popup.adminpage.clientNotAdded", null,
+//							locale);
+//		}		
 		return "redirect:/adminpagemachines";
 	}
 }

@@ -59,4 +59,14 @@ public class MachineService {
 	public Long getMachineCount() {
 		return machineRepository.getMachineCount();
 	}
+	
+	@Transactional
+	public Machine getMachineById(Long machineId) {
+		return machineRepository.getMachineById(machineId);
+	}
+	
+	@Transactional
+	public Integer updateMachineById(Long machineId, Machine machine) {
+		return machineRepository.updateMachineById(machineId, machine);
+	}
 }

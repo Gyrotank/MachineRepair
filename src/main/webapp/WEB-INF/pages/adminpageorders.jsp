@@ -185,7 +185,7 @@
   				<c:when test="${o.status == 'finished' && locale == 'ru'}">
   					<c:out value="завершен"/>
   				</c:when>
-  				</c:choose>
+  			</c:choose>
     			<c:choose>
   				<c:when test="${o.status == 'pending' && locale == 'en'}">
 	  				<c:out value="pending"/>
@@ -203,11 +203,10 @@
     	</td>
     	<td>${o.manager}</td>
     	<td>
-    		<a href="<c:url value="edit/?order_id=${o.orderId}"/>" 
-    			onclick="editOrder()">
+    		<a href="<c:url value="updateorder/?order-id=${o.orderId}"/>">
   				<img src="resources/images/edit.png" width="24"></a>
-			<a href="<c:url value="delete/?machine_id=${o.orderId}"/>" 
-    			onclick="editOrder()">
+			<a href="<c:url value="deleteorder/?order-id=${o.orderId}"/>" 
+    			onclick="return confirm('${dialog_delete_order}')">
   				<img src="resources/images/delete.png" width="24"></a>
     	</td>
     </tr>

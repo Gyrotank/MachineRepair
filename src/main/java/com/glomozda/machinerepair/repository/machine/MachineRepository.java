@@ -110,5 +110,20 @@ public class MachineRepository {
 	public Long getMachineCount() {
 		return em.createNamedQuery("Machine.countAll", Long.class).getSingleResult();
 	}
-
+	
+	@Transactional
+	public Machine getMachineById(Long machineId) {
+		return em.find(Machine.class, machineId);
+	}
+	
+	@Transactional
+	public Integer updateMachineById(Long machineId, Machine machine) {
+		Query query = em.createNamedQuery("Machine.updateMachineById");
+		query.setParameter("id", machineId);
+		query.setParameter("msn", machine.getMachineSerialNumber());
+		query.setParameter("year", machine.getMachineYear());
+		query.setParameter("times_repaired", machine.getMachineTimesRepaired());
+		int updateCount = query.executeUpdate();
+		return updateCount;
+	}
 }

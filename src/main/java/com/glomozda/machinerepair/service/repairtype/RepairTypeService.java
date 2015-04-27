@@ -39,4 +39,9 @@ public class RepairTypeService {
 	public Boolean add(RepairType rt) {
 		return repairTypeRepository.add(rt);
 	}
+	
+	@Transactional
+	public RepairType getRepairTypeById(Long repairTypeId) {
+		return repairTypeRepository.getRepairTypeById(repairTypeId);
+	}
 }

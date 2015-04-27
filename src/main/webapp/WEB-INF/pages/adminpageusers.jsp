@@ -128,9 +128,7 @@
 	<thead>
 	<tr><th align="center" data-sortable="true"></th>
 	<th align="center" data-sortable="true">
-		<spring:message code="label.adminpage.users.login" /></th>
-	<th align="center" data-sortable="true">
-		<spring:message code="label.adminpage.users.password" /></th>
+		<spring:message code="label.adminpage.users.login" /></th>	
 	<th align="center">
 		<spring:message code="label.adminpage.users.actions" /></th></tr>
 	</thead>
@@ -160,19 +158,7 @@
   				${u.login}
   			</c:otherwise>
 			</c:choose>    		
-    	</td> 
-    	<td>
-    		<c:choose>
-  			<c:when test="${u.enabled == 0}">
-  				<div class="disabled">
-					${u.password}
-				</div>
-  			</c:when>
-  			<c:otherwise>
-  				${u.password}
-  			</c:otherwise>
-			</c:choose>    		
-    	</td>
+    	</td>    	
     	<td>
     		<c:choose>
   			<c:when test="${u.enabled == 0}">

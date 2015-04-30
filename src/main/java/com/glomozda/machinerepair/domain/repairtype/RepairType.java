@@ -28,7 +28,13 @@ import com.glomozda.machinerepair.domain.order.Order;
 		query="SELECT rt FROM RepairType rt "
 			+ "WHERE rt.repairTypeName = :rtn"),
 	@NamedQuery(name="RepairType.countAll", query="SELECT COUNT(rt) "
-					+ "FROM RepairType rt")
+					+ "FROM RepairType rt"),
+	@NamedQuery(name="RepairType.updateRepairTypeById", query="UPDATE RepairType rt "
+			+ "SET rt.repairTypeName = :name, "
+			+ "rt.repairTypeNameRu = :name_ru, "
+			+ "rt.repairTypePrice = :price, "
+			+ "rt.repairTypeDuration = :duration "
+			+ "WHERE rt.repairTypeId = :id")
 })
 @Entity
 @Table(name = "repair_types")

@@ -44,4 +44,9 @@ public class RepairTypeService {
 	public RepairType getRepairTypeById(Long repairTypeId) {
 		return repairTypeRepository.getRepairTypeById(repairTypeId);
 	}
+	
+	@Transactional
+	public Integer updateRepairTypeById(Long repairTypeId, RepairType repairType) {
+		return repairTypeRepository.updateRepairTypeById(repairTypeId, repairType);
+	}
 }

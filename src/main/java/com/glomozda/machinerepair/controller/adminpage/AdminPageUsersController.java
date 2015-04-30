@@ -97,7 +97,7 @@ public class AdminPageUsersController implements MessageSourceAware {
 		messageUserAdded = "";
 		model.addAttribute("message_user_not_added",
 				messageUserNotAdded);
-		messageUserNotAdded = "";		
+		messageUserNotAdded = "";
 				
 		return "adminpageusers";
 	}

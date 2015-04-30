@@ -163,7 +163,7 @@ public class AdminPageMachinesServiceableController implements
 	}
 	
 	@RequestMapping(value = "/deletemachineserviceable", method = RequestMethod.GET)
-	public String deleteMachine(
+	public String deleteMachineServiceable(
 			@RequestParam("machine-serviceable-id") final Long machineServiceableId,
 			final Locale locale) {
 		

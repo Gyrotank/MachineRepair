@@ -31,7 +31,7 @@ import com.glomozda.machinerepair.service.userauthorization.UserAuthorizationSer
 @Controller
 public class UpdateOrderController implements MessageSourceAware {
 
-static Logger log = Logger.getLogger(UpdateMachineServiceableController.class.getName());
+	static Logger log = Logger.getLogger(UpdateOrderController.class.getName());
 	
 	@Autowired
 	private OrderService orderSvc;
@@ -114,12 +114,7 @@ static Logger log = Logger.getLogger(UpdateMachineServiceableController.class.ge
 		messageOrderUpdateSucceeded = "";
 		model.addAttribute("message_order_no_changes",
 				messageOrderNoChanges);
-		messageOrderNoChanges = "";
-		
-		model.addAttribute("dialog_delete_order",
-				messageSource.getMessage(
-						"label.adminpage.orders.actions.delete.dialog", null,
-				locale));
+		messageOrderNoChanges = "";		
 		
 		return "updateorder";
 	}

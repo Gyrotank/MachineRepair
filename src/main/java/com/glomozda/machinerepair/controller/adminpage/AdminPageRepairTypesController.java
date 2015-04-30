@@ -80,7 +80,12 @@ public class AdminPageRepairTypesController implements MessageSourceAware {
 		messageRepairTypeAdded = "";
 		model.addAttribute("message_repair_type_not_added",
 				messageRepairTypeNotAdded);
-		messageRepairTypeNotAdded = "";		
+		messageRepairTypeNotAdded = "";
+		
+		model.addAttribute("dialog_delete_repair_type",
+				messageSource.getMessage(
+						"label.adminpage.repairTypes.actions.delete.dialog", null,
+				locale));
 				
 		return "adminpagerepairtypes";
 	}
@@ -154,6 +159,23 @@ public class AdminPageRepairTypesController implements MessageSourceAware {
 					messageSource.getMessage("popup.adminpage.repairTypeNotAdded", null,
 							locale);
 		}		
+		return "redirect:/adminpagerepairtypes";
+	}
+	
+	@RequestMapping(value = "/deleterepairtype", method = RequestMethod.GET)
+	public String deleteRepairType(
+			@RequestParam("repair-type-id") final Long repairTypeId,
+			final Locale locale) {
+		
+//		if (clientSvc.add(client, userId)) {
+//			messageClientAdded =
+//					messageSource.getMessage("popup.adminpage.clientAdded", null,
+//							locale);
+//		} else {
+//			messageClientNotAdded = 
+//					messageSource.getMessage("popup.adminpage.clientNotAdded", null,
+//							locale);
+//		}		
 		return "redirect:/adminpagerepairtypes";
 	}
 }

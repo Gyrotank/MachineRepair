@@ -41,24 +41,24 @@
 	<div id="sidebar">
 		<c:choose>
   			<c:when test="${locale == 'en'}">
-  				<a href="?locale=en&amp;machine-serviceable-id=${machineServiceable.machineServiceableId}">
+  				<a href="?locale=en&amp;order-id=${order.orderId}">
   				<img src="${pageContext.servletContext.contextPath}/resources/images/usa.png" 
   					width="40"></a>
   			</c:when>
   			<c:otherwise>
-  				<a href="?locale=en&amp;machine-serviceable-id=${machineServiceable.machineServiceableId}">
+  				<a href="?locale=en&amp;order-id=${order.orderId}">
   				<img src="${pageContext.servletContext.contextPath}/resources/images/usa.png" 
   					width="32"></a>
   			</c:otherwise>
 		</c:choose>
 		<c:choose>
   			<c:when test="${locale == 'ru'}">
-  				<a href="?locale=ru&amp;machine-serviceable-id=${machineServiceable.machineServiceableId}">
+  				<a href="?locale=ru&amp;order-id=${order.orderId}">
   				<img src="${pageContext.servletContext.contextPath}/resources/images/rus.png" 
   					width="40"></a>
   			</c:when>
   			<c:otherwise>
-  				<a href="?locale=ru&amp;machine-serviceable-id=${machineServiceable.machineServiceableId}">
+  				<a href="?locale=ru&amp;order-id=${order.orderId}">
   				<img src="${pageContext.servletContext.contextPath}/resources/images/rus.png" 
   					width="32"></a>
   			</c:otherwise>

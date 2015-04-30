@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
@@ -65,6 +66,18 @@ public class RepairTypeRepository {
 	@Transactional
 	public RepairType getRepairTypeById(Long repairTypeId) {
 		return em.find(RepairType.class, repairTypeId);
+	}
+	
+	@Transactional
+	public Integer updateRepairTypeById(Long repairTypeId, RepairType repairType) {
+		Query query = em.createNamedQuery("RepairType.updateRepairTypeById");
+		query.setParameter("id", repairTypeId);
+		query.setParameter("name", repairType.getRepairTypeName());
+		query.setParameter("name_ru", repairType.getRepairTypeNameRu());
+		query.setParameter("price", repairType.getRepairTypePrice());
+		query.setParameter("duration", repairType.getRepairTypeDuration());
+		int updateCount = query.executeUpdate();
+		return updateCount;
 	}
 
 }

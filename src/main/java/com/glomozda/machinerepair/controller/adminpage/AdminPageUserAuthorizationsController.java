@@ -121,6 +121,11 @@ public class AdminPageUserAuthorizationsController implements MessageSourceAware
 		model.addAttribute("selected_user_authorization_user_id", selectedUserAuthorizationUserId);
 		selectedUserAuthorizationUserId = (long) 0;
 		
+		model.addAttribute("dialog_delete_user_authorization",
+				messageSource.getMessage(
+						"label.adminpage.userAuthorizations.actions.delete.dialog", null,
+				locale));
+		
 		return "adminpageuserauthorizations";
 	}
 	

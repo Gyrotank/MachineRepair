@@ -123,7 +123,7 @@
   	<table data-toggle="table" 
 		data-classes="table table-hover table-condensed" 
     	data-striped="true"    	
-    	data-search="true"    	
+    	data-pagination="true"    	
 		border="1" style="width:900px" align="center">
 	<thead>
 	<tr><th align="center"></th>

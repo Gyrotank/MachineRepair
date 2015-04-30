@@ -157,11 +157,10 @@
     	<td>${rt.repairTypePrice}</td>
     	<td>${rt.repairTypeDuration}</td>
     	<td>
-    		<a href="<c:url value="edit/?repair_type_id=${rt.repairTypeId}"/>" 
-    			onclick="editRepairType()">
+    		<a href="<c:url value="updaterepairtype/?repair-type-id=${rt.repairTypeId}"/>">
   				<img src="resources/images/edit.png" width="24"></a>
-			<a href="<c:url value="delete/?repair_type_id=${rt.repairTypeId}"/>" 
-    			onclick="editRepairType()">
+			<a href="<c:url value="deleterepairtype/?repair-type-id=${rt.repairTypeId}"/>" 
+    			onclick="return confirm('${dialog_delete_repair_type}')">
   				<img src="resources/images/delete.png" width="24"></a>
     	</td>
     </tr>

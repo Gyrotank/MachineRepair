@@ -35,8 +35,8 @@ public class MachineDAOJDBCTest extends DAOTestsTemplate{
         jdbcTemplate.execute("ALTER TABLE Machines_Serviceable "
         		+ "ALTER COLUMN machines_serviceable_id RESTART WITH 1");        
         
-        machineServiceableService.add(new MachineServiceable("M-S-1", "TM-1", "UK", "ÂÁ"));
-        machineServiceableService.add(new MachineServiceable("M-S-2", "TM-2", "USA", "ÑØÀ"));
+        machineServiceableService.add(new MachineServiceable("M-S-1", "TM-1", "UK", "ï¿½ï¿½"));
+        machineServiceableService.add(new MachineServiceable("M-S-2", "TM-2", "USA", "ï¿½ï¿½ï¿½"));
         
         machineService.add(m1, (long) 1);
         machineService.add(m2, (long) 2);
@@ -89,5 +89,11 @@ public class MachineDAOJDBCTest extends DAOTestsTemplate{
     @Test
     public void testGetMachineCount() {
     	Assert.assertTrue(machineService.getMachineCount() == 2);
+    }
+    
+    @Test
+    public void testGetMachineById() {
+    	final Machine actualResult = machineService.getMachineById((long) 1);
+    	Assert.assertEquals(m1, actualResult);
     }
 }

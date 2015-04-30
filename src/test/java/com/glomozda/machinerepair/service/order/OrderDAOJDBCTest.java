@@ -296,6 +296,16 @@ public class OrderDAOJDBCTest extends DAOTestsTemplate{
     }
     
     @Test
+    public void testGetCurrentOrdersForClientIdWithFetching() {
+    	Assert.assertTrue(orderService
+    			.getCurrentOrdersForClientIdWithFetching((long) 2)
+    			.size() == 1);    	
+    	Assert.assertTrue(orderService
+    			.getCurrentOrdersForClientIdWithFetching((long) 2)
+    			.get(0).getMachine().getMachineId().intValue() == 2);
+    }
+    
+    @Test
     @Ignore
     public void testConfirmOrderById() {    	
         orderService.confirmOrderById((long) 2, "Some Manager");        

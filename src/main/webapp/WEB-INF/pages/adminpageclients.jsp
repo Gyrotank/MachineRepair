@@ -119,21 +119,21 @@
   		</tr>  		
   		</table>
   	</form>
+  	<br>
   	<table data-toggle="table" 
 		data-classes="table table-hover table-condensed" 
     	data-striped="true"
-    	data-pagination="true"
-    	data-search="true"
+    	data-pagination="true"    	
 		border="1" style="width:900px" align="center">
 	<thead>
-	<tr><th align="center" data-sortable="true"></th>
-	<th align="center" data-sortable="true">
+	<tr><th align="center"></th>
+	<th align="center">
 		<spring:message code="label.adminpage.clients.name" />
 	</th>
-	<th align="center" data-sortable="true">
+	<th align="center">
 		<spring:message code="label.adminpage.clients.login" />
 	</th>
-	<th align="center" data-sortable="false">
+	<th align="center">
 		<spring:message code="label.adminpage.clients.actions" />
 	</th></tr>
 	</thead>

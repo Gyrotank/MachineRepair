@@ -105,4 +105,10 @@ public class ClientDAOJDBCTest extends DAOTestsTemplate{
     public void testGetClientCount() {
     	Assert.assertTrue(clientService.getClientCount() == 2);
     }
+    
+    @Test
+    public void testGetClientById() {
+    	final Client actualResult = clientService.getClientById((long) 1);
+        Assert.assertEquals(cl1, actualResult);
+    }
 }

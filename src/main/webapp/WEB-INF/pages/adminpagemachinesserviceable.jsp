@@ -117,19 +117,19 @@
   		</tr>  		
   		</table>
   	</form>
+  	<br>
   	<table border="1" data-toggle="table" 
 		data-classes="table table-hover table-condensed" 
     	data-striped="true"
-    	data-pagination="true"
-		data-search="true"
+    	data-pagination="true"		
 		border="1" style="width:900px" align="center">
 	<thead>
-	<tr><th align="center" data-sortable="true"></th>
-	<th align="center" data-sortable="true">
+	<tr><th align="center"></th>
+	<th align="center">
 		<spring:message code="label.adminpage.serviceableMachines.name" /></th>
-	<th align="center" data-sortable="true">
+	<th align="center">
 		<spring:message code="label.adminpage.serviceableMachines.trademark" /></th>
-	<th align="center" data-sortable="true">
+	<th align="center">
 		<spring:message code="label.adminpage.serviceableMachines.country" /></th>
 	<th align="center" data-sortable="false">
 		<spring:message code="label.adminpage.serviceableMachines.actions" />

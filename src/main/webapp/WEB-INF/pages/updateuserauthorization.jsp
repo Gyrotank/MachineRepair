@@ -22,6 +22,7 @@
 <script src="<c:url value="/resources/js/bootstrap.min.js" />"></script>
 <script src="<c:url value="/resources/js/bootstrap-table.js" />"></script>
 <script src="<c:url value="/resources/js/adminpage-edit-scripts.js" />"></script>
+
 <c:choose>
   	<c:when test="${locale == 'ru'}">
   		<script src="<c:url value="/resources/js/bootstrap-table-ru-RU.js" />"></script>
@@ -40,24 +41,24 @@
 	<div id="sidebar">
 		<c:choose>
   			<c:when test="${locale == 'en'}">
-  				<a href="?locale=en&amp;machine-id=${machine.machineId}">
+  				<a href="?locale=en&amp;user-authorization-id=${userAuthorizationDTO.userAuthorizationId}">
   				<img src="${pageContext.servletContext.contextPath}/resources/images/usa.png" 
   					width="40"></a>
   			</c:when>
   			<c:otherwise>
-  				<a href="?locale=en&amp;machine-id=${machine.machineId}">
+  				<a href="?locale=en&amp;user-authorization-id=${userAuthorizationDTO.userAuthorizationId}">
   				<img src="${pageContext.servletContext.contextPath}/resources/images/usa.png" 
   					width="32"></a>
   			</c:otherwise>
 		</c:choose>
 		<c:choose>
   			<c:when test="${locale == 'ru'}">
-  				<a href="?locale=ru&amp;machine-id=${machine.machineId}">
+  				<a href="?locale=ru&amp;user-authorization-id=${userAuthorizationDTO.userAuthorizationId}">
   				<img src="${pageContext.servletContext.contextPath}/resources/images/rus.png" 
   					width="40"></a>
   			</c:when>
   			<c:otherwise>
-  				<a href="?locale=ru&amp;machine-id=${machine.machineId}">
+  				<a href="?locale=ru&amp;user-authorization-id=${userAuthorizationDTO.userAuthorizationId}">
   				<img src="${pageContext.servletContext.contextPath}/resources/images/rus.png" 
   					width="32"></a>
   			</c:otherwise>
@@ -95,69 +96,113 @@
 	<div id="content">
 	<div class="tabs-content">
 	<div class="content">
-	<h2><spring:message code="label.adminpage.updateMachine" /></h2>
-	<form:form method="post" commandName="machine" action="updateMachine" accept-charset="UTF-8">
-  	<table>
-  		<tr>
-  			<td><label for="machineSerialNumberInput">
-  				<spring:message code="label.adminpage.machines.name" />
-  				</label>
+	<h2><spring:message code="label.adminpage.updateUserAuthorization"/> ${userAuthorizationDTOCurrent.user.login}</h2>
+	<form:form method="post" commandName="userAuthorizationDTO" 
+  		action="updateUserAuthorization" accept-charset="UTF-8">
+  	<table data-toggle="table" 
+		data-classes="table table-hover table-condensed"
+		data-striped="true"    	    	
+		border="1" style="width:600px" align="center">
+  	<thead>
+  		<tr>  		
+		<c:forEach var="ur" items="${userRoles}" varStatus="loopStatus">
+		<th data-align="center" data-width="200">
+			<c:choose>
+  				<c:when test="${locale == 'ru'}">
+  					<c:out value="${ur.descRu}"/>
+  				</c:when>
+  				<c:otherwise>
+  					<c:out value="${ur.descEn}"/>
+  				</c:otherwise>  				
+  			</c:choose>
+  		</th>
+		</c:forEach>
+		</tr>			
+  	</thead>
+  	<tbody>
+  		<tr>  			
+  			<td>
+  				<c:choose>
+  				<c:when test="${userAuthorizationDTOCurrent.isAdmin}">
+  					<input type="checkbox" checked readonly="readonly" disabled="disabled">
+  				</c:when>
+  				<c:otherwise>
+  					<input type="checkbox" readonly="readonly" disabled="disabled">
+  				</c:otherwise>  				
+  				</c:choose>  				
   			</td>
   			<td>
-  				<input value="${machineCurrent.machineServiceable.machineServiceableName}" 
-  					maxlength="32" size="32" readonly="readonly" disabled="disabled"/>
+  				<c:choose>
+  				<c:when test="${userAuthorizationDTOCurrent.isClient}">
+  					<input type="checkbox" checked readonly="readonly" disabled="disabled">
+  				</c:when>
+  				<c:otherwise>
+  					<input type="checkbox" readonly="readonly" disabled="disabled">
+  				</c:otherwise>  				
+  				</c:choose>  				
+  			</td>
+  			<td>
+  				<c:choose>
+  				<c:when test="${userAuthorizationDTOCurrent.isManager}">
+  					<input type="checkbox" checked readonly="readonly" disabled="disabled">
+  				</c:when>
+  				<c:otherwise>
+  					<input type="checkbox" readonly="readonly" disabled="disabled">
+  				</c:otherwise>  				
+  				</c:choose>
   			</td>
   		</tr>  		
   		<tr>
-  			<td><label for="machineSerialNumberInput">
-  				<spring:message code="label.adminpage.addNewMachine.sn" />
-  				</label></td>
   			<td>
-  				<input value="${machineCurrent.machineSerialNumber}" maxlength="32" 
-  					size="32" readonly="readonly" disabled="disabled"/>
+  				<c:choose>
+  				<c:when test="${userAuthorizationDTOCurrent.isOnlyAdmin}">
+  					<form:checkbox path="isAdmin" id="isAdminInput" 
+  						disabled="true" checked="true"/>
+  				</c:when>
+  				<c:when test="${userAuthorizationDTOCurrent.isAdmin 
+  					&& !userAuthorizationDTOCurrent.isOnlyAdmin}">
+  					<form:checkbox path="isAdmin" id="isAdminInput" checked="true"/>
+  				</c:when>
+  				<c:otherwise>
+  					<form:checkbox path="isAdmin" id="isAdminInput"/>
+  				</c:otherwise>
+  				</c:choose>
   			</td>
-  			<td><form:input path="machineSerialNumber" id="machineSerialNumberInput"
-  					size="32" maxlength="32" /></td>
-  			<td><form:errors path="machineSerialNumber" cssClass="error" /></td>
-  		</tr>
-  		<tr>  		
-  			<td><label for="machineYearInput">
-  			<spring:message code="label.adminpage.addNewMachine.year" />
-  			</label></td>
   			<td>
-  				<input value="${machineCurrent.machineYear}"	maxlength="4" size="4"
-  					readonly="readonly" disabled="disabled"/>
+  				<c:choose>
+  				<c:when test="${userAuthorizationDTOCurrent.isClient}">
+  					<form:checkbox path="isClient" id="isClientInput" checked="true"/>
+  				</c:when>
+  				<c:otherwise>
+  					<form:checkbox path="isClient" id="isClientInput"/>
+  				</c:otherwise>
+  				</c:choose>
   			</td>
-  			<td><form:input size="4" minlength="4" maxlength="4"
-  				 path="machineYear" id="machineYearInput"/></td>
-  			<td><form:errors path="machineYear" cssClass="error" /></td>  			
-		</tr>
-		<tr>
-  			<td><label for="machineTimesRepairedInput">
-  			<spring:message code="label.adminpage.addNewMachine.timesRepaired" />
-  			</label></td>
   			<td>
-  				<input value="${machineCurrent.machineTimesRepaired}"	maxlength="3" size="3"
-  					readonly="readonly" disabled="disabled"/>
+  				<c:choose>
+  				<c:when test="${userAuthorizationDTOCurrent.isManager}">
+  					<form:checkbox path="isManager" id="isManagerInput" checked="true"/>
+  				</c:when>
+  				<c:otherwise>
+  					<form:checkbox path="isManager" id="isManagerInput"/>
+  				</c:otherwise>
+  				</c:choose>
   			</td>
-  			<td><form:input size="3" maxlength="3"
-  				 path="machineTimesRepaired" id="machineTimesRepairedInput"/></td>
-  			<td><form:errors path="machineTimesRepaired" cssClass="error" /></td>  		
-  		</tr>
-  		<tr>
-  			<td><button><spring:message code="label.adminpage.buttonUpdate" />
-  				</button></td>
-  		</tr>
+  		</tr>  		 		
+  	</tbody>
   	</table>
+  	<p align="center">
+  		<button><spring:message code="label.adminpage.buttonUpdate" /></button>
+  	</p>
   	</form:form>
   	<div class="success">
-  		<c:out value="${message_machine_updated}"/>
+  		<c:out value="${message_user_authorization_updated}"/>
   	</div>
 	<div class="error">
-  		<c:out value="${message_machine_not_updated}"/>
+  		<c:out value="${message_user_authorization_not_updated}"/>
   	</div>
   	<div class="info">
-  		<c:out value="${message_machine_no_changes}"/>
+  		<c:out value="${message_user_authorization_no_changes}"/>
   	</div>
 	</div>
 	</div>

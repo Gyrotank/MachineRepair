@@ -148,12 +148,12 @@
   			</c:choose>    		
     	</td>
     	<td>
-    		<a href="<c:url value="edit/?user_authorization_id=${ua.userAuthorizationId}"/>" 
-    			onclick="editUserAuthorization()">
+    		<a href="<c:url 
+    			value="updateuserauthorization/?user-authorization-id=${ua.userAuthorizationId}"/>">
   				<img src="resources/images/edit.png" width="24"></a>
-			<a href="<c:url value="delete/?user_authorization_id=${ua.userAuthorizationId}"/>" 
-    			onclick="editUserAuthorization()">
-  				<img src="resources/images/delete.png" width="24"></a>
+<%-- 			<a href="<c:url value="delete/?user-authorization-id=${ua.userAuthorizationId}"/>"  --%>
+<%--     			onclick="return confirm('${dialog_delete_user_authorization}')"> --%>
+<!--   				<img src="resources/images/delete.png" width="24"></a> -->
     	</td>
     </tr>
   	</c:forEach>

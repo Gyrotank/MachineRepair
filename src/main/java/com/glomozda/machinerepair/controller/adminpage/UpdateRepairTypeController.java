@@ -53,6 +53,10 @@ public class UpdateRepairTypeController implements MessageSourceAware {
 	public String activate(final Locale locale, final Principal principal, final Model model, 
 			@RequestParam("repair-type-id") final Long repairTypeId) {
 		
+		if (null == principal) {
+			return "redirect:/index";
+		}
+		
 		myUser = userSvc.getUserByLogin(principal.getName());
 		if (null == myUser) {
 			return "redirect:/index";

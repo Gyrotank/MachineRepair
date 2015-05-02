@@ -78,6 +78,13 @@ public class MachineDAOJDBCTest extends DAOTestsTemplate{
     }
     
     @Test
+    public void testGetMachineByIdWithFetching() {    	
+    	final Machine actualResult = machineService.getMachineByIdWithFetching((long) 1);
+        Assert.assertTrue(actualResult.getMachineServiceable()
+        		.getMachineServiceableName().contentEquals("M-S-1"));
+    }
+    
+    @Test
     @Ignore
     public void testIncrementTimesRepairedById() {    	
         machineService.incrementTimesRepairedById(machineService.

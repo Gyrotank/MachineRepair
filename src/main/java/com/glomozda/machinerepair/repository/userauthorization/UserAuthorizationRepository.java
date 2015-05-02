@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.hibernate.SQLQuery;
 import org.springframework.stereotype.Repository;
@@ -100,22 +101,52 @@ public class UserAuthorizationRepository {
 	
 	@Transactional
 	public List<String> getUserLoginsForRole(String role) {
-		List<UserAuthorization> queryResult = 
-				em.createNamedQuery("UserAuthorization.findUserAuthorizationForRole",
-						UserAuthorization.class)
-						.setParameter("role", role)
-						.getResultList();
-		
-		List<String> result = new ArrayList<String>();		
-		for (UserAuthorization ua : queryResult) {
-			result.add(ua.getUser().getLogin());
-		}
-		return result;		
+		return em.createNamedQuery("UserAuthorization.findUserLoginsForRole",
+					String.class)
+					.setParameter("role", role)
+					.getResultList();	
 	}
 	
 	@Transactional
 	public Long getUserAuthorizationCount() {
-		return em.createNamedQuery("UserAuthorization.countAll", Long.class).getSingleResult();
+		Long result = null;
+		try {
+			result = em.createNamedQuery("UserAuthorization.countAll", Long.class)
+						.getSingleResult();
+		} catch (NoResultException nre){}
+		return result;
+	}
+	
+	@Transactional
+	public Long getCountUserAuthorizationsForRole(String role) {
+		Long result = null;
+		try {
+			result = em.createNamedQuery("UserAuthorization.countUserAuthorizationsForRole",
+				Long.class)
+				.setParameter("role", role)
+				.getSingleResult();
+		} catch (NoResultException nre){}
+		return result;
+	}
+	
+	@Transactional
+	public List<UserRole> getRolesForUserId(Long userId) {
+		return em.createNamedQuery("UserAuthorization.findRolesForUserId",
+						UserRole.class)
+						.setParameter("id", userId)
+						.getResultList();		
+	}
+	
+	@Transactional
+	public User getUserForUserAuthorizationId(Long userAuthorizationId) {
+		User result = null;
+		try {
+			result = em.createNamedQuery("UserAuthorization.findUserForUserAuthorizationId",
+				User.class)
+				.setParameter("id", userAuthorizationId)
+				.getSingleResult();
+		} catch (NoResultException nre){}
+		return result;
 	}
 
 	@Transactional
@@ -133,5 +164,23 @@ public class UserAuthorizationRepository {
 		} else {
 			return false;
 		}
+	}
+	
+	@Transactional
+	public Integer deleteUserAuthorizationByUserIdAndRole(Long userId, String role) {
+		Query query = em.createNamedQuery(
+				"UserAuthorization.deleteUserAuthorizationByUserIdAndRole");
+		query.setParameter("id", userId);
+		query.setParameter("role", role);
+		int deletedCount = query.executeUpdate();
+		return deletedCount;
+	}
+	
+	@Transactional
+	public List<UserAuthorization> getUserAuthorizationsByUserId(Long userId) {
+		return em.createNamedQuery("UserAuthorization.findUserAuthorizationsByUserId",
+				UserAuthorization.class)
+				.setParameter("id", userId)
+				.getResultList();
 	}
 }

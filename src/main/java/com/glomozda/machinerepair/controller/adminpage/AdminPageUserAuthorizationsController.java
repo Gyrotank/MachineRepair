@@ -232,4 +232,21 @@ public class AdminPageUserAuthorizationsController implements MessageSourceAware
 		}		
 		return "redirect:/adminpageuserauthorizations";
 	}
+	
+	@RequestMapping(value = "/deleteuserauthorization", method = RequestMethod.GET)
+	public String deleteUserAuthorization(
+			@RequestParam("user-authorization-id") final Long userAuthorizationId,
+			final Locale locale) {
+		
+//		if (clientSvc.add(client, userId)) {
+//			messageClientAdded =
+//					messageSource.getMessage("popup.adminpage.clientAdded", null,
+//							locale);
+//		} else {
+//			messageClientNotAdded = 
+//					messageSource.getMessage("popup.adminpage.clientNotAdded", null,
+//							locale);
+//		}		
+		return "redirect:/adminpageuserauthorizations";
+	}
 }

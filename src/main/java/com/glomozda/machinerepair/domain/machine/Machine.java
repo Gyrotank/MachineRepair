@@ -31,6 +31,10 @@ import com.glomozda.machinerepair.domain.order.Order;
 			+ "ORDER BY m.machineServiceable.machineServiceableName"),
 	@NamedQuery(name="Machine.findMachineBySerialNumber", query="SELECT m FROM Machine m "
 			+ "WHERE m.machineSerialNumber = :msn"),
+	@NamedQuery(name="Machine.findMachineByIdWithFetching", 
+			query="SELECT m FROM Machine m "
+			+ "LEFT JOIN FETCH m.machineServiceable "
+			+ "WHERE m.machineId = :id"),
 	@NamedQuery(name="Machine.findMachineBySerialNumberWithFetching", 
 			query="SELECT m FROM Machine m "
 			+ "LEFT JOIN FETCH m.machineServiceable "

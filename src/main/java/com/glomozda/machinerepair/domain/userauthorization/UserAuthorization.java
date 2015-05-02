@@ -12,8 +12,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 import com.glomozda.machinerepair.domain.user.User;
 import com.glomozda.machinerepair.domain.userrole.UserRole;
 
@@ -26,7 +24,8 @@ import com.glomozda.machinerepair.domain.userrole.UserRole;
 			+ "LEFT JOIN FETCH ua.user "
 			+ "ORDER BY ua.user.login, ua.role.role"),
 	@NamedQuery(name="UserAuthorization.findAllRoles", query="SELECT DISTINCT (ua.role) "
-			+ "FROM UserAuthorization ua"),
+			+ "FROM UserAuthorization ua "
+			+ "ORDER BY ua.role.role"),
 	@NamedQuery(name="UserAuthorization.findUserAuthorizationForUserIdAndRole",
 		query="SELECT ua FROM UserAuthorization ua "
 			+ "LEFT JOIN FETCH ua.user "
@@ -35,8 +34,26 @@ import com.glomozda.machinerepair.domain.userrole.UserRole;
 		query="SELECT ua FROM UserAuthorization ua "
 			+ "LEFT JOIN FETCH ua.user "
 			+ "WHERE ua.role.role = :role"),
+	@NamedQuery(name="UserAuthorization.findUserLoginsForRole",
+		query="SELECT ua.user.login FROM UserAuthorization ua "			
+			+ "WHERE ua.role.role = :role"),
+	@NamedQuery(name="UserAuthorization.countUserAuthorizationsForRole",
+		query="SELECT COUNT (ua) FROM UserAuthorization ua "			
+			+ "WHERE ua.role.role = :role"),
+	@NamedQuery(name="UserAuthorization.findRolesForUserId",
+		query="SELECT ua.role FROM UserAuthorization ua "
+			+ "WHERE ua.user.userId = :id"),
+	@NamedQuery(name="UserAuthorization.findUserForUserAuthorizationId",
+		query="SELECT ua.user FROM UserAuthorization ua "
+			+ "WHERE ua.userAuthorizationId = :id"),
 	@NamedQuery(name="UserAuthorization.countAll", query="SELECT COUNT(ua) "
-			+ "FROM UserAuthorization ua")
+			+ "FROM UserAuthorization ua"),
+	@NamedQuery(name="UserAuthorization.deleteUserAuthorizationByUserIdAndRole", 
+		query="DELETE FROM UserAuthorization ua"
+			+ " WHERE ua.user.userId = :id AND ua.role.role = :role"),
+	@NamedQuery(name="UserAuthorization.findUserAuthorizationsByUserId",
+		query="SELECT ua FROM UserAuthorization ua"
+			+ " WHERE ua.user.userId = :id")
 })
 @Entity
 @Table(name = "user_authorization")
@@ -45,10 +62,6 @@ public class UserAuthorization {
 	@GeneratedValue
 	@Column(name = "user_authorization_id")
 	private Long userAuthorizationId;
-	
-//	@Column(name = "role")
-//	@NotEmpty
-//	private String role;
 	
 	@Embedded
 	private UserRole role;

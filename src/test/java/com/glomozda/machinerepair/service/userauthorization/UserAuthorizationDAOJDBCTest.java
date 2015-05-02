@@ -115,4 +115,38 @@ public class UserAuthorizationDAOJDBCTest extends DAOTestsTemplate{
     	Assert.assertTrue(userAuthorizationService
     			.getUserLoginsForRole("ROLE_ADMIN").get(0).contentEquals("ivan_user"));
     }
+    
+    @Test
+    public void testGetRolesForUserId() {
+    	userAuthorizationService.add(new UserAuthorization(new UserRole("ROLE_CLIENT")), (long) 1);
+    	Assert.assertTrue(userAuthorizationService
+    			.getRolesForUserId((long) 1).size() == 2);
+    	Assert.assertTrue(userAuthorizationService
+    			.getRolesForUserId((long) 2).size() == 1);    	
+    }
+    
+    @Test
+    public void testGetUserForUserAuthorizationId() {
+    	Assert.assertTrue(userAuthorizationService
+    			.getUserForUserAuthorizationId((long) 1)
+    			.getLogin().contentEquals("ivan_user"));
+    }
+    
+    @Test
+    public void testGetCountUserAuthorizationsForRole() {
+    	userAuthorizationService.add(new UserAuthorization(new UserRole("ROLE_CLIENT")), (long) 1);
+    	Assert.assertTrue(userAuthorizationService
+    			.getCountUserAuthorizationsForRole("ROLE_CLIENT") == 2);
+    	Assert.assertTrue(userAuthorizationService
+    			.getCountUserAuthorizationsForRole("ROLE_ADMIN") == 1);
+    }
+    
+    @Test
+    public void testGetUserAuthorizationsByUserId() {
+    	userAuthorizationService.add(new UserAuthorization(new UserRole("ROLE_CLIENT")), (long) 1);
+    	Assert.assertTrue(userAuthorizationService
+    			.getUserAuthorizationsByUserId((long) 1).size() == 2);
+    	Assert.assertTrue(userAuthorizationService
+    			.getUserAuthorizationsByUserId((long) 2).size() == 1);
+    }
 }

@@ -62,9 +62,34 @@ public class UserAuthorizationService {
 	public Long getUserAuthorizationCount() {
 		return userAuthorizationRepository.getUserAuthorizationCount();
 	}
+	
+	@Transactional
+	public Long getCountUserAuthorizationsForRole(String role) {
+		return userAuthorizationRepository.getCountUserAuthorizationsForRole(role);
+	}
+	
+	@Transactional
+	public List<UserRole> getRolesForUserId(Long userId) {
+		return userAuthorizationRepository.getRolesForUserId(userId);
+	}
+	
+	@Transactional
+	public User getUserForUserAuthorizationId(Long userAuthorizationId) {
+		return userAuthorizationRepository.getUserForUserAuthorizationId(userAuthorizationId);
+	}
 
 	@Transactional
 	public Boolean add(UserAuthorization ua, Long userId) {
 		return userAuthorizationRepository.add(ua, userId);
+	}
+	
+	@Transactional
+	public Integer deleteUserAuthorizationByUserIdAndRole(Long userId, String role) {
+		return userAuthorizationRepository.deleteUserAuthorizationByUserIdAndRole(userId, role);
+	}
+	
+	@Transactional
+	public List<UserAuthorization> getUserAuthorizationsByUserId(Long userId) {
+		return userAuthorizationRepository.getUserAuthorizationsByUserId(userId);
 	}
 }

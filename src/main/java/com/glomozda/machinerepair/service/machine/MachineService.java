@@ -44,6 +44,11 @@ public class MachineService {
 	public Machine getMachineForSerialNumberWithFetching(String machineSerialNumber) {
 		return machineRepository.getMachineForSerialNumberWithFetching(machineSerialNumber);
 	}
+	
+	@Transactional
+	public Machine getMachineByIdWithFetching(Long machineId) {
+		return machineRepository.getMachineByIdWithFetching(machineId);
+	}
 
 	@Transactional
 	public Boolean add(Machine m, Long machineServiceableId) {

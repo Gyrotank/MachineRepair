@@ -79,6 +79,19 @@ public class MachineRepository {
 		
 		return result;
 	}
+	
+	@Transactional
+	public Machine getMachineByIdWithFetching(Long machineId) {
+		Machine result = null;
+		TypedQuery<Machine> query = em.createNamedQuery(
+				"Machine.findMachineByIdWithFetching", Machine.class);
+		query.setParameter("id", machineId);
+		try {
+			result = query.getSingleResult();
+		} catch (NoResultException nre){}
+		
+		return result;
+	}
 
 	@Transactional
 	public Boolean add(Machine m, Long machineServiceableId) {

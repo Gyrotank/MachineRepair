@@ -53,6 +53,10 @@ public class UpdateMachineServiceableController implements MessageSourceAware {
 	public String activate(final Locale locale, final Principal principal, final Model model, 
 			@RequestParam("machine-serviceable-id") final Long machineServiceableId) {
 		
+		if (null == principal) {
+			return "redirect:/index";
+		}
+		
 		myUser = userSvc.getUserByLogin(principal.getName());
 		if (null == myUser) {
 			return "redirect:/index";

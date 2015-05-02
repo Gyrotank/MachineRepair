@@ -54,6 +54,10 @@ public class UpdateMachineController implements MessageSourceAware {
 	public String activate(final Locale locale, final Principal principal, final Model model, 
 			@RequestParam("machine-id") final Long machineId) {
 		
+		if (null == principal) {
+			return "redirect:/index";
+		}
+		
 		myUser = userSvc.getUserByLogin(principal.getName());
 		if (null == myUser) {
 			return "redirect:/index";
@@ -67,7 +71,7 @@ public class UpdateMachineController implements MessageSourceAware {
 			return "redirect:/adminpagemachines";
 		}
 		
-		myMachine = machineSvc.getMachineById(machineId);
+		myMachine = machineSvc.getMachineByIdWithFetching(machineId);
 		
 		if (!model.containsAttribute("machineCurrent")) {
 			model.addAttribute("machineCurrent", myMachine);

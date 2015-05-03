@@ -21,7 +21,8 @@ public class RepairTypeDAOJDBCTest extends DAOTestsTemplate{
     private transient RepairTypeService repairTypeService;
     
     final RepairType rt1 = new RepairType("Full", "������", new BigDecimal(10000), 6);
-    final RepairType rt2 = new RepairType("Partial", "���������", new BigDecimal(5000), 3);
+    final RepairType rt2 = new RepairType("Partial", "���������", new BigDecimal(5000),
+    		3, (byte) 0);
             
     @Before
     public void prepareDB(){
@@ -36,6 +37,11 @@ public class RepairTypeDAOJDBCTest extends DAOTestsTemplate{
     @Test
     public void testGetAll() {
     	Assert.assertTrue(repairTypeService.getAll().size() == 2);
+    }
+    
+    @Test
+    public void testGetAllAvailable() {
+    	Assert.assertTrue(repairTypeService.getAllAvailable().size() == 1);
     }
     
     @Test

@@ -82,5 +82,23 @@ public class MachineServiceableRepository {
 		int updateCount = query.executeUpdate();
 		return updateCount;
 	}
+	
+	@Transactional
+	public Integer setMachineServiceableAvailableById(
+			Long machineServiceableId, Byte available) {
+		Query query = em.createNamedQuery("MachineServiceable.setMachineServiceableAvailableById");
+		query.setParameter("id", machineServiceableId);
+		query.setParameter("available", available);
+		int updateCount = query.executeUpdate();
+		return updateCount;		
+	}
+	
+	@Transactional
+	public List<MachineServiceable> getAllAvailableOrderByTrademark() {
+		List<MachineServiceable> result = em.createNamedQuery
+				("MachineServiceable.findAllAvailableOrderByTrademark",
+				MachineServiceable.class).getResultList();
+		return result;
+	}
 
 }

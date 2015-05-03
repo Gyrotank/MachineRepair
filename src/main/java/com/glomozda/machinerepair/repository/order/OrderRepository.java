@@ -301,7 +301,7 @@ public class OrderRepository {
 	public Integer updateOrderById(Long orderId, Order order) {
 		Query query = em.createNamedQuery("Order.updateOrderById");
 		query.setParameter("id", orderId);
-//		query.setParameter("rt", order.getRepairType());
+		query.setParameter("rt", order.getRepairType());
 		query.setParameter("start", order.getStart());
 		query.setParameter("status", order.getStatus());
 		query.setParameter("manager", order.getManager());

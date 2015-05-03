@@ -49,4 +49,14 @@ public class RepairTypeService {
 	public Integer updateRepairTypeById(Long repairTypeId, RepairType repairType) {
 		return repairTypeRepository.updateRepairTypeById(repairTypeId, repairType);
 	}
+	
+	@Transactional
+	public int setRepairTypeAvailableById(Long repairTypeId, Byte available) {
+		return repairTypeRepository.setRepairTypeAvailableById(repairTypeId, available);
+	}
+	
+	@Transactional
+	public List<RepairType> getAllAvailable() {
+		return repairTypeRepository.getAllAvailable();
+	}
 }

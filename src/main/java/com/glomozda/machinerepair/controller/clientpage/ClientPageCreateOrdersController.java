@@ -121,9 +121,9 @@ public class ClientPageCreateOrdersController implements MessageSourceAware {
 		
 		ArrayList<String> myMachinesSNs = new ArrayList<String>();
 		
-		List<RepairType> repairTypes = repairTypeSvc.getAll();
+		List<RepairType> repairTypes = repairTypeSvc.getAllAvailable();
 		List<MachineServiceable> machinesServiceable =
-				machineServiceableSvc.getAllOrderByTrademark();
+				machineServiceableSvc.getAllAvailableOrderByTrademark();
 		
 		if (myPastOrders.isEmpty() && myCurrentOrders.isEmpty()) {			
 			model.addAttribute("my_machines_serial_numbers", myMachinesSNs);

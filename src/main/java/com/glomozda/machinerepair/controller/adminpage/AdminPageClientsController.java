@@ -175,21 +175,5 @@ public class AdminPageClientsController implements MessageSourceAware {
 							locale);
 		}		
 		return "redirect:/adminpageclients";
-	}
-	
-	@RequestMapping(value = "/deleteclient", method = RequestMethod.GET)
-	public String deleteClient(@RequestParam("client-id") final Long clientId,
-			final Locale locale) {
-		
-//		if (clientSvc.add(client, userId)) {
-//			messageClientAdded =
-//					messageSource.getMessage("popup.adminpage.clientAdded", null,
-//							locale);
-//		} else {
-//			messageClientNotAdded = 
-//					messageSource.getMessage("popup.adminpage.clientNotAdded", null,
-//							locale);
-//		}		
-		return "redirect:/adminpageclients";
-	}
+	}	
 }

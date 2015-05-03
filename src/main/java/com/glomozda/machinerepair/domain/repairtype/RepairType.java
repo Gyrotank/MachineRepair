@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
@@ -24,6 +25,9 @@ import com.glomozda.machinerepair.domain.order.Order;
 @NamedQueries({
 	@NamedQuery(name="RepairType.findAll", query="SELECT rt FROM RepairType rt "
 			+ "ORDER BY rt.repairTypePrice DESC"),
+	@NamedQuery(name="RepairType.findAllAvailable", query="SELECT rt FROM RepairType rt "
+			+ "WHERE rt.available = 1 "
+			+ "ORDER BY rt.repairTypePrice DESC"),
 	@NamedQuery(name="RepairType.findRepairTypeByName",
 		query="SELECT rt FROM RepairType rt "
 			+ "WHERE rt.repairTypeName = :rtn"),
@@ -34,7 +38,10 @@ import com.glomozda.machinerepair.domain.order.Order;
 			+ "rt.repairTypeNameRu = :name_ru, "
 			+ "rt.repairTypePrice = :price, "
 			+ "rt.repairTypeDuration = :duration "
-			+ "WHERE rt.repairTypeId = :id")
+			+ "WHERE rt.repairTypeId = :id"),
+	@NamedQuery(name="RepairType.setRepairTypeAvailableById",
+		query="UPDATE RepairType rt SET available = :available "
+			+ " WHERE rt.repairTypeId = :id")
 })
 @Entity
 @Table(name = "repair_types")
@@ -60,7 +67,11 @@ public class RepairType {
 	@NotNull @Min(0)
 	private Integer repairTypeDuration;
 	
-	@OneToMany(mappedBy="repairType")
+	@Column(name = "available")
+	@NotNull
+	private Byte available;
+	
+	@OneToMany(mappedBy="repairType", fetch = FetchType.EAGER)
 	private List<Order> orders = new ArrayList<Order>();
 	
 	public RepairType(){
@@ -73,6 +84,18 @@ public class RepairType {
         this.repairTypeNameRu = repairTypeNameRu;
         this.repairTypePrice = repairTypePrice;
         this.repairTypeDuration = repairTypeDuration;
+        this.available = 1;
+    }
+	
+	public RepairType(final String repairTypeName, final String repairTypeNameRu, 
+			final BigDecimal repairTypePrice,
+    		final Integer repairTypeDuration,
+    		final Byte available) {
+        this.repairTypeName = repairTypeName;
+        this.repairTypeNameRu = repairTypeNameRu;
+        this.repairTypePrice = repairTypePrice;
+        this.repairTypeDuration = repairTypeDuration;
+        this.available = available;
     }
 	
 	public void addOrder(final Order order) {
@@ -126,7 +149,15 @@ public class RepairType {
 		this.repairTypeDuration = repairTypeDuration;
 	}
 
-    @Override
+    public Byte getAvailable() {
+		return available;
+	}
+
+	public void setAvailable(Byte available) {
+		this.available = available;
+	}
+
+	@Override
     public int hashCode() {
         int hash = 3;
         hash = 13 * hash + (this.repairTypeName != null ? this.repairTypeName.hashCode() : 0);

@@ -117,44 +117,44 @@
     			</c:choose>  				
   			</td>
   			<td>
-<!--   			<select name="repairTypeId"> -->
-<!--   			<option value="0"> -->
-<%--   				<spring:message code="label.adminpage.addNewOrder.selectRepairType" /> --%>
-<!--   			</option> -->
+  			<select name="repairTypeId">
+  			<option value="0">
+  				<spring:message code="label.adminpage.addNewOrder.selectRepairType" />
+  			</option>
 <!-- !!!ONLY 100 REPAIR TYPES ARE FETCHED AS OF NOW!!! -->
-<%--   			<c:forEach var="rt" items="${repair_types}"> --%>
-<%--   				<c:choose> --%>
-<%--   					<c:when test="${orderCurrent.repairType.repairTypeId == rt.repairTypeId}"> --%>
-<%--   						<option selected value="${rt.repairTypeId}"> --%>
-<%--   							<c:choose> --%>
-<%--     							<c:when test="${locale == 'ru'}"> --%>
-<%--     								<c:out value="${rt.repairTypeNameRu}"/> --%>
-<%--     							</c:when> --%>
-<%--     							<c:otherwise> --%>
-<%--     								<c:out value="${rt.repairTypeName}"/> --%>
-<%--     							</c:otherwise> --%>
-<%--     						</c:choose>  							 --%>
-<!--   						</option> -->
-<%--   					</c:when> --%>
-<%--   					<c:otherwise> --%>
-<%--   						<option value="${rt.repairTypeId}"> --%>
-<%--   							<c:choose> --%>
-<%--     							<c:when test="${locale == 'ru'}"> --%>
-<%--     								<c:out value="${rt.repairTypeNameRu}"/> --%>
-<%--     							</c:when> --%>
-<%--     							<c:otherwise> --%>
-<%--     								<c:out value="${rt.repairTypeName}"/> --%>
-<%--     							</c:otherwise> --%>
-<%--     						</c:choose>  --%>
-<!--   						</option> -->
-<%--   					</c:otherwise> --%>
-<%--   				</c:choose>  				 --%>
-<%--   			</c:forEach> --%>
-<!--   			</select> -->
+  			<c:forEach var="rt" items="${repair_types}">
+  				<c:choose>
+  					<c:when test="${orderCurrent.repairType.repairTypeId == rt.repairTypeId}">
+  						<option selected value="${rt.repairTypeId}">
+  							<c:choose>
+    							<c:when test="${locale == 'ru'}">
+    								<c:out value="${rt.repairTypeNameRu}"/>
+    							</c:when>
+    							<c:otherwise>
+    								<c:out value="${rt.repairTypeName}"/>
+    							</c:otherwise>
+    						</c:choose>  							
+  						</option>
+  					</c:when>
+  					<c:otherwise>
+  						<option value="${rt.repairTypeId}">
+  							<c:choose>
+    							<c:when test="${locale == 'ru'}">
+    								<c:out value="${rt.repairTypeNameRu}"/>
+    							</c:when>
+    							<c:otherwise>
+    								<c:out value="${rt.repairTypeName}"/>
+    							</c:otherwise>
+    						</c:choose> 
+  						</option>
+  					</c:otherwise>
+  				</c:choose>  				
+  			</c:forEach>
+  			</select>
   			</td>
   			<td>
   			<div class="error">
-<%--   				<c:out value="${message_order_repair_type_id}"/> --%>
+  				<c:out value="${message_order_repair_type_id}"/>
   			</div>
   			</td>
   		</tr>  		

@@ -79,5 +79,21 @@ public class RepairTypeRepository {
 		int updateCount = query.executeUpdate();
 		return updateCount;
 	}
-
+	
+	@Transactional
+	public int setRepairTypeAvailableById(Long repairTypeId, Byte available) {
+		Query query = em.createNamedQuery("RepairType.setRepairTypeAvailableById");
+		query.setParameter("id", repairTypeId);
+		query.setParameter("available", available);
+		int updateCount = query.executeUpdate();
+		return updateCount;
+	}
+	
+	@Transactional
+	public List<RepairType> getAllAvailable() {
+		List<RepairType> result = em.createNamedQuery
+				("RepairType.findAllAvailable",
+					RepairType.class).getResultList();
+		return result;
+	}
 }

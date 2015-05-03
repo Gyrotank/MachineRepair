@@ -156,7 +156,8 @@ public class UpdateUserAuthorizationController implements MessageSourceAware {
 			}
 		}
 		
-		if (!userAuthorizationDTO.getIsAdmin() && myUserAuthorizationDTO.getIsAdmin()) {
+		if (!userAuthorizationDTO.getIsAdmin() && myUserAuthorizationDTO.getIsAdmin() 
+				&& userAuthorizationSvc.getCountUserAuthorizationsForRole("ROLE_ADMIN") > 1) {
 			if (userAuthorizationSvc
 					.deleteUserAuthorizationByUserIdAndRole(
 							myUserAuthorizationDTO.getUser().getUserId(),

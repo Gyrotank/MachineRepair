@@ -94,7 +94,8 @@ import com.glomozda.machinerepair.domain.repairtype.RepairType;
 				+ " (SELECT o3 FROM Order o3"
 				+ " WHERE o3.client.clientId = :id AND o3.status = 'started')"),
 	@NamedQuery(name="Order.updateOrderById", query="UPDATE Order o "
-			+ "SET o.start = :start, "
+			+ "SET o.repairType = :rt,"
+			+ "o.start = :start, "
 			+ "o.status = :status, "
 			+ "o.manager = :manager "
 			+ "WHERE o.orderId = :id")

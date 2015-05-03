@@ -297,22 +297,5 @@ public class AdminPageOrdersController implements MessageSourceAware {
 							locale);
 		}		
 		return "redirect:/adminpageorders";
-	}
-	
-	@RequestMapping(value = "/deleteorder", method = RequestMethod.GET)
-	public String deleteOrder(
-			@RequestParam("order-id") final Long orderId,
-			final Locale locale) {
-		
-//		if (clientSvc.add(client, userId)) {
-//			messageClientAdded =
-//					messageSource.getMessage("popup.adminpage.clientAdded", null,
-//							locale);
-//		} else {
-//			messageClientNotAdded = 
-//					messageSource.getMessage("popup.adminpage.clientNotAdded", null,
-//							locale);
-//		}		
-		return "redirect:/adminpageorders";
-	}
+	}	
 }

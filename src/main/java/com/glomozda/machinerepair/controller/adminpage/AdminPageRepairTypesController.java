@@ -40,8 +40,12 @@ public class AdminPageRepairTypesController implements MessageSourceAware {
 	
 	private static final Long _defaultPageSize = (long) 25;
 	
+	private String messageEnableDisableFailed = "";
+	private String messageEnableDisableSucceeded = "";
+	
 	private String messageRepairTypeAdded = "";
 	private String messageRepairTypeNotAdded = "";
+	
 	private Long repairTypePagingFirstIndex = (long) 0;
 	private Long repairTypePagingLastIndex = _defaultPageSize - 1;
 	
@@ -82,10 +86,21 @@ public class AdminPageRepairTypesController implements MessageSourceAware {
 				messageRepairTypeNotAdded);
 		messageRepairTypeNotAdded = "";
 		
-		model.addAttribute("dialog_delete_repair_type",
+		model.addAttribute("message_enable_disable_failed",
+				messageEnableDisableFailed);
+		messageEnableDisableFailed = "";
+		model.addAttribute("message_enable_disable_succeeded",
+				messageEnableDisableSucceeded);
+		messageEnableDisableSucceeded = "";
+		
+		model.addAttribute("dialog_available_repair_type",
 				messageSource.getMessage(
-						"label.adminpage.repairTypes.actions.delete.dialog", null,
-				locale));
+					"label.adminpage.repairTypes.actions.enable.dialog", null,
+					locale));
+		model.addAttribute("dialog_not_available_repair_type",
+				messageSource.getMessage(
+					"label.adminpage.repairTypes.actions.disable.dialog", null,
+					locale));
 				
 		return "adminpagerepairtypes";
 	}
@@ -162,20 +177,81 @@ public class AdminPageRepairTypesController implements MessageSourceAware {
 		return "redirect:/adminpagerepairtypes";
 	}
 	
-	@RequestMapping(value = "/deleterepairtype", method = RequestMethod.GET)
-	public String deleteRepairType(
-			@RequestParam("repair-type-id") final Long repairTypeId,
+	@RequestMapping(value = "/setRTAvailable", method = RequestMethod.GET)
+	public String setAvailable(
+			@RequestParam("repair-type-id") Long repairTypeId,
 			final Locale locale) {
 		
-//		if (clientSvc.add(client, userId)) {
-//			messageClientAdded =
-//					messageSource.getMessage("popup.adminpage.clientAdded", null,
-//							locale);
-//		} else {
-//			messageClientNotAdded = 
-//					messageSource.getMessage("popup.adminpage.clientNotAdded", null,
-//							locale);
-//		}		
+		RepairType repairTypeInQuestion = 
+				repairTypeSvc.getRepairTypeById(repairTypeId);
+		
+		if (repairTypeInQuestion == null) {			
+			messageEnableDisableFailed = 
+					messageSource
+					.getMessage("popup.adminpage.repairTypes.actions.failed.rtNotExists",
+							null, locale);
+			return "redirect:/adminpagerepairtypes";
+		}
+		if (repairTypeInQuestion.getAvailable() != 0) {			
+			messageEnableDisableFailed = 
+					messageSource
+					.getMessage("popup.adminpage.repairTypes.actions.failed.rtNotUnavailable",
+							null, locale);
+			return "redirect:/adminpagerepairtypes";
+		}
+		
+		if (repairTypeSvc
+				.setRepairTypeAvailableById(repairTypeId, (byte) 1) == 1) {
+			messageEnableDisableSucceeded = 
+				messageSource
+				.getMessage("popup.adminpage.repairTypes.actions.succeeded",
+						null, locale);
+		} else {
+			messageEnableDisableFailed = 
+					messageSource
+					.getMessage("popup.adminpage.repairTypes.actions.failed.updateFailed",
+							null, locale);
+		}
+		
+		return "redirect:/adminpagerepairtypes";
+	}
+	
+	@RequestMapping(value = "/setRTUnavailable", method = RequestMethod.GET)
+	public String setUnavailable(
+			@RequestParam("repair-type-id") Long repairTypeId,
+			final Locale locale) {
+		
+		RepairType repairTypeInQuestion = 
+				repairTypeSvc.getRepairTypeById(repairTypeId);
+		
+		if (repairTypeInQuestion == null) {			
+			messageEnableDisableFailed = 
+					messageSource
+					.getMessage("popup.adminpage.repairTypes.actions.failed.rtNotExists",
+							null, locale);
+			return "redirect:/adminpagerepairtypes";
+		}
+		if (repairTypeInQuestion.getAvailable() != 1) {			
+			messageEnableDisableFailed = 
+					messageSource
+					.getMessage("popup.adminpage.repairTypes.actions.failed.rtNotAvailable",
+							null, locale);
+			return "redirect:/adminpagerepairtypes";
+		}
+		
+		if (repairTypeSvc
+				.setRepairTypeAvailableById(repairTypeId, (byte) 0) == 1) {
+			messageEnableDisableSucceeded = 
+				messageSource
+				.getMessage("popup.adminpage.repairTypes.actions.succeeded",
+						null, locale);
+		} else {
+			messageEnableDisableFailed = 
+					messageSource
+					.getMessage("popup.adminpage.repairTypes.actions.failed.updateFailed",
+							null, locale);
+		}
+		
 		return "redirect:/adminpagerepairtypes";
 	}
 }

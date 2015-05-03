@@ -184,10 +184,10 @@ public class AdminPageMachinesController implements MessageSourceAware {
 		return "redirect:/adminpagemachines";
 	}
 	
-	@RequestMapping(value = "/deletemachine", method = RequestMethod.GET)
-	public String deleteMachine(@RequestParam("machine-id") final Long machineId,
-			final Locale locale) {
-		
+//	@RequestMapping(value = "/deletemachine", method = RequestMethod.GET)
+//	public String deleteMachine(@RequestParam("machine-id") final Long machineId,
+//			final Locale locale) {
+//		
 //		if (clientSvc.add(client, userId)) {
 //			messageClientAdded =
 //					messageSource.getMessage("popup.adminpage.clientAdded", null,
@@ -197,6 +197,6 @@ public class AdminPageMachinesController implements MessageSourceAware {
 //					messageSource.getMessage("popup.adminpage.clientNotAdded", null,
 //							locale);
 //		}		
-		return "redirect:/adminpagemachines";
-	}
+//		return "redirect:/adminpagemachines";
+//	}
 }

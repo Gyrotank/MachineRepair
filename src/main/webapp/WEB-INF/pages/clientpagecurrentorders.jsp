@@ -118,8 +118,7 @@
 		data-classes="table table-hover table-condensed" 
     	data-striped="true"
     	data-pagination="true"
-		data-search="true"
-		data-show-columns="true"
+		data-search="true"		
 		border="1" style="width:900px" align="center">
 	<thead>
 	<tr><th align="center" data-sortable="true" data-switchable="false"></th>
@@ -127,7 +126,7 @@
 		<spring:message code="label.clientpage.yourOrders.repairType" /></th>
 	<th align="center" data-sortable="true" data-switchable="false">
 		<spring:message code="label.clientpage.yourOrders.sn" /></th>
-	<th align="center" data-sortable="true" data-visible="false">
+	<th align="center" data-sortable="true" data-switchable="false">
 		<spring:message code="label.clientpage.yourOrders.machineName" /></th>
 	<th align="center" data-sortable="true" data-switchable="false">
 		<spring:message code="label.clientpage.yourOrders.date" /></th>
@@ -142,16 +141,43 @@
     	<td><c:out value="${loopStatus.index + 1}"/></td>    	 
     	<td>
     		<c:choose>
+  			<c:when test="${co.repairType.available == 0}">
+  				<div class="disabled">
+  					<c:choose>   			
+    				<c:when test="${locale == 'ru'}">
+    					${co.repairType.repairTypeNameRu}
+    				</c:when>
+    				<c:otherwise>
+    					${co.repairType.repairTypeName}
+    				</c:otherwise>
+    				</c:choose>
+    			</div>
+    		</c:when>
+    		<c:otherwise>
+    			<c:choose>   			
     			<c:when test="${locale == 'ru'}">
     				${co.repairType.repairTypeNameRu}
     			</c:when>
     			<c:otherwise>
     				${co.repairType.repairTypeName}
     			</c:otherwise>
+    			</c:choose>
+    		</c:otherwise>
     		</c:choose>
     	</td>
     	<td>${co.machine.machineSerialNumber}</td>
-    	<td>${co.machine.machineServiceable.machineServiceableName}</td>
+    	<td>
+    		<c:choose>
+  			<c:when test="${co.machine.machineServiceable.available == 0}">
+  				<div class="disabled">
+					${co.machine.machineServiceable.machineServiceableName}
+				</div>
+  			</c:when>
+  			<c:otherwise>
+    			${co.machine.machineServiceable.machineServiceableName}
+    		</c:otherwise>
+    		</c:choose>
+    	</td>
     	<td>${co.start}</td>
     	<td>
     		<c:choose>

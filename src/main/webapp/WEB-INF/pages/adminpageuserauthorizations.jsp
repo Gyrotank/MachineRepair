@@ -135,9 +135,34 @@
 	<tbody>
   	<c:forEach var="ua" items="${user_authorizations_short}" varStatus="loopStatus">    	
     <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
-    	<td><c:out value="${loopStatus.index + 1}"/></td>
-    	<td>${ua.user.login}</td> 
     	<td>
+    		<c:choose>
+    		<c:when test="${ua.user.enabled == 0}">
+  				<div class="disabled">
+					<c:out value="${loopStatus.index + 1}"/>
+				</div>
+  			</c:when>
+  			<c:otherwise>
+  				<c:out value="${loopStatus.index + 1}"/>
+  			</c:otherwise>
+  			</c:choose>
+    	</td>
+    	<td>
+    		<c:choose>
+    		<c:when test="${ua.user.enabled == 0}">
+  				<div class="disabled">
+					${ua.user.login}
+				</div>
+  			</c:when>
+  			<c:otherwise>
+  				${ua.user.login}
+  			</c:otherwise>
+  			</c:choose>
+    	</td> 
+    	<td>
+    		<c:choose>
+    		<c:when test="${ua.user.enabled == 0}">
+    		<div class="disabled">
     		<c:choose>
   				<c:when test="${locale == 'ru'}">
   					<c:out value="${ua.role.descRu}"/>
@@ -145,7 +170,20 @@
   				<c:otherwise>
   					<c:out value="${ua.role.descEn}"/>
   				</c:otherwise>  				
-  			</c:choose>    		
+  			</c:choose>
+  			</div>
+  			</c:when>
+  			<c:otherwise>
+  				<c:choose>
+  				<c:when test="${locale == 'ru'}">
+  					<c:out value="${ua.role.descRu}"/>
+  				</c:when>
+  				<c:otherwise>
+  					<c:out value="${ua.role.descEn}"/>
+  				</c:otherwise>  				
+  			</c:choose>
+  			</c:otherwise>
+  			</c:choose>  			   		
     	</td>
     	<td>
     		<a href="<c:url 

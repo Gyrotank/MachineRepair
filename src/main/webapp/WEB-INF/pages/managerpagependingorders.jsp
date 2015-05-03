@@ -147,6 +147,20 @@
     		<td>${po.client.clientName}</td> 
     		<td>    			
     			<c:choose>
+  				<c:when test="${po.repairType.available == 0}">
+  				<div class="disabled">
+  					<c:choose>   			
+    				<c:when test="${locale == 'ru'}">
+    					${po.repairType.repairTypeNameRu}
+    				</c:when>
+    				<c:otherwise>
+    					${po.repairType.repairTypeName}
+    				</c:otherwise>
+    				</c:choose>
+    			</div>
+    			</c:when>
+    			<c:otherwise>
+    			<c:choose>   			
     			<c:when test="${locale == 'ru'}">
     				${po.repairType.repairTypeNameRu}
     			</c:when>
@@ -154,9 +168,22 @@
     				${po.repairType.repairTypeName}
     			</c:otherwise>
     			</c:choose>
+    			</c:otherwise>
+    			</c:choose>
     		</td>
     		<td>${po.machine.machineSerialNumber}</td>
-    		<td>${po.machine.machineServiceable.machineServiceableName}</td>
+    		<td>
+    			<c:choose>
+  				<c:when test="${po.machine.machineServiceable.available == 0}">
+  				<div class="disabled">
+    				${po.machine.machineServiceable.machineServiceableName}
+    			</div>
+    			</c:when>
+    			<c:otherwise>
+    				${po.machine.machineServiceable.machineServiceableName}
+    			</c:otherwise>
+    			</c:choose>
+    		</td>
     		<td>${po.start}</td>    		
     		<td><a href="<c:url value="confirm/?order_id=${po.orderId}"/>" 
     			onclick="return confirm('${dialog_confirm_order}')">

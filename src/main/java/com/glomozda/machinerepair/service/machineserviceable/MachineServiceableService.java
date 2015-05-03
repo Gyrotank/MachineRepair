@@ -56,4 +56,17 @@ public class MachineServiceableService {
 		return machineServiceableRepository.updateMachineServiceableById(machineServiceableId,
 				machineServiceable);
 	}
+	
+	@Transactional
+	public Integer setMachineServiceableAvailableById(Long machineServiceableId,
+			Byte available) {
+		return machineServiceableRepository
+				.setMachineServiceableAvailableById(machineServiceableId, available);
+	}
+	
+	@Transactional
+	public List<MachineServiceable> getAllAvailableOrderByTrademark() {
+		return machineServiceableRepository
+				.getAllAvailableOrderByTrademark();
+	}
 }

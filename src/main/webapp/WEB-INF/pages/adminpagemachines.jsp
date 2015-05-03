@@ -139,16 +139,27 @@
   	<c:forEach var="m" items="${machines_short}" varStatus="loopStatus">    	
     <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
     	<td><c:out value="${loopStatus.index + 1}"/></td>
-    	<td>${m.machineServiceable.machineServiceableName}</td> 
+    	<td>
+    		<c:choose>
+  			<c:when test="${m.machineServiceable.available == 0}">
+  				<div class="disabled">
+					${m.machineServiceable.machineServiceableName}
+				</div>
+  			</c:when>
+  			<c:otherwise>
+    			${m.machineServiceable.machineServiceableName}
+    		</c:otherwise>
+    		</c:choose>
+    	</td> 
     	<td>${m.machineSerialNumber}</td>
     	<td>${m.machineYear}</td>
     	<td>${m.machineTimesRepaired}</td>
     	<td>
     		<a href="<c:url value="/updatemachine/?machine-id=${m.machineId}"/>">
   				<img src="resources/images/edit.png" width="24"></a>
-			<a href="<c:url value="/deletemachine/?machine-id=${m.machineId}"/>" 
-    			onclick="return confirm('${dialog_delete_machine}')">
-  				<img src="resources/images/delete.png" width="24"></a>
+<%-- 			<a href="<c:url value="/deletemachine/?machine-id=${m.machineId}"/>"  --%>
+<%--     			onclick="return confirm('${dialog_delete_machine}')"> --%>
+<!--   				<img src="resources/images/delete.png" width="24"></a> -->
     	</td>
     </tr>
   	</c:forEach>

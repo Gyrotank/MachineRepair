@@ -138,16 +138,67 @@
 	<tbody>
   	<c:forEach var="ms" items="${machines_serviceable_short}" varStatus="loopStatus">    	
     <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
-    	<td><c:out value="${loopStatus.index + 1}"/></td>
-    	<td>${ms.machineServiceableName}</td> 
-    	<td>${ms.machineServiceableTrademark}</td>
+    	<td>
+    		<c:choose>
+  			<c:when test="${ms.available == 0}">
+  				<div class="disabled">
+					<c:out value="${loopStatus.index + 1}"/>
+				</div>
+  			</c:when>
+  			<c:otherwise>
+    			<c:out value="${loopStatus.index + 1}"/>
+    		</c:otherwise>
+    		</c:choose>
+    	</td>
+    	<td>
+    		<c:choose>
+  			<c:when test="${ms.available == 0}">
+  				<div class="disabled">
+					${ms.machineServiceableName}
+				</div>
+  			</c:when>
+  			<c:otherwise>
+    			${ms.machineServiceableName}
+    		</c:otherwise>
+    		</c:choose>
+    	</td> 
+    	<td>
+    		<c:choose>
+  			<c:when test="${ms.available == 0}">
+  				<div class="disabled">
+					${ms.machineServiceableTrademark}
+				</div>
+  			</c:when>
+  			<c:otherwise>
+    			${ms.machineServiceableTrademark}
+    		</c:otherwise>
+    		</c:choose>
+    	</td>
     	<td>
     		<c:choose>
     			<c:when test="${locale == 'ru'}">
-    				${ms.machineServiceableCountryRu}
+    				<c:choose>
+  					<c:when test="${ms.available == 0}">
+  						<div class="disabled">
+							${ms.machineServiceableCountryRu}
+						</div>
+  					</c:when>
+  					<c:otherwise>
+    					${ms.machineServiceableCountryRu}
+    				</c:otherwise>
+    				</c:choose>
     			</c:when>
     			<c:otherwise>
-    				${ms.machineServiceableCountry}
+    				<c:choose>
+  					<c:when test="${ms.available == 0}">
+  						<div class="disabled">
+							${ms.machineServiceableCountry}
+						</div>
+  					</c:when>
+  					<c:otherwise>
+    					${ms.machineServiceableCountry}
+    				</c:otherwise>
+    				</c:choose>
     			</c:otherwise>
     		</c:choose>
     	</td>
@@ -155,10 +206,20 @@
     		<a href="<c:url 
     			value="/updatemachineserviceable/?machine-serviceable-id=${ms.machineServiceableId}"/>">
   				<img src="resources/images/edit.png" width="24"></a>
-			<a href="<c:url 
-				value="deletemachineserviceable/?machine-serviceable-id=${ms.machineServiceableId}"/>" 
-    			onclick="return confirm('${dialog_delete_machine_serviceable}')">
-  				<img src="resources/images/delete.png" width="24"></a>
+			<c:choose>
+  			<c:when test="${ms.available == 0}">
+  				<a href="<c:url value="setMSAvailable/?machine-serviceable-id=${ms.machineServiceableId}"/>" 
+    			onclick="return confirm('${dialog_available_machine_serviceable}')">
+  				<img src="resources/images/enable.png" width="24">
+  				</a>
+  			</c:when>
+  			<c:otherwise>
+  				<a href="<c:url value="setMSUnavailable/?machine-serviceable-id=${ms.machineServiceableId}"/>" 
+    			onclick="return confirm('${dialog_not_available_machine_serviceable}')">
+  				<img src="resources/images/disable.png" width="24">
+  				</a>
+  			</c:otherwise>
+			</c:choose>
     	</td>
     </tr>
   	</c:forEach>

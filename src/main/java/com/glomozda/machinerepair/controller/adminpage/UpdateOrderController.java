@@ -51,6 +51,8 @@ public class UpdateOrderController implements MessageSourceAware {
 	
 	private MessageSource messageSource;
 	
+	private String messageOrderRepairTypeId = "";
+	
 	private String messageOrderStart = "";
 	private String enteredOrderStart = "";
 	
@@ -101,6 +103,9 @@ public class UpdateOrderController implements MessageSourceAware {
 		java.util.Collections.sort(managers);
 		model.addAttribute("managers", managers);
 		
+		model.addAttribute("message_order_repair_type_id", messageOrderRepairTypeId);
+		messageOrderRepairTypeId = "";
+		
 		model.addAttribute("message_order_start", messageOrderStart);
 		messageOrderStart = "";
 		Calendar cal = new GregorianCalendar();
@@ -127,7 +132,7 @@ public class UpdateOrderController implements MessageSourceAware {
 	public String updateOrder(@ModelAttribute("order") @Valid final Order order,
 			final BindingResult bindingResult,			
 			final RedirectAttributes redirectAttributes,
-//			@RequestParam("repairTypeId") final Long repairTypeId,
+			@RequestParam("repairTypeId") final Long repairTypeId,
 			@RequestParam("startDate") final String startDate,			
 			final Locale locale) {
 		
@@ -149,12 +154,18 @@ public class UpdateOrderController implements MessageSourceAware {
 			startSqlDate = null;
 		}		
 		
-		if (startSqlDate == null || bindingResult.hasErrors()) {
+		if (repairTypeId == 0 || startSqlDate == null || bindingResult.hasErrors()) {
 			
 			if (startSqlDate == null) {
 				messageOrderStart = 
 						messageSource.getMessage("typeMismatch.order.start", null,
 								locale);
+			}
+			
+			if (repairTypeId == 0) {
+				messageOrderRepairTypeId = 
+						messageSource.getMessage("error.adminpage.repairTypeId", null,
+								locale);			
 			}
 
 			if (bindingResult.hasErrors()) {
@@ -177,13 +188,15 @@ public class UpdateOrderController implements MessageSourceAware {
 		}
 		
 		order.setStart(startSqlDate);
-//		order.setRepairType(repairTypeSvc.getRepairTypeById(repairTypeId));
+		order.setRepairType(repairTypeSvc.getRepairTypeById(repairTypeId));
 //		order.setRepairType(repairTypeSvc.getRepairTypeById(myOrder.getRepairType()
 //				.getRepairTypeId()));
 		
 		if (order.getManager().equals(myOrder.getManager())
 				&& order.getStatus().equals(myOrder.getStatus())
-				&& order.getStart().equals(myOrder.getStart())) {
+				&& order.getStart().equals(myOrder.getStart())
+				&& order.getRepairType().getRepairTypeId()
+					.equals(myOrder.getRepairType().getRepairTypeId())) {
 //			log.info("Client has same name");
 			messageOrderNoChanges = 
 					messageSource.getMessage("popup.adminpage.orderNoChanges", null,

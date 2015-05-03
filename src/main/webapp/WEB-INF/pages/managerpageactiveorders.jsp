@@ -194,16 +194,43 @@
     	<td><c:out value="${loopStatus.index + 1}"/></td>    	 
     	<td>
     		<c:choose>
+  				<c:when test="${so.repairType.available == 0}">
+  				<div class="disabled">
+  					<c:choose>   			
+    				<c:when test="${locale == 'ru'}">
+    					${so.repairType.repairTypeNameRu}
+    				</c:when>
+    				<c:otherwise>
+    					${so.repairType.repairTypeName}
+    				</c:otherwise>
+    				</c:choose>
+    			</div>
+    			</c:when>
+    			<c:otherwise>
+    			<c:choose>   			
     			<c:when test="${locale == 'ru'}">
     				${so.repairType.repairTypeNameRu}
     			</c:when>
     			<c:otherwise>
     				${so.repairType.repairTypeName}
     			</c:otherwise>
+    			</c:choose>
+    			</c:otherwise>
     		</c:choose>
     	</td>
     	<td>${so.machine.machineSerialNumber}</td>
-    	<td>${so.machine.machineServiceable.machineServiceableName}</td>
+    	<td>
+    		<c:choose>
+  				<c:when test="${so.machine.machineServiceable.available == 0}">
+  				<div class="disabled">
+    				${so.machine.machineServiceable.machineServiceableName}
+    			</div>
+    			</c:when>
+    			<c:otherwise>
+    				${so.machine.machineServiceable.machineServiceableName}
+    			</c:otherwise>
+    		</c:choose>
+    	</td>
     	<td>${so.start}</td>
     	<td>
     		<c:choose>

@@ -19,8 +19,9 @@ public class MachineServiceableDAOJDBCTest extends DAOTestsTemplate{
 	@Autowired
     private transient MachineServiceableService machineServiceableService;
     
-    final MachineServiceable ms1 = new MachineServiceable("M-S-3", "TM-1", "UK", "ÂÁ");
-    final MachineServiceable ms2 = new MachineServiceable("M-S-2", "ATM-2", "USA", "ÑØÀ");
+    final MachineServiceable ms1 = new MachineServiceable("M-S-3", "TM-1", "UK", "ï¿½ï¿½");
+    final MachineServiceable ms2 = new MachineServiceable("M-S-2", "ATM-2",
+    		"USA", "ï¿½ï¿½ï¿½", (byte) 0);
             
     @Before
     public void prepareDB(){
@@ -35,6 +36,11 @@ public class MachineServiceableDAOJDBCTest extends DAOTestsTemplate{
     @Test
     public void testGetAll() {
     	Assert.assertTrue(machineServiceableService.getAll().size() == 2);
+    }
+    
+    @Test
+    public void testGetAllAvailable() {
+    	Assert.assertTrue(machineServiceableService.getAllAvailableOrderByTrademark().size() == 1);
     }
     
     @Test

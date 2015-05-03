@@ -145,10 +145,7 @@
     	<td>${c.clientUser.login}</td>
     	<td>
     		<a href="<c:url value="/updateclient/?client-id=${c.clientId}"/>">
-  				<img src="resources/images/edit.png" width="24"></a>
-			<a href="<c:url value="/deleteclient/?client-id=${c.clientId}"/>"
-				onclick="return confirm('${dialog_delete_client}')">
-  				<img src="resources/images/delete.png" width="24"></a>
+  				<img src="resources/images/edit.png" width="24"></a>			
     	</td>
     </tr>
   	</c:forEach>

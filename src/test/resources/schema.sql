@@ -23,6 +23,7 @@ CREATE TABLE Machines_Serviceable(
     trademark varchar(50),
     country varchar(50),
     country_ru varchar(50),
+    available tinyint,
     PRIMARY KEY (machines_serviceable_id)
 );
 
@@ -45,6 +46,7 @@ CREATE TABLE Repair_Types(
     name_ru varchar(10),
     price decimal(10,2),
     duration int,
+    available tinyint,
     PRIMARY KEY (repair_types_id)
 );
 

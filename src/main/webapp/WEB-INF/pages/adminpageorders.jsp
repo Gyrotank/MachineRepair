@@ -159,16 +159,43 @@
     	<td><c:out value="${loopStatus.index + 1}"/></td>
     	<td>${o.client.clientName}</td> 
     	<td>    		
-    		<c:choose>
-    			<c:when test="${locale == 'ru'}">
-    				${o.repairType.repairTypeNameRu}
-    			</c:when>
-    			<c:otherwise>
-    				${o.repairType.repairTypeName}
-    			</c:otherwise>
+    		<c:choose>    			
+  				<c:when test="${o.repairType.available == 0}">
+  					<div class="disabled">
+  						<c:choose>
+						<c:when test="${locale == 'ru'}">
+    						${o.repairType.repairTypeNameRu}
+    					</c:when>
+    					<c:otherwise>
+    						${o.repairType.repairTypeName}
+    					</c:otherwise>
+    					</c:choose>
+					</div>
+  				</c:when>
+  				<c:otherwise>
+  					<c:choose>
+    				<c:when test="${locale == 'ru'}">
+    					${o.repairType.repairTypeNameRu}
+    				</c:when>
+    				<c:otherwise>
+    					${o.repairType.repairTypeName}
+    				</c:otherwise>
+    				</c:choose>
+    			</c:otherwise>    			
     		</c:choose>
     	</td>
-    	<td>${o.machine.machineServiceable.machineServiceableName}</td>
+    	<td>
+    		<c:choose>
+  			<c:when test="${o.machine.machineServiceable.available == 0}">
+  				<div class="disabled">
+					${o.machine.machineServiceable.machineServiceableName}
+				</div>
+  			</c:when>
+  			<c:otherwise>
+    			${o.machine.machineServiceable.machineServiceableName}
+    		</c:otherwise>
+    		</c:choose>
+    	</td>
     	<td>${o.machine.machineSerialNumber}</td>
     	<td>${o.start.date}-${o.start.month + 1}-${o.start.year + 1900}</td>
     	<td>    		
@@ -204,10 +231,7 @@
     	<td>${o.manager}</td>
     	<td>
     		<a href="<c:url value="updateorder/?order-id=${o.orderId}"/>">
-  				<img src="resources/images/edit.png" width="24"></a>
-			<a href="<c:url value="deleteorder/?order-id=${o.orderId}"/>" 
-    			onclick="return confirm('${dialog_delete_order}')">
-  				<img src="resources/images/delete.png" width="24"></a>
+  				<img src="resources/images/edit.png" width="24"></a>			
     	</td>
     </tr>
   	</c:forEach>

@@ -41,8 +41,12 @@ public class AdminPageMachinesServiceableController implements
 	
 	private static final Long _defaultPageSize = (long) 25;
 	
+	private String messageEnableDisableFailed = "";
+	private String messageEnableDisableSucceeded = "";
+	
 	private String messageMachineServiceableAdded = "";
 	private String messageMachineServiceableNotAdded = "";
+	
 	private Long machineServiceablePagingFirstIndex = (long) 0;
 	private Long machineServiceablePagingLastIndex = _defaultPageSize - 1;
 	
@@ -81,10 +85,21 @@ public class AdminPageMachinesServiceableController implements
 				messageMachineServiceableNotAdded);
 		messageMachineServiceableNotAdded = "";
 		
-		model.addAttribute("dialog_delete_machine_serviceable",
+		model.addAttribute("message_enable_disable_failed",
+				messageEnableDisableFailed);
+		messageEnableDisableFailed = "";
+		model.addAttribute("message_enable_disable_succeeded",
+				messageEnableDisableSucceeded);
+		messageEnableDisableSucceeded = "";
+		
+		model.addAttribute("dialog_available_machine_serviceable",
 				messageSource.getMessage(
-						"label.adminpage.serviceableMachines.actions.delete.dialog", null,
-				locale));
+					"label.adminpage.machinesServiceable.actions.enable.dialog", null,
+					locale));
+		model.addAttribute("dialog_not_available_machine_serviceable",
+				messageSource.getMessage(
+					"label.adminpage.machinesServiceable.actions.disable.dialog", null,
+					locale));
 				
 		return "adminpagemachinesserviceable";
 	}
@@ -138,7 +153,8 @@ public class AdminPageMachinesServiceableController implements
 	
 	@RequestMapping(value = "/addMachineServiceable", method = RequestMethod.POST)
 	public String addMachineServiceable(
-			@ModelAttribute("machineServiceable") @Valid final MachineServiceable machineServiceable,
+			@ModelAttribute("machineServiceable") 
+				@Valid final MachineServiceable machineServiceable,
 			final BindingResult bindingResult,			
 			final RedirectAttributes redirectAttributes,
 			final Locale locale) {
@@ -162,20 +178,81 @@ public class AdminPageMachinesServiceableController implements
 		return "redirect:/adminpagemachinesserviceable";
 	}
 	
-	@RequestMapping(value = "/deletemachineserviceable", method = RequestMethod.GET)
-	public String deleteMachineServiceable(
-			@RequestParam("machine-serviceable-id") final Long machineServiceableId,
+	@RequestMapping(value = "/setMSAvailable", method = RequestMethod.GET)
+	public String setAvailable(
+			@RequestParam("machine-serviceable-id") Long machineServiceableId,
 			final Locale locale) {
 		
-//		if (clientSvc.add(client, userId)) {
-//			messageClientAdded =
-//					messageSource.getMessage("popup.adminpage.clientAdded", null,
-//							locale);
-//		} else {
-//			messageClientNotAdded = 
-//					messageSource.getMessage("popup.adminpage.clientNotAdded", null,
-//							locale);
-//		}		
+		MachineServiceable machineServiceableInQuestion = 
+				machineServiceableSvc.getMachineServiceableById(machineServiceableId);
+		
+		if (machineServiceableInQuestion == null) {			
+			messageEnableDisableFailed = 
+					messageSource
+					.getMessage("popup.adminpage.machinesServiceable.actions.failed.msNotExists",
+							null, locale);
+			return "redirect:/adminpagemachinesserviceable";
+		}
+		if (machineServiceableInQuestion.getAvailable() != 0) {			
+			messageEnableDisableFailed = 
+					messageSource
+					.getMessage("popup.adminpage.machinesServiceable.actions.failed.msNotUnavailable",
+							null, locale);
+			return "redirect:/adminpagemachinesserviceable";
+		}
+		
+		if (machineServiceableSvc
+				.setMachineServiceableAvailableById(machineServiceableId, (byte) 1) == 1) {
+			messageEnableDisableSucceeded = 
+				messageSource
+				.getMessage("popup.adminpage.machinesServiceable.actions.succeeded",
+						null, locale);
+		} else {
+			messageEnableDisableFailed = 
+					messageSource
+					.getMessage("popup.adminpage.machinesServiceable.actions.failed.updateFailed",
+							null, locale);
+		}
+		
+		return "redirect:/adminpagemachinesserviceable";
+	}
+	
+	@RequestMapping(value = "/setMSUnavailable", method = RequestMethod.GET)
+	public String setUnvailable(
+			@RequestParam("machine-serviceable-id") Long machineServiceableId,
+			final Locale locale) {
+		
+		MachineServiceable machineServiceableInQuestion = 
+				machineServiceableSvc.getMachineServiceableById(machineServiceableId);
+		
+		if (machineServiceableInQuestion == null) {			
+			messageEnableDisableFailed = 
+					messageSource
+					.getMessage("popup.adminpage.machinesServiceable.actions.failed.msNotExists",
+							null, locale);
+			return "redirect:/adminpagemachinesserviceable";
+		}
+		if (machineServiceableInQuestion.getAvailable() != 1) {			
+			messageEnableDisableFailed = 
+					messageSource
+					.getMessage("popup.adminpage.machinesServiceable.actions.failed.msNotAvailable",
+							null, locale);
+			return "redirect:/adminpagemachinesserviceable";
+		}
+		
+		if (machineServiceableSvc
+				.setMachineServiceableAvailableById(machineServiceableId, (byte) 0) == 1) {
+			messageEnableDisableSucceeded = 
+				messageSource
+				.getMessage("popup.adminpage.machinesServiceable.actions.succeeded",
+						null, locale);
+		} else {
+			messageEnableDisableFailed = 
+					messageSource
+					.getMessage("popup.adminpage.machinesServiceable.actions.failed.updateFailed",
+							null, locale);
+		}
+		
 		return "redirect:/adminpagemachinesserviceable";
 	}
 }

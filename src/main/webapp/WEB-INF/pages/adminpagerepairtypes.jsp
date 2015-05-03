@@ -143,25 +143,87 @@
 	<tbody>
   	<c:forEach var="rt" items="${repair_types_short}" varStatus="loopStatus">    	
     <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
-    	<td><c:out value="${loopStatus.index + 1}"/></td>
+    	<td>
+    		<c:choose>
+  			<c:when test="${rt.available == 0}">
+  				<div class="disabled">
+					<c:out value="${loopStatus.index + 1}"/>
+				</div>
+  			</c:when>
+  			<c:otherwise>
+    			<c:out value="${loopStatus.index + 1}"/>
+    		</c:otherwise>
+    		</c:choose>
+    	</td>
     	<td>    		
     		<c:choose>
     			<c:when test="${locale == 'ru'}">
-    				${rt.repairTypeNameRu}
+    				<c:choose>
+  					<c:when test="${rt.available == 0}">
+  						<div class="disabled">
+							${rt.repairTypeNameRu}
+						</div>
+  					</c:when>
+  					<c:otherwise>
+    					${rt.repairTypeNameRu}
+    				</c:otherwise>
+    				</c:choose>
     			</c:when>
     			<c:otherwise>
-    				${rt.repairTypeName}
+    				<c:choose>
+  					<c:when test="${rt.available == 0}">
+  						<div class="disabled">
+							${rt.repairTypeName}
+						</div>
+  					</c:when>
+  					<c:otherwise>
+    					${rt.repairTypeName}
+    				</c:otherwise>
+    				</c:choose>
     			</c:otherwise>
     		</c:choose>
     	</td> 
-    	<td>${rt.repairTypePrice}</td>
-    	<td>${rt.repairTypeDuration}</td>
+    	<td>
+    		<c:choose>
+  			<c:when test="${rt.available == 0}">
+  				<div class="disabled">
+					${rt.repairTypePrice}
+				</div>
+  			</c:when>
+  			<c:otherwise>
+    			${rt.repairTypePrice}
+    		</c:otherwise>
+    		</c:choose>
+    	</td>
+    	<td>
+    		<c:choose>
+  			<c:when test="${rt.available == 0}">
+  				<div class="disabled">
+					${rt.repairTypeDuration}
+				</div>
+  			</c:when>
+  			<c:otherwise>
+    			${rt.repairTypeDuration}
+    		</c:otherwise>
+    		</c:choose>
+    	</td>
     	<td>
     		<a href="<c:url value="updaterepairtype/?repair-type-id=${rt.repairTypeId}"/>">
   				<img src="resources/images/edit.png" width="24"></a>
-			<a href="<c:url value="deleterepairtype/?repair-type-id=${rt.repairTypeId}"/>" 
-    			onclick="return confirm('${dialog_delete_repair_type}')">
-  				<img src="resources/images/delete.png" width="24"></a>
+			<c:choose>
+  			<c:when test="${rt.available == 0}">
+  				<a href="<c:url value="setRTAvailable/?repair-type-id=${rt.repairTypeId}"/>" 
+    			onclick="return confirm('${dialog_available_repair_type}')">
+  				<img src="resources/images/enable.png" width="24">
+  				</a>
+  			</c:when>
+  			<c:otherwise>
+  				<a href="<c:url value="setRTUnavailable/?repair-type-id=${rt.repairTypeId}"/>" 
+    			onclick="return confirm('${dialog_not_available_repair_type}')">
+  				<img src="resources/images/disable.png" width="24">
+  				</a>
+  			</c:otherwise>
+			</c:choose>
     	</td>
     </tr>
   	</c:forEach>

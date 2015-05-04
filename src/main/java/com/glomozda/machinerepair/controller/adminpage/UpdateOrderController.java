@@ -24,6 +24,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.glomozda.machinerepair.domain.order.Order;
 import com.glomozda.machinerepair.domain.user.User;
 import com.glomozda.machinerepair.service.order.OrderService;
+import com.glomozda.machinerepair.service.orderstatus.OrderStatusService;
 import com.glomozda.machinerepair.service.repairtype.RepairTypeService;
 import com.glomozda.machinerepair.service.user.UserService;
 import com.glomozda.machinerepair.service.userauthorization.UserAuthorizationService;
@@ -35,6 +36,9 @@ public class UpdateOrderController implements MessageSourceAware {
 	
 	@Autowired
 	private OrderService orderSvc;
+	
+	@Autowired
+	private OrderStatusService orderStatusSvc;
 	
 	@Autowired
 	private UserService userSvc;
@@ -52,6 +56,8 @@ public class UpdateOrderController implements MessageSourceAware {
 	private MessageSource messageSource;
 	
 	private String messageOrderRepairTypeId = "";
+	private String messageOrderOrderStatusId = "";
+	private String messageOrderManager = "";
 	
 	private String messageOrderStart = "";
 	private String enteredOrderStart = "";
@@ -96,7 +102,9 @@ public class UpdateOrderController implements MessageSourceAware {
 			model.addAttribute("order", myOrder);
 		}
 		
-		model.addAttribute("repair_types", repairTypeSvc.getAll((long) 0, (long) 99));
+		model.addAttribute("repair_types", repairTypeSvc.getAllAvailable());
+		
+		model.addAttribute("order_statuses", orderStatusSvc.getAll());
 		
 		List<String> managers = userAuthorizationSvc.getUserLoginsForRole("ROLE_MANAGER");
 		managers.addAll(userAuthorizationSvc.getUserLoginsForRole("ROLE_ADMIN"));
@@ -105,6 +113,10 @@ public class UpdateOrderController implements MessageSourceAware {
 		
 		model.addAttribute("message_order_repair_type_id", messageOrderRepairTypeId);
 		messageOrderRepairTypeId = "";
+		model.addAttribute("message_order_order_status_id", messageOrderOrderStatusId);
+		messageOrderOrderStatusId = "";
+		model.addAttribute("message_order_manager", messageOrderManager);
+		messageOrderManager = "";
 		
 		model.addAttribute("message_order_start", messageOrderStart);
 		messageOrderStart = "";
@@ -133,6 +145,7 @@ public class UpdateOrderController implements MessageSourceAware {
 			final BindingResult bindingResult,			
 			final RedirectAttributes redirectAttributes,
 			@RequestParam("repairTypeId") final Long repairTypeId,
+			@RequestParam("orderStatusId") final Long orderStatusId,
 			@RequestParam("startDate") final String startDate,			
 			final Locale locale) {
 		
@@ -154,7 +167,8 @@ public class UpdateOrderController implements MessageSourceAware {
 			startSqlDate = null;
 		}		
 		
-		if (repairTypeId == 0 || startSqlDate == null || bindingResult.hasErrors()) {
+		if (repairTypeId == 0 || orderStatusId == 0 
+				|| startSqlDate == null || bindingResult.hasErrors()) {
 			
 			if (startSqlDate == null) {
 				messageOrderStart = 
@@ -165,6 +179,12 @@ public class UpdateOrderController implements MessageSourceAware {
 			if (repairTypeId == 0) {
 				messageOrderRepairTypeId = 
 						messageSource.getMessage("error.adminpage.repairTypeId", null,
+								locale);			
+			}
+			
+			if (orderStatusId == 0) {
+				messageOrderOrderStatusId = 
+						messageSource.getMessage("error.adminpage.orderStatusId", null,
 								locale);			
 			}
 
@@ -179,8 +199,9 @@ public class UpdateOrderController implements MessageSourceAware {
 		}
 		
 		if (order.getManager().contentEquals("-") 
-				& !order.getStatus().contentEquals("pending")) {
-			messageOrderUpdateFailed = 
+				& !orderStatusSvc.getOrderStatusById(orderStatusId)
+					.getOrderStatusName().contentEquals("pending")) {
+			messageOrderManager = 
 					messageSource.getMessage("error.adminpage.managerRequired", null,
 							locale);
 			enteredOrderStart = startDate;			
@@ -189,15 +210,13 @@ public class UpdateOrderController implements MessageSourceAware {
 		
 		order.setStart(startSqlDate);
 		order.setRepairType(repairTypeSvc.getRepairTypeById(repairTypeId));
-//		order.setRepairType(repairTypeSvc.getRepairTypeById(myOrder.getRepairType()
-//				.getRepairTypeId()));
+		order.setStatus(orderStatusSvc.getOrderStatusById(orderStatusId));
 		
 		if (order.getManager().equals(myOrder.getManager())
 				&& order.getStatus().equals(myOrder.getStatus())
 				&& order.getStart().equals(myOrder.getStart())
 				&& order.getRepairType().getRepairTypeId()
 					.equals(myOrder.getRepairType().getRepairTypeId())) {
-//			log.info("Client has same name");
 			messageOrderNoChanges = 
 					messageSource.getMessage("popup.adminpage.orderNoChanges", null,
 							locale);

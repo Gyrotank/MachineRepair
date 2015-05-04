@@ -25,6 +25,7 @@ import com.glomozda.machinerepair.service.client.ClientService;
 import com.glomozda.machinerepair.service.machine.MachineService;
 import com.glomozda.machinerepair.service.machineserviceable.MachineServiceableService;
 import com.glomozda.machinerepair.service.order.OrderService;
+import com.glomozda.machinerepair.service.orderstatus.OrderStatusService;
 import com.glomozda.machinerepair.service.repairtype.RepairTypeService;
 
 @Controller
@@ -45,7 +46,10 @@ public class ClientPageCreateOrdersController implements MessageSourceAware {
 	private OrderService orderSvc;
 	
 	@Autowired
-	private RepairTypeService repairTypeSvc;
+	private OrderStatusService orderStatusSvc;
+	
+	@Autowired
+	private RepairTypeService repairTypeSvc;;
 	
 	private Client myClient;	
 	
@@ -254,12 +258,13 @@ public class ClientPageCreateOrdersController implements MessageSourceAware {
 		}
 		
 		Order order = new Order(new java.sql.Date(new java.util.Date().getTime()));
-		order.setManager("-");
+//		order.setManager("-");
 		
 //		log.info("Order not exists yet...");		
 		
 		if (orderSvc.add(order, myClient.getClientId(),
-				repairTypeId, machine.getMachineId())) {
+				repairTypeId, machine.getMachineId(),
+				orderStatusSvc.getOrderStatusByName("pending").getOrderStatusId())) {
 			messageRepeatedRepairCreated =
 					messageSource.getMessage("popup.clientpage.orderAdded", null,
 							locale);
@@ -349,11 +354,13 @@ public class ClientPageCreateOrdersController implements MessageSourceAware {
 		m = machineSvc.getMachineForSerialNumberWithFetching(machineSerialNumber);
 		
 		Order order = new Order(new java.sql.Date(new java.util.Date().getTime()));
-		order.setManager("-");
+//		order.setManager("-");
 		
 //		log.info(order.toString());
 		
-		if (orderSvc.add(order, myClient.getClientId(), repairTypeId, m.getMachineId())) {
+		if (orderSvc.add(order, myClient.getClientId(), repairTypeId,
+				m.getMachineId(),
+				orderStatusSvc.getOrderStatusByName("pending").getOrderStatusId())) {
 			messageRepeatedRepairCreated =
 					messageSource.getMessage("popup.clientpage.orderAdded", null,
 							locale);

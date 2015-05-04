@@ -15,12 +15,14 @@ import com.glomozda.machinerepair.domain.client.Client;
 import com.glomozda.machinerepair.domain.machine.Machine;
 import com.glomozda.machinerepair.domain.machineserviceable.MachineServiceable;
 import com.glomozda.machinerepair.domain.order.Order;
+import com.glomozda.machinerepair.domain.orderstatus.OrderStatus;
 import com.glomozda.machinerepair.domain.repairtype.RepairType;
 import com.glomozda.machinerepair.domain.user.User;
 import com.glomozda.machinerepair.service.DAOTestsTemplate;
 import com.glomozda.machinerepair.service.client.ClientService;
 import com.glomozda.machinerepair.service.machine.MachineService;
 import com.glomozda.machinerepair.service.machineserviceable.MachineServiceableService;
+import com.glomozda.machinerepair.service.orderstatus.OrderStatusService;
 import com.glomozda.machinerepair.service.repairtype.RepairTypeService;
 import com.glomozda.machinerepair.service.user.UserService;
 
@@ -31,6 +33,9 @@ public class OrderDAOJDBCTest extends DAOTestsTemplate{
     
 	@Autowired
     private transient OrderService orderService;
+	
+	@Autowired
+    private transient OrderStatusService orderStatusService;
 	
 	@Autowired
     private transient ClientService clientService;
@@ -62,6 +67,10 @@ public class OrderDAOJDBCTest extends DAOTestsTemplate{
         jdbcTemplate.execute("ALTER TABLE Clients "
         		+ "ALTER COLUMN clients_id RESTART WITH 1");
         
+        jdbcTemplate.execute("TRUNCATE TABLE Order_Statuses");
+        jdbcTemplate.execute("ALTER TABLE Order_Statuses "
+        		+ "ALTER COLUMN order_statuses_id RESTART WITH 1");
+        
         jdbcTemplate.execute("TRUNCATE TABLE Repair_Types");
         jdbcTemplate.execute("ALTER TABLE Repair_Types "
         		+ "ALTER COLUMN repair_types_id RESTART WITH 1");
@@ -77,6 +86,10 @@ public class OrderDAOJDBCTest extends DAOTestsTemplate{
         jdbcTemplate.execute("TRUNCATE TABLE Users");
         jdbcTemplate.execute("ALTER TABLE Users ALTER COLUMN users_id RESTART WITH 1");
         
+        orderStatusService.add(new OrderStatus(1, "pending", "в обработке"));
+        orderStatusService.add(new OrderStatus(2, "started", "выполняется"));
+        orderStatusService.add(new OrderStatus(3, "finished", "завершен"));
+        
         userService.add(new User("ivan_user", "qwerty", "qwerty_encoded"));
         userService.add(new User("petro_user", "12345", "12345_encoded"));
         
@@ -85,10 +98,8 @@ public class OrderDAOJDBCTest extends DAOTestsTemplate{
         
         cal.set(2000, 10, 7);
         o1.setStart(new java.sql.Date(cal.getTimeInMillis()));
-        o1.setStatus("finished");
         o1.setManager("Manager");
         o2.setStart(new java.sql.Date(new java.util.Date().getTime()));
-        o2.setStatus("pending");
         o2.setManager("Manager");
         
         final Client cl1 = new Client();
@@ -104,8 +115,8 @@ public class OrderDAOJDBCTest extends DAOTestsTemplate{
         machineService.add(new Machine("SN1", 2010, 2), (long) 1);
         machineService.add(new Machine("SN2", 2013, 1), (long) 2);
         
-        orderService.add(o1, (long) 1, (long) 1, (long) 1);
-        orderService.add(o2, (long) 2, (long) 2, (long) 2);        
+        orderService.add(o1, (long) 1, (long) 1, (long) 1, (long) 3);
+        orderService.add(o2, (long) 2, (long) 2, (long) 2, (long) 1);        
     }
    
     @Test
@@ -245,7 +256,7 @@ public class OrderDAOJDBCTest extends DAOTestsTemplate{
     
     @Test
     public void testGetOrderById() {
-    	Assert.assertTrue(orderService.getOrderById((long) 1).getStatus()
+    	Assert.assertTrue(orderService.getOrderById((long) 1).getStatus().getOrderStatusName()
     			.contentEquals("finished"));
     }
     
@@ -307,14 +318,14 @@ public class OrderDAOJDBCTest extends DAOTestsTemplate{
     
     @Test
     public void testConfirmOrderById() {    	
-        Assert.assertTrue(orderService.confirmOrderById((long) 2, "Manager") == 1);
-        Assert.assertTrue(orderService.confirmOrderById((long) 3, "Manager") == 0);
+        Assert.assertTrue(orderService.confirmOrderById((long) 2, "Manager", (long) 2) == 1);
+        Assert.assertTrue(orderService.confirmOrderById((long) 3, "Manager", (long) 2) == 0);
     }
     
     @Test    
     public void testSetOrderStatusById() {    	
-        Assert.assertTrue(orderService.setOrderStatusById((long) 1, "pending") == 1);
-        Assert.assertTrue(orderService.setOrderStatusById((long) 3, "pending") == 0);
+        Assert.assertTrue(orderService.setOrderStatusById((long) 1, (long) 1) == 1);
+        Assert.assertTrue(orderService.setOrderStatusById((long) 3, (long) 1) == 0);
     }
     
     @Test    

@@ -25,6 +25,7 @@ import com.glomozda.machinerepair.service.client.ClientService;
 import com.glomozda.machinerepair.service.machine.MachineService;
 import com.glomozda.machinerepair.service.machineserviceable.MachineServiceableService;
 import com.glomozda.machinerepair.service.order.OrderService;
+import com.glomozda.machinerepair.service.orderstatus.OrderStatusService;
 import com.glomozda.machinerepair.service.repairtype.RepairTypeService;
 import com.glomozda.machinerepair.service.user.UserService;
 import com.glomozda.machinerepair.service.userauthorization.UserAuthorizationService;
@@ -42,6 +43,9 @@ public class AdminPageOrdersController implements MessageSourceAware {
 
 	@Autowired
 	private RepairTypeService repairTypeSvc;
+	
+	@Autowired
+	private OrderStatusService orderStatusSvc;
 	
 	@Autowired
 	private UserService userSvc;
@@ -72,6 +76,9 @@ public class AdminPageOrdersController implements MessageSourceAware {
 	
 	private String messageOrderMachineId = "";
 	private Long selectedOrderMachineId = (long) 0;
+	
+	private String messageOrderOrderStatusId = "";
+	private Long selectedOrderOrderStatusId = (long) 0;
 	
 	private String messageOrderManager = "";
 	private String selectedOrderManager = "-";
@@ -104,8 +111,9 @@ public class AdminPageOrdersController implements MessageSourceAware {
 		model.addAttribute("users", userSvc.getAll((long) 0, (long) 99));
 		
 		model.addAttribute("clients", clientSvc.getAll((long) 0, (long) 99));
-		model.addAttribute("repair_types", repairTypeSvc.getAll((long) 0, (long) 99));
+		model.addAttribute("repair_types", repairTypeSvc.getAllAvailable());
 		model.addAttribute("machines", machineSvc.getAll((long) 0, (long) 99));
+		model.addAttribute("order_statuses", orderStatusSvc.getAll());
 		List<String> managers = userAuthorizationSvc.getUserLoginsForRole("ROLE_MANAGER");
 		managers.addAll(userAuthorizationSvc.getUserLoginsForRole("ROLE_ADMIN"));
 		java.util.Collections.sort(managers);
@@ -134,6 +142,11 @@ public class AdminPageOrdersController implements MessageSourceAware {
 		messageOrderRepairTypeId = "";		
 		model.addAttribute("selected_order_repair_type_id", selectedOrderRepairTypeId);
 		selectedOrderRepairTypeId = (long) 0;
+		
+		model.addAttribute("message_order_order_status_id", messageOrderOrderStatusId);
+		messageOrderOrderStatusId = "";		
+		model.addAttribute("selected_order_order_status_id", selectedOrderOrderStatusId);
+		selectedOrderOrderStatusId = (long) 0;
 		
 		model.addAttribute("message_order_machine_id", messageOrderMachineId);
 		messageOrderMachineId = "";
@@ -210,6 +223,7 @@ public class AdminPageOrdersController implements MessageSourceAware {
 			@RequestParam("clientId") final Long clientId, 
 			@RequestParam("repairTypeId") final Long repairTypeId, 
 			@RequestParam("machineId") final Long machineId,
+			@RequestParam("orderStatusId") final Long orderStatusId,
 			@RequestParam("startDate") final String startDate,			
 			final Locale locale) {
 		
@@ -231,8 +245,8 @@ public class AdminPageOrdersController implements MessageSourceAware {
 			startSqlDate = null;
 		}		
 		
-		if (clientId == 0 || repairTypeId == 0 || 
-				machineId == 0 || startSqlDate == null || bindingResult.hasErrors()) {
+		if (clientId == 0 || repairTypeId == 0 || machineId == 0 ||
+				orderStatusId == 0 || startSqlDate == null || bindingResult.hasErrors()) {
 			
 			if (clientId == 0) {
 				messageOrderClientId = 
@@ -243,6 +257,12 @@ public class AdminPageOrdersController implements MessageSourceAware {
 			if (repairTypeId == 0) {
 				messageOrderRepairTypeId = 
 						messageSource.getMessage("error.adminpage.repairTypeId", null,
+								locale);			
+			}
+			
+			if (orderStatusId == 0) {
+				messageOrderOrderStatusId = 
+						messageSource.getMessage("error.adminpage.orderStatusId", null,
 								locale);			
 			}
 
@@ -267,19 +287,22 @@ public class AdminPageOrdersController implements MessageSourceAware {
 			selectedOrderClientId = clientId;
 			selectedOrderRepairTypeId = repairTypeId;
 			selectedOrderMachineId = machineId;
+			selectedOrderOrderStatusId = orderStatusId;
 			enteredOrderStart = startDate;
 			selectedOrderManager = order.getManager();
 			return "redirect:/adminpageorders#add_new_order";
 		}
 		
 		if (order.getManager().contentEquals("-") 
-				& !order.getStatus().contentEquals("pending")) {
+				& !orderStatusSvc.getOrderStatusById(orderStatusId)
+					.getOrderStatusName().contentEquals("pending")) {
 			messageOrderManager = 
 					messageSource.getMessage("error.adminpage.managerRequired", null,
 							locale);
 			selectedOrderClientId = clientId;
 			selectedOrderRepairTypeId = repairTypeId;
 			selectedOrderMachineId = machineId;
+			selectedOrderOrderStatusId = orderStatusId;
 			enteredOrderStart = startDate;
 			selectedOrderManager = order.getManager();
 			return "redirect:/adminpageorders#add_new_order";
@@ -287,7 +310,7 @@ public class AdminPageOrdersController implements MessageSourceAware {
 		
 		order.setStart(startSqlDate);		
 		
-		if (orderSvc.add(order, clientId, repairTypeId, machineId)) {
+		if (orderSvc.add(order, clientId, repairTypeId, machineId, orderStatusId)) {
 			messageOrderAdded =
 					messageSource.getMessage("popup.adminpage.orderAdded", null,
 							locale);

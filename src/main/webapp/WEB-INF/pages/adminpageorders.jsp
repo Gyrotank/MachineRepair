@@ -200,32 +200,12 @@
     	<td>${o.start.date}-${o.start.month + 1}-${o.start.year + 1900}</td>
     	<td>    		
     		<c:choose>
-  				<c:when test="${o.status == 'pending' && locale == 'ru'}">
-  					<c:out value="в обработке"/>
-  				</c:when>
-  				<c:when test="${o.status == 'started' && locale == 'ru'}">
-  					<c:out value="выполняется"/>
-	  			</c:when>
-  				<c:when test="${o.status == 'ready' && locale == 'ru'}">
-  					<c:out value="готов"/>
-  				</c:when>
-  				<c:when test="${o.status == 'finished' && locale == 'ru'}">
-  					<c:out value="завершен"/>
-  				</c:when>
-  			</c:choose>
-    			<c:choose>
-  				<c:when test="${o.status == 'pending' && locale == 'en'}">
-	  				<c:out value="pending"/>
-  				</c:when>
-  				<c:when test="${o.status == 'started' && locale == 'en'}">
-  					<c:out value="started"/>
-  				</c:when>
-	  			<c:when test="${o.status == 'ready' && locale == 'en'}">
-  					<c:out value="ready"/>
-  				</c:when>
-  				<c:when test="${o.status == 'finished' && locale == 'en'}">
-  					<c:out value="finished"/>
-  				</c:when>
+				<c:when test="${locale == 'ru'}">
+					<c:out value="${o.status.orderStatusNameRu}"/>
+				</c:when>
+				<c:otherwise>
+					<c:out value="${o.status.orderStatusName}"/>
+				</c:otherwise>
   			</c:choose>
     	</td>
     	<td>${o.manager}</td>
@@ -361,55 +341,47 @@
   			</td>  			  		
   		</tr>
   		<tr>
-  			<td><label for="statusInput">
+  			<td><label>
   				<spring:message code="label.adminpage.addNewOrder.status" />
   			</label></td>
-  			<td><form:select path="status" id="statusInput">
-  				<form:option value="">
+  			<td><select name="orderStatusId">
+  				<option value="0">
   					<spring:message code="label.adminpage.addNewOrder.selectStatus" />
-  				</form:option>
-  				<form:option value="pending">  					
-  					<c:choose>
-    					<c:when test="${locale == 'ru'}">
-    						<c:out value="в обработке"/>
-    					</c:when>
-    					<c:otherwise>
-    						<c:out value="pending"/>
-    					</c:otherwise>
-    				</c:choose>
-  				</form:option>
-  				<form:option value="started">  					
-  					<c:choose>
-    					<c:when test="${locale == 'ru'}">
-    						<c:out value="выполняется"/>
-    					</c:when>
-    					<c:otherwise>
-    						<c:out value="started" />
-    					</c:otherwise>
-    				</c:choose>
-  				</form:option>
-  				<form:option value="ready">
-  					<c:choose>
-    					<c:when test="${locale == 'ru'}">
-    						<c:out value="готов"/>
-    					</c:when>
-    					<c:otherwise>
-    						<c:out value="ready" />
-    					</c:otherwise>
-    				</c:choose>
-  				</form:option>
-  				<form:option value="finished">
-  					<c:choose>
-    					<c:when test="${locale == 'ru'}">
-    						<c:out value="завершен"/>
-    					</c:when>
-    					<c:otherwise>
-    						<c:out value="finished" />
-    					</c:otherwise>
-    				</c:choose>
-  				</form:option>
-  			</form:select></td>
-  			<td><form:errors path="status" cssClass="error" /></td>  			
+  				</option>
+  				<c:forEach var="os" items="${order_statuses}">
+  				<c:choose>
+  					<c:when test="${selected_order_order_status_id == os.orderStatusId}">
+  						<option selected value="${os.orderStatusId}">
+  							<c:choose>
+  							<c:when test="${locale == 'ru'}">
+								<c:out value="${os.orderStatusNameRu}"/>
+							</c:when>
+							<c:otherwise>
+								<c:out value="${os.orderStatusName}"/>
+							</c:otherwise>
+  							</c:choose>
+  						</option>
+  					</c:when>
+  					<c:otherwise>
+  						<option value="${os.orderStatusId}">
+  							<c:choose>
+  							<c:when test="${locale == 'ru'}">
+								<c:out value="${os.orderStatusNameRu}"/>
+							</c:when>
+							<c:otherwise>
+								<c:out value="${os.orderStatusName}"/>
+							</c:otherwise>
+  							</c:choose>
+  						</option>
+  					</c:otherwise>
+  				</c:choose>  				
+  			</c:forEach>
+  			</select></td>
+  			<td>
+  			<div class="error">
+  				<c:out value="${message_order_order_status_id}"/>
+  			</div>
+  			</td>  			
   		</tr>
   		<tr>
   			<td>

@@ -179,115 +179,54 @@
   			</label></td>
   			<td>
   				<c:choose>
-  				<c:when test="${orderCurrent.status == 'pending' && locale == 'ru'}">  					
-  					<input value="в обработке" maxlength="50" 
+  				<c:when test="${locale == 'ru'}">  					
+  					<input value="${orderCurrent.status.orderStatusNameRu}" maxlength="50" 
   					size="50" readonly="readonly" disabled="disabled"/>
   				</c:when>
-  				<c:when test="${orderCurrent.status == 'started' && locale == 'ru'}">
-  					<input value="выполняется" maxlength="50" 
+  				<c:otherwise>
+  					<input value="${orderCurrent.status.orderStatusName}" maxlength="50" 
   					size="50" readonly="readonly" disabled="disabled"/>
-	  			</c:when>
-  				<c:when test="${orderCurrent.status == 'ready' && locale == 'ru'}">
-  					<input value="готов" maxlength="50" 
-  					size="50" readonly="readonly" disabled="disabled"/>
-  				</c:when>
-  				<c:when test="${orderCurrent.status == 'finished' && locale == 'ru'}">
-  					<input value="завершен" maxlength="50" 
-  					size="50" readonly="readonly" disabled="disabled"/>
-  				</c:when>
-  				</c:choose>
-    			<c:choose>
-  				<c:when test="${orderCurrent.status == 'pending' && locale == 'en'}">
-	  				<input value="pending" maxlength="50" 
-  					size="50" readonly="readonly" disabled="disabled"/>
-  				</c:when>
-  				<c:when test="${orderCurrent.status == 'started' && locale == 'en'}">
-  					<input value="started" maxlength="50" 
-  					size="50" readonly="readonly" disabled="disabled"/>
-  				</c:when>
-	  			<c:when test="${orderCurrent.status == 'ready' && locale == 'en'}">
-  					<input value="ready" maxlength="50" 
-  					size="50" readonly="readonly" disabled="disabled"/>
-  				</c:when>
-  				<c:when test="${orderCurrent.status == 'finished' && locale == 'en'}">
-  					<input value="finished" maxlength="50" 
-  					size="50" readonly="readonly" disabled="disabled"/>
-  				</c:when>
-  				</c:choose>
+  				</c:otherwise>
+  				</c:choose>    			
   			</td>
-  			<td><form:select path="status" id="statusInput">
-  				<form:option selected="true" value="${orderCurrent.status}">
+  			<td><select name="orderStatusId">
+  				<option value="0">
+  					<spring:message code="label.adminpage.addNewOrder.selectStatus" />
+  				</option>
+  				<c:forEach var="os" items="${order_statuses}">
   				<c:choose>
-  				<c:when test="${orderCurrent.status == 'pending' && locale == 'ru'}">
-  					<c:out value="в обработке"/>
-  				</c:when>
-  				<c:when test="${orderCurrent.status == 'started' && locale == 'ru'}">
-  					<c:out value="выполняется"/>
-	  			</c:when>
-  				<c:when test="${orderCurrent.status == 'ready' && locale == 'ru'}">
-  					<c:out value="готов"/>
-  				</c:when>
-  				<c:when test="${orderCurrent.status == 'finished' && locale == 'ru'}">
-  					<c:out value="завершен"/>
-  				</c:when>
-  				</c:choose>
-    			<c:choose>
-  				<c:when test="${orderCurrent.status == 'pending' && locale == 'en'}">
-	  				<c:out value="pending"/>
-  				</c:when>
-  				<c:when test="${orderCurrent.status == 'started' && locale == 'en'}">
-  					<c:out value="started"/>
-  				</c:when>
-	  			<c:when test="${orderCurrent.status == 'ready' && locale == 'en'}">
-  					<c:out value="ready"/>
-  				</c:when>
-  				<c:when test="${orderCurrent.status == 'finished' && locale == 'en'}">
-  					<c:out value="finished"/>
-  				</c:when>
-  				</c:choose>
-  				</form:option>
-  				<form:option value="pending">  					
-  					<c:choose>
-    					<c:when test="${locale == 'ru'}">
-    						<c:out value="в обработке"/>
-    					</c:when>
-    					<c:otherwise>
-    						<c:out value="pending"/>
-    					</c:otherwise>
-    				</c:choose>
-  				</form:option>
-  				<form:option value="started">  					
-  					<c:choose>
-    					<c:when test="${locale == 'ru'}">
-    						<c:out value="выполняется"/>
-    					</c:when>
-    					<c:otherwise>
-    						<c:out value="started" />
-    					</c:otherwise>
-    				</c:choose>
-  				</form:option>
-  				<form:option value="ready">
-  					<c:choose>
-    					<c:when test="${locale == 'ru'}">
-    						<c:out value="готов"/>
-    					</c:when>
-    					<c:otherwise>
-    						<c:out value="ready" />
-    					</c:otherwise>
-    				</c:choose>
-  				</form:option>
-  				<form:option value="finished">
-  					<c:choose>
-    					<c:when test="${locale == 'ru'}">
-    						<c:out value="завершен"/>
-    					</c:when>
-    					<c:otherwise>
-    						<c:out value="finished" />
-    					</c:otherwise>
-    				</c:choose>
-  				</form:option>
-  			</form:select></td>
-  			<td><form:errors path="status" cssClass="error" /></td>  			
+  					<c:when test="${orderCurrent.status.orderStatusId == os.orderStatusId}">
+  						<option selected value="${os.orderStatusId}">
+  							<c:choose>
+  							<c:when test="${locale == 'ru'}">
+								<c:out value="${os.orderStatusNameRu}"/>
+							</c:when>
+							<c:otherwise>
+								<c:out value="${os.orderStatusName}"/>
+							</c:otherwise>
+  							</c:choose>
+  						</option>
+  					</c:when>
+  					<c:otherwise>
+  						<option value="${os.orderStatusId}">
+  							<c:choose>
+  							<c:when test="${locale == 'ru'}">
+								<c:out value="${os.orderStatusNameRu}"/>
+							</c:when>
+							<c:otherwise>
+								<c:out value="${os.orderStatusName}"/>
+							</c:otherwise>
+  							</c:choose>
+  						</option>
+  					</c:otherwise>
+  				</c:choose>  				
+  			</c:forEach>
+  			</select></td>
+  			<td>
+  				<div class="error">
+  					<c:out value="${message_order_order_status_id}"/>
+  				</div>
+  			</td>  			
   		</tr>
   		<tr>
   			<td>

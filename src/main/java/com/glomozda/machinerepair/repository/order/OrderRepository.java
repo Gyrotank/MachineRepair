@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.glomozda.machinerepair.domain.client.Client;
 import com.glomozda.machinerepair.domain.machine.Machine;
 import com.glomozda.machinerepair.domain.order.Order;
+import com.glomozda.machinerepair.domain.orderstatus.OrderStatus;
 import com.glomozda.machinerepair.domain.repairtype.RepairType;
 
 @Repository
@@ -247,19 +248,21 @@ public class OrderRepository {
 	}
 
 	@Transactional
-	public Boolean add(Order o, Long clientId, Long repairTypeId, Long machineId) {
+	public Boolean add(Order o, Long clientId, 
+			Long repairTypeId, Long machineId, Long orderStatusId) {
 
 		Client client = em.getReference(Client.class, clientId);
 		RepairType repairType = em.getReference(RepairType.class, repairTypeId);
 		Machine machine = em.getReference(Machine.class, machineId);
+		OrderStatus orderStatus = em.getReference(OrderStatus.class, orderStatusId);
 
 		Order newOrder = new Order();
 		newOrder.setClient(client);
 		newOrder.setRepairType(repairType);
 		newOrder.setMachine(machine);
+		newOrder.setStatus(orderStatus);
 		newOrder.setStart(o.getStart());		
-		newOrder.setStatus(o.getStatus());
-		newOrder.setManager(o.getManager());
+		newOrder.setManager(o.getManager());		
 		
 		em.persist(newOrder);
 		
@@ -271,20 +274,23 @@ public class OrderRepository {
 	}
 	
 	@Transactional
-	public Integer confirmOrderById(Long orderId, String manager) {
-		Query query = em.createNamedQuery("Order.confirmOrderById");
+	public Integer confirmOrderById(Long orderId, String manager, Long orderStatusId) {
+		OrderStatus orderStatus = em.getReference(OrderStatus.class, orderStatusId);
+		Query query = em.createNamedQuery("Order.confirmOrderById");		
 		int updateCount = query
 							.setParameter("id", orderId)
 							.setParameter("manager", manager)
+							.setParameter("status", orderStatus)
 							.executeUpdate();
 		return updateCount;
 	}
 	
 	@Transactional
-	public Integer setOrderStatusById(Long orderId, String status) {
+	public Integer setOrderStatusById(Long orderId, Long orderStatusId) {
+		OrderStatus orderStatus = em.getReference(OrderStatus.class, orderStatusId);
 		Query query = em.createNamedQuery("Order.setOrderStatusById");
 		query.setParameter("id", orderId);
-		query.setParameter("status", status);
+		query.setParameter("status", orderStatus);
 		int updateCount = query.executeUpdate();
 		return updateCount;		
 	}

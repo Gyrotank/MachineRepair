@@ -3,6 +3,7 @@ package com.glomozda.machinerepair.service.order;
 import java.util.List;
 
 import com.glomozda.machinerepair.domain.order.*;
+import com.glomozda.machinerepair.domain.orderstatus.OrderStatus;
 import com.glomozda.machinerepair.repository.order.OrderRepository;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -120,18 +121,19 @@ public class OrderService {
 	}
 
 	@Transactional
-	public Boolean add(Order o, Long clientId, Long repairTypeId, Long machineId) {
-		return orderRepository.add(o, clientId, repairTypeId, machineId);
+	public Boolean add(Order o, Long clientId,
+			Long repairTypeId, Long machineId, Long orderStatusId) {
+		return orderRepository.add(o, clientId, repairTypeId, machineId, orderStatusId);
 	}
 	
 	@Transactional
-	public Integer confirmOrderById(Long orderId, String manager) {
-		return orderRepository.confirmOrderById(orderId, manager);
+	public Integer confirmOrderById(Long orderId, String manager, Long orderStatusId) {
+		return orderRepository.confirmOrderById(orderId, manager, orderStatusId);
 	}
 	
 	@Transactional
-	public Integer setOrderStatusById(Long orderId, String status) {
-		return orderRepository.setOrderStatusById(orderId, status);
+	public Integer setOrderStatusById(Long orderId, Long orderStatusId) {
+		return orderRepository.setOrderStatusById(orderId, orderStatusId);
 	}
 	
 	@Transactional

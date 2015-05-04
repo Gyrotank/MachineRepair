@@ -19,6 +19,7 @@ import com.glomozda.machinerepair.domain.user.User;
 import com.glomozda.machinerepair.service.client.ClientService;
 import com.glomozda.machinerepair.service.machine.MachineService;
 import com.glomozda.machinerepair.service.order.OrderService;
+import com.glomozda.machinerepair.service.orderstatus.OrderStatusService;
 import com.glomozda.machinerepair.service.user.UserService;
 
 @Controller
@@ -26,6 +27,9 @@ public class ManagerPagePendingOrdersController implements MessageSourceAware {
 	
 	@Autowired
 	private OrderService orderSvc;
+	
+	@Autowired
+	private OrderStatusService orderStatusSvc;
 	
 	@Autowired
 	private ClientService clientSvc;
@@ -156,14 +160,15 @@ public class ManagerPagePendingOrdersController implements MessageSourceAware {
 							null, locale);
 			return "redirect:/managerpagependingorders";
 		}
-		if (!myOrder.getStatus().contentEquals("pending")) {			
+		if (!myOrder.getStatus().getOrderStatusName().contentEquals("pending")) {			
 			messageConfirmFailed = 
 					messageSource
 					.getMessage("popup.managerpage.pending.actions.confirm.failed.orderNotPending",
 							null, locale);
 			return "redirect:/managerpagependingorders";
 		}
-		orderSvc.confirmOrderById(orderId, myUser.getLogin());
+		orderSvc.confirmOrderById(orderId, myUser.getLogin(),
+				orderStatusSvc.getOrderStatusByName("started").getOrderStatusId());
 		messageConfirmSucceeded = 
 				messageSource
 				.getMessage("popup.managerpage.pending.actions.confirm.succeeded",
@@ -181,7 +186,7 @@ public class ManagerPagePendingOrdersController implements MessageSourceAware {
 							null, locale);
 			return "redirect:/managerpagependingorders";			
 		}
-		if (!myOrder.getStatus().contentEquals("pending")) {
+		if (!myOrder.getStatus().getOrderStatusName().contentEquals("pending")) {
 			messageCancelFailed = 
 					messageSource
 					.getMessage("popup.managerpage.pending.actions.cancel.failed.orderNotPending",

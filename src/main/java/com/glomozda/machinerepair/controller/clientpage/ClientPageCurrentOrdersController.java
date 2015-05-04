@@ -20,6 +20,7 @@ import com.glomozda.machinerepair.service.client.ClientService;
 import com.glomozda.machinerepair.service.machine.MachineService;
 import com.glomozda.machinerepair.service.machineserviceable.MachineServiceableService;
 import com.glomozda.machinerepair.service.order.OrderService;
+import com.glomozda.machinerepair.service.orderstatus.OrderStatusService;
 import com.glomozda.machinerepair.service.repairtype.RepairTypeService;
 
 @Controller
@@ -41,6 +42,9 @@ public class ClientPageCurrentOrdersController implements MessageSourceAware {
 	
 	@Autowired
 	private RepairTypeService repairTypeSvc;
+	
+	@Autowired
+	private OrderStatusService orderStatusSvc;
 	
 	private static final Long _defaultPageSize = (long) 25;
 	
@@ -156,7 +160,7 @@ public class ClientPageCurrentOrdersController implements MessageSourceAware {
 							null, locale);
 			return "redirect:/clientpagecurrentorders";
 		}
-		if (!myOrder.getStatus().contentEquals("ready")) {			
+		if (!myOrder.getStatus().getOrderStatusName().contentEquals("ready")) {			
 			messagePaymentFailed = 
 					messageSource
 					.getMessage("popup.clientpage.yourOrders.actions.pay.orderNotReady",
@@ -164,7 +168,8 @@ public class ClientPageCurrentOrdersController implements MessageSourceAware {
 			return "redirect:/clientpagecurrentorders";
 		}
 		
-		orderSvc.setOrderStatusById(orderId, "finished");
+		orderSvc.setOrderStatusById(orderId,
+				orderStatusSvc.getOrderStatusByName("finished").getOrderStatusId());
 		messagePaymentSucceeded = 
 				messageSource
 				.getMessage("popup.clientpage.yourOrders.actions.pay.success",

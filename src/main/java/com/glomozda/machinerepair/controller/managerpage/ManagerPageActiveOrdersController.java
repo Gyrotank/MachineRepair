@@ -19,6 +19,7 @@ import com.glomozda.machinerepair.domain.user.User;
 import com.glomozda.machinerepair.service.client.ClientService;
 import com.glomozda.machinerepair.service.machine.MachineService;
 import com.glomozda.machinerepair.service.order.OrderService;
+import com.glomozda.machinerepair.service.orderstatus.OrderStatusService;
 import com.glomozda.machinerepair.service.user.UserService;
 
 @Controller
@@ -26,6 +27,9 @@ public class ManagerPageActiveOrdersController implements MessageSourceAware {
 	
 	@Autowired
 	private OrderService orderSvc;
+	
+	@Autowired
+	private OrderStatusService orderStatusSvc;
 	
 	@Autowired
 	private ClientService clientSvc;
@@ -294,7 +298,7 @@ public class ManagerPageActiveOrdersController implements MessageSourceAware {
 							null, locale);
 			return "redirect:/managerpageactiveorders";
 		}
-		if (!myOrder.getStatus().contentEquals("started")) {
+		if (!myOrder.getStatus().getOrderStatusName().contentEquals("started")) {
 			messageSetReadyFailed = 
 					messageSource
 					.getMessage(
@@ -302,7 +306,8 @@ public class ManagerPageActiveOrdersController implements MessageSourceAware {
 							null, locale);
 			return "redirect:/managerpageactiveorders";
 		}
-		orderSvc.setOrderStatusById(orderId, "ready");
+		orderSvc.setOrderStatusById(orderId, 
+			orderStatusSvc.getOrderStatusByName("ready").getOrderStatusId());
 		myOrder = orderSvc.getOrderByIdWithFetching(orderId);
 		startedOrdersForSelectedClient.remove(
 				startedOrdersForSelectedClient.indexOf(myOrder));		

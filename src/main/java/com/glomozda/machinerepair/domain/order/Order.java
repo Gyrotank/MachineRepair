@@ -17,6 +17,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import com.glomozda.machinerepair.domain.client.Client;
 import com.glomozda.machinerepair.domain.machine.Machine;
+import com.glomozda.machinerepair.domain.orderstatus.OrderStatus;
 import com.glomozda.machinerepair.domain.repairtype.RepairType;
 
 @SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
@@ -24,24 +25,30 @@ import com.glomozda.machinerepair.domain.repairtype.RepairType;
 	@NamedQuery(name="Order.findAll", query="SELECT o FROM Order o"),
 	@NamedQuery(name="Order.findAllWithFetching",
 		query="SELECT o FROM Order o "
-			+ "LEFT JOIN FETCH o.client LEFT JOIN FETCH o.repairType "
+			+ "LEFT JOIN FETCH o.client "
+			+ "LEFT JOIN FETCH o.repairType "
+			+ "LEFT JOIN FETCH o.status "
 			+ "LEFT JOIN FETCH o.machine om "
 			+ "LEFT JOIN FETCH om.machineServiceable "
 			+ "ORDER BY o.start DESC"),
 	@NamedQuery(name="Order.findOrderById",	query="SELECT o FROM Order o"
 			+ " WHERE o.orderId = :id"),
 	@NamedQuery(name="Order.findOrderByIdWithFetching",	query="SELECT o FROM Order o"
-			+ " LEFT JOIN FETCH o.client LEFT JOIN FETCH o.repairType"
+			+ " LEFT JOIN FETCH o.client"
+			+ " LEFT JOIN FETCH o.repairType"
+			+ " LEFT JOIN FETCH o.status"
 			+ " LEFT JOIN FETCH o.machine as om LEFT JOIN FETCH om.machineServiceable"
 			+ " WHERE o.orderId = :id"),
 	@NamedQuery(name="Order.findOrdersByStatus", query="SELECT o FROM Order o"
-			+ " WHERE o.status = :status"),
+			+ " WHERE o.status.orderStatusName = :status"),
 	@NamedQuery(name="Order.countOrdersByStatus", query="SELECT COUNT(o) FROM Order o"
-			+ " WHERE o.status = :status"),
+			+ " WHERE o.status.orderStatusName = :status"),
 	@NamedQuery(name="Order.findOrdersByStatusWithFetching", query="SELECT o FROM Order o"
-			+ " LEFT JOIN FETCH o.client LEFT JOIN FETCH o.repairType"
+			+ " LEFT JOIN FETCH o.client"
+			+ " LEFT JOIN FETCH o.repairType"
+			+ " LEFT JOIN FETCH o.status"
 			+ " LEFT JOIN FETCH o.machine as om LEFT JOIN FETCH om.machineServiceable"
-			+ " WHERE o.status = :status"
+			+ " WHERE o.status.orderStatusName = :status"
 			+ " ORDER BY o.client.clientName"),
 	@NamedQuery(name="Order.findOrdersByClientId", query="SELECT o FROM Order o"
 			+ " WHERE o.client.clientId = :id"),
@@ -49,50 +56,55 @@ import com.glomozda.machinerepair.domain.repairtype.RepairType;
 			+ " WHERE o.client.clientId = :id"),
 	@NamedQuery(name="Order.findOrdersByClientIdAndStatusWithFetching",
 		query="SELECT o FROM Order o"
-			+ " LEFT JOIN FETCH o.client LEFT JOIN FETCH o.repairType"
+			+ " LEFT JOIN FETCH o.client"
+			+ " LEFT JOIN FETCH o.repairType"
+			+ " LEFT JOIN FETCH o.status"
 			+ " LEFT JOIN FETCH o.machine as om LEFT JOIN FETCH om.machineServiceable"
-			+ " WHERE o.client.clientId = :id AND o.status = :status"),
+			+ " WHERE o.client.clientId = :id AND o.status.orderStatusName = :status"),
 	@NamedQuery(name="Order.findOrderByClientIdAndMachineSNAndNotFinished",
 		query="SELECT o FROM Order o"			
 			+ " WHERE o.client.clientId = :id"
 			+ " AND o.machine.machineSerialNumber = :sn"
-			+ " AND o.status != 'finished'"),
+			+ " AND o.status.orderStatusName != 'finished'"),
 	@NamedQuery(name="Order.countOrdersByClientIdAndStatus",
 		query="SELECT COUNT(o) FROM Order o"			
-			+ " WHERE o.client.clientId = :id AND o.status = :status"),
+			+ " WHERE o.client.clientId = :id AND o.status.orderStatusName = :status"),
 	@NamedQuery(name="Order.confirmOrderById", 
-		query="UPDATE Order o SET status = 'started', manager = :manager"
-			+ " WHERE o.orderId = :id AND o.status = 'pending'"),
+		query="UPDATE Order o"
+			+ " SET status = :status, manager = :manager"
+			+ " WHERE o.orderId = :id"),
 	@NamedQuery(name="Order.setOrderStatusById", query="UPDATE Order o SET status = :status "
 			+ " WHERE o.orderId = :id"),
 	@NamedQuery(name="Order.cancelOrderById", query="DELETE FROM Order o"
-			+ " WHERE o.orderId = :id AND o.status = 'pending'"),
+			+ " WHERE o.orderId = :id"),
 	@NamedQuery(name="Order.countAll", query="SELECT COUNT(o) "
 					+ "FROM Order o"),
 	@NamedQuery(name="Order.findCurrentOrdersByClientIdWithFetching", 
 		query="SELECT o FROM Order o"
-			+ " LEFT JOIN FETCH o.client LEFT JOIN FETCH o.repairType"
+			+ " LEFT JOIN FETCH o.client"
+			+ " LEFT JOIN FETCH o.repairType"
+			+ " LEFT JOIN FETCH o.status"
 			+ " LEFT JOIN FETCH o.machine as om LEFT JOIN FETCH om.machineServiceable"
 			+ " WHERE o IN"
 			+ " (SELECT o1 FROM Order o1"
-			+ " WHERE o1.client.clientId = :id AND o1.status = 'pending')"
+			+ " WHERE o1.client.clientId = :id AND o1.status.orderStatusName = 'pending')"
 			+ " OR o IN"
 			+ " (SELECT o2 FROM Order o2"			
-			+ " WHERE o2.client.clientId = :id AND o2.status = 'ready')"
+			+ " WHERE o2.client.clientId = :id AND o2.status.orderStatusName = 'ready')"
 			+ " OR o IN"
 			+ " (SELECT o3 FROM Order o3"			
-			+ " WHERE o3.client.clientId = :id AND o3.status = 'started')"),
+			+ " WHERE o3.client.clientId = :id AND o3.status.orderStatusName = 'started')"),
 	@NamedQuery(name="Order.countCurrentOrdersByClientId", 
 			query="SELECT COUNT(o) FROM Order o"				
 				+ " WHERE o IN"
 				+ " (SELECT o1 FROM Order o1"		
-				+ " WHERE o1.client.clientId = :id AND o1.status = 'pending')"
+				+ " WHERE o1.client.clientId = :id AND o1.status.orderStatusName = 'pending')"
 				+ " OR o IN"
 				+ " (SELECT o2 FROM Order o2"
-				+ " WHERE o2.client.clientId = :id AND o2.status = 'ready')"
+				+ " WHERE o2.client.clientId = :id AND o2.status.orderStatusName = 'ready')"
 				+ " or o IN"
 				+ " (SELECT o3 FROM Order o3"
-				+ " WHERE o3.client.clientId = :id AND o3.status = 'started')"),
+				+ " WHERE o3.client.clientId = :id AND o3.status.orderStatusName = 'started')"),
 	@NamedQuery(name="Order.updateOrderById", query="UPDATE Order o "
 			+ "SET o.repairType = :rt,"
 			+ "o.start = :start, "
@@ -125,9 +137,9 @@ public class Order {
 	@Column(name = "start")	
 	private Date start;
 	
-	@Column(name = "status")
-	@NotEmpty
-	private String status;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "status_id")	
+	private OrderStatus status;
 	
 	@Column(name = "manager")
 	@NotEmpty
@@ -137,12 +149,11 @@ public class Order {
 	}
 
 	public Order(final Date start) {		
-		this.start = start;
-		this.status = "pending";
+		this.start = start;		
 		this.manager = "-";
 	}
 	
-	public Order(final Date start, final String status) {		
+	public Order(final Date start, final OrderStatus status) {		
 		this.start = start;
 		this.status = status;
 		this.manager = "-";
@@ -199,12 +210,16 @@ public class Order {
 		this.start = start;
 	}
 
-	public String getStatus() {
+	public OrderStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(final String status) {		
-		this.status = status;
+	public void setStatus(final OrderStatus status) {		
+		this.status = status;		
+		
+        if (!status.getOrders().contains(this)) {
+        	status.getOrders().add(this);
+        }
 	}
 
 	public String getManager() {

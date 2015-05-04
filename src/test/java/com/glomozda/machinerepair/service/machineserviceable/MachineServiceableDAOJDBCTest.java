@@ -71,4 +71,21 @@ public class MachineServiceableDAOJDBCTest extends DAOTestsTemplate{
     public void testGetMachineServiceableCount() {
     	Assert.assertTrue(machineServiceableService.getMachineServiceableCount() == 2);
     }
+    
+    @Test
+    public void testSetMachineServiceableAvailableById() {
+    	Assert.assertTrue(machineServiceableService
+    			.setMachineServiceableAvailableById((long) 1, (byte) 0) == 1);
+    	Assert.assertTrue(machineServiceableService
+    			.setMachineServiceableAvailableById((long) 3, (byte) 1) == 0);
+    }
+    
+    @Test
+    public void testUpdateMachineServiceableById() {
+    	final MachineServiceable ms3 = new MachineServiceable("M-S-2", "ATM-2", "USA", "���");
+    	Assert.assertTrue(machineServiceableService
+    			.updateMachineServiceableById((long) 1, ms3) == 1);
+    	Assert.assertTrue(machineServiceableService
+    			.updateMachineServiceableById((long) 3, ms3) == 0);
+    }
 }

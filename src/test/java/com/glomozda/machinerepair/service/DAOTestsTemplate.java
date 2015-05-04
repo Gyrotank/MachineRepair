@@ -10,8 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/persistenceContextTest.xml"})
 public abstract class DAOTestsTemplate {
-
+	
     @Autowired
-    protected JdbcTemplate jdbcTemplate; 
-
+    protected JdbcTemplate jdbcTemplate;    
 }

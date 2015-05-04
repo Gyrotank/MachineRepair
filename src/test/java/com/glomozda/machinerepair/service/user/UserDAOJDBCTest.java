@@ -109,4 +109,11 @@ public class UserDAOJDBCTest extends DAOTestsTemplate{
     public void testGetUserCount() {
     	Assert.assertTrue(userService.getUserCount() == 2);
     }
+    
+    @Test
+    public void testSetUserEnabledById() {
+    	Assert.assertTrue(userService.setUserEnabledById((long) 1, (byte) 0) == 1);
+    	Assert.assertTrue(userService.setUserEnabledById((long) 1, (byte) 1) == 1);
+    	Assert.assertTrue(userService.setUserEnabledById((long) 3, (byte) 0) == 0);
+    }
 }

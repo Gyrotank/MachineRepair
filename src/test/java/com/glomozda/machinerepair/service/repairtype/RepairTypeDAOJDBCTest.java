@@ -62,6 +62,20 @@ public class RepairTypeDAOJDBCTest extends DAOTestsTemplate{
     
     @Test
     public void testGetRepairTypeById() {
-    	Assert.assertTrue(repairTypeService.getRepairTypeById((long) 1).getRepairTypeName().contentEquals("Full"));
+    	Assert.assertTrue(repairTypeService.getRepairTypeById((long) 1)
+    			.getRepairTypeName().contentEquals("Full"));
+    }
+    
+    @Test
+    public void testSetRepairTypeAvailableById() {
+    	Assert.assertTrue(repairTypeService.setRepairTypeAvailableById((long) 1, (byte) 0) == 1);
+    	Assert.assertTrue(repairTypeService.setRepairTypeAvailableById((long) 3, (byte) 0) == 0);
+    }
+    
+    @Test
+    public void testUpdateRepairTypeById() {
+    	RepairType rt3 = new RepairType("Partial", "���������", new BigDecimal(5000), 3);
+    	Assert.assertTrue(repairTypeService.updateRepairTypeById((long) 1, rt3) == 1);
+    	Assert.assertTrue(repairTypeService.updateRepairTypeById((long) 3, rt3) == 0);
     }
 }

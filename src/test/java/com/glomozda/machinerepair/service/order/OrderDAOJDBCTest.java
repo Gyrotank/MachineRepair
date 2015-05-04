@@ -306,25 +306,28 @@ public class OrderDAOJDBCTest extends DAOTestsTemplate{
     }
     
     @Test
-    @Ignore
     public void testConfirmOrderById() {    	
-        orderService.confirmOrderById((long) 2, "Some Manager");        
-        Assert.assertTrue(orderService.getOrderByIdWithFetching((long) 2)
-        		.getStatus().contentEquals("started"));
+        Assert.assertTrue(orderService.confirmOrderById((long) 2, "Manager") == 1);
+        Assert.assertTrue(orderService.confirmOrderById((long) 3, "Manager") == 0);
     }
     
-    @Test
-    @Ignore
+    @Test    
     public void testSetOrderStatusById() {    	
-        orderService.setOrderStatusById((long) 1, "pending");
-        Assert.assertTrue(orderService.getOrderByIdWithFetching((long) 1)
-        		.getStatus().contentEquals("pending"));
+        Assert.assertTrue(orderService.setOrderStatusById((long) 1, "pending") == 1);
+        Assert.assertTrue(orderService.setOrderStatusById((long) 3, "pending") == 0);
+    }
+    
+    @Test    
+    public void testCancelOrderById() {    	
+        Assert.assertTrue(orderService.cancelOrderById((long) 2) == 1);
+        Assert.assertTrue(orderService.cancelOrderById((long) 2) == 0);
     }
     
     @Test
-    @Ignore
-    public void testCancelOrderById() {    	
-        orderService.cancelOrderById((long) 2);
-        Assert.assertNull(orderService.getOrderByIdWithFetching((long) 2));
+    public void testUpdateOrderById() {
+    	Order o3 = new Order();
+    	o3.setRepairType(orderService.getOrderByIdWithFetching((long) 1).getRepairType());
+    	Assert.assertTrue(orderService.updateOrderById((long) 1, o3) == 1);
+    	Assert.assertTrue(orderService.updateOrderById((long) 3, o3) == 0);
     }
 }

@@ -111,4 +111,10 @@ public class ClientDAOJDBCTest extends DAOTestsTemplate{
     	final Client actualResult = clientService.getClientById((long) 1);
         Assert.assertEquals(cl1, actualResult);
     }
+    
+    @Test
+    public void testupdateClientNameById() {
+    	Assert.assertTrue(clientService.updateClientNameById((long) 1, "i_user") == 1);
+    	Assert.assertTrue(clientService.updateClientNameById((long) 3, "s_user") == 0);
+    }
 }

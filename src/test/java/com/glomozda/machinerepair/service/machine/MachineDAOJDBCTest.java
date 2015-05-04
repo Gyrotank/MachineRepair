@@ -2,7 +2,6 @@ package com.glomozda.machinerepair.service.machine;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -16,8 +15,8 @@ import com.glomozda.machinerepair.service.machineserviceable.MachineServiceableS
 @SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
 @ContextConfiguration(locations = "classpath:spring-context-test.xml")
 @Transactional
-public class MachineDAOJDBCTest extends DAOTestsTemplate{
-    
+public class MachineDAOJDBCTest extends DAOTestsTemplate{	
+	
 	@Autowired
     private transient MachineServiceableService machineServiceableService;
     
@@ -84,13 +83,10 @@ public class MachineDAOJDBCTest extends DAOTestsTemplate{
         		.getMachineServiceableName().contentEquals("M-S-1"));
     }
     
-    @Test
-    @Ignore
+    @Test    
     public void testIncrementTimesRepairedById() {    	
-        machineService.incrementTimesRepairedById(machineService.
-        		getMachineForSerialNumber("SN2").getMachineId());        
-        Assert.assertEquals(2, machineService.getMachineForSerialNumber("SN2")
-        		.getMachineTimesRepaired().intValue());
+        Machine machine = machineService.getMachineForSerialNumber("SN2");    	        
+        Assert.assertTrue(machineService.incrementTimesRepairedById(machine.getMachineId()) == 1);
     }
     
     @Test
@@ -102,5 +98,15 @@ public class MachineDAOJDBCTest extends DAOTestsTemplate{
     public void testGetMachineById() {
     	final Machine actualResult = machineService.getMachineById((long) 1);
     	Assert.assertEquals(m1, actualResult);
+    }
+    
+    @Test    
+    public void testUpdateMachineById() {    	
+        Machine machineExisting = machineService.getMachineForSerialNumber("SN2");
+        Machine machineNew = new Machine("SN3", 2014, 2);
+        Assert.assertTrue(machineService
+        		.updateMachineById(machineExisting.getMachineId(), machineNew) == 1);
+        Assert.assertTrue(machineService
+        		.updateMachineById((long) 3, machineNew) == 0);
     }
 }

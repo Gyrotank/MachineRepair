@@ -38,7 +38,7 @@ public class AdminPageRepairTypesController implements MessageSourceAware {
 	
 	private MessageSource messageSource;
 	
-	private static final Long _defaultPageSize = (long) 25;
+	private static final Long _defaultPageSize = (long) 10;
 	
 	private String messageEnableDisableFailed = "";
 	private String messageEnableDisableSucceeded = "";
@@ -48,6 +48,7 @@ public class AdminPageRepairTypesController implements MessageSourceAware {
 	
 	private Long repairTypePagingFirstIndex = (long) 0;
 	private Long repairTypePagingLastIndex = _defaultPageSize - 1;
+	private Long pageNumber = (long) 0;
 	
 	@Override
 	public void setMessageSource(MessageSource messageSource) {
@@ -72,12 +73,16 @@ public class AdminPageRepairTypesController implements MessageSourceAware {
 		model.addAttribute("repair_types_short", 
 				repairTypeSvc.getAll(repairTypePagingFirstIndex, 
 						repairTypePagingLastIndex - repairTypePagingFirstIndex + 1));
-		model.addAttribute("repair_types_count", 
-				repairTypeSvc.getRepairTypeCount());
-		model.addAttribute("repair_types_paging_first", 
-				repairTypePagingFirstIndex);
-		model.addAttribute("repair_types_paging_last", 
-				repairTypePagingLastIndex);
+		
+		Long repairTypesCount = repairTypeSvc.getRepairTypeCount();
+		model.addAttribute("repair_types_count", repairTypesCount);
+		Long pagesCount = repairTypesCount / _defaultPageSize;
+		if (repairTypesCount % _defaultPageSize != 0) {
+			pagesCount++;
+		}
+		model.addAttribute("pages_count", pagesCount);
+		model.addAttribute("pages_size", _defaultPageSize);
+		model.addAttribute("page_number", pageNumber);
 		
 		model.addAttribute("message_repair_type_added",
 				messageRepairTypeAdded);
@@ -107,46 +112,12 @@ public class AdminPageRepairTypesController implements MessageSourceAware {
 	
 	@RequestMapping(value = "/adminpagerepairtypes/repairtypepaging", method = RequestMethod.POST)
 	public String repairTypePaging(
-			@RequestParam("repairTypePageStart") final Long repairTypePageStart, 
-			@RequestParam("repairTypePageEnd") final Long repairTypePageEnd) {
+			@RequestParam("repairTypePageNumber") final Long repairTypePageNumber) {
 		
-		long repairTypeStart;
-		long repairTypeEnd;
-		
-		if (repairTypePageStart == null) {
-			repairTypeStart = (long) 0;
-		} else {
-			repairTypeStart = repairTypePageStart.longValue() - 1;
-		}
-		
-		if (repairTypePageEnd == null) {
-			repairTypeEnd = (long) 0;
-		} else {
-			repairTypeEnd = repairTypePageEnd.longValue() - 1;
-		}
-		
-		long repairTypeCount = repairTypeSvc.getRepairTypeCount();
-		
-		if (repairTypeStart > repairTypeEnd) {
-			long temp = repairTypeStart;
-			repairTypeStart = repairTypeEnd;
-			repairTypeEnd = temp;
-		}
-		
-		if (repairTypeStart < 0)
-			repairTypeStart = 0;
-		
-		if (repairTypeStart >= repairTypeCount)
-			repairTypeStart = repairTypeCount - 1;
-		
-		if (repairTypeEnd < 0)
-			repairTypeEnd = 0;
-		
-		if (repairTypeEnd >= repairTypeCount)
-			repairTypeEnd = repairTypeCount - 1;
-		
-		repairTypePagingFirstIndex = repairTypeStart;
-		repairTypePagingLastIndex = repairTypeEnd;		
+		repairTypePagingFirstIndex = repairTypePageNumber * _defaultPageSize;
+		repairTypePagingLastIndex = 
+				_defaultPageSize * (repairTypePageNumber + 1) - 1;
+		pageNumber = repairTypePageNumber;		 	
 		
 		return "redirect:/adminpagerepairtypes";
 	}

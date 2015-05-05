@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="mycustomtags" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 			 "http://www.w3.org/TR/html4/loose.dtd">
 			 
@@ -30,35 +31,17 @@
   	<div class="error">
   		<c:out value="${message_user_not_added}"/>
   		<c:out value="${message_enable_disable_failed}"/>  		
-  	</div>	
-  	<form method="post" action="adminpageusers/userpaging" accept-charset="UTF-8">
-  		<table>
-  		<tr>
-  			<td style="width:5%" align="center">
-  				<spring:message code="label.adminpage.records" /></td>  			
-  			<td style="width:10%" align="center">
-  				<input name="userPageStart" maxlength="5" size="8"
-  				value="${users_paging_first + 1}"/></td>  			
-  			<td style="width:5%" align="center">
-  				<spring:message code="label.adminpage.to" /></td>  			
-  			<td style="width:10%" align="center">
-  				<input name="userPageEnd" maxlength="5" size="8"
-  				value="${users_paging_last + 1}"/></td>
-  			<td style="width:20%" align="center">
-  			<spring:message code="label.adminpage.of" />
-  			${users_count}
-  			<spring:message code="label.adminpage.total" /></td>
-  			<td style="width:50%" align="left"><button>
-  				<spring:message code="label.adminpage.buttonGo" />
-  			</button></td>  			
-  		</tr>  		
-  		</table>
-  	</form>
+  	</div>
+  	<mycustomtags:tablepaging
+  		action="adminpageusers/userpaging" 
+  		buttonName="userPageNumber"
+  		pages_count="${pages_count}"
+  		page_number="${page_number}"
+  		pages_size="${pages_size}" />  	
   	<br>  	
   	<table data-toggle="table" 
 		data-classes="table table-hover table-condensed" 
-    	data-striped="true"    	
-    	data-pagination="true"    	
+    	data-striped="true"    	   	
 		border="1" style="width:900px" align="center">
 	<thead>
 	<tr><th align="center"></th>
@@ -74,11 +57,11 @@
     		<c:choose>
   			<c:when test="${u.enabled == 0}">
   				<div class="disabled">
-					<c:out value="${loopStatus.index + 1}"/>
+					<c:out value="${loopStatus.index + 1 + page_number * pages_size}"/>
 				</div>
   			</c:when>
   			<c:otherwise>
-  				<c:out value="${loopStatus.index + 1}"/>
+  				<c:out value="${loopStatus.index + 1 + page_number * pages_size}"/>
   			</c:otherwise>
 			</c:choose>    		
     	</td>

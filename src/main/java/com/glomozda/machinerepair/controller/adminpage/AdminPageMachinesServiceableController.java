@@ -39,7 +39,7 @@ public class AdminPageMachinesServiceableController implements
 	
 	private MessageSource messageSource;
 	
-	private static final Long _defaultPageSize = (long) 25;
+	private static final Long _defaultPageSize = (long) 10;
 	
 	private String messageEnableDisableFailed = "";
 	private String messageEnableDisableSucceeded = "";
@@ -49,6 +49,7 @@ public class AdminPageMachinesServiceableController implements
 	
 	private Long machineServiceablePagingFirstIndex = (long) 0;
 	private Long machineServiceablePagingLastIndex = _defaultPageSize - 1;
+	private Long pageNumber = (long) 0;
 	
 	@Override
 	public void setMessageSource(MessageSource messageSource) {
@@ -72,12 +73,18 @@ public class AdminPageMachinesServiceableController implements
 		model.addAttribute("machines_serviceable_short", 
 				machineServiceableSvc.getAll(machineServiceablePagingFirstIndex, 
 					machineServiceablePagingLastIndex - machineServiceablePagingFirstIndex + 1));
+		
+		Long machinesServiceableCount = machineServiceableSvc.getMachineServiceableCount();
 		model.addAttribute("machines_serviceable_count", 
-				machineServiceableSvc.getMachineServiceableCount());
-		model.addAttribute("machines_serviceable_paging_first", 
-				machineServiceablePagingFirstIndex);
-		model.addAttribute("machines_serviceable_paging_last", 
-				machineServiceablePagingLastIndex);
+				machinesServiceableCount);
+		 
+		Long pagesCount = machinesServiceableCount / _defaultPageSize;
+		if (machinesServiceableCount % _defaultPageSize != 0) {
+			pagesCount++;
+		}
+		model.addAttribute("pages_count", pagesCount);
+		model.addAttribute("pages_size", _defaultPageSize);
+		model.addAttribute("page_number", pageNumber);
 		
 		model.addAttribute("message_machine_serviceable_added", messageMachineServiceableAdded);
 		messageMachineServiceableAdded = "";
@@ -107,46 +114,13 @@ public class AdminPageMachinesServiceableController implements
 	@RequestMapping(value = "/adminpagemachinesserviceable/machineserviceablepaging",
 			method = RequestMethod.POST)
 	public String machineServiceablePaging(
-			@RequestParam("machineServiceablePageStart") final Long machineServiceablePageStart, 
-			@RequestParam("machineServiceablePageEnd") final Long machineServiceablePageEnd) {
+			@RequestParam("machineServiceablePageNumber") 
+				final Long machineServiceablePageNumber) {
 		
-		long machineServiceableStart;
-		long machineServiceableEnd;
-		
-		if (machineServiceablePageStart == null) {
-			machineServiceableStart = (long) 0;
-		} else {
-			machineServiceableStart = machineServiceablePageStart.longValue() - 1;
-		}
-		
-		if (machineServiceablePageEnd == null) {
-			machineServiceableEnd = (long) 0;
-		} else {
-			machineServiceableEnd = machineServiceablePageEnd.longValue() - 1;
-		}		
-		
-		long machineServiceableCount = machineServiceableSvc.getMachineServiceableCount();
-		
-		if (machineServiceableStart > machineServiceableEnd) {
-			long temp = machineServiceableStart;
-			machineServiceableStart = machineServiceableEnd;
-			machineServiceableEnd = temp;
-		}
-		
-		if (machineServiceableStart < 0)
-			machineServiceableStart = 0;
-		
-		if (machineServiceableStart >= machineServiceableCount)
-			machineServiceableStart = machineServiceableCount - 1;
-		
-		if (machineServiceableEnd < 0)
-			machineServiceableEnd = 0;
-		
-		if (machineServiceableEnd >= machineServiceableCount)
-			machineServiceableEnd = machineServiceableCount - 1;
-		
-		machineServiceablePagingFirstIndex = machineServiceableStart;
-		machineServiceablePagingLastIndex = machineServiceableEnd;		
+		machineServiceablePagingFirstIndex = machineServiceablePageNumber * _defaultPageSize;
+		machineServiceablePagingLastIndex = 
+				_defaultPageSize * (machineServiceablePageNumber + 1) - 1;
+		pageNumber = machineServiceablePageNumber;				
 		
 		return "redirect:/adminpagemachinesserviceable";
 	}

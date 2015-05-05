@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="mycustomtags" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 			 "http://www.w3.org/TR/html4/loose.dtd">
 			 
@@ -28,36 +29,16 @@
   	<div class="error">
   		<c:out value="${message_client_not_added}"/>
   	</div>
-  	<form method="post" action="adminpageclients/clientpaging" accept-charset="UTF-8">
-  		<table>
-  		<tr>
-  			<td style="width:5%" align="center">
-  				<spring:message code="label.adminpage.records" />
-  			</td>  			
-  			<td style="width:10%" align="center">
-  				<input name="clientPageStart" maxlength="5" size="8"
-  				value="${clients_paging_first + 1}"/></td>  			
-  			<td style="width:5%" align="center">
-  				<spring:message code="label.adminpage.to" />
-  			</td>  			
-  			<td style="width:10%" align="center">
-  				<input name="clientPageEnd" maxlength="5" size="8"
-  				value="${clients_paging_last + 1}"/></td>
-  			<td style="width:20%" align="center">
-  			<spring:message code="label.adminpage.of" />
-  			${clients_count}
-  			<spring:message code="label.adminpage.total" /></td>
-  			<td style="width:50%" align="left"><button>
-  				<spring:message code="label.adminpage.buttonGo" />
-  			</button></td>  			
-  		</tr>  		
-  		</table>
-  	</form>
+  	<mycustomtags:tablepaging
+  		action="adminpageclients/clientpaging" 
+  		buttonName="clientPageNumber"
+  		pages_count="${pages_count}"
+  		page_number="${page_number}"
+  		pages_size="${pages_size}" />
   	<br>
   	<table data-toggle="table" 
 		data-classes="table table-hover table-condensed" 
-    	data-striped="true"
-    	data-pagination="true"    	
+    	data-striped="true"    	    	
 		border="1" style="width:900px" align="center">
 	<thead>
 	<tr><th align="center"></th>
@@ -74,7 +55,7 @@
 	<tbody>
   	<c:forEach var="c" items="${clients_short}" varStatus="loopStatus">    	
     <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
-    	<td><c:out value="${loopStatus.index + 1}"/></td>
+    	<td><c:out value="${loopStatus.index + 1 + page_number * pages_size}"/></td>
     	<td>${c.clientName}</td> 
     	<td>${c.clientUser.login}</td>
     	<td>
@@ -103,7 +84,6 @@
   				<option value="0">
   					<spring:message code="label.adminpage.addNewClient.selectUser" />
   				</option>
-<!-- !!!ONLY 100 USERS ARE FETCHED AS OF NOW!!! -->
   				<c:forEach var="u" items="${users}">
   					<c:choose>
   					<c:when test="${selected_client_user_id == u.userId}">

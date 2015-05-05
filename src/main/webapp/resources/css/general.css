@@ -22,6 +22,14 @@
 	color: #ff0000;
 }
 
+.normal {
+	background-color: #ffffff
+}
+
+.over {
+	background-color: #f0ffa9
+}
+
 h3.left {
     position: absolute;
     left: 10px;
@@ -61,4 +69,13 @@ hr.style-seven {
  
 #content {
   margin: 0 40px 40px 280px;
+}
+
+ul.paging {
+	margin: 0; /* Обнуляем значение отступов */	
+}
+
+ul.paging li {
+	display: inline; /* Отображать как строчный элемент */
+	padding: 2px; /* Поля вокруг текста */
 }

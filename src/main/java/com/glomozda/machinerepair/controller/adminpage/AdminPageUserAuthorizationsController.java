@@ -41,7 +41,7 @@ public class AdminPageUserAuthorizationsController implements MessageSourceAware
 	
 	private MessageSource messageSource;
 	
-	private static final Long _defaultPageSize = (long) 25;
+	private static final Long _defaultPageSize = (long) 10;
 	
 	private String messageUserAuthorizationAdded = "";
 	private String messageUserAuthorizationNotAdded = "";
@@ -51,7 +51,8 @@ public class AdminPageUserAuthorizationsController implements MessageSourceAware
 	private Long selectedUserAuthorizationUserId = (long) 0;
 	
 	private Long userAuthorizationPagingFirstIndex = (long) 0;
-	private Long userAuthorizationPagingLastIndex = _defaultPageSize - 1;	
+	private Long userAuthorizationPagingLastIndex = _defaultPageSize - 1;
+	private Long pageNumber = (long) 0;
 	
 	@Override
 	public void setMessageSource(MessageSource messageSource) {
@@ -100,10 +101,15 @@ public class AdminPageUserAuthorizationsController implements MessageSourceAware
 						userAuthorizationPagingLastIndex - userAuthorizationPagingFirstIndex + 1)
 				);
 		
-		model.addAttribute("user_authorizations_count",
-				userAuthorizationSvc.getUserAuthorizationCount());
-		model.addAttribute("user_authorizations_paging_first", userAuthorizationPagingFirstIndex);
-		model.addAttribute("user_authorizations_paging_last", userAuthorizationPagingLastIndex);
+		Long userAuthorizationsCount = userAuthorizationSvc.getUserAuthorizationCount();
+		model.addAttribute("user_authorizations_count",	userAuthorizationsCount);
+		Long pagesCount = userAuthorizationsCount / _defaultPageSize;
+		if (userAuthorizationsCount % _defaultPageSize != 0) {
+			pagesCount++;
+		}
+		model.addAttribute("pages_count", pagesCount);
+		model.addAttribute("pages_size", _defaultPageSize);
+		model.addAttribute("page_number", pageNumber);
 		
 		model.addAttribute("user_roles", userAuthorizationSvc.getAllRoles());
 		
@@ -132,46 +138,12 @@ public class AdminPageUserAuthorizationsController implements MessageSourceAware
 	@RequestMapping(value = "/adminpageuserauthorizations/userauthorizationpaging",
 			method = RequestMethod.POST)
 	public String userAuthorizationPaging(
-			@RequestParam("userAuthorizationPageStart") final Long userAuthorizationPageStart, 
-			@RequestParam("userAuthorizationPageEnd") final Long userAuthorizationPageEnd) {
+			@RequestParam("userAuthorizationPageNumber") final Long userAuthorizationPageNumber) {
 		
-		long userAuthorizationStart;
-		long userAuthorizationEnd;
-		
-		if (userAuthorizationPageStart == null) {
-			userAuthorizationStart = (long) 0;
-		} else {
-			userAuthorizationStart = userAuthorizationPageStart.longValue() - 1;
-		}
-		
-		if (userAuthorizationPageEnd == null) {
-			userAuthorizationEnd = (long) 0;
-		} else {
-			userAuthorizationEnd = userAuthorizationPageEnd.longValue() - 1;
-		}
-		
-		long userAuthorizationCount = userAuthorizationSvc.getUserAuthorizationCount();
-		
-		if (userAuthorizationStart > userAuthorizationEnd) {
-			long temp = userAuthorizationStart;
-			userAuthorizationStart = userAuthorizationEnd;
-			userAuthorizationEnd = temp;
-		}
-		
-		if (userAuthorizationStart < 0)
-			userAuthorizationStart = 0;
-		
-		if (userAuthorizationStart >= userAuthorizationCount)
-			userAuthorizationStart = userAuthorizationCount - 1;
-		
-		if (userAuthorizationEnd < 0)
-			userAuthorizationEnd = 0;
-		
-		if (userAuthorizationEnd >= userAuthorizationCount)
-			userAuthorizationEnd = userAuthorizationCount - 1;
-		
-		userAuthorizationPagingFirstIndex = userAuthorizationStart;
-		userAuthorizationPagingLastIndex = userAuthorizationEnd;		
+		userAuthorizationPagingFirstIndex = userAuthorizationPageNumber * _defaultPageSize;
+		userAuthorizationPagingLastIndex = 
+				_defaultPageSize * (userAuthorizationPageNumber + 1) - 1;
+		pageNumber = userAuthorizationPageNumber;				
 		
 		return "redirect:/adminpageuserauthorizations";
 	}

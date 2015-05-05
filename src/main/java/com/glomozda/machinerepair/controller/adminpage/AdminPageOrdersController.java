@@ -63,7 +63,7 @@ public class AdminPageOrdersController implements MessageSourceAware {
 	
 	private MessageSource messageSource;
 	
-	private static final Long _defaultPageSize = (long) 25;
+	private static final Long _defaultPageSize = (long) 10;
 	
 	private String messageOrderAdded = "";
 	private String messageOrderNotAdded = "";
@@ -88,6 +88,7 @@ public class AdminPageOrdersController implements MessageSourceAware {
 	
 	private Long orderPagingFirstIndex = (long) 0;
 	private Long orderPagingLastIndex = _defaultPageSize - 1;
+	private Long pageNumber = (long) 0;
 	
 	@Override
 	public void setMessageSource(MessageSource messageSource) {
@@ -122,9 +123,16 @@ public class AdminPageOrdersController implements MessageSourceAware {
 		model.addAttribute("orders_short", 
 				orderSvc.getAllWithFetching(orderPagingFirstIndex,
 						orderPagingLastIndex - orderPagingFirstIndex + 1));
-		model.addAttribute("orders_count", orderSvc.getOrderCount());
-		model.addAttribute("orders_paging_first", orderPagingFirstIndex);
-		model.addAttribute("orders_paging_last", orderPagingLastIndex);
+		
+		Long ordersCount = orderSvc.getOrderCount();
+		model.addAttribute("orders_count", ordersCount);
+		Long pagesCount = ordersCount / _defaultPageSize;
+		if (ordersCount % _defaultPageSize != 0) {
+			pagesCount++;
+		}
+		model.addAttribute("pages_count", pagesCount);
+		model.addAttribute("pages_size", _defaultPageSize);
+		model.addAttribute("page_number", pageNumber);
 		
 		model.addAttribute("message_order_added",
 				messageOrderAdded);
@@ -172,46 +180,12 @@ public class AdminPageOrdersController implements MessageSourceAware {
 	}
 	
 	@RequestMapping(value = "/adminpageorders/orderpaging", method = RequestMethod.POST)
-	public String orderPaging(@RequestParam("orderPageStart") final Long orderPageStart, 
-			@RequestParam("orderPageEnd") final Long orderPageEnd) {
+	public String orderPaging(@RequestParam("orderPageNumber") final Long orderPageNumber) {
 		
-		long orderStart;
-		long orderEnd;
-		
-		if (orderPageStart == null) {
-			orderStart = (long) 0;
-		} else {
-			orderStart = orderPageStart.longValue() - 1;
-		}
-		
-		if (orderPageEnd == null) {
-			orderEnd = (long) 0;
-		} else {
-			orderEnd = orderPageEnd.longValue() - 1;
-		}
-		
-		long orderCount = orderSvc.getOrderCount();
-		
-		if (orderStart > orderEnd) {
-			long temp = orderStart;
-			orderStart = orderEnd;
-			orderEnd = temp;
-		}
-		
-		if (orderStart < 0)
-			orderStart = 0;
-		
-		if (orderStart >= orderCount)
-			orderStart = orderCount - 1;
-		
-		if (orderEnd < 0)
-			orderEnd = 0;
-		
-		if (orderEnd >= orderCount)
-			orderEnd = orderCount - 1;
-		
-		orderPagingFirstIndex = orderStart;
-		orderPagingLastIndex = orderEnd;		
+		orderPagingFirstIndex = orderPageNumber * _defaultPageSize;
+		orderPagingLastIndex = 
+				_defaultPageSize * (orderPageNumber + 1) - 1;
+		pageNumber = orderPageNumber;
 		
 		return "redirect:/adminpageorders";
 	}

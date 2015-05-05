@@ -38,7 +38,7 @@ public class AdminPageClientsController implements MessageSourceAware {
 	
 	private MessageSource messageSource;
 	
-	private static final Long _defaultPageSize = (long) 25;
+	private static final Long _defaultPageSize = (long) 10;
 	
 	private String messageClientAdded = "";
 	private String messageClientNotAdded = "";
@@ -48,6 +48,7 @@ public class AdminPageClientsController implements MessageSourceAware {
 	
 	private Long clientPagingFirstIndex = (long) 0;
 	private Long clientPagingLastIndex = _defaultPageSize - 1;
+	private Long pageNumber = (long) 0;
 	
 	@Override
 	public void setMessageSource(MessageSource messageSource) {
@@ -73,10 +74,18 @@ public class AdminPageClientsController implements MessageSourceAware {
 		model.addAttribute("clients_short",
 				clientSvc.getAllWithFetching(clientPagingFirstIndex,
 						clientPagingLastIndex - clientPagingFirstIndex + 1));
-		model.addAttribute("clients_count", clientSvc.getClientCount());
-		model.addAttribute("clients_paging_first", clientPagingFirstIndex);
-		model.addAttribute("clients_paging_last", clientPagingLastIndex);
+
+		Long clientsCount = clientSvc.getClientCount();
+		model.addAttribute("clients_count", clientsCount);
 		
+		Long pagesCount = clientsCount / _defaultPageSize;
+		if (clientsCount % _defaultPageSize != 0) {
+			pagesCount++;
+		}
+		model.addAttribute("pages_count", pagesCount);
+		model.addAttribute("pages_size", _defaultPageSize);
+		model.addAttribute("page_number", pageNumber);
+				
 		model.addAttribute("message_client_added",
 				messageClientAdded);
 		messageClientAdded = "";
@@ -97,46 +106,11 @@ public class AdminPageClientsController implements MessageSourceAware {
 	}
 	
 	@RequestMapping(value = "/adminpageclients/clientpaging", method = RequestMethod.POST)
-	public String clientPaging(@RequestParam("clientPageStart") final Long clientPageStart, 
-			@RequestParam("clientPageEnd") final Long clientPageEnd) {
+	public String clientPaging(@RequestParam("clientPageNumber") final Long clientPageNumber) {
 		
-		long clientStart;
-		long clientEnd;
-		
-		if (clientPageStart == null) {
-			clientStart = (long) 0;
-		} else {
-			clientStart = clientPageStart.longValue() - 1;
-		}
-		
-		if (clientPageEnd == null) {
-			clientEnd = (long) 0;
-		} else {
-			clientEnd = clientPageEnd.longValue() - 1;
-		}
-		
-		long clientCount = clientSvc.getClientCount();
-		
-		if (clientStart > clientEnd) {
-			long temp = clientStart;
-			clientStart = clientEnd;
-			clientEnd = temp;
-		}
-		
-		if (clientStart < 0)
-			clientStart = 0;
-		
-		if (clientStart >= clientCount)
-			clientStart = clientCount - 1;
-		
-		if (clientEnd < 0)
-			clientEnd = 0;
-		
-		if (clientEnd >= clientCount)
-			clientEnd = clientCount - 1;
-		
-		clientPagingFirstIndex = clientStart;
-		clientPagingLastIndex = clientEnd;		
+		clientPagingFirstIndex = clientPageNumber * _defaultPageSize;
+		clientPagingLastIndex = _defaultPageSize * (clientPageNumber + 1) - 1;
+		pageNumber = clientPageNumber;
 		
 		return "redirect:/adminpageclients";
 	}

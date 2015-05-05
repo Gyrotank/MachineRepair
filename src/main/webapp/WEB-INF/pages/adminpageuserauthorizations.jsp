@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="mycustomtags" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 			 "http://www.w3.org/TR/html4/loose.dtd">
 			 
@@ -29,34 +30,16 @@
   	<div class="error">
   		<c:out value="${message_user_authorization_not_added}"/>
   	</div>
-  	<form method="post" action="adminpageuserauthorizations/userauthorizationpaging"
-  		accept-charset="UTF-8">
-  		<table>
-  		<tr>
-  			<td style="width:5%" align="center">
-  				<spring:message code="label.adminpage.records" /></td>  			
-  			<td style="width:10%" align="center"><input name="userAuthorizationPageStart" 
-  				maxlength="5" size="8"
-  				value="${user_authorizations_paging_first + 1}"/></td>  			
-  			<td style="width:5%" align="center">
-  				<spring:message code="label.adminpage.to" /></td>  			
-  			<td style="width:10%" align="center"><input name="userAuthorizationPageEnd" 
-  				maxlength="5" size="8"
-  				value="${user_authorizations_paging_last + 1}"/></td>
-  			<td style="width:20%" align="center">
-  				<spring:message code="label.adminpage.of" />
-  				${user_authorizations_count}
-  				<spring:message code="label.adminpage.total" /></td>
-  			<td style="width:50%" align="left"><button>
-  				<spring:message code="label.adminpage.buttonGo" /></button></td>  			
-  		</tr>  		
-  		</table>
-  	</form>
+  	<mycustomtags:tablepaging
+  		action="adminpageuserauthorizations/userauthorizationpaging" 
+  		buttonName="userAuthorizationPageNumber"
+  		pages_count="${pages_count}"
+  		page_number="${page_number}"
+  		pages_size="${pages_size}" />  	
   	<br>
   	<table data-toggle="table" 
 		data-classes="table table-hover table-condensed" 
-    	data-striped="true"
-    	data-pagination="true"    	
+    	data-striped="true"    	   	
 		border="1" style="width:900px" align="center">
 	<thead>
 	<tr><th align="center"></th>
@@ -75,11 +58,11 @@
     		<c:choose>
     		<c:when test="${ua.user.enabled == 0}">
   				<div class="disabled">
-					<c:out value="${loopStatus.index + 1}"/>
+					<c:out value="${loopStatus.index + 1 + page_number * pages_size}"/>
 				</div>
   			</c:when>
   			<c:otherwise>
-  				<c:out value="${loopStatus.index + 1}"/>
+  				<c:out value="${loopStatus.index + 1 + page_number * pages_size}"/>
   			</c:otherwise>
   			</c:choose>
     	</td>
@@ -125,9 +108,6 @@
     		<a href="<c:url 
     			value="updateuserauthorization/?user-authorization-id=${ua.userAuthorizationId}"/>">
   				<img src="resources/images/edit.png" width="24"></a>
-<%-- 			<a href="<c:url value="delete/?user-authorization-id=${ua.userAuthorizationId}"/>"  --%>
-<%--     			onclick="return confirm('${dialog_delete_user_authorization}')"> --%>
-<!--   				<img src="resources/images/delete.png" width="24"></a> -->
     	</td>
     </tr>
   	</c:forEach>
@@ -142,9 +122,7 @@
   		<tr>
   		<td><label>
   			<spring:message code="label.adminpage.addNewUserAuthorization.userFrom" />
-  			${user_authorizations_paging_first + 1} 
-  			<spring:message code="label.adminpage.addNewUserAuthorization.userTo" />
-  			${user_authorizations_paging_last + 1})&nbsp</label></td>  		
+  			</label></td>  		
   		<td><select name="userId">
   			<option value="0">
   				<spring:message code="label.adminpage.addNewUserAuthorization.selectUser" />

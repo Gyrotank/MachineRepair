@@ -43,10 +43,11 @@ public class AdminPageMachinesController implements MessageSourceAware {
 	
 	private MessageSource messageSource;
 	
-	private static final Long _defaultPageSize = (long) 25;
+	private static final Long _defaultPageSize = (long) 10;
 	
 	private Long machinePagingFirstIndex = (long) 0;
 	private Long machinePagingLastIndex = _defaultPageSize - 1;
+	private Long pageNumber = (long) 0;
 	
 	private String messageMachineAdded = "";
 	private String messageMachineNotAdded = "";
@@ -76,9 +77,17 @@ public class AdminPageMachinesController implements MessageSourceAware {
 		model.addAttribute("machines_short", 
 				machineSvc.getAllWithFetching(machinePagingFirstIndex, 
 						machinePagingLastIndex - machinePagingFirstIndex + 1));
-		model.addAttribute("machines_count", machineSvc.getMachineCount());
-		model.addAttribute("machines_paging_first", machinePagingFirstIndex);
-		model.addAttribute("machines_paging_last", machinePagingLastIndex);
+		
+		Long machinesCount = machineSvc.getMachineCount();
+		model.addAttribute("machines_count", machinesCount);
+		
+		Long pagesCount = machinesCount / _defaultPageSize;
+		if (machinesCount % _defaultPageSize != 0) {
+			pagesCount++;
+		}
+		model.addAttribute("pages_count", pagesCount);
+		model.addAttribute("pages_size", _defaultPageSize);
+		model.addAttribute("page_number", pageNumber);
 		
 		model.addAttribute("message_machine_added", messageMachineAdded);
 		messageMachineAdded = "";
@@ -99,46 +108,11 @@ public class AdminPageMachinesController implements MessageSourceAware {
 	}
 	
 	@RequestMapping(value = "/adminpagemachines/machinepaging", method = RequestMethod.POST)
-	public String machinePaging(@RequestParam("machinePageStart") final Long machinePageStart, 
-			@RequestParam("machinePageEnd") final Long machinePageEnd) {
+	public String machinePaging(@RequestParam("machinePageNumber") final Long machinePageNumber) {
 		
-		long machineStart;
-		long machineEnd;
-		
-		if (machinePageStart == null) {
-			machineStart = (long) 0;
-		} else {
-			machineStart = machinePageStart.longValue() - 1;
-		}
-		
-		if (machinePageEnd == null) {
-			machineEnd = (long) 0;
-		} else {
-			machineEnd = machinePageEnd.longValue() - 1;
-		}		
-		
-		long machineCount = machineSvc.getMachineCount();
-		
-		if (machineStart > machineEnd) {
-			long temp = machineStart;
-			machineStart = machineEnd;
-			machineEnd = temp;
-		}
-		
-		if (machineStart < 0)
-			machineStart = 0;
-		
-		if (machineStart >= machineCount)
-			machineStart = machineCount - 1;
-		
-		if (machineEnd < 0)
-			machineEnd = 0;
-		
-		if (machineEnd >= machineCount)
-			machineEnd = machineCount - 1;
-		
-		machinePagingFirstIndex = machineStart;
-		machinePagingLastIndex = machineEnd;		
+		machinePagingFirstIndex = machinePageNumber * _defaultPageSize;
+		machinePagingLastIndex = _defaultPageSize * (machinePageNumber + 1) - 1;
+		pageNumber = machinePageNumber;
 		
 		return "redirect:/adminpagemachines";
 	}
@@ -183,20 +157,4 @@ public class AdminPageMachinesController implements MessageSourceAware {
 		}
 		return "redirect:/adminpagemachines";
 	}
-	
-//	@RequestMapping(value = "/deletemachine", method = RequestMethod.GET)
-//	public String deleteMachine(@RequestParam("machine-id") final Long machineId,
-//			final Locale locale) {
-//		
-//		if (clientSvc.add(client, userId)) {
-//			messageClientAdded =
-//					messageSource.getMessage("popup.adminpage.clientAdded", null,
-//							locale);
-//		} else {
-//			messageClientNotAdded = 
-//					messageSource.getMessage("popup.adminpage.clientNotAdded", null,
-//							locale);
-//		}		
-//		return "redirect:/adminpagemachines";
-//	}
 }

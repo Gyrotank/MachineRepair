@@ -41,7 +41,7 @@ public class AdminPageUsersController implements MessageSourceAware {
 	
 	private MessageSource messageSource;
 	
-	private static final Long _defaultPageSize = (long) 25;
+	private static final Long _defaultPageSize = (long) 10;
 	
 	private String messageEnableDisableFailed = "";
 	private String messageEnableDisableSucceeded = "";
@@ -51,6 +51,7 @@ public class AdminPageUsersController implements MessageSourceAware {
 	
 	private Long userPagingFirstIndex = (long) 0;
 	private Long userPagingLastIndex = _defaultPageSize - 1;
+	private Long pageNumber = (long) 0;
 	
 	@Override
 	public void setMessageSource(MessageSource messageSource) {
@@ -74,9 +75,16 @@ public class AdminPageUsersController implements MessageSourceAware {
 		model.addAttribute("users_short", 
 				userSvc.getAll(userPagingFirstIndex, 
 						userPagingLastIndex - userPagingFirstIndex + 1));
-		model.addAttribute("users_count", userSvc.getUserCount());
-		model.addAttribute("users_paging_first", userPagingFirstIndex);
-		model.addAttribute("users_paging_last", userPagingLastIndex);
+		
+		Long usersCount = userSvc.getUserCount();
+		model.addAttribute("users_count", usersCount);
+		Long pagesCount = usersCount / _defaultPageSize;
+		if (usersCount % _defaultPageSize != 0) {
+			pagesCount++;
+		}
+		model.addAttribute("pages_count", pagesCount);
+		model.addAttribute("pages_size", _defaultPageSize);
+		model.addAttribute("page_number", pageNumber);
 		
 		model.addAttribute("dialog_enable_user",
 				messageSource.getMessage("label.adminpage.users.actions.enable.dialog", null,
@@ -103,46 +111,12 @@ public class AdminPageUsersController implements MessageSourceAware {
 	}
 	
 	@RequestMapping(value = "/adminpageusers/userpaging", method = RequestMethod.POST)
-	public String userPaging(@RequestParam("userPageStart") final Long userPageStart, 
-			@RequestParam("userPageEnd") final Long userPageEnd) {
+	public String userPaging(@RequestParam("userPageNumber") final Long userPageNumber) {
 		
-		long userStart;
-		long userEnd;
-		
-		if (userPageStart == null) {
-			userStart = (long) 0;
-		} else {
-			userStart = userPageStart.longValue() - 1;
-		}
-		
-		if (userPageEnd == null) {
-			userEnd = (long) 0;
-		} else {
-			userEnd = userPageEnd.longValue() - 1;
-		}
-		
-		long userCount = userSvc.getUserCount();
-		
-		if (userStart > userEnd) {
-			long temp = userStart;
-			userStart = userEnd;
-			userEnd = temp;
-		}
-		
-		if (userStart < 0)
-			userStart = 0;
-		
-		if (userStart >= userCount)
-			userStart = userCount - 1;
-		
-		if (userEnd < 0)
-			userEnd = 0;
-		
-		if (userEnd >= userCount)
-			userEnd = userCount - 1;
-		
-		userPagingFirstIndex = userStart;
-		userPagingLastIndex = userEnd;		
+		userPagingFirstIndex = userPageNumber * _defaultPageSize;
+		userPagingLastIndex = 
+				_defaultPageSize * (userPageNumber + 1) - 1;
+		pageNumber = userPageNumber;
 		
 		return "redirect:/adminpageusers";
 	}

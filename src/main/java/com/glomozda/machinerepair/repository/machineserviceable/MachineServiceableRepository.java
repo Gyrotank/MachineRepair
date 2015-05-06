@@ -17,14 +17,12 @@ public class MachineServiceableRepository {
 	@PersistenceContext
 	private EntityManager em;
 
-	@Transactional
 	public List<MachineServiceable> getAll() {
 		List<MachineServiceable> result = em.createNamedQuery("MachineServiceable.findAll",
 				MachineServiceable.class).getResultList();
 		return result;
 	}
 	
-	@Transactional
 	public List<MachineServiceable> getAll(Long start, Long length) {
 		List<MachineServiceable> result = em.createNamedQuery("MachineServiceable.findAll",
 				MachineServiceable.class)
@@ -34,7 +32,6 @@ public class MachineServiceableRepository {
 		return result;
 	}
 	
-	@Transactional
 	public List<MachineServiceable> getAllOrderByName() {
 		List<MachineServiceable> result = em.createNamedQuery
 				("MachineServiceable.findAllOrderByName",
@@ -42,7 +39,6 @@ public class MachineServiceableRepository {
 		return result;
 	}
 	
-	@Transactional
 	public List<MachineServiceable> getAllOrderByTrademark() {
 		List<MachineServiceable> result = em.createNamedQuery
 				("MachineServiceable.findAllOrderByTrademark",
@@ -50,12 +46,10 @@ public class MachineServiceableRepository {
 		return result;
 	}
 	
-	@Transactional
 	public MachineServiceable getMachineServiceableById(Long machineServiceableId) {
 		return em.find(MachineServiceable.class, machineServiceableId);
 	}
 	
-	@Transactional
 	public Long getMachineServiceableCount() {
 		return em.createNamedQuery("MachineServiceable.countAll", Long.class).getSingleResult();
 	}
@@ -93,12 +87,10 @@ public class MachineServiceableRepository {
 		return updateCount;		
 	}
 	
-	@Transactional
 	public List<MachineServiceable> getAllAvailableOrderByTrademark() {
 		List<MachineServiceable> result = em.createNamedQuery
 				("MachineServiceable.findAllAvailableOrderByTrademark",
 				MachineServiceable.class).getResultList();
 		return result;
 	}
-
 }

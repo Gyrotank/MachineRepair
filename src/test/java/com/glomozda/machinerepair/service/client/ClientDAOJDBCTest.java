@@ -113,7 +113,7 @@ public class ClientDAOJDBCTest extends DAOTestsTemplate{
     }
     
     @Test
-    public void testupdateClientNameById() {
+    public void testUpdateClientNameById() {
     	Assert.assertTrue(clientService.updateClientNameById((long) 1, "i_user") == 1);
     	Assert.assertTrue(clientService.updateClientNameById((long) 3, "s_user") == 0);
     }

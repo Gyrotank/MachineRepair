@@ -18,19 +18,16 @@ public class OrderStatusRepository {
 	@PersistenceContext
 	private EntityManager em;
 	
-	@Transactional
 	public List<OrderStatus> getAll() {
 		List<OrderStatus> result = em.createNamedQuery(
 				"OrderStatus.findAll", OrderStatus.class).getResultList();
 		return result;
 	}
 	
-	@Transactional
 	public OrderStatus getOrderStatusById(Long orderStatusId) {
 		return em.find(OrderStatus.class, orderStatusId);
 	}
 	
-	@Transactional
 	public OrderStatus getOrderStatusByName(String orderStatusName) {
 		OrderStatus result = null;
 		TypedQuery<OrderStatus> query = em.createNamedQuery(
@@ -42,7 +39,8 @@ public class OrderStatusRepository {
 		
 		return result;
 	}
-
+	
+	@Transactional
 	public Boolean add(OrderStatus os) {
 		em.persist(os);
 		if (em.contains(os)) {

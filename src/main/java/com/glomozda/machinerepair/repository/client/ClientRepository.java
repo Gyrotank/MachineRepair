@@ -20,14 +20,12 @@ public class ClientRepository {
 	@PersistenceContext
 	private EntityManager em;
 	
-	@Transactional
 	public List<Client> getAll() {
 		List<Client> result = em.createNamedQuery("Client.findAll", Client.class)				
 				.getResultList();
 		return result;
 	}
 	
-	@Transactional
 	public List<Client> getAll(Long start, Long length) {
 		List<Client> result = em.createNamedQuery("Client.findAll", Client.class)
 				.setFirstResult(start.intValue())
@@ -36,14 +34,12 @@ public class ClientRepository {
 		return result;
 	}
 	
-	@Transactional
 	public List<Client> getAllWithFetching() {
 		List<Client> result = em.createNamedQuery("Client.findAllWithFetching", Client.class)
 				.getResultList();
 		return result;
 	}
 	
-	@Transactional
 	public List<Client> getAllWithFetching(Long start, Long length) {
 		List<Client> result = em.createNamedQuery("Client.findAllWithFetching", Client.class)
 				.setFirstResult(start.intValue())
@@ -52,19 +48,16 @@ public class ClientRepository {
 		return result;
 	}
 	
-	@Transactional
 	public List<Long> getAllClientIds() {
 		List<Long> result = 
 				em.createNamedQuery("Client.findAllClientIds", Long.class).getResultList();
 		return result;
 	}
 	
-	@Transactional
 	public Client getClientById(Long clientId) {
 		return em.find(Client.class, clientId);
 	}
 
-	@Transactional
 	public Client getClientByUserId(Long userId) {
 		Client result = null;	  
 		TypedQuery<Client> query = em.createNamedQuery("Client.findClientByUserId", Client.class);
@@ -76,7 +69,6 @@ public class ClientRepository {
 		return result;
 	}
 	
-	@Transactional
 	public Client getClientByUserIdWithFetching(Long userId) {
 		Client result = null;	  
 		TypedQuery<Client> query = em.createNamedQuery(
@@ -89,7 +81,6 @@ public class ClientRepository {
 		return result;
 	}
 	
-	@Transactional
 	public Client getClientByLogin(String login) {
 		Client result = null;	  
 		TypedQuery<Client> query = em.createNamedQuery("Client.findClientByLogin", Client.class);
@@ -101,7 +92,6 @@ public class ClientRepository {
 		return result;
 	}
 	
-	@Transactional
 	public Client getClientByLoginWithFetching(String login) {
 		Client result = null;	  
 		TypedQuery<Client> query = em.createNamedQuery(
@@ -114,11 +104,10 @@ public class ClientRepository {
 		return result;
 	}
 	
-	@Transactional
 	public Long getClientCount() {
 		return em.createNamedQuery("Client.countAll", Long.class).getSingleResult();
 	}
-
+	
 	@Transactional
 	public Boolean add(Client c, Long userId) {
 		User user = em.getReference(User.class, userId);

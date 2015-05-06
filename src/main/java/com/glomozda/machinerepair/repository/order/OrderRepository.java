@@ -23,14 +23,12 @@ public class OrderRepository {
 	@PersistenceContext
 	private EntityManager em;
 
-	@Transactional
 	public List<Order> getAll() {
 		List<Order> result = em.createNamedQuery(
 				"Order.findAll", Order.class).getResultList();
 		return result;
 	}
 	
-	@Transactional
 	public List<Order> getAll(Long start, Long length) {
 		List<Order> result = em.createNamedQuery(
 				"Order.findAll", Order.class)
@@ -40,14 +38,12 @@ public class OrderRepository {
 		return result;
 	}
 	
-	@Transactional
 	public List<Order> getAllWithFetching() {
 		List<Order> result = em.createNamedQuery("Order.findAllWithFetching",
 				Order.class).getResultList();
 		return result;
 	}
 	
-	@Transactional
 	public List<Order> getAllWithFetching(Long start, Long length) {
 		List<Order> result = em.createNamedQuery("Order.findAllWithFetching",
 				Order.class)
@@ -57,7 +53,6 @@ public class OrderRepository {
 		return result;
 	}
 	
-	@Transactional
 	public Order getOrderById(Long orderId) {
 		Order result = null;
 		TypedQuery<Order> query = em.createNamedQuery("Order.findOrderById", Order.class);
@@ -69,7 +64,6 @@ public class OrderRepository {
 		return result;
 	}
 	
-	@Transactional
 	public Order getOrderByIdWithFetching(Long orderId) {
 		Order result = null;
 		TypedQuery<Order> query = em.createNamedQuery("Order.findOrderByIdWithFetching",
@@ -82,7 +76,6 @@ public class OrderRepository {
 		return result;
 	}
 	
-	@Transactional
 	public List<Order> getOrdersForStatus(String status) {
 		List<Order> result = null;
 		TypedQuery<Order> query = em.createNamedQuery("Order.findOrdersByStatus", Order.class);
@@ -100,7 +93,6 @@ public class OrderRepository {
 				.getSingleResult();
 	}	
 	
-	@Transactional
 	public List<Order> getOrdersForStatusWithFetching(String status) {
 		List<Order> result = null;
 		TypedQuery<Order> query = em.createNamedQuery("Order.findOrdersByStatusWithFetching",
@@ -113,7 +105,6 @@ public class OrderRepository {
 		return result;
 	}
 	
-	@Transactional
 	public List<Order> getOrdersForStatusWithFetching(String status, Long start, Long length) {
 		List<Order> result = null;
 		TypedQuery<Order> query = em.createNamedQuery("Order.findOrdersByStatusWithFetching",
@@ -129,7 +120,6 @@ public class OrderRepository {
 		return result;
 	}
 	
-	@Transactional
 	public List<Order> getAllForClientId(Long clientId) {
 		List<Order> result = null;
 		TypedQuery<Order> query = em.createNamedQuery("Order.findOrdersByClientId", Order.class);
@@ -141,14 +131,12 @@ public class OrderRepository {
 		return result;
 	}
 	
-	@Transactional
 	public Long getCountAllForClientId(Long clientId) {
 		return em.createNamedQuery("Order.countOrdersByClientId", Long.class)
 				.setParameter("id", clientId)				
 				.getSingleResult();
 	}
 	
-	@Transactional
 	public List<Order> getOrdersForClientIdAndStatusWithFetching(Long clientId, String status) {
 		List<Order> result = null;
 		TypedQuery<Order> query = em.createNamedQuery(
@@ -162,7 +150,6 @@ public class OrderRepository {
 		return result;
 	}
 	
-	@Transactional
 	public List<Order> getOrdersForClientIdAndStatusWithFetching(Long clientId, String status,
 			Long start, Long length) {
 		List<Order> result = null;
@@ -180,7 +167,6 @@ public class OrderRepository {
 		return result;
 	}
 	
-	@Transactional
 	public List<Order> getOrdersByClientIdAndMachineSNAndNotFinished(Long clientId,
 			String serialNumber) {
 		List<Order> result = null;
@@ -196,7 +182,6 @@ public class OrderRepository {
 		return result;
 	}
 	
-	@Transactional
 	public List<Order> getCurrentOrdersForClientIdWithFetching(Long clientId) {
 		List<Order> result = null;
 		TypedQuery<Order> query = em.createNamedQuery(
@@ -210,7 +195,6 @@ public class OrderRepository {
 		return result;
 	}
 	
-	@Transactional
 	public List<Order> getCurrentOrdersForClientIdWithFetching(Long clientId,
 			Long start, Long length) {
 		List<Order> result = null;
@@ -227,12 +211,10 @@ public class OrderRepository {
 		return result;
 	}
 	
-	@Transactional
 	public Long getOrderCount() {
 		return em.createNamedQuery("Order.countAll", Long.class).getSingleResult();
 	}
 	
-	@Transactional
 	public Long getCountOrdersForClientIdAndStatus(Long clientId, String status) {
 		return em.createNamedQuery("Order.countOrdersByClientIdAndStatus", Long.class)
 				.setParameter("id", clientId)
@@ -240,7 +222,6 @@ public class OrderRepository {
 				.getSingleResult();
 	}
 	
-	@Transactional
 	public Long getCountCurrentOrderForClientId(Long clientId) {
 		return em.createNamedQuery("Order.countCurrentOrdersByClientId", Long.class)
 				.setParameter("id", clientId)
@@ -314,5 +295,4 @@ public class OrderRepository {
 		int updateCount = query.executeUpdate();
 		return updateCount;
 	}
-
 }

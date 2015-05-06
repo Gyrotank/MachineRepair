@@ -24,7 +24,6 @@ public class UserRepository {
 	@Autowired
 	private PasswordEncoder encoder;
 
-	@Transactional
 	public User getUserByLoginAndPassword(String login, String passwordText) {
 		User result = null;
 		TypedQuery<User> query = em.createNamedQuery("User.findUserByLogin",
@@ -41,7 +40,6 @@ public class UserRepository {
 		return result;
 	}
 	
-	@Transactional
 	public User getUserByLoginAndPasswordWithFetching(String login, String passwordText) {
 		User result = null;	  
 		TypedQuery<User> query = em.createNamedQuery("User.findUserByLoginWithFetching",
@@ -58,7 +56,6 @@ public class UserRepository {
 		return result;
 	}
 	
-	@Transactional
 	public User getUserByLogin(String login) {
 		User result = null;	  
 		TypedQuery<User> query = em.createNamedQuery("User.findUserByLogin", User.class);
@@ -70,7 +67,6 @@ public class UserRepository {
 		return result;
 	}
 	
-	@Transactional
 	public User getUserByLoginWithFetching(String login) {
 		User result = null;	  
 		TypedQuery<User> query = em.createNamedQuery("User.findUserByLoginWithFetching",
@@ -83,16 +79,10 @@ public class UserRepository {
 		return result;
 	}
 	
-	@Transactional
 	public User getUserById(Long userId) {
 		return em.find(User.class, userId);
-//		if (result == null) {
-//			throw new NoResultException();
-//		}		
-//		return result;
 	}
 	
-	@Transactional
 	public User getUserByIdWithFetching(Long userId) {
 		User result = null;	  
 		TypedQuery<User> query = em.createNamedQuery("User.findUserByIdWithFetching", User.class);
@@ -104,14 +94,12 @@ public class UserRepository {
 		return result;
 	}
 	
-	@Transactional
 	public List<User> getAll() {
 		List<User> result = em.createNamedQuery("User.findAll", User.class)				
 				.getResultList();
 		return result;
 	}
 
-	@Transactional
 	public List<User> getAll(Long start, Long length) {
 		List<User> result = em.createNamedQuery("User.findAll", User.class)
 				.setFirstResult(start.intValue())
@@ -119,15 +107,13 @@ public class UserRepository {
 				.getResultList();
 		return result;
 	}
-	
-	@Transactional
+		
 	public List<Object[]> getAllIdsAndLogins() {
 		List<Object[]> result = em.createNamedQuery("User.findAllIdsAndLogins", Object[].class)				
 				.getResultList();
 		return result;
 	}
 	
-	@Transactional
 	public Long getUserCount() {
 		return em.createNamedQuery("User.countAll", Long.class).getSingleResult();
 	}

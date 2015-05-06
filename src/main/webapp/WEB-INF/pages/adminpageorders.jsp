@@ -1,12 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="mycustomtags" tagdir="/WEB-INF/tags" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-			 "http://www.w3.org/TR/html4/loose.dtd">
-			 
+<%@ include file="tagsused.jsp" %>
+
 <html>
 <head>
 <%@ include file="header.jsp" %>
@@ -141,14 +134,11 @@
   		<tr>
   			<td><label>
   			<spring:message code="label.adminpage.addNewOrder.clientFrom" />
-  			${clients_paging_first + 1}
-  			<spring:message code="label.adminpage.addNewOrder.clientTo" /> 
-  			${clients_paging_last + 1})&nbsp</label></td>
+  			</label></td>
   			<td><select name="clientId">
   			<option value="0">
   				<spring:message code="label.adminpage.addNewOrder.selectClient" />
   			</option>
-<!-- !!!ONLY 100 CLIENTS ARE FETCHED AS OF NOW!!! -->
   			<c:forEach var="c" items="${clients}">
   				<c:choose>
   					<c:when test="${selected_order_client_id == c.clientId}">
@@ -178,7 +168,6 @@
   			<option value="0">
   				<spring:message code="label.adminpage.addNewOrder.selectRepairType" />
   			</option>
-<!-- !!!ONLY 100 REPAIR TYPES ARE FETCHED AS OF NOW!!! -->
   			<c:forEach var="rt" items="${repair_types}">
   				<c:choose>
   					<c:when test="${selected_order_repair_type_id == rt.repairTypeId}">
@@ -216,14 +205,11 @@
   		</tr>
   		<tr>
   			<td><label><spring:message code="label.adminpage.addNewOrder.machineFrom" />
-  			${machines_paging_first + 1}
-  			<spring:message code="label.adminpage.addNewOrder.machineTo" />
-  			${machines_paging_last + 1})&nbsp</label></td>
+  			</label></td>
   			<td><select name="machineId">
   			<option value="0">
   				<spring:message code="label.adminpage.addNewOrder.selectMachine" />
   			</option>
-<!-- !!!ONLY 100 MACHINES ARE FETCHED AS OF NOW!!! -->
   			<c:forEach var="m" items="${machines}">
   				<c:choose>
   					<c:when test="${selected_order_machine_id == m.machineId}">

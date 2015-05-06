@@ -46,7 +46,7 @@ public class ClientPageCurrentOrdersController implements MessageSourceAware {
 	@Autowired
 	private OrderStatusService orderStatusSvc;
 	
-	private static final Long _defaultPageSize = (long) 25;
+	private static final Long _defaultPageSize = (long) 10;
 	
 	private Client myClient;
 	
@@ -57,6 +57,7 @@ public class ClientPageCurrentOrdersController implements MessageSourceAware {
 	
 	private Long currentOrdersPagingFirstIndex = (long) 0;
 	private Long currentOrdersPagingLastIndex = _defaultPageSize - 1;
+	private Long pageNumber = (long) 0;
 	
 	public void setMessageSource(MessageSource messageSource) {
 		this.messageSource = messageSource;
@@ -80,15 +81,20 @@ public class ClientPageCurrentOrdersController implements MessageSourceAware {
 				messageSource.getMessage("label.clientpage.noCurrentOrders", null,
 						locale));
 		
-		model.addAttribute("current_orders_count", 
-				orderSvc.getCountCurrentOrderForClientId(myClient.getClientId()));
+		Long currentOrdersCount = orderSvc.getCountCurrentOrderForClientId(myClient.getClientId());
+		model.addAttribute("current_orders_count", currentOrdersCount);
 		List<Order> myCurrentOrders =
 				orderSvc.getCurrentOrdersForClientIdWithFetching(myClient.getClientId(),
 						currentOrdersPagingFirstIndex, 
 						currentOrdersPagingLastIndex - currentOrdersPagingFirstIndex + 1);
 		model.addAttribute("my_current_orders", myCurrentOrders);
-		model.addAttribute("current_orders_paging_first", currentOrdersPagingFirstIndex);
-		model.addAttribute("current_orders_paging_last", currentOrdersPagingLastIndex);
+		Long pagesCount = currentOrdersCount / _defaultPageSize;
+		if (currentOrdersCount % _defaultPageSize != 0) {
+			pagesCount++;
+		}
+		model.addAttribute("pages_count", pagesCount);
+		model.addAttribute("pages_size", _defaultPageSize);
+		model.addAttribute("page_number", pageNumber);
 		
 		model.addAttribute("dialog_pay_order",
 				messageSource.getMessage("label.clientpage.yourOrders.actions.pay.dialog", null,
@@ -105,47 +111,11 @@ public class ClientPageCurrentOrdersController implements MessageSourceAware {
 	@RequestMapping(value = "/clientpagecurrentorders/currentorderspaging",
 			method = RequestMethod.POST)
 	public String currentOrdersPaging(
-			@RequestParam("currentOrdersPageStart") final Long currentOrdersPageStart, 
-			@RequestParam("currentOrdersPageEnd") final Long currentOrdersPageEnd) {
+			@RequestParam("currentOrdersPageNumber") final Long currentOrdersPageNumber) {
 		
-		long currentOrdersStart;
-		long currentOrdersEnd;
-		
-		if (currentOrdersPageStart == null) {
-			currentOrdersStart = (long) 0;
-		} else {
-			currentOrdersStart = currentOrdersPageStart.longValue() - 1;
-		}
-		
-		if (currentOrdersPageEnd == null) {
-			currentOrdersEnd = (long) 0;
-		} else {
-			currentOrdersEnd = currentOrdersPageEnd.longValue() - 1;
-		}		
-		
-		long currentOrdersCount = 
-				orderSvc.getCountCurrentOrderForClientId(myClient.getClientId());
-		
-		if (currentOrdersStart > currentOrdersEnd) {
-			long temp = currentOrdersStart;
-			currentOrdersStart = currentOrdersEnd;
-			currentOrdersEnd = temp;
-		}
-		
-		if (currentOrdersStart < 0)
-			currentOrdersStart = 0;
-		
-		if (currentOrdersStart >= currentOrdersCount)
-			currentOrdersStart = currentOrdersCount - 1;
-		
-		if (currentOrdersEnd < 0)
-			currentOrdersEnd = 0;
-		
-		if (currentOrdersEnd >= currentOrdersCount)
-			currentOrdersEnd = currentOrdersCount - 1;
-		
-		currentOrdersPagingFirstIndex = currentOrdersStart;
-		currentOrdersPagingLastIndex = currentOrdersEnd;		
+		currentOrdersPagingFirstIndex = currentOrdersPageNumber * _defaultPageSize;
+		currentOrdersPagingLastIndex = _defaultPageSize * (currentOrdersPageNumber + 1) - 1;
+		pageNumber = currentOrdersPageNumber;
 		
 		return "redirect:/clientpagecurrentorders";
 	}

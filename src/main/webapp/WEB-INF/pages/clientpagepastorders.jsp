@@ -1,11 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="springForm"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
-	"http://www.w3.org/TR/html4/loose.dtd">
+<%@ include file="tagsused.jsp" %>
 	
 <html>
 <head>
@@ -34,31 +27,16 @@
 		</span>		
 	</c:when>
 	<c:otherwise>
-		<br>
-		<form method="post" action="clientpagepastorders/pastorderspaging" accept-charset="UTF-8">
-  		<table>
-  		<tr>
-  			<td style="width:5%" align="center"><spring:message code="label.clientpage.records" /></td>  			
-  			<td style="width:10%" align="center">
-  				<input name="pastOrdersPageStart" maxlength="5" size="8"
-  				value="${past_orders_paging_first + 1}"/></td>  			
-  			<td style="width:5%" align="center"><spring:message code="label.clientpage.to" /></td>  			
-  			<td style="width:10%" align="center">
-  				<input name="pastOrdersPageEnd" maxlength="5" size="8"
-  				value="${past_orders_paging_last + 1}"/></td>
-  			<td style="width:20%" align="center">
-  			<spring:message code="label.clientpage.of" />
-  			${past_orders_count}
-  			<spring:message code="label.clientpage.total" /></td>
-  			<td style="width:50%" align="left"><button><spring:message code="label.clientpage.buttonGo" /></button></td>  			
-  		</tr>  		
-  		</table>
-  		</form>	
+		<mycustomtags:tablepaging
+  		action="clientpagepastorders/pastorderspaging" 
+  		buttonName="pastOrdersPageNumber"
+  		pages_count="${pages_count}"
+  		page_number="${page_number}"
+  		pages_size="${pages_size}" />
+		<br>		
 	<table data-toggle="table" 
 		data-classes="table table-hover table-condensed" 
-    	data-striped="true"
-    	data-pagination="true"
-		data-search="true"
+    	data-striped="true"    	
 		border="1" style="width:900px" align="center">
 	<thead>
 	<tr><th align="center" data-sortable="true"></th>
@@ -71,7 +49,7 @@
 	<tbody>
   	<c:forEach var="po" items="${my_past_orders}" varStatus="loopStatus">
   	<tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
-    	<td><c:out value="${loopStatus.index + 1}"/></td>    	 
+    	<td><c:out value="${loopStatus.index + 1 + page_number * pages_size}"/></td>    	 
     	<td>
     		<c:choose>
   			<c:when test="${po.repairType.available == 0}">

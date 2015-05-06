@@ -1,10 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-			 "http://www.w3.org/TR/html4/loose.dtd">
+<%@ include file="tagsused.jsp" %>
 			 
 <html>
 <head>
@@ -135,7 +129,7 @@
   				<c:choose>
   				<c:when test="${userAuthorizationDTOCurrent.isOnlyAdmin}">
   					<form:checkbox path="isAdmin" id="isAdminInput" 
-  						disabled="true" checked="true"/>
+  						onclick="return false" checked="true"/>
   				</c:when>
   				<c:when test="${userAuthorizationDTOCurrent.isAdmin 
   					&& !userAuthorizationDTOCurrent.isOnlyAdmin}">

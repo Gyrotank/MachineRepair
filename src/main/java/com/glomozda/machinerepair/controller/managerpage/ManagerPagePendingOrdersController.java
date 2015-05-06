@@ -49,10 +49,11 @@ public class ManagerPagePendingOrdersController implements MessageSourceAware {
 	private String messageConfirmSucceeded = "";
 	private String messageCancelSucceeded = "";
 	
-	private static final Long _defaultPageSize = (long) 25;
+	private static final Long _defaultPageSize = (long) 10;
 	
 	private Long pendingOrdersPagingFirstIndex = (long) 0;
 	private Long pendingOrdersPagingLastIndex = _defaultPageSize - 1;
+	private Long pageNumber = (long) 0;
 	
 	public void setMessageSource(final MessageSource messageSource) {
 		this.messageSource = messageSource;
@@ -86,9 +87,15 @@ public class ManagerPagePendingOrdersController implements MessageSourceAware {
 				pendingOrdersPagingFirstIndex,
 				pendingOrdersPagingLastIndex - pendingOrdersPagingFirstIndex + 1);
 		model.addAttribute("pending_orders", pendingOrders);
-		model.addAttribute("pending_orders_count", orderSvc.getCountOrdersForStatus("pending"));
-		model.addAttribute("pending_orders_paging_first", pendingOrdersPagingFirstIndex);
-		model.addAttribute("pending_orders_paging_last", pendingOrdersPagingLastIndex);
+		Long pendingOrdersCount = orderSvc.getCountOrdersForStatus("pending");
+		model.addAttribute("pending_orders_count", pendingOrdersCount);
+		Long pagesCount = pendingOrdersCount / _defaultPageSize;
+		if (pendingOrdersCount % _defaultPageSize != 0) {
+			pagesCount++;
+		}
+		model.addAttribute("pages_count", pagesCount);
+		model.addAttribute("pages_size", _defaultPageSize);
+		model.addAttribute("page_number", pageNumber);
 		
 		model.addAttribute("dialog_confirm_order",
 				messageSource.getMessage("label.managerpage.pending.actions.confirm.dialog", null,
@@ -106,46 +113,11 @@ public class ManagerPagePendingOrdersController implements MessageSourceAware {
 	@RequestMapping(value = "/managerpagependingorders/pendingorderspaging",
 			method = RequestMethod.POST)
 	public String pendingOrdersPaging(
-			@RequestParam("pendingOrdersPageStart") final Long pendingOrdersPageStart, 
-			@RequestParam("pendingOrdersPageEnd") final Long pendingOrdersPageEnd) {
+			@RequestParam("pendingOrdersPageNumber") final Long pendingOrdersPageNumber) {
 		
-		long pendingOrdersStart;
-		long pendingOrdersEnd;
-		
-		if (pendingOrdersPageStart == null) {
-			pendingOrdersStart = (long) 0;
-		} else {
-			pendingOrdersStart = pendingOrdersPageStart.longValue() - 1;
-		}
-		
-		if (pendingOrdersPageEnd == null) {
-			pendingOrdersEnd = (long) 0;
-		} else {
-			pendingOrdersEnd = pendingOrdersPageEnd.longValue() - 1;
-		}
-		
-		long pendingOrdersCount = orderSvc.getCountOrdersForStatus("pending");
-		
-		if (pendingOrdersStart > pendingOrdersEnd) {
-			long temp = pendingOrdersStart;
-			pendingOrdersStart = pendingOrdersEnd;
-			pendingOrdersEnd = temp;
-		}
-		
-		if (pendingOrdersStart < 0)
-			pendingOrdersStart = 0;
-		
-		if (pendingOrdersStart >= pendingOrdersCount)
-			pendingOrdersStart = pendingOrdersCount - 1;
-		
-		if (pendingOrdersEnd < 0)
-			pendingOrdersEnd = 0;
-		
-		if (pendingOrdersEnd >= pendingOrdersCount)
-			pendingOrdersEnd = pendingOrdersCount - 1;
-		
-		pendingOrdersPagingFirstIndex = pendingOrdersStart;
-		pendingOrdersPagingLastIndex = pendingOrdersEnd;		
+		pendingOrdersPagingFirstIndex = pendingOrdersPageNumber * _defaultPageSize;
+		pendingOrdersPagingLastIndex = _defaultPageSize * (pendingOrdersPageNumber + 1) - 1;
+		pageNumber = pendingOrdersPageNumber;	
 		
 		return "redirect:/managerpagependingorders";
 	}

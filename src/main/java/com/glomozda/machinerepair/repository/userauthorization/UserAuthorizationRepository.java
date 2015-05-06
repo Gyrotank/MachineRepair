@@ -1,6 +1,5 @@
 package com.glomozda.machinerepair.repository.userauthorization;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -9,7 +8,6 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import org.hibernate.SQLQuery;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +21,6 @@ public class UserAuthorizationRepository {
 	@PersistenceContext
 	private EntityManager em;
 	
-	@Transactional
 	public List<UserAuthorization> getAll() {
 		List<UserAuthorization> result = 
 				em.createNamedQuery("UserAuthorization.findAll",
@@ -31,7 +28,6 @@ public class UserAuthorizationRepository {
 		return result;
 	}
 	
-	@Transactional
 	public List<UserAuthorization> getAll(Long start, Long length) {
 		List<UserAuthorization> result = 
 				em.createNamedQuery("UserAuthorization.findAll",
@@ -42,7 +38,6 @@ public class UserAuthorizationRepository {
 		return result;
 	}
 	
-	@Transactional
 	public List<UserAuthorization> getAllWithFetching(Long start, Long length) {
 		List<UserAuthorization> result = 
 				em.createNamedQuery("UserAuthorization.findAllWithFetching",
@@ -53,7 +48,6 @@ public class UserAuthorizationRepository {
 		return result;
 	}
 	
-	@Transactional
 	public LinkedHashSet<User> getDistinctUsersWithFetching(Long start, Long length) {
 		List<UserAuthorization> query_result = 
 				em.createNamedQuery("UserAuthorization.findAllWithFetching",
@@ -69,7 +63,6 @@ public class UserAuthorizationRepository {
 		return result;
 	}	
 	
-	@Transactional
 	public List<UserAuthorization> getAllWithFetching() {
 		List<UserAuthorization> result = 
 				em.createNamedQuery("UserAuthorization.findAllWithFetching",
@@ -77,7 +70,6 @@ public class UserAuthorizationRepository {
 		return result;
 	}
 	
-	@Transactional
 	public List<UserRole> getAllRoles() {
 		List<UserRole> result = 
 				em.createNamedQuery("UserAuthorization.findAllRoles",
@@ -85,7 +77,6 @@ public class UserAuthorizationRepository {
 		return result;
 	}
 	
-	@Transactional
 	public UserAuthorization getUserAuthorizationForUserIdAndRole(Long userId, String role) {
 		UserAuthorization result = null;
 		try {
@@ -99,7 +90,6 @@ public class UserAuthorizationRepository {
 		return result;
 	}
 	
-	@Transactional
 	public List<String> getUserLoginsForRole(String role) {
 		return em.createNamedQuery("UserAuthorization.findUserLoginsForRole",
 					String.class)
@@ -107,7 +97,6 @@ public class UserAuthorizationRepository {
 					.getResultList();	
 	}
 	
-	@Transactional
 	public Long getUserAuthorizationCount() {
 		Long result = null;
 		try {
@@ -117,7 +106,6 @@ public class UserAuthorizationRepository {
 		return result;
 	}
 	
-	@Transactional
 	public Long getCountUserAuthorizationsForRole(String role) {
 		Long result = null;
 		try {
@@ -129,7 +117,6 @@ public class UserAuthorizationRepository {
 		return result;
 	}
 	
-	@Transactional
 	public List<UserRole> getRolesForUserId(Long userId) {
 		return em.createNamedQuery("UserAuthorization.findRolesForUserId",
 						UserRole.class)
@@ -137,7 +124,6 @@ public class UserAuthorizationRepository {
 						.getResultList();		
 	}
 	
-	@Transactional
 	public User getUserForUserAuthorizationId(Long userAuthorizationId) {
 		User result = null;
 		try {
@@ -176,7 +162,6 @@ public class UserAuthorizationRepository {
 		return deletedCount;
 	}
 	
-	@Transactional
 	public List<UserAuthorization> getUserAuthorizationsByUserId(Long userId) {
 		return em.createNamedQuery("UserAuthorization.findUserAuthorizationsByUserId",
 				UserAuthorization.class)

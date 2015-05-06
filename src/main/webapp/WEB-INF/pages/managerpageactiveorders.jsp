@@ -1,10 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
-	"http://www.w3.org/TR/html4/loose.dtd">
+<%@ include file="tagsused.jsp" %>
 	
 <html>
 <head>
@@ -29,28 +23,12 @@
 		<div class="error">
   			<c:out value="${message_set_ready_failed}"/>
   		</div>
-  	<form method="post" action="managerpageactiveorders/clientpaging" accept-charset="UTF-8">
-  		<table>
-  		<tr>
-  			<td style="width:5%" align="center">
-  				<spring:message code="label.managerpage.records2" /></td>  			
-  			<td style="width:10%" align="center">
-  				<input name="clientPageStart" maxlength="5" size="8"
-  				value="${clients_paging_first + 1}"/></td>  			
-  			<td style="width:5%" align="center">
-  				<spring:message code="label.managerpage.to" /></td>  			
-  			<td style="width:10%" align="center">
-  				<input name="clientPageEnd" maxlength="5" size="8"
-  				value="${clients_paging_last + 1}"/></td>
-  			<td style="width:20%" align="center">
-  			<spring:message code="label.managerpage.of" />
-  			${clients_count}
-  			<spring:message code="label.managerpage.total" /></td>
-  			<td style="width:50%" align="left"><button>
-  				<spring:message code="label.managerpage.buttonGo" /></button></td>  			
-  		</tr>  		
-  		</table>
-  	</form>
+  	<mycustomtags:tablepaging
+  		action="managerpageactiveorders/clientpaging" 
+  		buttonName="clientPageNumber"
+  		pages_count="${client_pages_count}"
+  		page_number="${client_page_number}"
+  		pages_size="${client_pages_size}" />  	
   	<br>
   	<form method="post" action="listactiveordersforselectedclient" accept-charset="UTF-8">
   		<select name="clientId" onchange="this.form.submit();">
@@ -82,36 +60,16 @@
 		</span>
 		</div>
 	</c:when>
-	<c:otherwise>		
-		<br>
-		<form method="post" action="managerpageactiveorders/startedorderspaging" 
-			accept-charset="UTF-8">
-  		<table>
-  		<tr>
-  			<td style="width:5%" align="center">
-  				<spring:message code="label.managerpage.records" /></td>  			
-  			<td style="width:10%" align="center">
-  				<input name="startedOrdersPageStart" maxlength="5" size="8"
-  				value="${started_orders_paging_first + 1}"/></td>  			
-  			<td style="width:5%" align="center">
-  				<spring:message code="label.managerpage.to" /></td>  			
-  			<td style="width:10%" align="center">
-  				<input name="startedOrdersPageEnd" maxlength="5" size="8"
-  				value="${started_orders_paging_last + 1}"/></td>
-  			<td style="width:20%" align="center">
-  			<spring:message code="label.managerpage.of" />
-  			${started_orders_count}
-  			<spring:message code="label.managerpage.total" /></td>
-  			<td style="width:50%" align="left"><button>
-  				<spring:message code="label.managerpage.buttonGo" /></button></td>  			
-  		</tr>  		
-  		</table>
-  		</form>
+	<c:otherwise>
+		<mycustomtags:tablepaging
+  		action="managerpageactiveorders/startedorderspaging" 
+  		buttonName="startedOrdersPageNumber"
+  		pages_count="${started_orders_pages_count}"
+  		page_number="${started_orders_page_number}"
+  		pages_size="${started_orders_pages_size}" />				
   	<table border="1" data-toggle="table" 
 		data-classes="table table-hover table-condensed" 
     	data-striped="true"
-    	data-pagination="true"
-		data-search="true"
 		data-show-columns="true"
 		border="1" style="width:900px" align="center">
 	<thead>
@@ -134,7 +92,7 @@
 	<tbody>	
   	<c:forEach var="so" items="${started_orders_for_selected_client}" varStatus="loopStatus">
   	<tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
-    	<td><c:out value="${loopStatus.index + 1}"/></td>    	 
+    	<td><c:out value="${loopStatus.index + 1 + started_orders_page_number * started_orders_pages_size}"/></td>    	 
     	<td>
     		<c:choose>
   				<c:when test="${so.repairType.available == 0}">
@@ -210,35 +168,15 @@
 		</div>
 	</c:when>
 	<c:otherwise>
-		<br>
-		<form method="post" action="managerpageactiveorders/readyorderspaging" 
-			accept-charset="UTF-8">
-  		<table>
-  		<tr>
-  			<td style="width:5%" align="center">
-  				<spring:message code="label.managerpage.records" /></td>  			
-  			<td style="width:10%" align="center">
-  				<input name="readyOrdersPageStart" maxlength="5" size="8"
-  				value="${ready_orders_paging_first + 1}"/></td>  			
-  			<td style="width:5%" align="center">
-  				<spring:message code="label.managerpage.to" /></td>  			
-  			<td style="width:10%" align="center">
-  				<input name="readyOrdersPageEnd" maxlength="5" size="8"
-  				value="${ready_orders_paging_last + 1}"/></td>
-  			<td style="width:20%" align="center">
-  			<spring:message code="label.managerpage.of" />
-  			${ready_orders_count}
-  			<spring:message code="label.managerpage.total" /></td>
-  			<td style="width:50%" align="left"><button>
-  				<spring:message code="label.managerpage.buttonGo" /></button></td>  			
-  		</tr>  		
-  		</table>
-  		</form>
+		<mycustomtags:tablepaging
+  		action="managerpageactiveorders/readyorderspaging" 
+  		buttonName="readyOrdersPageNumber"
+  		pages_count="${ready_orders_pages_count}"
+  		page_number="${ready_orders_page_number}"
+  		pages_size="${ready_orders_pages_size}" />		
   	<table border="1" data-toggle="table" 
 		data-classes="table table-hover table-condensed" 
-    	data-striped="true"
-    	data-pagination="true"
-		data-search="true"
+    	data-striped="true"    	
 		data-show-columns="true"
 		border="1" style="width:900px" align="center">
 	<thead>
@@ -259,7 +197,7 @@
 	<tbody>	
   	<c:forEach var="ro" items="${ready_orders_for_selected_client}" varStatus="loopStatus">
   	<tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
-    	<td><c:out value="${loopStatus.index + 1}"/></td>    	 
+    	<td><c:out value="${loopStatus.index + 1 + ready_orders_page_number * ready_orders_pages_size}"/></td>    	 
     	<td>
     		<c:choose>    			
   				<c:when test="${ro.repairType.available == 0}">

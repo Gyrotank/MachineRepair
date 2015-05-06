@@ -20,14 +20,12 @@ public class MachineRepository {
 	@PersistenceContext
 	private EntityManager em;
 
-	@Transactional
 	public List<Machine> getAll() {
 		List<Machine> result = em.createNamedQuery(
 				"Machine.findAll", Machine.class).getResultList();
 		return result;
 	}
 	
-	@Transactional
 	public List<Machine> getAll(Long start, Long length) {
 		List<Machine> result = em.createNamedQuery(
 				"Machine.findAll", Machine.class)
@@ -37,14 +35,12 @@ public class MachineRepository {
 		return result;
 	}
 	
-	@Transactional
 	public List<Machine> getAllWithFetching() {
 		List<Machine> result = em.createNamedQuery(
 				"Machine.findAllWithFetching", Machine.class).getResultList();
 		return result;
 	}
 	
-	@Transactional
 	public List<Machine> getAllWithFetching(Long start, Long length) {
 		List<Machine> result = em.createNamedQuery(
 				"Machine.findAllWithFetching", Machine.class)
@@ -54,7 +50,6 @@ public class MachineRepository {
 		return result;
 	}
 	
-	@Transactional
 	public Machine getMachineForSerialNumber(String machineSerialNumber) {
 		Machine result = null;
 		TypedQuery<Machine> query = em.createNamedQuery(
@@ -67,7 +62,6 @@ public class MachineRepository {
 		return result;
 	}
 	
-	@Transactional
 	public Machine getMachineForSerialNumberWithFetching(String machineSerialNumber) {
 		Machine result = null;
 		TypedQuery<Machine> query = em.createNamedQuery(
@@ -80,7 +74,6 @@ public class MachineRepository {
 		return result;
 	}
 	
-	@Transactional
 	public Machine getMachineByIdWithFetching(Long machineId) {
 		Machine result = null;
 		TypedQuery<Machine> query = em.createNamedQuery(
@@ -119,12 +112,10 @@ public class MachineRepository {
 		return updateCount;		
 	}
 	
-	@Transactional
 	public Long getMachineCount() {
 		return em.createNamedQuery("Machine.countAll", Long.class).getSingleResult();
 	}
 	
-	@Transactional
 	public Machine getMachineById(Long machineId) {
 		return em.find(Machine.class, machineId);
 	}

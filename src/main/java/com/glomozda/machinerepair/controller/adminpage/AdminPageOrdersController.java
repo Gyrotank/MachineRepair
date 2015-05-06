@@ -109,11 +109,11 @@ public class AdminPageOrdersController implements MessageSourceAware {
 			model.addAttribute("order", new Order());
 		}
 		
-		model.addAttribute("users", userSvc.getAll((long) 0, (long) 99));
+		model.addAttribute("users", userSvc.getAll());
 		
-		model.addAttribute("clients", clientSvc.getAll((long) 0, (long) 99));
+		model.addAttribute("clients", clientSvc.getAll());
 		model.addAttribute("repair_types", repairTypeSvc.getAllAvailable());
-		model.addAttribute("machines", machineSvc.getAll((long) 0, (long) 99));
+		model.addAttribute("machines", machineSvc.getAll());
 		model.addAttribute("order_statuses", orderStatusSvc.getAll());
 		List<String> managers = userAuthorizationSvc.getUserLoginsForRole("ROLE_MANAGER");
 		managers.addAll(userAuthorizationSvc.getUserLoginsForRole("ROLE_ADMIN"));

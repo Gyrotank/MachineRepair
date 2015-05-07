@@ -23,13 +23,7 @@
   	<div class="error">
   		<c:out value="${message_machine_serviceable_not_added}"/>
   	</div>
-  	<mycustomtags:tablepaging
-  		action="adminpagemachinesserviceable/machineserviceablepaging" 
-  		buttonName="machineServiceablePageNumber"
-  		pages_count="${pages_count}"
-  		page_number="${page_number}"
-  		pages_size="${pages_size}" />  	
-  	<br>
+  	
   	<table border="1" data-toggle="table" 
 		data-classes="table table-hover table-condensed" 
     	data-striped="true"    		
@@ -136,7 +130,15 @@
   	</c:forEach>
   	</tbody>
   	</table>
+  	<br>
+  	<mycustomtags:tablepaging
+  		action="adminpagemachinesserviceable/machineserviceablepaging" 
+  		buttonName="machineServiceablePageNumber"
+  		pages_count="${pages_count}"
+  		page_number="${page_number}"
+  		pages_size="${pages_size}" />  	
   	
+  	<br>
   	<div>
   	<a name="add_new_serviceable_machine"></a>
   	<h2><spring:message code="label.adminpage.addNewServiceableMachine" /></h2>

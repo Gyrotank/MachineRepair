@@ -1,11 +1,8 @@
 package com.glomozda.machinerepair.service.userauthorization;
 
-import javax.persistence.NoResultException;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,18 +11,10 @@ import com.glomozda.machinerepair.domain.user.User;
 import com.glomozda.machinerepair.domain.userauthorization.UserAuthorization;
 import com.glomozda.machinerepair.domain.userrole.UserRole;
 import com.glomozda.machinerepair.service.DAOTestsTemplate;
-import com.glomozda.machinerepair.service.user.UserService;
 
-@SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
 @ContextConfiguration(locations = "classpath:spring-context-test.xml")
 @Transactional
 public class UserAuthorizationDAOJDBCTest extends DAOTestsTemplate{
-    
-	@Autowired
-    private transient UserAuthorizationService userAuthorizationService;
-	
-	@Autowired
-    private transient UserService userService;
     
     @Before
     public void prepareDB(){

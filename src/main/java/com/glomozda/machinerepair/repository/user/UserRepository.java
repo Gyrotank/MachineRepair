@@ -3,10 +3,7 @@ package com.glomozda.machinerepair.repository.user;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,124 +13,39 @@ import org.springframework.transaction.annotation.Transactional;
 import com.glomozda.machinerepair.domain.user.User;
 
 @Repository
-public class UserRepository {
-	
+public abstract class UserRepository {
+
 	@PersistenceContext
-	private EntityManager em;
+	protected EntityManager em;
 	
 	@Autowired
-	private PasswordEncoder encoder;
-
-	public User getUserByLoginAndPassword(String login, String passwordText) {
-		User result = null;
-		TypedQuery<User> query = em.createNamedQuery("User.findUserByLogin",
-				User.class);
-		query.setParameter("login", login);	  
-		try {
-			result = query.getSingleResult();
-		} catch (NoResultException nre){}
-		if (null != result) {
-			if (!encoder.matches(passwordText, result.getPassword())) {
-				result = null;
-			}
-		}
-		return result;
-	}
-	
-	public User getUserByLoginAndPasswordWithFetching(String login, String passwordText) {
-		User result = null;	  
-		TypedQuery<User> query = em.createNamedQuery("User.findUserByLoginWithFetching",
-				User.class);
-		query.setParameter("login", login);	  
-		try {
-			result = query.getSingleResult();
-		} catch (NoResultException nre){}
-		if (null != result) {
-			if (!encoder.matches(passwordText, result.getPassword())) {
-				result = null;
-			}
-		}
-		return result;
-	}
-	
-	public User getUserByLogin(String login) {
-		User result = null;	  
-		TypedQuery<User> query = em.createNamedQuery("User.findUserByLogin", User.class);
-		query.setParameter("login", login);	  
-		try {
-			result = query.getSingleResult();
-		} catch (NoResultException nre){}
-		
-		return result;
-	}
-	
-	public User getUserByLoginWithFetching(String login) {
-		User result = null;	  
-		TypedQuery<User> query = em.createNamedQuery("User.findUserByLoginWithFetching",
-				User.class);
-		query.setParameter("login", login);	  
-		try {
-			result = query.getSingleResult();
-		} catch (NoResultException nre){}
-		
-		return result;
-	}
-	
-	public User getUserById(Long userId) {
-		return em.find(User.class, userId);
-	}
-	
-	public User getUserByIdWithFetching(Long userId) {
-		User result = null;	  
-		TypedQuery<User> query = em.createNamedQuery("User.findUserByIdWithFetching", User.class);
-		query.setParameter("id", userId);	  
-		try {
-			result = query.getSingleResult();
-		} catch (NoResultException nre){}
-		
-		return result;
-	}
-	
-	public List<User> getAll() {
-		List<User> result = em.createNamedQuery("User.findAll", User.class)				
-				.getResultList();
-		return result;
-	}
-
-	public List<User> getAll(Long start, Long length) {
-		List<User> result = em.createNamedQuery("User.findAll", User.class)
-				.setFirstResult(start.intValue())
-				.setMaxResults(length.intValue())
-				.getResultList();
-		return result;
-	}
-		
-	public List<Object[]> getAllIdsAndLogins() {
-		List<Object[]> result = em.createNamedQuery("User.findAllIdsAndLogins", Object[].class)				
-				.getResultList();
-		return result;
-	}
-	
-	public Long getUserCount() {
-		return em.createNamedQuery("User.countAll", Long.class).getSingleResult();
-	}
+	protected PasswordEncoder encoder;
 	
 	@Transactional
-	public Integer setUserEnabledById(Long userId, Byte enabled) {
-		Query query = em.createNamedQuery("User.setUserEnabledById");
-		query.setParameter("id", userId);
-		query.setParameter("enabled", enabled);
-		int updateCount = query.executeUpdate();
-		return updateCount;
-	}
+	public abstract Boolean add(User u);
 
 	@Transactional
-	public Boolean add(User u) {
-		em.persist(u);
-		if (em.contains(u)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+	public abstract Integer setUserEnabledById(Long userId, Byte enabled);
+
+	public abstract Long getUserCount();
+
+	public abstract List<Object[]> getAllIdsAndLogins();
+
+	public abstract List<User> getAll(Long start, Long length);
+
+	public abstract List<User> getAll();
+
+	public abstract User getUserByIdWithFetching(Long userId);
+
+	public abstract User getUserById(Long userId);
+
+	public abstract User getUserByLoginWithFetching(String login);
+
+	public abstract User getUserByLogin(String login);
+
+	public abstract User getUserByLoginAndPasswordWithFetching(String login,
+			String passwordText);
+
+	public abstract User getUserByLoginAndPassword(String login, String passwordText);
+
 }

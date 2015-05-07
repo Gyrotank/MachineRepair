@@ -60,13 +60,7 @@
 		</span>
 		</div>
 	</c:when>
-	<c:otherwise>
-		<mycustomtags:tablepaging
-  		action="managerpageactiveorders/startedorderspaging" 
-  		buttonName="startedOrdersPageNumber"
-  		pages_count="${started_orders_pages_count}"
-  		page_number="${started_orders_page_number}"
-  		pages_size="${started_orders_pages_size}" />				
+	<c:otherwise>						
   	<table border="1" data-toggle="table" 
 		data-classes="table table-hover table-condensed" 
     	data-striped="true"
@@ -155,6 +149,13 @@
   	</c:forEach>
   	</tbody>
   	</table>
+  	<br>
+  	<mycustomtags:tablepaging
+  		action="managerpageactiveorders/startedorderspaging" 
+  		buttonName="startedOrdersPageNumber"
+  		pages_count="${started_orders_pages_count}"
+  		page_number="${started_orders_page_number}"
+  		pages_size="${started_orders_pages_size}" />
   	</c:otherwise>
   	</c:choose>
   	<br>
@@ -167,13 +168,7 @@
 		</span>
 		</div>
 	</c:when>
-	<c:otherwise>
-		<mycustomtags:tablepaging
-  		action="managerpageactiveorders/readyorderspaging" 
-  		buttonName="readyOrdersPageNumber"
-  		pages_count="${ready_orders_pages_count}"
-  		page_number="${ready_orders_page_number}"
-  		pages_size="${ready_orders_pages_size}" />		
+	<c:otherwise>				
   	<table border="1" data-toggle="table" 
 		data-classes="table table-hover table-condensed" 
     	data-striped="true"    	
@@ -242,6 +237,13 @@
   	</c:forEach>
   	</tbody>
   	</table>
+  	<br>
+  	<mycustomtags:tablepaging
+  		action="managerpageactiveorders/readyorderspaging" 
+  		buttonName="readyOrdersPageNumber"
+  		pages_count="${ready_orders_pages_count}"
+  		page_number="${ready_orders_page_number}"
+  		pages_size="${ready_orders_pages_size}" />
   	</c:otherwise>
   	</c:choose>
   	</div>

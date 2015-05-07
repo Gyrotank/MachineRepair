@@ -32,14 +32,7 @@
 		</span>
 		</div>
 	</c:when>
-	<c:otherwise>
-		<mycustomtags:tablepaging
-  		action="managerpagependingorders/pendingorderspaging" 
-  		buttonName="pendingOrdersPageNumber"
-  		pages_count="${pages_count}"
-  		page_number="${page_number}"
-  		pages_size="${pages_size}" />
-  		<br>		
+	<c:otherwise>				
 		<table data-toggle="table" 
 			data-classes="table table-hover table-condensed" 
     		data-striped="true"    		
@@ -115,6 +108,13 @@
   		</c:forEach>
   	</tbody>
   	</table>
+  	<br>
+  	<mycustomtags:tablepaging
+  		action="managerpagependingorders/pendingorderspaging" 
+  		buttonName="pendingOrdersPageNumber"
+  		pages_count="${pages_count}"
+  		page_number="${page_number}"
+  		pages_size="${pages_size}" />  		
   	</c:otherwise>
   	</c:choose>
   	</div>

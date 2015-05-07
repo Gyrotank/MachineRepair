@@ -22,14 +22,7 @@
   	</div>
   	<div class="error">
   		<c:out value="${message_user_authorization_not_added}"/>
-  	</div>
-  	<mycustomtags:tablepaging
-  		action="adminpageuserauthorizations/userauthorizationpaging" 
-  		buttonName="userAuthorizationPageNumber"
-  		pages_count="${pages_count}"
-  		page_number="${page_number}"
-  		pages_size="${pages_size}" />  	
-  	<br>
+  	</div>  	
   	<table data-toggle="table" 
 		data-classes="table table-hover table-condensed" 
     	data-striped="true"    	   	
@@ -106,7 +99,14 @@
   	</c:forEach>
   	</tbody>
   	</table>
-  	
+  	<br>
+  	<mycustomtags:tablepaging
+  		action="adminpageuserauthorizations/userauthorizationpaging" 
+  		buttonName="userAuthorizationPageNumber"
+  		pages_count="${pages_count}"
+  		page_number="${page_number}"
+  		pages_size="${pages_size}" />  	
+  	<br>
   	<a name="add_new_user_authorization"></a>
   	<h2><spring:message code="label.adminpage.addNewUserAuthorization" /></h2>
   	<form:form method="post" commandName="userAuthorization" 

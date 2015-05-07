@@ -2,67 +2,42 @@ package com.glomozda.machinerepair.service.client;
 
 import java.util.List;
 
-import com.glomozda.machinerepair.domain.client.*;
-import com.glomozda.machinerepair.repository.client.ClientRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.glomozda.machinerepair.domain.client.Client;
+import com.glomozda.machinerepair.repository.client.ClientRepository;
+
 @Service
-public class ClientService {
-   
+public abstract class ClientService {
+
 	@Autowired
-	private ClientRepository clientRepository;
-	
-	public List<Client> getAll() {
-		return clientRepository.getAll();
-	}
-	
-	public List<Client> getAll(Long start, Long length) {
-		return clientRepository.getAll(start, length);
-	}
-	
-	public List<Client> getAllWithFetching() {
-		return clientRepository.getAllWithFetching();
-	}
-	
-	public List<Client> getAllWithFetching(Long start, Long length) {
-		return clientRepository.getAllWithFetching(start, length);
-	}
-	
-	public List<Long> getAllClientIds() {
-		return clientRepository.getAllClientIds();
-	}
-	
-	public Client getClientById(Long clientId) {
-		return clientRepository.getClientById(clientId);
-	}
+	protected ClientRepository clientRepository;
 
-	public Client getClientByUserId(Long userId) {
-		return clientRepository.getClientByUserId(userId);
-	}
-	
-	public Client getClientByUserIdWithFetching(Long userId) {
-		return clientRepository.getClientByUserIdWithFetching(userId);
-	}
-	
-	public Client getClientByLogin(String login) {
-		return clientRepository.getClientByLogin(login);
-	}
-	
-	public Client getClientByLoginWithFetching(String login) {
-		return clientRepository.getClientByLoginWithFetching(login);
-	}
-	
-	public Long getClientCount() {
-		return clientRepository.getClientCount();
-	}
+	public abstract Integer updateClientNameById(Long clientId, String name);
 
-	public Boolean add(Client c, Long userId) {
-		return clientRepository.add(c, userId);
-	}
-	
-	public Integer updateClientNameById(Long clientId, String name) {
-		return clientRepository.updateClientNameById(clientId, name);
-	}
+	public abstract Boolean add(Client c, Long userId);
+
+	public abstract Long getClientCount();
+
+	public abstract Client getClientByLoginWithFetching(String login);
+
+	public abstract Client getClientByLogin(String login);
+
+	public abstract Client getClientByUserIdWithFetching(Long userId);
+
+	public abstract Client getClientByUserId(Long userId);
+
+	public abstract Client getClientById(Long clientId);
+
+	public abstract List<Long> getAllClientIds();
+
+	public abstract List<Client> getAllWithFetching(Long start, Long length);
+
+	public abstract List<Client> getAllWithFetching();
+
+	public abstract List<Client> getAll(Long start, Long length);
+
+	public abstract List<Client> getAll();
+
 }

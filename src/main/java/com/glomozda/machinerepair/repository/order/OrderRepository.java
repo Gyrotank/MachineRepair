@@ -3,296 +3,80 @@ package com.glomozda.machinerepair.repository.order;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.glomozda.machinerepair.domain.client.Client;
-import com.glomozda.machinerepair.domain.machine.Machine;
 import com.glomozda.machinerepair.domain.order.Order;
-import com.glomozda.machinerepair.domain.orderstatus.OrderStatus;
-import com.glomozda.machinerepair.domain.repairtype.RepairType;
 
 @Repository
-public class OrderRepository {
-	
+public abstract class OrderRepository {
+
 	@PersistenceContext
-	private EntityManager em;
+	protected EntityManager em;
+	
+	@Transactional
+	public abstract Integer updateOrderById(Long orderId, Order order);
+	
+	@Transactional
+	public abstract Integer cancelOrderById(Long orderId);
+	
+	@Transactional
+	public abstract Integer setOrderStatusById(Long orderId, Long orderStatusId);
+	
+	@Transactional
+	public abstract Integer confirmOrderById(Long orderId, String manager,
+			Long orderStatusId);
+	
+	@Transactional
+	public abstract Boolean add(Order o, Long clientId, Long repairTypeId,
+			Long machineId, Long orderStatusId);
 
-	public List<Order> getAll() {
-		List<Order> result = em.createNamedQuery(
-				"Order.findAll", Order.class).getResultList();
-		return result;
-	}
-	
-	public List<Order> getAll(Long start, Long length) {
-		List<Order> result = em.createNamedQuery(
-				"Order.findAll", Order.class)
-				.setFirstResult(start.intValue())
-				.setMaxResults(length.intValue())
-				.getResultList();
-		return result;
-	}
-	
-	public List<Order> getAllWithFetching() {
-		List<Order> result = em.createNamedQuery("Order.findAllWithFetching",
-				Order.class).getResultList();
-		return result;
-	}
-	
-	public List<Order> getAllWithFetching(Long start, Long length) {
-		List<Order> result = em.createNamedQuery("Order.findAllWithFetching",
-				Order.class)
-				.setFirstResult(start.intValue())
-				.setMaxResults(length.intValue())
-				.getResultList();
-		return result;
-	}
-	
-	public Order getOrderById(Long orderId) {
-		Order result = null;
-		TypedQuery<Order> query = em.createNamedQuery("Order.findOrderById", Order.class);
-		query.setParameter("id", orderId);	  
-		try {
-			result = query.getSingleResult();
-		} catch (NoResultException nre){}
-		
-		return result;
-	}
-	
-	public Order getOrderByIdWithFetching(Long orderId) {
-		Order result = null;
-		TypedQuery<Order> query = em.createNamedQuery("Order.findOrderByIdWithFetching",
-				Order.class);
-		query.setParameter("id", orderId);	  
-		try {
-			result = query.getSingleResult();
-		} catch (NoResultException nre){}
-		
-		return result;
-	}
-	
-	public List<Order> getOrdersForStatus(String status) {
-		List<Order> result = null;
-		TypedQuery<Order> query = em.createNamedQuery("Order.findOrdersByStatus", Order.class);
-		query.setParameter("status", status);	  
-		try {
-			result = query.getResultList();
-		} catch (NoResultException nre){}
-		
-		return result;
-	}
-	
-	public Long getCountOrdersForStatus(String status) {
-		return em.createNamedQuery("Order.countOrdersByStatus", Long.class)
-				.setParameter("status", status)
-				.getSingleResult();
-	}	
-	
-	public List<Order> getOrdersForStatusWithFetching(String status) {
-		List<Order> result = null;
-		TypedQuery<Order> query = em.createNamedQuery("Order.findOrdersByStatusWithFetching",
-				Order.class);
-		query.setParameter("status", status);	  
-		try {
-			result = query.getResultList();
-		} catch (NoResultException nre){}
-		
-		return result;
-	}
-	
-	public List<Order> getOrdersForStatusWithFetching(String status, Long start, Long length) {
-		List<Order> result = null;
-		TypedQuery<Order> query = em.createNamedQuery("Order.findOrdersByStatusWithFetching",
-				Order.class);
-		query.setParameter("status", status);	  
-		try {
-			result = query
-					.setFirstResult(start.intValue())
-					.setMaxResults(length.intValue())
-					.getResultList();
-		} catch (NoResultException nre){}
-		
-		return result;
-	}
-	
-	public List<Order> getAllForClientId(Long clientId) {
-		List<Order> result = null;
-		TypedQuery<Order> query = em.createNamedQuery("Order.findOrdersByClientId", Order.class);
-		query.setParameter("id", clientId);	  
-		try {
-			result = query.getResultList();
-		} catch (NoResultException nre){}
-		
-		return result;
-	}
-	
-	public Long getCountAllForClientId(Long clientId) {
-		return em.createNamedQuery("Order.countOrdersByClientId", Long.class)
-				.setParameter("id", clientId)				
-				.getSingleResult();
-	}
-	
-	public List<Order> getOrdersForClientIdAndStatusWithFetching(Long clientId, String status) {
-		List<Order> result = null;
-		TypedQuery<Order> query = em.createNamedQuery(
-				"Order.findOrdersByClientIdAndStatusWithFetching", Order.class);
-		query.setParameter("id", clientId);
-		query.setParameter("status", status);
-		try {
-			result = query.getResultList();
-		} catch (NoResultException nre){}
-		
-		return result;
-	}
-	
-	public List<Order> getOrdersForClientIdAndStatusWithFetching(Long clientId, String status,
-			Long start, Long length) {
-		List<Order> result = null;
-		TypedQuery<Order> query = em.createNamedQuery(
-				"Order.findOrdersByClientIdAndStatusWithFetching", Order.class);
-		query.setParameter("id", clientId);
-		query.setParameter("status", status);
-		try {
-			result = query
-					.setFirstResult(start.intValue())
-					.setMaxResults(length.intValue())
-					.getResultList();
-		} catch (NoResultException nre){}
-		
-		return result;
-	}
-	
-	public List<Order> getOrdersByClientIdAndMachineSNAndNotFinished(Long clientId,
-			String serialNumber) {
-		List<Order> result = null;
-		TypedQuery<Order> query = em.createNamedQuery(
-				"Order.findOrderByClientIdAndMachineSNAndNotFinished",
-				Order.class);
-		query.setParameter("id", clientId);
-		query.setParameter("sn", serialNumber);
-		try {
-			result = query.getResultList();
-		} catch (NoResultException nre){}
-		
-		return result;
-	}
-	
-	public List<Order> getCurrentOrdersForClientIdWithFetching(Long clientId) {
-		List<Order> result = null;
-		TypedQuery<Order> query = em.createNamedQuery(
-				"Order.findCurrentOrdersByClientIdWithFetching", Order.class);
-		query.setParameter("id", clientId);
-		try {
-			result = query					
-					.getResultList();
-		} catch (NoResultException nre){}
-		
-		return result;
-	}
-	
-	public List<Order> getCurrentOrdersForClientIdWithFetching(Long clientId,
-			Long start, Long length) {
-		List<Order> result = null;
-		TypedQuery<Order> query = em.createNamedQuery(
-				"Order.findCurrentOrdersByClientIdWithFetching", Order.class);
-		query.setParameter("id", clientId);
-		try {
-			result = query
-					.setFirstResult(start.intValue())
-					.setMaxResults(length.intValue())
-					.getResultList();
-		} catch (NoResultException nre){}
-		
-		return result;
-	}
-	
-	public Long getOrderCount() {
-		return em.createNamedQuery("Order.countAll", Long.class).getSingleResult();
-	}
-	
-	public Long getCountOrdersForClientIdAndStatus(Long clientId, String status) {
-		return em.createNamedQuery("Order.countOrdersByClientIdAndStatus", Long.class)
-				.setParameter("id", clientId)
-				.setParameter("status", status)
-				.getSingleResult();
-	}
-	
-	public Long getCountCurrentOrderForClientId(Long clientId) {
-		return em.createNamedQuery("Order.countCurrentOrdersByClientId", Long.class)
-				.setParameter("id", clientId)
-				.getSingleResult();
-	}
+	public abstract Long getCountCurrentOrderForClientId(Long clientId);
 
-	@Transactional
-	public Boolean add(Order o, Long clientId, 
-			Long repairTypeId, Long machineId, Long orderStatusId) {
+	public abstract Long getCountOrdersForClientIdAndStatus(Long clientId,
+			String status);
 
-		Client client = em.getReference(Client.class, clientId);
-		RepairType repairType = em.getReference(RepairType.class, repairTypeId);
-		Machine machine = em.getReference(Machine.class, machineId);
-		OrderStatus orderStatus = em.getReference(OrderStatus.class, orderStatusId);
+	public abstract Long getOrderCount();
 
-		Order newOrder = new Order();
-		newOrder.setClient(client);
-		newOrder.setRepairType(repairType);
-		newOrder.setMachine(machine);
-		newOrder.setStatus(orderStatus);
-		newOrder.setStart(o.getStart());		
-		newOrder.setManager(o.getManager());		
-		
-		em.persist(newOrder);
-		
-		if (em.contains(newOrder)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	@Transactional
-	public Integer confirmOrderById(Long orderId, String manager, Long orderStatusId) {
-		OrderStatus orderStatus = em.getReference(OrderStatus.class, orderStatusId);
-		Query query = em.createNamedQuery("Order.confirmOrderById");		
-		int updateCount = query
-							.setParameter("id", orderId)
-							.setParameter("manager", manager)
-							.setParameter("status", orderStatus)
-							.executeUpdate();
-		return updateCount;
-	}
-	
-	@Transactional
-	public Integer setOrderStatusById(Long orderId, Long orderStatusId) {
-		OrderStatus orderStatus = em.getReference(OrderStatus.class, orderStatusId);
-		Query query = em.createNamedQuery("Order.setOrderStatusById");
-		query.setParameter("id", orderId);
-		query.setParameter("status", orderStatus);
-		int updateCount = query.executeUpdate();
-		return updateCount;		
-	}
-	
-	@Transactional
-	public Integer cancelOrderById(Long orderId) {
-		Query query = em.createNamedQuery("Order.cancelOrderById");
-		query.setParameter("id", orderId);		
-		int deletedCount = query.executeUpdate();
-		return deletedCount;
-	}
-	
-	@Transactional
-	public Integer updateOrderById(Long orderId, Order order) {
-		Query query = em.createNamedQuery("Order.updateOrderById");
-		query.setParameter("id", orderId);
-		query.setParameter("rt", order.getRepairType());
-		query.setParameter("start", order.getStart());
-		query.setParameter("status", order.getStatus());
-		query.setParameter("manager", order.getManager());
-		int updateCount = query.executeUpdate();
-		return updateCount;
-	}
+	public abstract List<Order> getCurrentOrdersForClientIdWithFetching(
+			Long clientId, Long start, Long length);
+
+	public abstract List<Order> getCurrentOrdersForClientIdWithFetching(Long clientId);
+
+	public abstract List<Order> getOrdersByClientIdAndMachineSNAndNotFinished(
+			Long clientId, String serialNumber);
+
+	public abstract List<Order> getOrdersForClientIdAndStatusWithFetching(
+			Long clientId, String status, Long start, Long length);
+
+	public abstract List<Order> getOrdersForClientIdAndStatusWithFetching(
+			Long clientId, String status);
+
+	public abstract Long getCountAllForClientId(Long clientId);
+
+	public abstract List<Order> getAllForClientId(Long clientId);
+
+	public abstract List<Order> getOrdersForStatusWithFetching(String status,
+			Long start, Long length);
+
+	public abstract List<Order> getOrdersForStatusWithFetching(String status);
+
+	public abstract Long getCountOrdersForStatus(String status);
+
+	public abstract List<Order> getOrdersForStatus(String status);
+
+	public abstract Order getOrderByIdWithFetching(Long orderId);
+
+	public abstract Order getOrderById(Long orderId);
+
+	public abstract List<Order> getAllWithFetching(Long start, Long length);
+
+	public abstract List<Order> getAllWithFetching();
+
+	public abstract List<Order> getAll(Long start, Long length);
+
+	public abstract List<Order> getAll();
+
 }

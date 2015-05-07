@@ -3,7 +3,6 @@ package com.glomozda.machinerepair.service.user;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,18 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.glomozda.machinerepair.domain.client.Client;
 import com.glomozda.machinerepair.domain.user.User;
 import com.glomozda.machinerepair.service.DAOTestsTemplate;
-import com.glomozda.machinerepair.service.client.ClientService;
 
-@SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
 @ContextConfiguration(locations = "classpath:spring-context-test.xml")
 @Transactional
 public class UserDAOJDBCTest extends DAOTestsTemplate{
-    
-	@Autowired
-    private transient UserService userService;
-	
-	@Autowired
-    private transient ClientService clientService;
     
 	String hashed_password_qwerty = BCrypt.hashpw("qwerty", BCrypt.gensalt());
 	String hashed_password_12345 = BCrypt.hashpw("12345", BCrypt.gensalt());

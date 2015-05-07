@@ -5,9 +5,7 @@ import java.util.Calendar;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,38 +17,10 @@ import com.glomozda.machinerepair.domain.orderstatus.OrderStatus;
 import com.glomozda.machinerepair.domain.repairtype.RepairType;
 import com.glomozda.machinerepair.domain.user.User;
 import com.glomozda.machinerepair.service.DAOTestsTemplate;
-import com.glomozda.machinerepair.service.client.ClientService;
-import com.glomozda.machinerepair.service.machine.MachineService;
-import com.glomozda.machinerepair.service.machineserviceable.MachineServiceableService;
-import com.glomozda.machinerepair.service.orderstatus.OrderStatusService;
-import com.glomozda.machinerepair.service.repairtype.RepairTypeService;
-import com.glomozda.machinerepair.service.user.UserService;
 
-@SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
 @ContextConfiguration(locations = "classpath:spring-context-test.xml")
 @Transactional
 public class OrderDAOJDBCTest extends DAOTestsTemplate{
-    
-	@Autowired
-    private transient OrderService orderService;
-	
-	@Autowired
-    private transient OrderStatusService orderStatusService;
-	
-	@Autowired
-    private transient ClientService clientService;
-	
-	@Autowired
-    private transient RepairTypeService repairTypeService;
-	
-	@Autowired
-    private transient MachineService machineService;
-	
-	@Autowired
-    private transient MachineServiceableService machineServiceableService;
-	
-	@Autowired
-	private transient UserService userService;
     
 	Calendar cal = Calendar.getInstance();
 	

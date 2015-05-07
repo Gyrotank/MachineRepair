@@ -22,14 +22,7 @@
   	</div>
   	<div class="error">
   		<c:out value="${message_repair_type_not_added}"/>
-  	</div>
-  	<mycustomtags:tablepaging
-  		action="adminpagerepairtypes/repairtypepaging" 
-  		buttonName="repairTypePageNumber"
-  		pages_count="${pages_count}"
-  		page_number="${page_number}"
-  		pages_size="${pages_size}" />  	
-  	<br>
+  	</div>  	
   	<table data-toggle="table" 
 		data-classes="table table-hover table-condensed" 
     	data-striped="true"    	
@@ -139,7 +132,14 @@
   	</c:forEach>
   	</tbody>
   	</table>
-  	
+  	<br>
+  	<mycustomtags:tablepaging
+  		action="adminpagerepairtypes/repairtypepaging" 
+  		buttonName="repairTypePageNumber"
+  		pages_count="${pages_count}"
+  		page_number="${page_number}"
+  		pages_size="${pages_size}" />  	
+  	<br>
   	<a name="add_new_repair_type"></a>
   	<h2><spring:message code="label.adminpage.addNewRepairType" /></h2>
   	<form:form method="post" commandName="repairType" 

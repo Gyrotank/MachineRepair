@@ -6,7 +6,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,19 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.glomozda.machinerepair.domain.client.Client;
 import com.glomozda.machinerepair.domain.user.User;
 import com.glomozda.machinerepair.service.DAOTestsTemplate;
-import com.glomozda.machinerepair.service.user.UserService;
 
-@SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:spring-context-test.xml")
 @Transactional
 public class ClientDAOJDBCTest extends DAOTestsTemplate{
-    
-    @Autowired
-    private transient ClientService clientService;
-    
-    @Autowired
-    private transient UserService userService;
     
     final Client cl1 = new Client();
     final Client cl2 = new Client();

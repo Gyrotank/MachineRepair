@@ -13,8 +13,8 @@
 			<td align="left">
 				<ul class="paging">
 					<li>
-						<button class="norm" onmouseover="this.className='over'"
-							onmouseout="this.className='norm'" name="${buttonName}"
+						<button class="normal" onmouseover="this.className='over'"
+							onmouseout="this.className='normal'" name="${buttonName}"
 							value="${0}">
 							<c:out value="<<"/>
   						</button>
@@ -24,8 +24,8 @@
 							<c:if
 								test="${page_number > 2 && (pages_count - page_number - 1) > 1}">
 								<li>
-									<button class="norm" onmouseover="this.className='over'"
-										onmouseout="this.className='norm'" name="${buttonName}"
+									<button class="normal" onmouseover="this.className='over'"
+										onmouseout="this.className='normal'" name="${buttonName}"
 										value="${i + page_number - 2}">
 										<c:out
 											value="${1 + pages_size * (i + page_number - 2)} 
@@ -35,8 +35,8 @@
 							</c:if>
 							<c:if test="${page_number <= 2}">
 								<li>
-									<button class="norm" onmouseover="this.className='over'"
-										onmouseout="this.className='norm'" name="${buttonName}"
+									<button class="normal" onmouseover="this.className='over'"
+										onmouseout="this.className='normal'" name="${buttonName}"
 										value="${i}">
 										<c:out
 											value="${1 + pages_size * i} ... ${pages_size * (i + 1)}" />
@@ -45,8 +45,8 @@
 							</c:if>
 							<c:if test="${(pages_count - page_number - 1) <= 1}">
 								<li>
-									<button class="norm" onmouseover="this.className='over'"
-										onmouseout="this.className='norm'" name="${buttonName}"
+									<button class="normal" onmouseover="this.className='over'"
+										onmouseout="this.className='normal'" name="${buttonName}"
 										value="${i + pages_count - 5}">
 										<c:out
 											value="${1 + pages_size * (i + pages_count - 5)} 
@@ -59,8 +59,8 @@
 					<c:if test="${pages_count <= 5}">
 						<c:forEach var="i" begin="0" end="${pages_count - 1}">
 							<li>
-								<button class="norm" onmouseover="this.className='over'"
-									onmouseout="this.className='norm'" name="${buttonName}"
+								<button class="normal" onmouseover="this.className='over'"
+									onmouseout="this.className='normal'" name="${buttonName}"
 									value="${i}">
 									<c:out
 										value="${1 + pages_size * i} ... ${pages_size * (i + 1)}" />
@@ -69,8 +69,8 @@
 						</c:forEach>
 					</c:if>
 					<li>
-						<button class="norm" onmouseover="this.className='over'"
-							onmouseout="this.className='norm'" name="${buttonName}"
+						<button class="normal" onmouseover="this.className='over'"
+							onmouseout="this.className='normal'" name="${buttonName}"
 							value="${pages_count - 1}">
 							<c:out value=">>" />
 						</button>

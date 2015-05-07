@@ -9,24 +9,21 @@ import com.glomozda.machinerepair.domain.orderstatus.OrderStatus;
 import com.glomozda.machinerepair.repository.orderstatus.OrderStatusRepository;
 
 @Service
-public class OrderStatusService {
-	
+public abstract class OrderStatusService {
+
 	@Autowired
-	private OrderStatusRepository orderStatusRepository;
-	
-	public List<OrderStatus> getAll() {
-		return orderStatusRepository.getAll();
+	protected OrderStatusRepository orderStatusRepository;
+
+	public abstract Boolean add(OrderStatus os);
+
+	public abstract OrderStatus getOrderStatusByName(String orderStatusName);
+
+	public abstract OrderStatus getOrderStatusById(Long orderStatusId);
+
+	public abstract List<OrderStatus> getAll();
+
+	public OrderStatusService() {
+		super();
 	}
-	
-	public OrderStatus getOrderStatusById(Long orderStatusId) {
-		return orderStatusRepository.getOrderStatusById(orderStatusId);
-	}
-	
-	public OrderStatus getOrderStatusByName(String orderStatusName) {
-		return orderStatusRepository.getOrderStatusByName(orderStatusName);
-	}
-	
-	public Boolean add(OrderStatus os) {
-		return orderStatusRepository.add(os);
-	}
+
 }

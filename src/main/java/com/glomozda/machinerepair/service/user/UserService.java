@@ -2,67 +2,49 @@ package com.glomozda.machinerepair.service.user;
 
 import java.util.List;
 
-import com.glomozda.machinerepair.domain.user.*;
-import com.glomozda.machinerepair.repository.user.UserRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.glomozda.machinerepair.domain.user.User;
+import com.glomozda.machinerepair.repository.user.UserRepository;
+
 @Service
-public class UserService {
+public abstract class UserService {
 
 	@Autowired
 	private PasswordEncoder encoder;
 	
 	@Autowired
-	private UserRepository userRepository;
+	protected UserRepository userRepository;
 
-	public User getUserByLoginAndPassword(String login, String passwordText) {
-		return userRepository.getUserByLoginAndPassword(login, passwordText);
-	}
-	
-	public User getUserByLoginAndPasswordWithFetching(String login, String passwordText) {
-		return userRepository.getUserByLoginAndPasswordWithFetching(login, passwordText);
-	}
-	
-	public User getUserByLogin(String login) {
-		return userRepository.getUserByLogin(login);
-	}
-	
-	public User getUserByLoginWithFetching(String login) {
-		return userRepository.getUserByLoginWithFetching(login);
-	}
-	
-	public User getUserById(Long userId) {
-		return userRepository.getUserById(userId);
-	}
-	
-	public User getUserByIdWithFetching(Long userId) {
-		return userRepository.getUserByIdWithFetching(userId);
-	}
-	
-	public List<User> getAll() {
-		return userRepository.getAll();
-	}
+	public abstract Boolean add(User u);
 
-	public List<User> getAll(Long start, Long length) {
-		return userRepository.getAll(start, length);
-	}
-	
-	public List<Object[]> getAllIdsAndLogins() {
-		return userRepository.getAllIdsAndLogins();
-	}
-	
-	public Long getUserCount() {
-		return userRepository.getUserCount();
-	}
-	
-	public Integer setUserEnabledById(Long userId, Byte enabled) {
-		return userRepository.setUserEnabledById(userId, enabled);
+	public abstract Integer setUserEnabledById(Long userId, Byte enabled);
+
+	public abstract Long getUserCount();
+
+	public abstract List<Object[]> getAllIdsAndLogins();
+
+	public abstract List<User> getAll(Long start, Long length);
+
+	public abstract List<User> getAll();
+
+	public abstract User getUserByIdWithFetching(Long userId);
+
+	public abstract User getUserById(Long userId);
+
+	public abstract User getUserByLoginWithFetching(String login);
+
+	public abstract User getUserByLogin(String login);
+
+	public abstract User getUserByLoginAndPasswordWithFetching(String login,
+			String passwordText);
+
+	public abstract User getUserByLoginAndPassword(String login, String passwordText);
+
+	public UserService() {
+		super();
 	}
 
-	public Boolean add(User u) {
-		return userRepository.add(u);
-	}	
 }

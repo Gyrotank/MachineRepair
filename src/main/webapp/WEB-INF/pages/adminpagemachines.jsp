@@ -21,14 +21,7 @@
   	</div>
   	<div class="error">
   		<c:out value="${message_machine_not_added}"/>
-  	</div>
-  	<mycustomtags:tablepaging
-  		action="adminpagemachines/machinepaging" 
-  		buttonName="machinePageNumber"
-  		pages_count="${pages_count}"
-  		page_number="${page_number}"
-  		pages_size="${pages_size}" />	
-  	<br> 
+  	</div>  	
 	<table data-toggle="table" 
 		data-classes="table table-hover table-condensed" 
     	data-striped="true"    			
@@ -75,7 +68,15 @@
   	</c:forEach>
   	</tbody>
   	</table>
-  	
+  	<br>
+  	<mycustomtags:tablepaging
+  		action="adminpagemachines/machinepaging" 
+  		buttonName="machinePageNumber"
+  		pages_count="${pages_count}"
+  		page_number="${page_number}"
+  		pages_size="${pages_size}" />
+  			
+  	<br>
   	<div>
   	<a name="add_new_machine"></a>
 	<h2><spring:message code="label.adminpage.addNewMachine" /></h2>

@@ -53,6 +53,7 @@ public class AdminPageController implements MessageSourceAware {
 	
 	private User myUser;
 	
+	@SuppressWarnings("unused")
 	private MessageSource messageSource;
 		
 	public void setMessageSource(final MessageSource messageSource) {
@@ -61,9 +62,6 @@ public class AdminPageController implements MessageSourceAware {
 	
 	@RequestMapping(value = "/adminpage", method = RequestMethod.GET)
 	public String activate(final Locale locale, final Principal principal, final Model model) {
-		
-//		log.info("Activating Admin Page for " + principal.getName() + "...");
-//		log.info("Locale is " + locale.toString());
 		
 		myUser = userSvc.getUserByLogin(principal.getName());
 		if (null == myUser) {

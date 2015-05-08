@@ -21,7 +21,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 import com.glomozda.machinerepair.domain.order.Order;
 import com.glomozda.machinerepair.domain.user.User;
 
-@SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
 @NamedQueries({
 	@NamedQuery(name="Client.findAll", query="SELECT c FROM Client c"),
 	@NamedQuery(name="Client.findAllWithFetching", query="SELECT c FROM Client c "

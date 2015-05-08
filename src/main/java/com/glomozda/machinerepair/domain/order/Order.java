@@ -20,7 +20,6 @@ import com.glomozda.machinerepair.domain.machine.Machine;
 import com.glomozda.machinerepair.domain.orderstatus.OrderStatus;
 import com.glomozda.machinerepair.domain.repairtype.RepairType;
 
-@SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
 @NamedQueries({
 	@NamedQuery(name="Order.findAll", query="SELECT o FROM Order o"),
 	@NamedQuery(name="Order.findAllWithFetching",

@@ -38,17 +38,17 @@ public class AdminPageClientsController implements MessageSourceAware {
 	
 	private MessageSource messageSource;
 	
-	private static final Long _defaultPageSize = (long) 10;
+	private static final Long _defaultPageSize = 10L;
 	
 	private String messageClientAdded = "";
 	private String messageClientNotAdded = "";
 	
 	private String messageClientUserId = "";
-	private Long selectedClientUserId = (long) 0;
+	private Long selectedClientUserId = 0L;
 	
-	private Long clientPagingFirstIndex = (long) 0;
+	private Long clientPagingFirstIndex = 0L;
 	private Long clientPagingLastIndex = _defaultPageSize - 1;
-	private Long pageNumber = (long) 0;
+	private Long pageNumber = 0L;
 	
 	@Override
 	public void setMessageSource(MessageSource messageSource) {

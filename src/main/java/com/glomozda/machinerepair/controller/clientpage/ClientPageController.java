@@ -1,9 +1,6 @@
 package com.glomozda.machinerepair.controller.clientpage;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.glomozda.machinerepair.domain.client.Client;
-import com.glomozda.machinerepair.domain.machine.Machine;
-import com.glomozda.machinerepair.domain.machineserviceable.MachineServiceable;
-import com.glomozda.machinerepair.domain.order.Order;
-import com.glomozda.machinerepair.domain.repairtype.RepairType;
 import com.glomozda.machinerepair.service.client.ClientService;
 import com.glomozda.machinerepair.service.machine.MachineService;
 import com.glomozda.machinerepair.service.machineserviceable.MachineServiceableService;
@@ -52,6 +44,7 @@ public class ClientPageController implements MessageSourceAware {
 	
 	private Client myClient;
 	
+	@SuppressWarnings("unused")
 	private MessageSource messageSource;
 	
 	public void setMessageSource(MessageSource messageSource) {

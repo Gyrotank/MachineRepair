@@ -11,9 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import com.glomozda.machinerepair.domain.order.Order;
 import com.glomozda.machinerepair.domain.user.User;
 import com.glomozda.machinerepair.service.client.ClientService;
 import com.glomozda.machinerepair.service.machine.MachineService;
@@ -41,6 +39,7 @@ public class ManagerPageController implements MessageSourceAware {
 	
 	private User myUser;
 	
+	@SuppressWarnings("unused")
 	private MessageSource messageSource;
 	
 	public void setMessageSource(final MessageSource messageSource) {

@@ -21,7 +21,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import com.glomozda.machinerepair.domain.order.Order;
 
-@SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
 @NamedQueries({
 	@NamedQuery(name="RepairType.findAll", query="SELECT rt FROM RepairType rt "
 			+ "ORDER BY rt.repairTypePrice DESC"),

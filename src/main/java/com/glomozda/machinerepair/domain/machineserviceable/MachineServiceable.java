@@ -16,7 +16,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import com.glomozda.machinerepair.domain.machine.Machine;
 
-@SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
 @NamedQueries({
 	@NamedQuery(name="MachineServiceable.findAll", query="SELECT ms FROM MachineServiceable ms"),
 	@NamedQuery(name="MachineServiceable.findAllOrderByName",

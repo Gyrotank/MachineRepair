@@ -29,8 +29,6 @@ public class LoginController {
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String activate(final Locale locale, final Model model) {
 		
-//		log.info("Activating Login Page...");
-		
 		model.addAttribute("locale", locale.toString());
 		model.addAttribute("message", message);
 		message = "";

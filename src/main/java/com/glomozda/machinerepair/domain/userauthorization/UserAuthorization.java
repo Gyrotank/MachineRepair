@@ -15,7 +15,6 @@ import javax.persistence.Table;
 import com.glomozda.machinerepair.domain.user.User;
 import com.glomozda.machinerepair.domain.userrole.UserRole;
 
-@SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
 @NamedQueries({
 	@NamedQuery(name="UserAuthorization.findAll", query="SELECT ua FROM UserAuthorization ua "
 			+ "ORDER BY ua.user.login, ua.role.role"),

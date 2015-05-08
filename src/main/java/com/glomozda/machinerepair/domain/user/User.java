@@ -15,13 +15,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.glomozda.machinerepair.domain.client.Client;
 import com.glomozda.machinerepair.domain.userauthorization.UserAuthorization;
 
-@SuppressWarnings({"PMD.CommentRequired", "PMD.LawOfDemeter"})
 @NamedQueries({
 	@NamedQuery(name="User.findUserByLogin", query="SELECT u FROM User u "
 			+ "WHERE u.login = :login"),

@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,52 +13,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.glomozda.machinerepair.controller.AbstractRolePageController;
 import com.glomozda.machinerepair.domain.user.User;
 import com.glomozda.machinerepair.domain.userauthorization.UserAuthorization;
 import com.glomozda.machinerepair.domain.userauthorization.UserAuthorizationDTO;
 import com.glomozda.machinerepair.domain.userrole.UserRole;
-import com.glomozda.machinerepair.service.user.UserService;
-import com.glomozda.machinerepair.service.userauthorization.UserAuthorizationService;
 
 @Controller
-public class UpdateUserAuthorizationController implements MessageSourceAware {
+public class UpdateUserAuthorizationController extends AbstractRolePageController 
+	implements MessageSourceAware {
 	
 	static Logger log = Logger.getLogger(UpdateUserAuthorizationController.class.getName());
 	
-	@Autowired
-	private UserService userSvc;
-	
-	@Autowired
-	private UserAuthorizationService userAuthorizationSvc;
-	
-	private User myUser;
-	
 	private UserAuthorizationDTO myUserAuthorizationDTO;
 	
-	private MessageSource messageSource;
-	
-	private String messageUserAuthorizationUpdateFailed = "";
-	private String messageUserAuthorizationUpdateSucceeded = "";
-	private String messageUserAuthorizationNoChanges = "";
-	
 	@Override
-	public void setMessageSource(MessageSource messageSource) {
-		this.messageSource = messageSource;
+	protected void prepareModel(final Locale locale, final Principal principal, 
+			final Model model) {		
 	}
-	
-	@RequestMapping(value = "/updateuserauthorization", method = RequestMethod.GET)
-	public String activate(final Locale locale, final Principal principal, final Model model, 
-			@RequestParam("user-authorization-id") final Long userAuthorizationId) {
-		
-		if (null == principal) {
-			return "redirect:/index";
-		}
-		
-		myUser = userSvc.getUserByLogin(principal.getName());
-		if (null == myUser) {
-			return "redirect:/index";
-		}
-		
+
+	@Override
+	protected void prepareModel(final Locale locale, final Principal principal, 
+			final Model model, final Long userAuthorizationId) {
+
 		model.addAttribute("locale", locale.toString());
 		
 		model.addAttribute("userRoles", userAuthorizationSvc.getAllRoles());
@@ -95,14 +70,25 @@ public class UpdateUserAuthorizationController implements MessageSourceAware {
 		}
 		
 		model.addAttribute("message_user_authorization_not_updated",
-				messageUserAuthorizationUpdateFailed);
-		messageUserAuthorizationUpdateFailed = "";
+				messageUpdateFailed);
+		messageUpdateFailed = "";
 		model.addAttribute("message_user_authorization_updated",
-				messageUserAuthorizationUpdateSucceeded);
-		messageUserAuthorizationUpdateSucceeded = "";
+				messageUpdateSucceeded);
+		messageUpdateSucceeded = "";
 		model.addAttribute("message_user_authorization_no_changes",
-				messageUserAuthorizationNoChanges);
-		messageUserAuthorizationNoChanges = "";		
+				messageNoChanges);
+		messageNoChanges = "";		
+	}
+	
+	@RequestMapping(value = "/updateuserauthorization", method = RequestMethod.GET)
+	public String activate(final Locale locale, final Principal principal, final Model model, 
+			@RequestParam("user-authorization-id") final Long userAuthorizationId) {
+		
+		if (!isMyUserSet(principal)) {
+			return "redirect:/index";
+		}
+		
+		prepareModel(locale, principal, model, userAuthorizationId);
 		
 		return "updateuserauthorization";
 	}
@@ -116,7 +102,7 @@ public class UpdateUserAuthorizationController implements MessageSourceAware {
 		if (userAuthorizationDTO.getIsAdmin() == false
 				&& userAuthorizationDTO.getIsClient() == false
 				&& userAuthorizationDTO.getIsManager() == false) {
-			messageUserAuthorizationUpdateFailed = 
+			messageUpdateFailed = 
 					messageSource.getMessage("popup.adminpage.userAuthorizationNotUpdated", null,
 							locale);
 			
@@ -124,16 +110,13 @@ public class UpdateUserAuthorizationController implements MessageSourceAware {
 			+ myUserAuthorizationDTO.getUserAuthorizationId();
 		}
 		
-//		log.info(userAuthorizationDTO);
-//		log.info(myUserAuthorizationDTO);
-		
 		if (userAuthorizationDTO.getIsAdmin()
 					.equals(myUserAuthorizationDTO.getIsAdmin())
 				&& userAuthorizationDTO.getIsClient()
 					.equals(myUserAuthorizationDTO.getIsClient())
 				&& userAuthorizationDTO.getIsManager()
 					.equals(myUserAuthorizationDTO.getIsManager())) {
-			messageUserAuthorizationNoChanges = 
+			messageNoChanges = 
 					messageSource.getMessage("popup.adminpage.userAuthorizationNoChanges", null,
 							locale);
 			
@@ -146,7 +129,7 @@ public class UpdateUserAuthorizationController implements MessageSourceAware {
 					new UserAuthorization(new UserRole("ROLE_ADMIN")),
 						myUserAuthorizationDTO.getUser().getUserId())) {
 				
-				messageUserAuthorizationUpdateFailed = 
+				messageUpdateFailed = 
 						messageSource.getMessage("popup.adminpage.userAuthorizationNotUpdated",
 								null,
 								locale);
@@ -164,7 +147,7 @@ public class UpdateUserAuthorizationController implements MessageSourceAware {
 							"ROLE_ADMIN")
 					.intValue() != 1) {
 				
-				messageUserAuthorizationUpdateFailed = 
+				messageUpdateFailed = 
 						messageSource.getMessage("popup.adminpage.userAuthorizationNotUpdated",
 								null,
 								locale);
@@ -179,7 +162,7 @@ public class UpdateUserAuthorizationController implements MessageSourceAware {
 					new UserAuthorization(new UserRole("ROLE_CLIENT")),
 						myUserAuthorizationDTO.getUser().getUserId())) {
 				
-				messageUserAuthorizationUpdateFailed = 
+				messageUpdateFailed = 
 						messageSource.getMessage("popup.adminpage.userAuthorizationNotUpdated",
 								null,
 								locale);
@@ -196,7 +179,7 @@ public class UpdateUserAuthorizationController implements MessageSourceAware {
 							"ROLE_CLIENT")
 					.intValue() != 1) {
 				
-				messageUserAuthorizationUpdateFailed = 
+				messageUpdateFailed = 
 						messageSource.getMessage("popup.adminpage.userAuthorizationNotUpdated",
 								null,
 								locale);
@@ -211,7 +194,7 @@ public class UpdateUserAuthorizationController implements MessageSourceAware {
 					new UserAuthorization(new UserRole("ROLE_MANAGER")),
 						myUserAuthorizationDTO.getUser().getUserId())) {
 				
-				messageUserAuthorizationUpdateFailed = 
+				messageUpdateFailed = 
 						messageSource.getMessage("popup.adminpage.userAuthorizationNotUpdated",
 								null,
 								locale);
@@ -228,7 +211,7 @@ public class UpdateUserAuthorizationController implements MessageSourceAware {
 							"ROLE_MANAGER")
 					.intValue() != 1) {
 				
-				messageUserAuthorizationUpdateFailed = 
+				messageUpdateFailed = 
 						messageSource.getMessage("popup.adminpage.userAuthorizationNotUpdated",
 								null,
 								locale);
@@ -238,7 +221,7 @@ public class UpdateUserAuthorizationController implements MessageSourceAware {
 			}
 		}
 		
-		messageUserAuthorizationUpdateSucceeded =
+		messageUpdateSucceeded =
 				messageSource.getMessage("popup.adminpage.userAuthorizationUpdated", null,
 						locale);
 		

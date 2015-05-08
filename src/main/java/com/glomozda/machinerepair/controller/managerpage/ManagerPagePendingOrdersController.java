@@ -4,8 +4,6 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Locale;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
@@ -14,60 +12,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.glomozda.machinerepair.controller.AbstractRolePageController;
 import com.glomozda.machinerepair.domain.order.Order;
-import com.glomozda.machinerepair.domain.user.User;
-import com.glomozda.machinerepair.service.client.ClientService;
-import com.glomozda.machinerepair.service.machine.MachineService;
-import com.glomozda.machinerepair.service.order.OrderService;
-import com.glomozda.machinerepair.service.orderstatus.OrderStatusService;
-import com.glomozda.machinerepair.service.user.UserService;
 
 @Controller
-public class ManagerPagePendingOrdersController implements MessageSourceAware {
-	
-	@Autowired
-	private OrderService orderSvc;
-	
-	@Autowired
-	private OrderStatusService orderStatusSvc;
-	
-	@Autowired
-	private ClientService clientSvc;
-	
-	@Autowired
-	private UserService userSvc;
-	
-	@Autowired
-	private MachineService machineSvc;
-	
-	private User myUser;
-	
-	private MessageSource messageSource;
+public class ManagerPagePendingOrdersController extends AbstractRolePageController
+	implements MessageSourceAware {
 	
 	private String messageConfirmFailed = "";
 	private String messageCancelFailed = "";
 	private String messageConfirmSucceeded = "";
 	private String messageCancelSucceeded = "";
 	
-	private static final Long _defaultPageSize = (long) 10;
-	
-	private Long pendingOrdersPagingFirstIndex = (long) 0;
-	private Long pendingOrdersPagingLastIndex = _defaultPageSize - 1;
-	private Long pageNumber = (long) 0;
-	
-	public void setMessageSource(final MessageSource messageSource) {
-		this.messageSource = messageSource;
-	}
-	
-	@RequestMapping(value = "/managerpagependingorders", method = RequestMethod.GET)
-	public String activate(final Locale locale, final Principal principal, final Model model) {
-		
-//		log.info("Activating Manager Page for " + principal.getName() + "...");
-		
-		myUser = userSvc.getUserByLogin(principal.getName());
-		if (null == myUser) {
-			return "redirect:/index";
-		}
+	@Override
+	protected void prepareModel(final Locale locale, final Principal principal,
+			final Model model) {
 		
 		UsernamePasswordAuthenticationToken userToken =
 				(UsernamePasswordAuthenticationToken)principal;
@@ -84,17 +43,17 @@ public class ManagerPagePendingOrdersController implements MessageSourceAware {
 		messageCancelSucceeded = "";
 		
 		List<Order> pendingOrders = orderSvc.getOrdersForStatusWithFetching("pending",
-				pendingOrdersPagingFirstIndex,
-				pendingOrdersPagingLastIndex - pendingOrdersPagingFirstIndex + 1);
+				pagingFirstIndex,
+				pagingLastIndex - pagingFirstIndex + 1);
 		model.addAttribute("pending_orders", pendingOrders);
 		Long pendingOrdersCount = orderSvc.getCountOrdersForStatus("pending");
 		model.addAttribute("pending_orders_count", pendingOrdersCount);
-		Long pagesCount = pendingOrdersCount / _defaultPageSize;
-		if (pendingOrdersCount % _defaultPageSize != 0) {
+		Long pagesCount = pendingOrdersCount / DEFAULT_PAGE_SIZE;
+		if (pendingOrdersCount % DEFAULT_PAGE_SIZE != 0) {
 			pagesCount++;
 		}
 		model.addAttribute("pages_count", pagesCount);
-		model.addAttribute("pages_size", _defaultPageSize);
+		model.addAttribute("pages_size", DEFAULT_PAGE_SIZE);
 		model.addAttribute("page_number", pageNumber);
 		
 		model.addAttribute("dialog_confirm_order",
@@ -106,6 +65,21 @@ public class ManagerPagePendingOrdersController implements MessageSourceAware {
 		
 		model.addAttribute("user_token_authorities",
 				userToken.getAuthorities().toString());
+	}
+	
+	@Override
+	protected void prepareModel(final Locale locale, final Principal principal,
+			final Model model, final Long id) {		
+	}
+	
+	@RequestMapping(value = "/managerpagependingorders", method = RequestMethod.GET)
+	public String activate(final Locale locale, final Principal principal, final Model model) {
+		
+		if (!isMyUserSet(principal)) {
+			return "redirect:/index";
+		}
+		
+		prepareModel(locale, principal, model);
 		
 		return "managerpagependingorders";
 	}
@@ -115,8 +89,8 @@ public class ManagerPagePendingOrdersController implements MessageSourceAware {
 	public String pendingOrdersPaging(
 			@RequestParam("pendingOrdersPageNumber") final Long pendingOrdersPageNumber) {
 		
-		pendingOrdersPagingFirstIndex = pendingOrdersPageNumber * _defaultPageSize;
-		pendingOrdersPagingLastIndex = _defaultPageSize * (pendingOrdersPageNumber + 1) - 1;
+		pagingFirstIndex = pendingOrdersPageNumber * DEFAULT_PAGE_SIZE;
+		pagingLastIndex = DEFAULT_PAGE_SIZE * (pendingOrdersPageNumber + 1) - 1;
 		pageNumber = pendingOrdersPageNumber;	
 		
 		return "redirect:/managerpagependingorders";

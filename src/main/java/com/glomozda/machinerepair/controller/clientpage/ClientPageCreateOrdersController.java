@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,44 +14,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.glomozda.machinerepair.controller.AbstractRolePageController;
 import com.glomozda.machinerepair.domain.client.Client;
 import com.glomozda.machinerepair.domain.machine.Machine;
 import com.glomozda.machinerepair.domain.machineserviceable.MachineServiceable;
 import com.glomozda.machinerepair.domain.order.Order;
 import com.glomozda.machinerepair.domain.repairtype.RepairType;
-import com.glomozda.machinerepair.service.client.ClientService;
-import com.glomozda.machinerepair.service.machine.MachineService;
-import com.glomozda.machinerepair.service.machineserviceable.MachineServiceableService;
-import com.glomozda.machinerepair.service.order.OrderService;
-import com.glomozda.machinerepair.service.orderstatus.OrderStatusService;
-import com.glomozda.machinerepair.service.repairtype.RepairTypeService;
 
 @Controller
-public class ClientPageCreateOrdersController implements MessageSourceAware {
+public class ClientPageCreateOrdersController extends AbstractRolePageController
+	implements MessageSourceAware {
 	
 	static Logger log = Logger.getLogger(ClientPageController.class.getName());
 	
-	@Autowired
-	private ClientService clientSvc;
-	
-	@Autowired
-	private MachineService machineSvc;
-	
-	@Autowired
-	private MachineServiceableService machineServiceableSvc;
-	
-	@Autowired
-	private OrderService orderSvc;
-	
-	@Autowired
-	private OrderStatusService orderStatusSvc;
-	
-	@Autowired
-	private RepairTypeService repairTypeSvc;;
-	
 	private Client myClient;	
-	
-	private MessageSource messageSource;
 	
 	private String messageRepeatedRepair = "";
 	private String messageRepeatedRepairSerialNumber = "";
@@ -96,17 +70,9 @@ public class ClientPageCreateOrdersController implements MessageSourceAware {
 		return true;
 	}
 	
-	public void setMessageSource(MessageSource messageSource) {
-		this.messageSource = messageSource;
-	}
-	
-	@RequestMapping(value = "/clientpagecreateorders", method = RequestMethod.GET)
-	public String activate(final Locale locale, final Principal principal, final Model model) {
-		
-		myClient = clientSvc.getClientByLoginWithFetching(principal.getName());
-		if (null == myClient) {
-			return "redirect:/index";
-		}		
+	@Override
+	protected void prepareModel(final Locale locale, final Principal principal, 
+			final Model model) {
 		
 		model.addAttribute("locale", locale.toString());
 		
@@ -177,14 +143,14 @@ public class ClientPageCreateOrdersController implements MessageSourceAware {
 		messageRepeatedRepairRepairTypeId = "";
 		model.addAttribute("repeated_repair_selected_repairtype_id",
 				selectedRepeatedRepairRepairTypeId);
-		selectedRepeatedRepairRepairTypeId = (long) 0;
+		selectedRepeatedRepairRepairTypeId = 0L;
 		
 		model.addAttribute("message_first_repair_serviceable_id",
 				messageFirstRepairServiceableId);
 		messageFirstRepairServiceableId = "";
 		model.addAttribute("first_repair_selected_serviceable_id",
 				selectedFirstRepairServiceableId);
-		selectedFirstRepairServiceableId = (long) 0;
+		selectedFirstRepairServiceableId = 0L;
 		
 		model.addAttribute("message_first_repair_serial_number",
 				messageFirstRepairSerialNumber);
@@ -205,10 +171,27 @@ public class ClientPageCreateOrdersController implements MessageSourceAware {
 		messageFirstRepairRepairTypeId = "";
 		model.addAttribute("first_repair_selected_repairtype_id",
 				selectedFirstRepairRepairTypeId);
-		selectedFirstRepairRepairTypeId = (long) 0;
+		selectedFirstRepairRepairTypeId = 0L;
 		
 		model.addAttribute("machines_serviceable", machinesServiceable);
 		model.addAttribute("repair_types", repairTypes);
+		
+	}
+
+	@Override
+	protected void prepareModel(final Locale locale, final Principal principal, 
+			final Model model, final Long id) {
+	}
+	
+	@RequestMapping(value = "/clientpagecreateorders", method = RequestMethod.GET)
+	public String activate(final Locale locale, final Principal principal, final Model model) {
+		
+		myClient = clientSvc.getClientByLoginWithFetching(principal.getName());
+		if (null == myClient) {
+			return "redirect:/index";
+		}		
+		
+		prepareModel(locale, principal, model);
 		
 		return "clientpagecreateorders";
 	}
@@ -242,15 +225,9 @@ public class ClientPageCreateOrdersController implements MessageSourceAware {
 			return "redirect:/clientpagecreateorders";
 		}
 		
-//		log.info("Adding repeated order...");
-//		log.info(orderSvc
-//				.getOrderByClientIdAndMachineSNAndNotFinished
-//				(myClient.getClientId(), machineSerialNumber));
-		
 		if (!orderSvc
 				.getOrdersByClientIdAndMachineSNAndNotFinished
 					(myClient.getClientId(), machineSerialNumber).isEmpty()) {
-//			log.info("Order exists already...");
 			messageRepeatedRepairNotCreated = 
 					messageSource.getMessage("popup.clientpage.orderExistsForSN", null,
 							locale);			
@@ -258,9 +235,6 @@ public class ClientPageCreateOrdersController implements MessageSourceAware {
 		}
 		
 		Order order = new Order(new java.sql.Date(new java.util.Date().getTime()));
-//		order.setManager("-");
-		
-//		log.info("Order not exists yet...");		
 		
 		if (orderSvc.add(order, myClient.getClientId(),
 				repairTypeId, machine.getMachineId(),
@@ -354,9 +328,6 @@ public class ClientPageCreateOrdersController implements MessageSourceAware {
 		m = machineSvc.getMachineForSerialNumberWithFetching(machineSerialNumber);
 		
 		Order order = new Order(new java.sql.Date(new java.util.Date().getTime()));
-//		order.setManager("-");
-		
-//		log.info(order.toString());
 		
 		if (orderSvc.add(order, myClient.getClientId(), repairTypeId,
 				m.getMachineId(),

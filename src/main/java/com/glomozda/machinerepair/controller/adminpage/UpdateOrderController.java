@@ -9,8 +9,6 @@ import java.util.Locale;
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,39 +19,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.glomozda.machinerepair.controller.AbstractRolePageController;
 import com.glomozda.machinerepair.domain.order.Order;
-import com.glomozda.machinerepair.domain.user.User;
-import com.glomozda.machinerepair.service.order.OrderService;
-import com.glomozda.machinerepair.service.orderstatus.OrderStatusService;
-import com.glomozda.machinerepair.service.repairtype.RepairTypeService;
-import com.glomozda.machinerepair.service.user.UserService;
-import com.glomozda.machinerepair.service.userauthorization.UserAuthorizationService;
 
 @Controller
-public class UpdateOrderController implements MessageSourceAware {
+public class UpdateOrderController extends AbstractRolePageController
+	implements MessageSourceAware {
 
 	static Logger log = Logger.getLogger(UpdateOrderController.class.getName());
 	
-	@Autowired
-	private OrderService orderSvc;
-	
-	@Autowired
-	private OrderStatusService orderStatusSvc;
-	
-	@Autowired
-	private UserService userSvc;
-	
-	@Autowired
-	private RepairTypeService repairTypeSvc;
-	
-	@Autowired
-	private UserAuthorizationService userAuthorizationSvc;
-	
-	private User myUser;
-	
 	private Order myOrder;
-	
-	private MessageSource messageSource;
 	
 	private String messageOrderRepairTypeId = "";
 	private String messageOrderOrderStatusId = "";
@@ -62,35 +37,16 @@ public class UpdateOrderController implements MessageSourceAware {
 	private String messageOrderStart = "";
 	private String enteredOrderStart = "";
 	
-	private String messageOrderUpdateFailed = "";
-	private String messageOrderUpdateSucceeded = "";
-	private String messageOrderNoChanges = "";
-	
 	@Override
-	public void setMessageSource(MessageSource messageSource) {
-		this.messageSource = messageSource;
+	protected void prepareModel(final Locale locale, final Principal principal,
+			final Model model) {
 	}
-	
-	@RequestMapping(value = "/updateorder", method = RequestMethod.GET)
-	public String activate(final Locale locale, final Principal principal, final Model model, 
-			@RequestParam("order-id") final Long orderId) {
+
+	@Override
+	protected void prepareModel(final Locale locale, final Principal principal, 
+			final Model model, final Long orderId) {
 		
-		if (null == principal) {
-			return "redirect:/index";
-		}
-		
-		myUser = userSvc.getUserByLogin(principal.getName());
-		if (null == myUser) {
-			return "redirect:/index";
-		}
-		
-		model.addAttribute("locale", locale.toString());		
-		
-		Order currentOrder = orderSvc.getOrderById(orderId);
-		
-		if (currentOrder == null) {			
-			return "redirect:/adminpageorders";
-		}
+		model.addAttribute("locale", locale.toString());
 		
 		myOrder = orderSvc.getOrderByIdWithFetching(orderId);
 		
@@ -128,14 +84,30 @@ public class UpdateOrderController implements MessageSourceAware {
 		enteredOrderStart = "";
 		
 		model.addAttribute("message_order_not_updated",
-				messageOrderUpdateFailed);
-		messageOrderUpdateFailed = "";
+				messageUpdateFailed);
+		messageUpdateFailed = "";
 		model.addAttribute("message_order_updated",
-				messageOrderUpdateSucceeded);
-		messageOrderUpdateSucceeded = "";
+				messageUpdateSucceeded);
+		messageUpdateSucceeded = "";
 		model.addAttribute("message_order_no_changes",
-				messageOrderNoChanges);
-		messageOrderNoChanges = "";		
+				messageNoChanges);
+		messageNoChanges = "";
+	}
+	
+	@RequestMapping(value = "/updateorder", method = RequestMethod.GET)
+	public String activate(final Locale locale, final Principal principal, final Model model, 
+			@RequestParam("order-id") final Long orderId) {
+		
+		if (!isMyUserSet(principal)) {
+			return "redirect:/index";
+		}
+		
+		Order currentOrder = orderSvc.getOrderById(orderId);
+		if (currentOrder == null) {			
+			return "redirect:/adminpageorders";
+		}
+		
+		prepareModel(locale, principal, model, orderId);
 		
 		return "updateorder";
 	}
@@ -217,21 +189,21 @@ public class UpdateOrderController implements MessageSourceAware {
 				&& order.getStart().equals(myOrder.getStart())
 				&& order.getRepairType().getRepairTypeId()
 					.equals(myOrder.getRepairType().getRepairTypeId())) {
-			messageOrderNoChanges = 
+			messageNoChanges = 
 					messageSource.getMessage("popup.adminpage.orderNoChanges", null,
 							locale);
 			return "redirect:/updateorder/?order-id=" + myOrder.getOrderId();
 		}
 		
 		if (orderSvc.updateOrderById(myOrder.getOrderId(), order) == 1) {
-			messageOrderUpdateSucceeded =
+			messageUpdateSucceeded =
 					messageSource.getMessage("popup.adminpage.orderUpdated", null,
 							locale);
 		} else {
-			messageOrderUpdateFailed = 
+			messageUpdateFailed = 
 					messageSource.getMessage("popup.adminpage.orderNotUpdated", null,
 							locale);
 		}		
 		return "redirect:/updateorder/?order-id=" + myOrder.getOrderId();
-	}
+	}	
 }

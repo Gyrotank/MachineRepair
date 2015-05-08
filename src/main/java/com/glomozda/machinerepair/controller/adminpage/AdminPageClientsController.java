@@ -6,8 +6,6 @@ import java.util.Locale;
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,50 +16,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.glomozda.machinerepair.controller.AbstractRolePageController;
 import com.glomozda.machinerepair.domain.client.Client;
-import com.glomozda.machinerepair.domain.user.User;
-import com.glomozda.machinerepair.service.client.ClientService;
-import com.glomozda.machinerepair.service.user.UserService;
 
 @Controller
-public class AdminPageClientsController implements MessageSourceAware {
+public class AdminPageClientsController extends AbstractRolePageController 
+	implements MessageSourceAware {
 	
-	static Logger log = Logger.getLogger(AdminPageClientsController.class.getName());
-	
-	@Autowired
-	private UserService userSvc;
-	
-	@Autowired
-	private ClientService clientSvc;
-	
-	private User myUser;
-	
-	private MessageSource messageSource;
-	
-	private static final Long _defaultPageSize = 10L;
-	
-	private String messageClientAdded = "";
-	private String messageClientNotAdded = "";
+	static Logger log = Logger.getLogger(AdminPageClientsController.class.getName());	
 	
 	private String messageClientUserId = "";
 	private Long selectedClientUserId = 0L;
 	
-	private Long clientPagingFirstIndex = 0L;
-	private Long clientPagingLastIndex = _defaultPageSize - 1;
-	private Long pageNumber = 0L;
-	
 	@Override
-	public void setMessageSource(MessageSource messageSource) {
-		this.messageSource = messageSource;
-	}
-	
-	@RequestMapping(value = "/adminpageclients", method = RequestMethod.GET)
-	public String activate(final Locale locale, final Principal principal, final Model model) {
-		
-		myUser = userSvc.getUserByLogin(principal.getName());
-		if (null == myUser) {
-			return "redirect:/index";
-		}
+	protected void prepareModel(final Locale locale, final Principal principal, 
+			final Model model) {
 		
 		model.addAttribute("locale", locale.toString());
 		
@@ -72,26 +41,26 @@ public class AdminPageClientsController implements MessageSourceAware {
 		model.addAttribute("users", userSvc.getAll((long) 0, (long) 99));
 		
 		model.addAttribute("clients_short",
-				clientSvc.getAllWithFetching(clientPagingFirstIndex,
-						clientPagingLastIndex - clientPagingFirstIndex + 1));
+				clientSvc.getAllWithFetching(pagingFirstIndex,
+						pagingLastIndex - pagingFirstIndex + 1));
 
 		Long clientsCount = clientSvc.getClientCount();
 		model.addAttribute("clients_count", clientsCount);
 		
-		Long pagesCount = clientsCount / _defaultPageSize;
-		if (clientsCount % _defaultPageSize != 0) {
+		Long pagesCount = clientsCount / DEFAULT_PAGE_SIZE;
+		if (clientsCount % DEFAULT_PAGE_SIZE != 0) {
 			pagesCount++;
 		}
 		model.addAttribute("pages_count", pagesCount);
-		model.addAttribute("pages_size", _defaultPageSize);
+		model.addAttribute("pages_size", DEFAULT_PAGE_SIZE);
 		model.addAttribute("page_number", pageNumber);
 				
 		model.addAttribute("message_client_added",
-				messageClientAdded);
-		messageClientAdded = "";
+				messageAdded);
+		messageAdded = "";
 		model.addAttribute("message_client_not_added",
-				messageClientNotAdded);
-		messageClientNotAdded = "";
+				messageNotAdded);
+		messageNotAdded = "";
 		
 		model.addAttribute("message_client_user_id", messageClientUserId);
 		messageClientUserId = "";		
@@ -101,6 +70,21 @@ public class AdminPageClientsController implements MessageSourceAware {
 		model.addAttribute("dialog_delete_client",
 				messageSource.getMessage("label.adminpage.clients.actions.delete.dialog", null,
 				locale));
+	}
+	
+	@Override
+	protected void prepareModel(final Locale locale, final Principal principal, 
+			final Model model, final Long id) {				
+	}
+	
+	@RequestMapping(value = "/adminpageclients", method = RequestMethod.GET)
+	public String activate(final Locale locale, final Principal principal, final Model model) {
+		
+		if (!isMyUserSet(principal)) {
+			return "redirect:/index";
+		}
+		
+		prepareModel(locale, principal, model);
 		
 		return "adminpageclients";
 	}
@@ -108,8 +92,8 @@ public class AdminPageClientsController implements MessageSourceAware {
 	@RequestMapping(value = "/adminpageclients/clientpaging", method = RequestMethod.POST)
 	public String clientPaging(@RequestParam("clientPageNumber") final Long clientPageNumber) {
 		
-		clientPagingFirstIndex = clientPageNumber * _defaultPageSize;
-		clientPagingLastIndex = _defaultPageSize * (clientPageNumber + 1) - 1;
+		pagingFirstIndex = clientPageNumber * DEFAULT_PAGE_SIZE;
+		pagingLastIndex = DEFAULT_PAGE_SIZE * (clientPageNumber + 1) - 1;
 		pageNumber = clientPageNumber;
 		
 		return "redirect:/adminpageclients";
@@ -140,11 +124,11 @@ public class AdminPageClientsController implements MessageSourceAware {
 		}
 		
 		if (clientSvc.add(client, userId)) {
-			messageClientAdded =
+			messageAdded =
 					messageSource.getMessage("popup.adminpage.clientAdded", null,
 							locale);
 		} else {
-			messageClientNotAdded = 
+			messageNotAdded = 
 					messageSource.getMessage("popup.adminpage.clientNotAdded", null,
 							locale);
 		}		

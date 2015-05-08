@@ -7,7 +7,6 @@ import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -19,52 +18,24 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.glomozda.machinerepair.controller.AbstractRolePageController;
 import com.glomozda.machinerepair.domain.user.User;
-import com.glomozda.machinerepair.service.repairtype.RepairTypeService;
-import com.glomozda.machinerepair.service.user.UserService;
 
 @Controller
-public class AdminPageUsersController implements MessageSourceAware {
+public class AdminPageUsersController extends AbstractRolePageController
+	implements MessageSourceAware {
 
 	static Logger log = Logger.getLogger(AdminPageUsersController.class.getName());
 	
 	@Autowired
-	private UserService userSvc;
-	
-	@Autowired
-	private RepairTypeService repairTypeSvc;
-	
-	@Autowired
 	private PasswordEncoder encoder;
-	
-	private User myUser;
-	
-	private MessageSource messageSource;
-	
-	private static final Long _defaultPageSize = (long) 10;
 	
 	private String messageEnableDisableFailed = "";
 	private String messageEnableDisableSucceeded = "";
 	
-	private String messageUserAdded = "";
-	private String messageUserNotAdded = "";
-	
-	private Long userPagingFirstIndex = (long) 0;
-	private Long userPagingLastIndex = _defaultPageSize - 1;
-	private Long pageNumber = (long) 0;
-	
 	@Override
-	public void setMessageSource(MessageSource messageSource) {
-		this.messageSource = messageSource;
-	}
-	
-	@RequestMapping(value = "/adminpageusers", method = RequestMethod.GET)
-	public String activate(final Locale locale, final Principal principal, final Model model) {
-		
-		myUser = userSvc.getUserByLogin(principal.getName());
-		if (null == myUser) {
-			return "redirect:/index";
-		}
+	protected void prepareModel(final Locale locale, final Principal principal, 
+			final Model model) {
 		
 		model.addAttribute("locale", locale.toString());
 		
@@ -73,17 +44,17 @@ public class AdminPageUsersController implements MessageSourceAware {
 		}
 		
 		model.addAttribute("users_short", 
-				userSvc.getAll(userPagingFirstIndex, 
-						userPagingLastIndex - userPagingFirstIndex + 1));
+				userSvc.getAll(pagingFirstIndex, 
+						pagingLastIndex - pagingFirstIndex + 1));
 		
 		Long usersCount = userSvc.getUserCount();
 		model.addAttribute("users_count", usersCount);
-		Long pagesCount = usersCount / _defaultPageSize;
-		if (usersCount % _defaultPageSize != 0) {
+		Long pagesCount = usersCount / DEFAULT_PAGE_SIZE;
+		if (usersCount % DEFAULT_PAGE_SIZE != 0) {
 			pagesCount++;
 		}
 		model.addAttribute("pages_count", pagesCount);
-		model.addAttribute("pages_size", _defaultPageSize);
+		model.addAttribute("pages_size", DEFAULT_PAGE_SIZE);
 		model.addAttribute("page_number", pageNumber);
 		
 		model.addAttribute("dialog_enable_user",
@@ -101,21 +72,36 @@ public class AdminPageUsersController implements MessageSourceAware {
 		messageEnableDisableSucceeded = "";
 		
 		model.addAttribute("message_user_added",
-				messageUserAdded);
-		messageUserAdded = "";
+				messageAdded);
+		messageAdded = "";
 		model.addAttribute("message_user_not_added",
-				messageUserNotAdded);
-		messageUserNotAdded = "";
-				
+				messageNotAdded);
+		messageNotAdded = "";		
+	}
+	
+	@Override
+	protected void prepareModel(final Locale locale, final Principal principal,
+			final Model model, final Long id) {				
+	}
+	
+	@RequestMapping(value = "/adminpageusers", method = RequestMethod.GET)
+	public String activate(final Locale locale, final Principal principal, final Model model) {
+		
+		if (!isMyUserSet(principal)) {
+			return "redirect:/index";
+		}
+		
+		prepareModel(locale, principal, model);
+		
 		return "adminpageusers";
 	}
 	
 	@RequestMapping(value = "/adminpageusers/userpaging", method = RequestMethod.POST)
 	public String userPaging(@RequestParam("userPageNumber") final Long userPageNumber) {
 		
-		userPagingFirstIndex = userPageNumber * _defaultPageSize;
-		userPagingLastIndex = 
-				_defaultPageSize * (userPageNumber + 1) - 1;
+		pagingFirstIndex = userPageNumber * DEFAULT_PAGE_SIZE;
+		pagingLastIndex = 
+				DEFAULT_PAGE_SIZE * (userPageNumber + 1) - 1;
 		pageNumber = userPageNumber;
 		
 		return "redirect:/adminpageusers";
@@ -208,14 +194,15 @@ public class AdminPageUsersController implements MessageSourceAware {
 		
 		if (userSvc.add(new	User(user.getLogin(), user.getPasswordText(),
 				encoder.encode(user.getPasswordText())))) {
-			messageUserAdded =
+			messageAdded =
 					messageSource.getMessage("popup.adminpage.userAdded", null,
 							locale);
 		} else {
-			messageUserNotAdded = 
+			messageNotAdded = 
 					messageSource.getMessage("popup.adminpage.userNotAdded", null,
 							locale);
 		}
 		return "redirect:/adminpageusers";
 	}
+
 }

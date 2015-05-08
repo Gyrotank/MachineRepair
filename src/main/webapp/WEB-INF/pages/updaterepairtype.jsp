@@ -119,7 +119,7 @@
   			<td><form:input path="repairTypeDuration" id="repairTypeDurationInput"
   					maxlength="2"/></td>
   			<td><form:errors path="repairTypeDuration" cssClass="error" /></td>  			
-  		</tr>
+  		</tr>  		
   		<tr>
   			<td><button><spring:message code="label.adminpage.buttonUpdate" /></button></td>
   		</tr>  		

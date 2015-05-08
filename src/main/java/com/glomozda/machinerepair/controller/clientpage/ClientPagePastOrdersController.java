@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,57 +12,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.glomozda.machinerepair.controller.AbstractRolePageController;
 import com.glomozda.machinerepair.domain.client.Client;
 import com.glomozda.machinerepair.domain.order.Order;
-import com.glomozda.machinerepair.service.client.ClientService;
-import com.glomozda.machinerepair.service.machine.MachineService;
-import com.glomozda.machinerepair.service.machineserviceable.MachineServiceableService;
-import com.glomozda.machinerepair.service.order.OrderService;
-import com.glomozda.machinerepair.service.repairtype.RepairTypeService;
 
 @Controller
-public class ClientPagePastOrdersController implements MessageSourceAware {
+public class ClientPagePastOrdersController extends AbstractRolePageController
+	implements MessageSourceAware {
 	
-static Logger log = Logger.getLogger(ClientPageController.class.getName());
-	
-	@Autowired
-	private ClientService clientSvc;
-	
-	@Autowired
-	private MachineService machineSvc;
-	
-	@Autowired
-	private MachineServiceableService machineServiceableSvc;
-	
-	@Autowired
-	private OrderService orderSvc;
-	
-	@Autowired
-	private RepairTypeService repairTypeSvc;
-	
-	private static final Long _defaultPageSize = (long) 10;
+	static Logger log = Logger.getLogger(ClientPageController.class.getName());
 	
 	private Client myClient;
-	
-	private MessageSource messageSource;
-	
-	private Long pastOrdersPagingFirstIndex = (long) 0;
-	private Long pastOrdersPagingLastIndex = _defaultPageSize - 1;
-	private Long pageNumber = (long) 0;
-	
-	public void setMessageSource(MessageSource messageSource) {
-		this.messageSource = messageSource;
-	}
-	
-	@RequestMapping(value = "/clientpagepastorders", method = RequestMethod.GET)
-	public String activate(final Locale locale, final Principal principal, final Model model) {
-		
-//		log.info("Activating Client Page for " + principal.getName() + "...");
-		
-		myClient = clientSvc.getClientByLoginWithFetching(principal.getName());
-		if (null == myClient) {
-			return "redirect:/index";
-		}		
+
+	@Override
+	protected void prepareModel(final Locale locale, final Principal principal, 
+			final Model model) {
 		
 		model.addAttribute("locale", locale.toString());
 		
@@ -78,16 +40,32 @@ static Logger log = Logger.getLogger(ClientPageController.class.getName());
 		model.addAttribute("past_orders_count", pastOrdersCount);
 		List<Order> myPastOrders =
 				orderSvc.getOrdersForClientIdAndStatusWithFetching(myClient.getClientId(),
-						"finished", pastOrdersPagingFirstIndex, 
-						pastOrdersPagingLastIndex - pastOrdersPagingFirstIndex + 1);
+						"finished", pagingFirstIndex, 
+						pagingLastIndex - pagingFirstIndex + 1);
 		model.addAttribute("my_past_orders", myPastOrders);
-		Long pagesCount = pastOrdersCount / _defaultPageSize;
-		if (pastOrdersCount % _defaultPageSize != 0) {
+		Long pagesCount = pastOrdersCount / DEFAULT_PAGE_SIZE;
+		if (pastOrdersCount % DEFAULT_PAGE_SIZE != 0) {
 			pagesCount++;
 		}
 		model.addAttribute("pages_count", pagesCount);
-		model.addAttribute("pages_size", _defaultPageSize);
+		model.addAttribute("pages_size", DEFAULT_PAGE_SIZE);
 		model.addAttribute("page_number", pageNumber);
+	}
+	
+	@Override
+	protected void prepareModel(final Locale locale, final Principal principal, 
+			final Model model, final Long id) {		
+	}
+	
+	@RequestMapping(value = "/clientpagepastorders", method = RequestMethod.GET)
+	public String activate(final Locale locale, final Principal principal, final Model model) {
+		
+		myClient = clientSvc.getClientByLoginWithFetching(principal.getName());
+		if (null == myClient) {
+			return "redirect:/index";
+		}		
+		
+		prepareModel(locale, principal, model);
 
 		return "clientpagepastorders";
 	}
@@ -97,8 +75,8 @@ static Logger log = Logger.getLogger(ClientPageController.class.getName());
 	public String pastOrdersPaging(
 			@RequestParam("pastOrdersPageNumber") final Long pastOrdersPageNumber) {
 		
-		pastOrdersPagingFirstIndex = pastOrdersPageNumber * _defaultPageSize;
-		pastOrdersPagingLastIndex = _defaultPageSize * (pastOrdersPageNumber + 1) - 1;
+		pagingFirstIndex = pastOrdersPageNumber * DEFAULT_PAGE_SIZE;
+		pagingLastIndex = DEFAULT_PAGE_SIZE * (pastOrdersPageNumber + 1) - 1;
 		pageNumber = pastOrdersPageNumber;		
 		
 		return "redirect:/clientpagepastorders";

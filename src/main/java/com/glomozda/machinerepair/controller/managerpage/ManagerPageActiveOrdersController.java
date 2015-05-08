@@ -4,8 +4,6 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
@@ -14,72 +12,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.glomozda.machinerepair.controller.AbstractRolePageController;
 import com.glomozda.machinerepair.domain.order.Order;
-import com.glomozda.machinerepair.domain.user.User;
-import com.glomozda.machinerepair.service.client.ClientService;
-import com.glomozda.machinerepair.service.machine.MachineService;
-import com.glomozda.machinerepair.service.order.OrderService;
-import com.glomozda.machinerepair.service.orderstatus.OrderStatusService;
-import com.glomozda.machinerepair.service.user.UserService;
 
 @Controller
-public class ManagerPageActiveOrdersController implements MessageSourceAware {
-	
-	@Autowired
-	private OrderService orderSvc;
-	
-	@Autowired
-	private OrderStatusService orderStatusSvc;
-	
-	@Autowired
-	private ClientService clientSvc;
-	
-	@Autowired
-	private UserService userSvc;
-	
-	@Autowired
-	private MachineService machineSvc;
-	
-	private User myUser;
-	
-	private MessageSource messageSource;
+public class ManagerPageActiveOrdersController extends AbstractRolePageController 
+	implements MessageSourceAware {
 	
 	private String messageSetReadyFailed = "";
 	private String messageSetReadySucceeded = "";
 	
-	private static final Long _defaultPageSize = (long) 10;
+	private Long startedOrdersPagingFirstIndex = 0L;
+	private Long startedOrdersPagingLastIndex = DEFAULT_PAGE_SIZE - 1;
+	private Long startedOrdersPageNumber = 0L;
 	
-	private Long clientPagingFirstIndex = (long) 0;
-	private Long clientPagingLastIndex = _defaultPageSize - 1;
-	private Long clientPageNumber = (long) 0;
+	private Long readyOrdersPagingFirstIndex = 0L;
+	private Long readyOrdersPagingLastIndex = DEFAULT_PAGE_SIZE - 1;
+	private Long readyOrdersPageNumber = 0L;
 	
-	private Long startedOrdersPagingFirstIndex = (long) 0;
-	private Long startedOrdersPagingLastIndex = _defaultPageSize - 1;
-	private Long startedOrdersPageNumber = (long) 0;
-	
-	private Long readyOrdersPagingFirstIndex = (long) 0;
-	private Long readyOrdersPagingLastIndex = _defaultPageSize - 1;
-	private Long readyOrdersPageNumber = (long) 0;
-	
-	private Long selectedClientId = (long) 0;
+	private Long selectedClientId = 0L;
 	private ArrayList<Order> startedOrdersForSelectedClient = new ArrayList<Order>();
 	private ArrayList<Order> readyOrdersForSelectedClient = new ArrayList<Order>();
 	
 	@Override
-	public void setMessageSource(final MessageSource messageSource) {
-		this.messageSource = messageSource;
-	}
-	
-	@RequestMapping(value = "/managerpageactiveorders", method = RequestMethod.GET)
-	public String activate(final Locale locale, final Principal principal, final Model model) {
-		
-		myUser = userSvc.getUserByLogin(principal.getName());
-		if (null == myUser) {
-			return "redirect:/index";
-		}
-		
-		UsernamePasswordAuthenticationToken userToken =
-				(UsernamePasswordAuthenticationToken)principal;
+	protected void prepareModel(final Locale locale, final Principal principal, 
+			final Model model) {		
 		
 		model.addAttribute("locale", locale.toString());
 		
@@ -111,40 +68,57 @@ public class ManagerPageActiveOrdersController implements MessageSourceAware {
 		model.addAttribute("started_orders_for_selected_client", startedOrdersForSelectedClient);		
 		Long startedOrdersCount = orderSvc.getCountOrdersForClientIdAndStatus(selectedClientId, "started");
 		model.addAttribute("started_orders_count", startedOrdersCount);
-		Long startedOrdersPagesCount = startedOrdersCount / _defaultPageSize;
-		if (startedOrdersCount % _defaultPageSize != 0) {
+		Long startedOrdersPagesCount = startedOrdersCount / DEFAULT_PAGE_SIZE;
+		if (startedOrdersCount % DEFAULT_PAGE_SIZE != 0) {
 			startedOrdersPagesCount++;
 		}
 		model.addAttribute("started_orders_pages_count", startedOrdersPagesCount);
-		model.addAttribute("started_orders_pages_size", _defaultPageSize);
+		model.addAttribute("started_orders_pages_size", DEFAULT_PAGE_SIZE);
 		model.addAttribute("started_orders_page_number", startedOrdersPageNumber);
 		
 		model.addAttribute("ready_orders_for_selected_client", readyOrdersForSelectedClient);
 		Long readyOrdersCount = orderSvc.getCountOrdersForClientIdAndStatus(selectedClientId, "ready");
 		model.addAttribute("ready_orders_count", readyOrdersCount);
-		Long readyOrdersPagesCount = readyOrdersCount / _defaultPageSize;
-		if (readyOrdersCount % _defaultPageSize != 0) {
+		Long readyOrdersPagesCount = readyOrdersCount / DEFAULT_PAGE_SIZE;
+		if (readyOrdersCount % DEFAULT_PAGE_SIZE != 0) {
 			readyOrdersPagesCount++;
 		}
 		model.addAttribute("ready_orders_pages_count", readyOrdersPagesCount);
-		model.addAttribute("ready_orders_pages_size", _defaultPageSize);
+		model.addAttribute("ready_orders_pages_size", DEFAULT_PAGE_SIZE);
 		model.addAttribute("ready_orders_page_number", readyOrdersPageNumber);	
 		
 		model.addAttribute("clients_short",
-				clientSvc.getAllWithFetching(clientPagingFirstIndex,
-						clientPagingLastIndex - clientPagingFirstIndex + 1));
+				clientSvc.getAllWithFetching(pagingFirstIndex,
+						pagingLastIndex - pagingFirstIndex + 1));
 		Long clientsCount = clientSvc.getClientCount();
 		model.addAttribute("clients_count", clientsCount);
-		Long clientPagesCount = clientsCount / _defaultPageSize;
-		if (clientsCount % _defaultPageSize != 0) {
+		Long clientPagesCount = clientsCount / DEFAULT_PAGE_SIZE;
+		if (clientsCount % DEFAULT_PAGE_SIZE != 0) {
 			clientPagesCount++;
 		}
 		model.addAttribute("client_pages_count", clientPagesCount);
-		model.addAttribute("client_pages_size", _defaultPageSize);
-		model.addAttribute("client_page_number", clientPageNumber);
+		model.addAttribute("client_pages_size", DEFAULT_PAGE_SIZE);
+		model.addAttribute("client_page_number", pageNumber);
 		
+		UsernamePasswordAuthenticationToken userToken =
+				(UsernamePasswordAuthenticationToken)principal;		
 		model.addAttribute("user_token_authorities",
 				userToken.getAuthorities().toString());
+	}
+	
+	@Override
+	protected void prepareModel(final Locale locale, final Principal principal, 
+			final Model model, final Long id) {		
+	}
+	
+	@RequestMapping(value = "/managerpageactiveorders", method = RequestMethod.GET)
+	public String activate(final Locale locale, final Principal principal, final Model model) {
+		
+		if (!isMyUserSet(principal)) {
+			return "redirect:/index";
+		}		
+		
+		prepareModel(locale, principal, model);
 		
 		return "managerpageactiveorders";
 	}
@@ -152,11 +126,11 @@ public class ManagerPageActiveOrdersController implements MessageSourceAware {
 	@RequestMapping(value = "/managerpageactiveorders/clientpaging", method = RequestMethod.POST)
 	public String clientPaging(@RequestParam("clientPageNumber") final Long clientPageNumber) {
 		
-		clientPagingFirstIndex = clientPageNumber * _defaultPageSize;
-		clientPagingLastIndex = _defaultPageSize * (clientPageNumber + 1) - 1;
-		this.clientPageNumber = clientPageNumber;		
+		pagingFirstIndex = clientPageNumber * DEFAULT_PAGE_SIZE;
+		pagingLastIndex = DEFAULT_PAGE_SIZE * (clientPageNumber + 1) - 1;
+		this.pageNumber = clientPageNumber;		
 		
-		selectedClientId = (long) 0;
+		selectedClientId = 0L;
 		startedOrdersForSelectedClient.clear();
 		readyOrdersForSelectedClient.clear();
 		
@@ -168,8 +142,8 @@ public class ManagerPageActiveOrdersController implements MessageSourceAware {
 	public String startedOrdersPaging(			
 			@RequestParam("startedOrdersPageNumber") final Long startedOrdersPageNumber) {
 		
-		startedOrdersPagingFirstIndex = startedOrdersPageNumber * _defaultPageSize;
-		startedOrdersPagingLastIndex = _defaultPageSize * (startedOrdersPageNumber + 1) - 1;
+		startedOrdersPagingFirstIndex = startedOrdersPageNumber * DEFAULT_PAGE_SIZE;
+		startedOrdersPagingLastIndex = DEFAULT_PAGE_SIZE * (startedOrdersPageNumber + 1) - 1;
 		this.startedOrdersPageNumber = startedOrdersPageNumber;
 		
 		return "redirect:/managerpageactiveorders";
@@ -180,8 +154,8 @@ public class ManagerPageActiveOrdersController implements MessageSourceAware {
 	public String readyOrdersPaging(			
 			@RequestParam("readyOrdersPageNumber") final Long readyOrdersPageNumber) {
 		
-		readyOrdersPagingFirstIndex = readyOrdersPageNumber * _defaultPageSize;
-		readyOrdersPagingLastIndex = _defaultPageSize * (readyOrdersPageNumber + 1) - 1;
+		readyOrdersPagingFirstIndex = readyOrdersPageNumber * DEFAULT_PAGE_SIZE;
+		readyOrdersPagingLastIndex = DEFAULT_PAGE_SIZE * (readyOrdersPageNumber + 1) - 1;
 		this.readyOrdersPageNumber = readyOrdersPageNumber;
 		
 		return "redirect:/managerpageactiveorders";

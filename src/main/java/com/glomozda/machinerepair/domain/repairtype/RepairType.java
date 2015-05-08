@@ -66,8 +66,7 @@ public class RepairType {
 	@NotNull @Min(0)
 	private Integer repairTypeDuration;
 	
-	@Column(name = "available")
-	@NotNull
+	@Column(name = "available")	
 	private Byte available;
 	
 	@OneToMany(mappedBy="repairType", fetch = FetchType.EAGER)

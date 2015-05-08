@@ -8,8 +8,6 @@ import java.util.Locale;
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,52 +18,23 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.glomozda.machinerepair.domain.user.User;
+import com.glomozda.machinerepair.controller.AbstractRolePageController;
 import com.glomozda.machinerepair.domain.userauthorization.UserAuthorization;
 import com.glomozda.machinerepair.domain.userrole.UserRole;
-import com.glomozda.machinerepair.service.user.UserService;
-import com.glomozda.machinerepair.service.userauthorization.UserAuthorizationService;
 
 @Controller
-public class AdminPageUserAuthorizationsController implements MessageSourceAware {
+public class AdminPageUserAuthorizationsController extends AbstractRolePageController
+	implements MessageSourceAware {
 	
 	static Logger log = Logger.getLogger(AdminPageUserAuthorizationsController.class.getName());
 	
-	@Autowired
-	private UserAuthorizationService userAuthorizationSvc;
-	
-	@Autowired
-	private UserService userSvc;
-	
-	private User myUser;
-	
-	private MessageSource messageSource;
-	
-	private static final Long _defaultPageSize = (long) 10;
-	
-	private String messageUserAuthorizationAdded = "";
-	private String messageUserAuthorizationNotAdded = "";
-	
 	private String messageUserAuthorizationUserId = "";
 	private String messageUserAuthorizationRole = "";
-	private Long selectedUserAuthorizationUserId = (long) 0;
-	
-	private Long userAuthorizationPagingFirstIndex = (long) 0;
-	private Long userAuthorizationPagingLastIndex = _defaultPageSize - 1;
-	private Long pageNumber = (long) 0;
+	private Long selectedUserAuthorizationUserId = 0L;
 	
 	@Override
-	public void setMessageSource(MessageSource messageSource) {
-		this.messageSource = messageSource;
-	}
-	
-	@RequestMapping(value = "/adminpageuserauthorizations", method = RequestMethod.GET)
-	public String activate(final Locale locale, final Principal principal, final Model model) {
-		
-		myUser = userSvc.getUserByLogin(principal.getName());
-		if (null == myUser) {
-			return "redirect:/index";
-		}
+	protected void prepareModel(final Locale locale, final Principal principal, 
+			final Model model) {
 		
 		model.addAttribute("locale", locale.toString());
 		
@@ -74,8 +43,8 @@ public class AdminPageUserAuthorizationsController implements MessageSourceAware
 		}
 		
 		List<UserAuthorization> uas = userAuthorizationSvc
-				.getAllWithFetching(userAuthorizationPagingFirstIndex, 
-				userAuthorizationPagingLastIndex - userAuthorizationPagingFirstIndex + 1);
+				.getAllWithFetching(pagingFirstIndex, 
+				pagingLastIndex - pagingFirstIndex + 1);
 		List<UserAuthorization> uash = new ArrayList<UserAuthorization>();
 		for (UserAuthorization ua : uas) {
 			if (uash.isEmpty()) {
@@ -97,40 +66,55 @@ public class AdminPageUserAuthorizationsController implements MessageSourceAware
 		model.addAttribute("user_authorizations_short", uash);
 		model.addAttribute("user_authorizations_short_users", 
 				userAuthorizationSvc
-					.getDistinctUsersWithFetching(userAuthorizationPagingFirstIndex, 
-						userAuthorizationPagingLastIndex - userAuthorizationPagingFirstIndex + 1)
+					.getDistinctUsersWithFetching(pagingFirstIndex, 
+						pagingLastIndex - pagingFirstIndex + 1)
 				);
 		
 		Long userAuthorizationsCount = userAuthorizationSvc.getUserAuthorizationCount();
 		model.addAttribute("user_authorizations_count",	userAuthorizationsCount);
-		Long pagesCount = userAuthorizationsCount / _defaultPageSize;
-		if (userAuthorizationsCount % _defaultPageSize != 0) {
+		Long pagesCount = userAuthorizationsCount / DEFAULT_PAGE_SIZE;
+		if (userAuthorizationsCount % DEFAULT_PAGE_SIZE != 0) {
 			pagesCount++;
 		}
 		model.addAttribute("pages_count", pagesCount);
-		model.addAttribute("pages_size", _defaultPageSize);
+		model.addAttribute("pages_size", DEFAULT_PAGE_SIZE);
 		model.addAttribute("page_number", pageNumber);
 		
 		model.addAttribute("user_roles", userAuthorizationSvc.getAllRoles());
 		
 		model.addAttribute("message_user_authorization_added",
-				messageUserAuthorizationAdded);
-		messageUserAuthorizationAdded = "";
+				messageAdded);
+		messageAdded = "";
 		model.addAttribute("message_user_authorization_not_added",
-				messageUserAuthorizationNotAdded);
-		messageUserAuthorizationNotAdded = "";
+				messageNotAdded);
+		messageNotAdded = "";
 		
 		model.addAttribute("message_user_authorization_user_id", messageUserAuthorizationUserId);
 		messageUserAuthorizationUserId = "";
 		model.addAttribute("message_user_authorization_role", messageUserAuthorizationRole);
 		messageUserAuthorizationRole = "";
 		model.addAttribute("selected_user_authorization_user_id", selectedUserAuthorizationUserId);
-		selectedUserAuthorizationUserId = (long) 0;
+		selectedUserAuthorizationUserId = 0L;
 		
 		model.addAttribute("dialog_delete_user_authorization",
 				messageSource.getMessage(
 						"label.adminpage.userAuthorizations.actions.delete.dialog", null,
-				locale));
+				locale));		
+	}
+	
+	@Override
+	protected void prepareModel(final Locale locale, final Principal principal, 
+			final Model model, final Long id) {				
+	}
+	
+	@RequestMapping(value = "/adminpageuserauthorizations", method = RequestMethod.GET)
+	public String activate(final Locale locale, final Principal principal, final Model model) {
+		
+		if (!isMyUserSet(principal)) {
+			return "redirect:/index";
+		}
+		
+		prepareModel(locale, principal, model);		
 		
 		return "adminpageuserauthorizations";
 	}
@@ -140,9 +124,9 @@ public class AdminPageUserAuthorizationsController implements MessageSourceAware
 	public String userAuthorizationPaging(
 			@RequestParam("userAuthorizationPageNumber") final Long userAuthorizationPageNumber) {
 		
-		userAuthorizationPagingFirstIndex = userAuthorizationPageNumber * _defaultPageSize;
-		userAuthorizationPagingLastIndex = 
-				_defaultPageSize * (userAuthorizationPageNumber + 1) - 1;
+		pagingFirstIndex = userAuthorizationPageNumber * DEFAULT_PAGE_SIZE;
+		pagingLastIndex = 
+				DEFAULT_PAGE_SIZE * (userAuthorizationPageNumber + 1) - 1;
 		pageNumber = userAuthorizationPageNumber;				
 		
 		return "redirect:/adminpageuserauthorizations";
@@ -194,31 +178,14 @@ public class AdminPageUserAuthorizationsController implements MessageSourceAware
 		
 		if (userAuthorizationSvc.add(
 				new UserAuthorization(new UserRole(role)), userId)) {
-			messageUserAuthorizationAdded =
+			messageAdded =
 					messageSource.getMessage("popup.adminpage.userAuthorizationAdded", null,
 							locale);
 		} else {
-			messageUserAuthorizationNotAdded = 
+			messageNotAdded = 
 					messageSource.getMessage("popup.adminpage.userAuthorizationNotAdded", null,
 							locale);
 		}		
-		return "redirect:/adminpageuserauthorizations";
-	}
-	
-	@RequestMapping(value = "/deleteuserauthorization", method = RequestMethod.GET)
-	public String deleteUserAuthorization(
-			@RequestParam("user-authorization-id") final Long userAuthorizationId,
-			final Locale locale) {
-		
-//		if (clientSvc.add(client, userId)) {
-//			messageClientAdded =
-//					messageSource.getMessage("popup.adminpage.clientAdded", null,
-//							locale);
-//		} else {
-//			messageClientNotAdded = 
-//					messageSource.getMessage("popup.adminpage.clientNotAdded", null,
-//							locale);
-//		}		
 		return "redirect:/adminpageuserauthorizations";
 	}
 }

@@ -6,7 +6,6 @@ import java.util.Locale;
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Controller;
@@ -18,51 +17,26 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.glomozda.machinerepair.controller.AbstractRolePageController;
 import com.glomozda.machinerepair.domain.machineserviceable.MachineServiceable;
-import com.glomozda.machinerepair.domain.user.User;
-import com.glomozda.machinerepair.service.machineserviceable.MachineServiceableService;
-import com.glomozda.machinerepair.service.user.UserService;
 
 @Controller
-public class AdminPageMachinesServiceableController implements
+public class AdminPageMachinesServiceableController extends AbstractRolePageController implements
 		MessageSourceAware {
 	
 	static Logger log = Logger.getLogger(AdminPageMachinesServiceableController.class.getName());
 	
-	@Autowired
-	private MachineServiceableService machineServiceableSvc;
-	
-	@Autowired
-	private UserService userSvc;
-	
-	private User myUser;
-	
-	private MessageSource messageSource;
-	
-	private static final Long _defaultPageSize = (long) 10;
-	
 	private String messageEnableDisableFailed = "";
 	private String messageEnableDisableSucceeded = "";
-	
-	private String messageMachineServiceableAdded = "";
-	private String messageMachineServiceableNotAdded = "";
-	
-	private Long machineServiceablePagingFirstIndex = (long) 0;
-	private Long machineServiceablePagingLastIndex = _defaultPageSize - 1;
-	private Long pageNumber = (long) 0;
 	
 	@Override
 	public void setMessageSource(MessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
 	
-	@RequestMapping(value = "/adminpagemachinesserviceable", method = RequestMethod.GET)
-	public String activate(final Locale locale, final Principal principal, final Model model) {
-		
-		myUser = userSvc.getUserByLogin(principal.getName());
-		if (null == myUser) {
-			return "redirect:/index";
-		}
+	@Override
+	protected void prepareModel(final Locale locale, final Principal principal, 
+			final Model model) {
 		
 		model.addAttribute("locale", locale.toString());
 		
@@ -71,26 +45,26 @@ public class AdminPageMachinesServiceableController implements
 		}
 		
 		model.addAttribute("machines_serviceable_short", 
-				machineServiceableSvc.getAll(machineServiceablePagingFirstIndex, 
-					machineServiceablePagingLastIndex - machineServiceablePagingFirstIndex + 1));
+				machineServiceableSvc.getAll(pagingFirstIndex, 
+					pagingLastIndex - pagingFirstIndex + 1));
 		
 		Long machinesServiceableCount = machineServiceableSvc.getMachineServiceableCount();
 		model.addAttribute("machines_serviceable_count", 
 				machinesServiceableCount);
 		 
-		Long pagesCount = machinesServiceableCount / _defaultPageSize;
-		if (machinesServiceableCount % _defaultPageSize != 0) {
+		Long pagesCount = machinesServiceableCount / DEFAULT_PAGE_SIZE;
+		if (machinesServiceableCount % DEFAULT_PAGE_SIZE != 0) {
 			pagesCount++;
 		}
 		model.addAttribute("pages_count", pagesCount);
-		model.addAttribute("pages_size", _defaultPageSize);
+		model.addAttribute("pages_size", DEFAULT_PAGE_SIZE);
 		model.addAttribute("page_number", pageNumber);
 		
-		model.addAttribute("message_machine_serviceable_added", messageMachineServiceableAdded);
-		messageMachineServiceableAdded = "";
+		model.addAttribute("message_machine_serviceable_added", messageAdded);
+		messageAdded = "";
 		model.addAttribute("message_machine_serviceable_not_added",
-				messageMachineServiceableNotAdded);
-		messageMachineServiceableNotAdded = "";
+				messageNotAdded);
+		messageNotAdded = "";
 		
 		model.addAttribute("message_enable_disable_failed",
 				messageEnableDisableFailed);
@@ -106,7 +80,22 @@ public class AdminPageMachinesServiceableController implements
 		model.addAttribute("dialog_not_available_machine_serviceable",
 				messageSource.getMessage(
 					"label.adminpage.machinesServiceable.actions.disable.dialog", null,
-					locale));
+					locale));		
+	}
+	
+	@Override
+	protected void prepareModel(final Locale locale, final Principal principal, 
+			final Model model, final Long id) {				
+	}
+	
+	@RequestMapping(value = "/adminpagemachinesserviceable", method = RequestMethod.GET)
+	public String activate(final Locale locale, final Principal principal, final Model model) {
+		
+		if (!isMyUserSet(principal)) {
+			return "redirect:/index";
+		}
+		
+		prepareModel(locale, principal, model);
 				
 		return "adminpagemachinesserviceable";
 	}
@@ -117,9 +106,9 @@ public class AdminPageMachinesServiceableController implements
 			@RequestParam("machineServiceablePageNumber") 
 				final Long machineServiceablePageNumber) {
 		
-		machineServiceablePagingFirstIndex = machineServiceablePageNumber * _defaultPageSize;
-		machineServiceablePagingLastIndex = 
-				_defaultPageSize * (machineServiceablePageNumber + 1) - 1;
+		pagingFirstIndex = machineServiceablePageNumber * DEFAULT_PAGE_SIZE;
+		pagingLastIndex = 
+				DEFAULT_PAGE_SIZE * (machineServiceablePageNumber + 1) - 1;
 		pageNumber = machineServiceablePageNumber;				
 		
 		return "redirect:/adminpagemachinesserviceable";
@@ -141,11 +130,11 @@ public class AdminPageMachinesServiceableController implements
 		}
 		
 		if (machineServiceableSvc.add(machineServiceable)) {
-			messageMachineServiceableAdded =
+			messageAdded =
 					messageSource.getMessage("popup.adminpage.machineServiceableAdded", null,
 							locale);
 		} else {
-			messageMachineServiceableNotAdded = 
+			messageNotAdded = 
 					messageSource.getMessage("popup.adminpage.machineServiceableNotAdded", null,
 							locale);
 		}		
@@ -192,7 +181,7 @@ public class AdminPageMachinesServiceableController implements
 	}
 	
 	@RequestMapping(value = "/setMSUnavailable", method = RequestMethod.GET)
-	public String setUnvailable(
+	public String setUnavailable(
 			@RequestParam("machine-serviceable-id") Long machineServiceableId,
 			final Locale locale) {
 		

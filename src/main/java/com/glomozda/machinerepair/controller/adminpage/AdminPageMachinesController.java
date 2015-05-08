@@ -7,8 +7,6 @@ import java.util.Locale;
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,54 +17,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.glomozda.machinerepair.controller.AbstractRolePageController;
 import com.glomozda.machinerepair.domain.machine.Machine;
-import com.glomozda.machinerepair.domain.user.User;
-import com.glomozda.machinerepair.service.machine.MachineService;
-import com.glomozda.machinerepair.service.machineserviceable.MachineServiceableService;
-import com.glomozda.machinerepair.service.user.UserService;
 
 @Controller
-public class AdminPageMachinesController implements MessageSourceAware {
+public class AdminPageMachinesController extends AbstractRolePageController
+	implements MessageSourceAware {
 	
 	static Logger log = Logger.getLogger(AdminPageMachinesController.class.getName());
 	
-	@Autowired
-	private MachineService machineSvc;
-	
-	@Autowired
-	private UserService userSvc;
-	
-	@Autowired
-	private MachineServiceableService machineServiceableSvc;
-	
-	private User myUser;
-	
-	private MessageSource messageSource;
-	
-	private static final Long _defaultPageSize = (long) 10;
-	
-	private Long machinePagingFirstIndex = (long) 0;
-	private Long machinePagingLastIndex = _defaultPageSize - 1;
-	private Long pageNumber = (long) 0;
-	
-	private String messageMachineAdded = "";
-	private String messageMachineNotAdded = "";
-	
 	private String messageMachineServiceableId = "";
-	private Long selectedMachineServiceableId = (long) 0;
+	private Long selectedMachineServiceableId = 0L;
 	
 	@Override
-	public void setMessageSource(MessageSource messageSource) {
-		this.messageSource = messageSource;
-	}
-	
-	@RequestMapping(value = "/adminpagemachines", method = RequestMethod.GET)
-	public String activate(final Locale locale, final Principal principal, final Model model) {
-		
-		myUser = userSvc.getUserByLogin(principal.getName());
-		if (null == myUser) {
-			return "redirect:/index";
-		}
+	protected void prepareModel(final Locale locale, final Principal principal, 
+			final Model model) {
 		
 		model.addAttribute("locale", locale.toString());
 		
@@ -75,34 +40,49 @@ public class AdminPageMachinesController implements MessageSourceAware {
 		}
 		
 		model.addAttribute("machines_short", 
-				machineSvc.getAllWithFetching(machinePagingFirstIndex, 
-						machinePagingLastIndex - machinePagingFirstIndex + 1));
+				machineSvc.getAllWithFetching(pagingFirstIndex, 
+						pagingLastIndex - pagingFirstIndex + 1));
 		
 		Long machinesCount = machineSvc.getMachineCount();
 		model.addAttribute("machines_count", machinesCount);
 		
-		Long pagesCount = machinesCount / _defaultPageSize;
-		if (machinesCount % _defaultPageSize != 0) {
+		Long pagesCount = machinesCount / DEFAULT_PAGE_SIZE;
+		if (machinesCount % DEFAULT_PAGE_SIZE != 0) {
 			pagesCount++;
 		}
 		model.addAttribute("pages_count", pagesCount);
-		model.addAttribute("pages_size", _defaultPageSize);
+		model.addAttribute("pages_size", DEFAULT_PAGE_SIZE);
 		model.addAttribute("page_number", pageNumber);
 		
-		model.addAttribute("message_machine_added", messageMachineAdded);
-		messageMachineAdded = "";
-		model.addAttribute("message_machine_not_added", messageMachineNotAdded);
-		messageMachineNotAdded = "";
+		model.addAttribute("message_machine_added", messageAdded);
+		messageAdded = "";
+		model.addAttribute("message_machine_not_added", messageNotAdded);
+		messageNotAdded = "";
 		
 		model.addAttribute("message_machineserviceable_id", messageMachineServiceableId);
 		messageMachineServiceableId = "";		
 		model.addAttribute("selected_machineserviceable_id", selectedMachineServiceableId);
-		selectedMachineServiceableId = (long) 0;
+		selectedMachineServiceableId = 0L;
 		model.addAttribute("machines_serviceable", machineServiceableSvc.getAllOrderByName());
 		
 		model.addAttribute("dialog_delete_machine",
 				messageSource.getMessage("label.adminpage.machines.actions.delete.dialog", null,
-				locale));
+				locale));		
+	}
+	
+	@Override
+	protected void prepareModel(final Locale locale, final Principal principal, 
+			final Model model, final Long id) {				
+	}
+	
+	@RequestMapping(value = "/adminpagemachines", method = RequestMethod.GET)
+	public String activate(final Locale locale, final Principal principal, final Model model) {
+		
+		if (!isMyUserSet(principal)) {
+			return "redirect:/index";
+		}
+		
+		prepareModel(locale, principal, model);		
 		
 		return "adminpagemachines";
 	}
@@ -110,8 +90,8 @@ public class AdminPageMachinesController implements MessageSourceAware {
 	@RequestMapping(value = "/adminpagemachines/machinepaging", method = RequestMethod.POST)
 	public String machinePaging(@RequestParam("machinePageNumber") final Long machinePageNumber) {
 		
-		machinePagingFirstIndex = machinePageNumber * _defaultPageSize;
-		machinePagingLastIndex = _defaultPageSize * (machinePageNumber + 1) - 1;
+		pagingFirstIndex = machinePageNumber * DEFAULT_PAGE_SIZE;
+		pagingLastIndex = DEFAULT_PAGE_SIZE * (machinePageNumber + 1) - 1;
 		pageNumber = machinePageNumber;
 		
 		return "redirect:/adminpagemachines";
@@ -147,11 +127,11 @@ public class AdminPageMachinesController implements MessageSourceAware {
 		}
 		
 		if (machineSvc.add(machine, machineServiceableId)) {
-			messageMachineAdded =
+			messageAdded =
 					messageSource.getMessage("popup.adminpage.machineAdded", null,
 							locale);
 		} else {
-			messageMachineNotAdded = 
+			messageNotAdded = 
 					messageSource.getMessage("popup.adminpage.machineNotAdded", null,
 							locale);
 		}

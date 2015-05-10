@@ -4,7 +4,6 @@ import java.security.Principal;
 import java.util.Locale;
 
 import org.springframework.context.MessageSourceAware;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,11 +24,6 @@ public class ManagerPageController extends AbstractRolePageController
 			final Model model) {
 		
 		model.addAttribute("locale", locale.toString());
-		
-		UsernamePasswordAuthenticationToken userToken =
-				(UsernamePasswordAuthenticationToken)principal;		
-		model.addAttribute("user_token_authorities",
-				userToken.getAuthorities().toString());		
 	}
 	
 	@Override
@@ -47,5 +41,18 @@ public class ManagerPageController extends AbstractRolePageController
 		prepareModel(locale, principal, model);
 		
 		return "managerpage";
+	}
+	
+	@RequestMapping(value = "/manageradminpage", method = RequestMethod.GET)
+	public String activateAdmin(final Locale locale, final Principal principal, 
+			final Model model) {
+		
+		if (!isMyUserSet(principal)) {
+			return "redirect:/index";
+		}	
+		
+		prepareModel(locale, principal, model);
+		
+		return "manageradminpage";
 	}
 }

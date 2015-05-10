@@ -16,7 +16,8 @@
   			</c:otherwise>
 		</c:choose>
 		<hr class="style-seven">
-		<p><a href="<c:url value="/index"/>"><spring:message code="label.clientpage.sidebar.index" /></a>
+		<p><a href="<c:url value="/clienthome"/>">
+			<spring:message code="label.clientpage.sidebar.index" /></a>
 		<hr class="style-seven">
 			<dl class="tabs vertical">
 			<dd class="active"><a href="<c:url value="/clientpage"/>">

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import org.springframework.context.MessageSourceAware;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -98,12 +97,7 @@ public class ManagerPageActiveOrdersController extends AbstractRolePageControlle
 		}
 		model.addAttribute("client_pages_count", clientPagesCount);
 		model.addAttribute("client_pages_size", DEFAULT_PAGE_SIZE);
-		model.addAttribute("client_page_number", pageNumber);
-		
-		UsernamePasswordAuthenticationToken userToken =
-				(UsernamePasswordAuthenticationToken)principal;		
-		model.addAttribute("user_token_authorities",
-				userToken.getAuthorities().toString());
+		model.addAttribute("client_page_number", pageNumber);		
 	}
 	
 	@Override
@@ -123,6 +117,18 @@ public class ManagerPageActiveOrdersController extends AbstractRolePageControlle
 		return "managerpageactiveorders";
 	}
 	
+	@RequestMapping(value = "/manageradminpageactiveorders", method = RequestMethod.GET)
+	public String activateAdmin(final Locale locale, final Principal principal, final Model model) {
+		
+		if (!isMyUserSet(principal)) {
+			return "redirect:/index";
+		}		
+		
+		prepareModel(locale, principal, model);
+		
+		return "manageradminpageactiveorders";
+	}
+	
 	@RequestMapping(value = "/managerpageactiveorders/clientpaging", method = RequestMethod.POST)
 	public String clientPaging(@RequestParam("clientPageNumber") final Long clientPageNumber) {
 		
@@ -137,6 +143,20 @@ public class ManagerPageActiveOrdersController extends AbstractRolePageControlle
 		return "redirect:/managerpageactiveorders";
 	}
 	
+	@RequestMapping(value = "/manageradminpageactiveorders/clientpaging", method = RequestMethod.POST)
+	public String clientPagingAdmin(@RequestParam("clientPageNumber") final Long clientPageNumber) {
+		
+		pagingFirstIndex = clientPageNumber * DEFAULT_PAGE_SIZE;
+		pagingLastIndex = DEFAULT_PAGE_SIZE * (clientPageNumber + 1) - 1;
+		this.pageNumber = clientPageNumber;		
+		
+		selectedClientId = 0L;
+		startedOrdersForSelectedClient.clear();
+		readyOrdersForSelectedClient.clear();
+		
+		return "redirect:/manageradminpageactiveorders";
+	}
+	
 	@RequestMapping(value = "/managerpageactiveorders/startedorderspaging",
 			method = RequestMethod.POST)
 	public String startedOrdersPaging(			
@@ -149,6 +169,18 @@ public class ManagerPageActiveOrdersController extends AbstractRolePageControlle
 		return "redirect:/managerpageactiveorders";
 	}
 	
+	@RequestMapping(value = "/manageradminpageactiveorders/startedorderspaging",
+			method = RequestMethod.POST)
+	public String startedOrdersPagingAdmin(			
+			@RequestParam("startedOrdersPageNumber") final Long startedOrdersPageNumber) {
+		
+		startedOrdersPagingFirstIndex = startedOrdersPageNumber * DEFAULT_PAGE_SIZE;
+		startedOrdersPagingLastIndex = DEFAULT_PAGE_SIZE * (startedOrdersPageNumber + 1) - 1;
+		this.startedOrdersPageNumber = startedOrdersPageNumber;
+		
+		return "redirect:/manageradminpageactiveorders";
+	}
+	
 	@RequestMapping(value = "/managerpageactiveorders/readyorderspaging",
 			method = RequestMethod.POST)
 	public String readyOrdersPaging(			
@@ -159,6 +191,18 @@ public class ManagerPageActiveOrdersController extends AbstractRolePageControlle
 		this.readyOrdersPageNumber = readyOrdersPageNumber;
 		
 		return "redirect:/managerpageactiveorders";
+	}
+	
+	@RequestMapping(value = "/manageradminpageactiveorders/readyorderspaging",
+			method = RequestMethod.POST)
+	public String readyOrdersPagingAdmin(			
+			@RequestParam("readyOrdersPageNumber") final Long readyOrdersPageNumber) {
+		
+		readyOrdersPagingFirstIndex = readyOrdersPageNumber * DEFAULT_PAGE_SIZE;
+		readyOrdersPagingLastIndex = DEFAULT_PAGE_SIZE * (readyOrdersPageNumber + 1) - 1;
+		this.readyOrdersPageNumber = readyOrdersPageNumber;
+		
+		return "redirect:/manageradminpageactiveorders";
 	}
 	
 	@RequestMapping(value = "/listactiveordersforselectedclient", method = RequestMethod.POST)
@@ -178,7 +222,26 @@ public class ManagerPageActiveOrdersController extends AbstractRolePageControlle
 		
 		selectedClientId = clientId;
 		return "redirect:/managerpageactiveorders";
-	}	
+	}
+	
+	@RequestMapping(value = "/listactiveordersforselectedclientadmin", method = RequestMethod.POST)
+	public String listActiveOrdersForSelectedClientAdmin(@RequestParam("clientId") Long clientId) {
+		startedOrdersForSelectedClient.clear();
+		readyOrdersForSelectedClient.clear();
+		
+		startedOrdersForSelectedClient.addAll(
+				orderSvc.getOrdersForClientIdAndStatusWithFetching(clientId, "started", 
+						startedOrdersPagingFirstIndex,
+						startedOrdersPagingLastIndex - startedOrdersPagingFirstIndex + 1));
+		
+		readyOrdersForSelectedClient.addAll(
+				orderSvc.getOrdersForClientIdAndStatusWithFetching(clientId, "ready", 
+						readyOrdersPagingFirstIndex,
+						readyOrdersPagingLastIndex - readyOrdersPagingFirstIndex + 1));
+		
+		selectedClientId = clientId;
+		return "redirect:/manageradminpageactiveorders";
+	}
 	
 	@RequestMapping(value = "/setready", method = RequestMethod.GET)
 	public String setOrderReady(@RequestParam("order_id") Long orderId, final Locale locale) {
@@ -210,5 +273,37 @@ public class ManagerPageActiveOrdersController extends AbstractRolePageControlle
 				.getMessage("popup.managerpage.started.actions.setReady.succeeded",
 						null, locale);
 		return "redirect:/managerpageactiveorders";
+	}
+	
+	@RequestMapping(value = "/setreadyadmin", method = RequestMethod.GET)
+	public String setOrderReadyAdmin(@RequestParam("order_id") Long orderId, final Locale locale) {
+		Order myOrder = orderSvc.getOrderById(orderId);
+		if (myOrder == null) {
+			messageSetReadyFailed = 
+					messageSource
+					.getMessage("popup.managerpage.started.actions.setReady.failed.orderNotExists",
+							null, locale);
+			return "redirect:/manageradminpageactiveorders";
+		}
+		if (!myOrder.getStatus().getOrderStatusName().contentEquals("started")) {
+			messageSetReadyFailed = 
+					messageSource
+					.getMessage(
+							"popup.managerpage.started.actions.setReady.failed.orderNotStarted",
+							null, locale);
+			return "redirect:/manageradminpageactiveorders";
+		}
+		orderSvc.setOrderStatusById(orderId, 
+			orderStatusSvc.getOrderStatusByName("ready").getOrderStatusId());
+		myOrder = orderSvc.getOrderByIdWithFetching(orderId);
+		startedOrdersForSelectedClient.remove(
+				startedOrdersForSelectedClient.indexOf(myOrder));		
+		machineSvc.incrementTimesRepairedById(myOrder.getMachine().getMachineId());
+		readyOrdersForSelectedClient.add(myOrder);
+		messageSetReadySucceeded = 
+				messageSource
+				.getMessage("popup.managerpage.started.actions.setReady.succeeded",
+						null, locale);
+		return "redirect:/manageradminpageactiveorders";
 	}
 }

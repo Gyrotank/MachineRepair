@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Locale;
 
 import org.springframework.context.MessageSourceAware;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,9 +26,6 @@ public class ManagerPagePendingOrdersController extends AbstractRolePageControll
 	@Override
 	protected void prepareModel(final Locale locale, final Principal principal,
 			final Model model) {
-		
-		UsernamePasswordAuthenticationToken userToken =
-				(UsernamePasswordAuthenticationToken)principal;
 		
 		model.addAttribute("locale", locale.toString());
 		
@@ -62,9 +58,6 @@ public class ManagerPagePendingOrdersController extends AbstractRolePageControll
 		model.addAttribute("dialog_cancel_order",
 				messageSource.getMessage("label.managerpage.pending.actions.cancel.dialog", null,
 				locale));
-		
-		model.addAttribute("user_token_authorities",
-				userToken.getAuthorities().toString());
 	}
 	
 	@Override
@@ -84,6 +77,18 @@ public class ManagerPagePendingOrdersController extends AbstractRolePageControll
 		return "managerpagependingorders";
 	}
 	
+	@RequestMapping(value = "/manageradminpagependingorders", method = RequestMethod.GET)
+	public String activateAdmin(final Locale locale, final Principal principal, final Model model) {
+		
+		if (!isMyUserSet(principal)) {
+			return "redirect:/index";
+		}
+		
+		prepareModel(locale, principal, model);
+		
+		return "manageradminpagependingorders";
+	}
+	
 	@RequestMapping(value = "/managerpagependingorders/pendingorderspaging",
 			method = RequestMethod.POST)
 	public String pendingOrdersPaging(
@@ -94,6 +99,18 @@ public class ManagerPagePendingOrdersController extends AbstractRolePageControll
 		pageNumber = pendingOrdersPageNumber;	
 		
 		return "redirect:/managerpagependingorders";
+	}
+	
+	@RequestMapping(value = "/manageradminpagependingorders/pendingorderspaging",
+			method = RequestMethod.POST)
+	public String pendingOrdersPagingAdmin(
+			@RequestParam("pendingOrdersPageNumber") final Long pendingOrdersPageNumber) {
+		
+		pagingFirstIndex = pendingOrdersPageNumber * DEFAULT_PAGE_SIZE;
+		pagingLastIndex = DEFAULT_PAGE_SIZE * (pendingOrdersPageNumber + 1) - 1;
+		pageNumber = pendingOrdersPageNumber;	
+		
+		return "redirect:/manageradminpagependingorders";
 	}
 	
 	@RequestMapping(value = "/confirm", method = RequestMethod.GET)
@@ -122,6 +139,32 @@ public class ManagerPagePendingOrdersController extends AbstractRolePageControll
 		return "redirect:/managerpagependingorders";
 	}
 	
+	@RequestMapping(value = "/confirmadmin", method = RequestMethod.GET)
+	public String confirmOrderAdmin(@RequestParam("order_id") Long orderId, final Locale locale) {
+		Order myOrder = orderSvc.getOrderById(orderId);
+		if (myOrder == null) {			
+			messageConfirmFailed = 
+					messageSource
+					.getMessage("popup.managerpage.pending.actions.confirm.failed.orderNotExists",
+							null, locale);
+			return "redirect:/manageradminpagependingorders";
+		}
+		if (!myOrder.getStatus().getOrderStatusName().contentEquals("pending")) {			
+			messageConfirmFailed = 
+					messageSource
+					.getMessage("popup.managerpage.pending.actions.confirm.failed.orderNotPending",
+							null, locale);
+			return "redirect:/manageradminpagependingorders";
+		}
+		orderSvc.confirmOrderById(orderId, myUser.getLogin(),
+				orderStatusSvc.getOrderStatusByName("started").getOrderStatusId());
+		messageConfirmSucceeded = 
+				messageSource
+				.getMessage("popup.managerpage.pending.actions.confirm.succeeded",
+						null, locale);
+		return "redirect:/manageradminpagependingorders";
+	}
+	
 	@RequestMapping(value = "/cancel", method = RequestMethod.GET)
 	public String cancelOrder(@RequestParam("order_id") Long orderId, final Locale locale) {
 		Order myOrder = orderSvc.getOrderById(orderId);
@@ -145,5 +188,30 @@ public class ManagerPagePendingOrdersController extends AbstractRolePageControll
 				.getMessage("popup.managerpage.pending.actions.cancel.succeeded",
 						null, locale);
 		return "redirect:/managerpagependingorders";
+	}
+	
+	@RequestMapping(value = "/canceladmin", method = RequestMethod.GET)
+	public String cancelOrderAdmin(@RequestParam("order_id") Long orderId, final Locale locale) {
+		Order myOrder = orderSvc.getOrderById(orderId);
+		if (myOrder == null) {
+			messageCancelFailed = 
+					messageSource
+					.getMessage("popup.managerpage.pending.actions.cancel.failed.orderNotExists",
+							null, locale);
+			return "redirect:/manageradminpagependingorders";			
+		}
+		if (!myOrder.getStatus().getOrderStatusName().contentEquals("pending")) {
+			messageCancelFailed = 
+					messageSource
+					.getMessage("popup.managerpage.pending.actions.cancel.failed.orderNotPending",
+							null, locale);			
+			return "redirect:/manageradminpagependingorders";
+		}
+		orderSvc.cancelOrderById(orderId);
+		messageCancelSucceeded = 
+				messageSource
+				.getMessage("popup.managerpage.pending.actions.cancel.succeeded",
+						null, locale);
+		return "redirect:/manageradminpagependingorders";
 	}
 }

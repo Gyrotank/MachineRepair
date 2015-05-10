@@ -17,14 +17,9 @@
   			</c:otherwise>
 		</c:choose>
 		<hr class="style-seven">
-		<p><a href="<c:url value="/index"/>">
+		<p><a href="<c:url value="/managerhome"/>">
 			<spring:message code="label.managerpage.sidebar.index" /></a></p>
-		<hr class="style-seven">
-		<c:if test="${fn:contains(user_token_authorities, 'ROLE_ADMIN')}">			
-			<p><a href="<c:url value="/adminpage"/>">
-				<spring:message code="label.managerpage.sidebar.adminpage" /></a></p>
-			<hr class="style-seven">						
-		</c:if>		
+		<hr class="style-seven">				
 			<dl class="tabs vertical">
 			<dd class="active"><a href="<c:url value="/managerpage"/>">
   				<spring:message code="label.managerpage.sidebar.dashboard" /></a></dd>

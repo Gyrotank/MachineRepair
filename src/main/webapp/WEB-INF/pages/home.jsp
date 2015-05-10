@@ -31,45 +31,16 @@
 	</h3>
 	
 	<h3 class = "left">		
-		<c:if test="${login == ''}">
-   			<a href="${pageContext.servletContext.contextPath}/login">
-   			<spring:message code="label.homepage.login" /></a>&emsp;
-   			<a href="${pageContext.servletContext.contextPath}/signuppage">
-   			<spring:message code="label.homepage.signup" /></a>&emsp;
-		</c:if>
-		<c:if test="${login != ''}">
-			<spring:message code="label.homepage.welcome" /> ${login}!
-		</c:if>		
+		<a href="${pageContext.servletContext.contextPath}/login">
+   		<spring:message code="label.homepage.login" /></a>&emsp;
+   		<a href="${pageContext.servletContext.contextPath}/signuppage">
+   		<spring:message code="label.homepage.signup" /></a>&emsp;				
 		
 	</h3>
 	<br>
 	<center>
 		<h1><spring:message code="label.homepage.header" /></h1>
-	</center>
-	
-	<c:if test="${fn:contains(user_token_authorities, 'ROLE_MANAGER')
-					|| fn:contains(user_token_authorities, 'ROLE_ADMIN')}">
-		<a href="${pageContext.servletContext.contextPath}/managerpage">
-			<spring:message code="label.homepage.managerTools" /></a>
-		<br>				
-	</c:if>
-	<c:if test="${fn:contains(user_token_authorities, 'ROLE_ADMIN')}">
-		<br>
-		<a href="${pageContext.servletContext.contextPath}/adminpage">
-			<spring:message code="label.homepage.adminTools" /></a>
-		<br>
-	</c:if>
-	<c:if test="${fn:contains(user_token_authorities, 'ROLE_CLIENT')
-				&& not fn:contains(user_token_authorities, 'ROLE_MANAGER')
-				&& not fn:contains(user_token_authorities, 'ROLE_ADMIN')}">
-		<a href="${pageContext.servletContext.contextPath}/clientpage">
-			<spring:message code="label.homepage.personalCabinet" /></a>
-		<br>		
-	</c:if>
-	<c:if test="${login != ''}">
-		<br>
-		<a href="<c:url value="/logout"/>"><spring:message code="label.homepage.logout" /></a>
-	</c:if>
+	</center>	
 	
 </body>
 </html>

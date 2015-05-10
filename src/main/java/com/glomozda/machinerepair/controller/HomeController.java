@@ -23,18 +23,15 @@ public class HomeController {
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public String activate(final Locale locale, final Model model, final Principal principal) {
 		
-		String login = "";
-		String userTokenAuthorities = "";
+		String login = "";		
 		UsernamePasswordAuthenticationToken userToken = null;
 		
 		if (principal != null) {
 			userToken = (UsernamePasswordAuthenticationToken)principal;
-			login = userToken.getName();
-			userTokenAuthorities = userToken.getAuthorities().toString();
+			login = userToken.getName();			
 		}
 		model.addAttribute("locale", locale.toString());
-	    model.addAttribute("login", login);
-	    model.addAttribute("user_token_authorities", userTokenAuthorities);
+	    model.addAttribute("login", login);	    
 	    return "home";
 	}
 }

@@ -6,19 +6,25 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import javax.validation.Valid;
+
 import org.apache.log4j.Logger;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.glomozda.machinerepair.controller.AbstractRolePageController;
 import com.glomozda.machinerepair.domain.client.Client;
 import com.glomozda.machinerepair.domain.machine.Machine;
 import com.glomozda.machinerepair.domain.machineserviceable.MachineServiceable;
 import com.glomozda.machinerepair.domain.order.Order;
+import com.glomozda.machinerepair.domain.order.OrderCreateFirstDTO;
+import com.glomozda.machinerepair.domain.order.OrderCreateRepeatedDTO;
 import com.glomozda.machinerepair.domain.repairtype.RepairType;
 
 @Controller
@@ -29,26 +35,11 @@ public class ClientPageCreateOrdersController extends AbstractRolePageController
 	
 	private Client myClient;	
 	
-	private String messageRepeatedRepair = "";
-	private String messageRepeatedRepairSerialNumber = "";
-	private String messageRepeatedRepairRepairTypeId = "";
 	private String messageRepeatedRepairCreated = "";
 	private String messageRepeatedRepairNotCreated = "";
 	
-	private String enteredRepeatedRepairSerialNumber = "";
-	private Long selectedRepeatedRepairRepairTypeId = (long) 0;
-	
-	private String messageFirstRepairServiceableId = "";
-	private String messageFirstRepairSerialNumber = "";
-	private String messageFirstRepairYear = "";
-	private String messageFirstRepairRepairTypeId = "";
 	private String messageFirstRepairCreated = "";
 	private String messageFirstRepairNotCreated = "";
-	
-	private Long selectedFirstRepairServiceableId = (long) 0;
-	private String enteredFirstRepairSerialNumber = "";
-	private Integer selectedFirstRepairYear = 1950;
-	private Long selectedFirstRepairRepairTypeId = (long) 0;
 	
 	private boolean isNonNegativeInteger(String str) {
 		if (str == null) {
@@ -77,6 +68,14 @@ public class ClientPageCreateOrdersController extends AbstractRolePageController
 		model.addAttribute("locale", locale.toString());
 		
 		model.addAttribute("clientname", myClient.getClientName());
+		
+		if (!model.containsAttribute("orderCreateFirstDTO")) {
+			model.addAttribute("orderCreateFirstDTO", new OrderCreateFirstDTO());
+		}
+		
+		if (!model.containsAttribute("orderCreateRepeatedDTO")) {
+			model.addAttribute("orderCreateRepeatedDTO", new OrderCreateRepeatedDTO());
+		}
 		
 		model.addAttribute("past_orders_count", 
 				orderSvc.getCountOrdersForClientIdAndStatus(myClient.getClientId(), "finished"));
@@ -127,52 +126,7 @@ public class ClientPageCreateOrdersController extends AbstractRolePageController
 		messageFirstRepairCreated = "";
 		model.addAttribute("message_first_repair_not_created", messageFirstRepairNotCreated);
 		messageFirstRepairNotCreated = "";
-		
-		model.addAttribute("message_repeated_order", messageRepeatedRepair);
-		messageRepeatedRepair = "";
 				
-		model.addAttribute("message_repeated_repair_serial_number",
-				messageRepeatedRepairSerialNumber);
-		messageRepeatedRepairSerialNumber = "";
-		model.addAttribute("repeated_repair_entered_serial_number",
-				enteredRepeatedRepairSerialNumber);
-		enteredRepeatedRepairSerialNumber = "";
-		
-		model.addAttribute("message_repeated_repair_repairtype_id",
-				messageRepeatedRepairRepairTypeId);
-		messageRepeatedRepairRepairTypeId = "";
-		model.addAttribute("repeated_repair_selected_repairtype_id",
-				selectedRepeatedRepairRepairTypeId);
-		selectedRepeatedRepairRepairTypeId = 0L;
-		
-		model.addAttribute("message_first_repair_serviceable_id",
-				messageFirstRepairServiceableId);
-		messageFirstRepairServiceableId = "";
-		model.addAttribute("first_repair_selected_serviceable_id",
-				selectedFirstRepairServiceableId);
-		selectedFirstRepairServiceableId = 0L;
-		
-		model.addAttribute("message_first_repair_serial_number",
-				messageFirstRepairSerialNumber);
-		messageFirstRepairSerialNumber = "";
-		model.addAttribute("first_repair_entered_serial_number",
-				enteredFirstRepairSerialNumber);
-		enteredFirstRepairSerialNumber = "";
-		
-		model.addAttribute("message_first_repair_year",
-				messageFirstRepairYear);
-		messageFirstRepairYear = "";
-		model.addAttribute("first_repair_selected_year",
-				selectedFirstRepairYear);
-		selectedFirstRepairYear = 1950;
-		
-		model.addAttribute("message_first_repair_repairtype_id",
-				messageFirstRepairRepairTypeId);
-		messageFirstRepairRepairTypeId = "";
-		model.addAttribute("first_repair_selected_repairtype_id",
-				selectedFirstRepairRepairTypeId);
-		selectedFirstRepairRepairTypeId = 0L;
-		
 		model.addAttribute("machines_serviceable", machinesServiceable);
 		model.addAttribute("repair_types", repairTypes);
 		
@@ -198,46 +152,45 @@ public class ClientPageCreateOrdersController extends AbstractRolePageController
 	
 	@RequestMapping(value = "/createorderforrepeatedrepair", method = RequestMethod.POST)
 	public String createOrderForRepeatedRepair(
-			@RequestParam("machineSerialNumber") String machineSerialNumber,
-			@RequestParam("repairTypeId") Long repairTypeId,
+			@ModelAttribute("orderCreateRepeatedDTO") 
+				@Valid final OrderCreateRepeatedDTO orderCreateRepeatedDTO,
+			final BindingResult bindingResult,			
+			final RedirectAttributes redirectAttributes,
 			final Locale locale) {		
 		
-		if (machineSerialNumber.isEmpty() || repairTypeId == 0) {
-			if (machineSerialNumber.isEmpty()) {
-				messageRepeatedRepairSerialNumber = 
-						messageSource.getMessage("error.clientpage.repeatedRepairSerialNumber",
-								null, locale);
-			}
-			if (repairTypeId == 0) {
-				messageRepeatedRepairRepairTypeId =
-						messageSource.getMessage("error.clientpage.repeatedRepairRepairTypeId",
-								null, locale);
+		Machine machine = new Machine();
+		
+		if (orderCreateRepeatedDTO.getMachineSerialNumber() != null 
+				&& !orderCreateRepeatedDTO.getMachineSerialNumber().isEmpty()) {
+			machine = machineSvc
+					.getMachineForSerialNumberWithFetching(orderCreateRepeatedDTO
+							.getMachineSerialNumber());
+			
+			if (null == machine) {
+				bindingResult.rejectValue("machineSerialNumber", 
+						"error.clientpage.repeatedRepairSerialNumberNoMachine", null);
 			}
 			
-			enteredRepeatedRepairSerialNumber = machineSerialNumber;
-			selectedRepeatedRepairRepairTypeId = repairTypeId;
-			return "redirect:/clientpagecreateorders";
-		}
+			if (!orderSvc.getOrdersByClientIdAndMachineSNAndNotFinished
+					(myClient.getClientId(),
+							orderCreateRepeatedDTO.getMachineSerialNumber()).isEmpty()) {
+				bindingResult.rejectValue("machineSerialNumber", 
+						"popup.clientpage.orderExistsForSN", null);				
+			}
+		}		
 		
-		Machine machine = machineSvc.getMachineForSerialNumberWithFetching(machineSerialNumber);
-		if (null == machine) {
-			messageRepeatedRepair = "Error fetching machine ID";
-			return "redirect:/clientpagecreateorders";
-		}
-		
-		if (!orderSvc
-				.getOrdersByClientIdAndMachineSNAndNotFinished
-					(myClient.getClientId(), machineSerialNumber).isEmpty()) {
-			messageRepeatedRepairNotCreated = 
-					messageSource.getMessage("popup.clientpage.orderExistsForSN", null,
-							locale);			
-			return "redirect:/clientpagecreateorders";
+		if (bindingResult.hasErrors()) {
+			redirectAttributes.addFlashAttribute
+				("org.springframework.validation.BindingResult.orderCreateRepeatedDTO",
+						bindingResult);
+			redirectAttributes.addFlashAttribute("orderCreateRepeatedDTO", orderCreateRepeatedDTO);
+			return "redirect:/clientpagecreateorders";				
 		}
 		
 		Order order = new Order(new java.sql.Date(new java.util.Date().getTime()));
 		
 		if (orderSvc.add(order, myClient.getClientId(),
-				repairTypeId, machine.getMachineId(),
+				orderCreateRepeatedDTO.getRepairTypeId(), machine.getMachineId(),
 				orderStatusSvc.getOrderStatusByName("pending").getOrderStatusId())) {
 			messageRepeatedRepairCreated =
 					messageSource.getMessage("popup.clientpage.orderAdded", null,
@@ -252,91 +205,71 @@ public class ClientPageCreateOrdersController extends AbstractRolePageController
 	
 	@RequestMapping(value = "/createorderforfirstrepair", method = RequestMethod.POST)
 	public String createOrderForFirstRepair(
-			@RequestParam("machineServiceableId") Long machineServiceableId,
-			@RequestParam("machineSerialNumber") String machineSerialNumber,
-			@RequestParam("machineYear") String machineYear,
-			@RequestParam("repairTypeId") Long repairTypeId,
+			@ModelAttribute("orderCreateFirstDTO") 
+				@Valid final OrderCreateFirstDTO orderCreateFirstDTO,
+			final BindingResult bindingResult,			
+			final RedirectAttributes redirectAttributes,
 			final Locale locale) {
 		
-		if (machineServiceableId == 0 || machineSerialNumber.isEmpty()
-				|| machineYear.isEmpty()
-				|| !isNonNegativeInteger(machineYear.toString())
-				|| Integer.parseInt(machineYear) < 1950
-				|| Integer.parseInt(machineYear)
-					> java.util.Calendar.getInstance().get(Calendar.YEAR)				
-				|| repairTypeId == 0) {
-			if (machineServiceableId == 0) {
-				messageFirstRepairServiceableId = 
-						messageSource.getMessage("error.clientpage.firstRepairServiceableId",
-								null, locale);
+		if (orderCreateFirstDTO.getMachineYear() != null
+				&& !orderCreateFirstDTO.getMachineYear().isEmpty()) {
+			
+			if (!isNonNegativeInteger(orderCreateFirstDTO.getMachineYear().toString())) {				
+				bindingResult.rejectValue("machineYear", 
+						"error.clientpage.firstRepairYearFormat", null);				
 			}
-			if (machineSerialNumber.isEmpty()) {
-				messageFirstRepairSerialNumber =
-						messageSource.getMessage("error.clientpage.firstRepairSerialNumber",
-								null, locale);
-			}
-			if (machineYear.isEmpty()) {
-				messageFirstRepairYear = 
-						messageSource.getMessage("error.clientpage.firstRepairYear",
-								null, locale);
-			}
-			if (!isNonNegativeInteger(machineYear.toString())) {
-				messageFirstRepairYear = 
-						messageSource.getMessage("error.clientpage.firstRepairYearFormat",
-								null, locale);
-			}
-			if (isNonNegativeInteger(machineYear.toString())) {
-				if (Integer.parseInt(machineYear) < 1950) {
-					messageFirstRepairYear = 
-							messageSource.getMessage("Min.machine.machineYear",
-								null, locale);
+			
+			if (isNonNegativeInteger(orderCreateFirstDTO.getMachineYear().toString())) {
+				if (Integer.parseInt(orderCreateFirstDTO.getMachineYear()) < 1950) {
+					bindingResult.rejectValue("machineYear", 
+							"Min.machine.machineYear", null);
 				}
-				if (Integer.parseInt(machineYear) >
+				if (Integer.parseInt(orderCreateFirstDTO.getMachineYear()) >
 				java.util.Calendar.getInstance().get(Calendar.YEAR)) {
-					messageFirstRepairYear = 
-							messageSource.getMessage("error.clientpage.firstRepairYearFuture",
-								null, locale);
+					bindingResult.rejectValue("machineYear", 
+							"error.clientpage.firstRepairYearFuture", null);					
 				}
-			}
-			if (repairTypeId == 0) {
-				messageFirstRepairRepairTypeId = 
-						messageSource.getMessage("error.clientpage.firstRepairRepairTypeId",
-								null, locale);
 			}			
-						
-			selectedFirstRepairServiceableId = machineServiceableId;
-			enteredFirstRepairSerialNumber = machineSerialNumber;
-			if (isNonNegativeInteger(machineYear.toString())) {
-				selectedFirstRepairYear = Integer.parseInt(machineYear);
-			} else {
-				selectedFirstRepairYear = 1950;
-			}
-			selectedFirstRepairRepairTypeId = repairTypeId;
-			return "redirect:/clientpagecreateorders";
 		}
 		
-		if (machineSvc.getMachineForSerialNumber(machineSerialNumber) != null) {			
+		if (orderCreateFirstDTO.getMachineSerialNumber() != null &&
+				!orderCreateFirstDTO.getMachineSerialNumber().isEmpty() && 
+				machineSvc.getMachineForSerialNumber(orderCreateFirstDTO.getMachineSerialNumber())
+					!= null) {
+			bindingResult.rejectValue("machineSerialNumber", 
+					"popup.clientpage.machineExistsForSN", null);			
+		}
+		
+		if (bindingResult.hasErrors()) {
+			redirectAttributes.addFlashAttribute
+				("org.springframework.validation.BindingResult.orderCreateFirstDTO",
+						bindingResult);
+			redirectAttributes.addFlashAttribute("orderCreateFirstDTO", orderCreateFirstDTO);
+			return "redirect:/clientpagecreateorders";				
+		}		
+		
+		Machine m = new Machine(orderCreateFirstDTO.getMachineSerialNumber(), 
+				Integer.parseInt(orderCreateFirstDTO.getMachineYear()));
+		if (!machineSvc.add(m, orderCreateFirstDTO.getMachineServiceableId())) {
 			messageFirstRepairNotCreated = 
-					messageSource.getMessage("popup.clientpage.machineExistsForSN", null,
-							locale);
+					messageSource.getMessage("popup.clientpage.orderNotAdded", null,
+							locale);			
 			return "redirect:/clientpagecreateorders";
 		}
 		
-		Machine m = new Machine(machineSerialNumber, Integer.parseInt(machineYear));
-		machineSvc.add(m, machineServiceableId);
-		
-		m = machineSvc.getMachineForSerialNumberWithFetching(machineSerialNumber);
+		m = machineSvc.getMachineForSerialNumberWithFetching(
+				orderCreateFirstDTO.getMachineSerialNumber());
 		
 		Order order = new Order(new java.sql.Date(new java.util.Date().getTime()));
 		
-		if (orderSvc.add(order, myClient.getClientId(), repairTypeId,
+		if (orderSvc.add(order, myClient.getClientId(), orderCreateFirstDTO.getRepairTypeId(),
 				m.getMachineId(),
 				orderStatusSvc.getOrderStatusByName("pending").getOrderStatusId())) {
-			messageRepeatedRepairCreated =
+			messageFirstRepairCreated =
 					messageSource.getMessage("popup.clientpage.orderAdded", null,
 							locale);
 		} else {
-			messageRepeatedRepairNotCreated = 
+			messageFirstRepairNotCreated = 
 					messageSource.getMessage("popup.clientpage.orderNotAdded", null,
 							locale);
 		}

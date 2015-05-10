@@ -26,15 +26,16 @@
   	<div class="error">
   		<c:out value="${message_first_repair_not_created}"/>
   	</div>
-  	<form method="post" action="createorderforfirstrepair" accept-charset="UTF-8">
+  	<form:form method="post" commandName="orderCreateFirstDTO" 
+  		action="createorderforfirstrepair" accept-charset="UTF-8">
   	<table>
   		<tr>
   		<td><spring:message code="label.clientpage.createFirstTimeOrder.machine" /></td>
-  		<td><select name="machineServiceableId">
+  		<td><form:select path="machineServiceableId">
 		<option value="0"><spring:message code="label.clientpage.createFirstTimeOrder.selectMachine" /></option>
   		<c:forEach var="ms" items="${machines_serviceable}">
   			<c:choose>
-  			<c:when test="${first_repair_selected_serviceable_id == ms.machineServiceableId}">
+  			<c:when test="${orderCreateFirstDTO.machineServiceableId == ms.machineServiceableId}">
   				<option selected value="${ms.machineServiceableId}">
   				<c:out value="${ms.machineServiceableTrademark} - ${ms.machineServiceableName}" />
   				</option>
@@ -46,34 +47,28 @@
   			</c:otherwise>
   			</c:choose>
   		</c:forEach>
-  		</select></td>
-  		<td><div class="error">
-     		<c:out value="${message_first_repair_serviceable_id}"/>
-   		</div></td>  		  		
+  		</form:select></td>
+  		<td><form:errors path="machineServiceableId" cssClass="error" /></td>  		  		
   		</tr>
   		<tr>
   		<td><spring:message code="label.clientpage.createFirstTimeOrder.sn" /></td>
-  		<td><input type="text" name="machineSerialNumber" maxlength="32"
-  				 value="${first_repair_entered_serial_number}"/></td>
-  		<td><div class="error">
-  			<c:out value="${message_first_repair_serial_number}"/>
-  		</div></td>
+  		<td><form:input type="text" path="machineSerialNumber" maxlength="32"
+  				 value="${orderCreateFirstDTO.machineSerialNumber}"/></td>
+  		<td><form:errors path="machineSerialNumber" cssClass="error" /></td>
   		</tr>
   		<tr> 
   		<td><spring:message code="label.clientpage.createFirstTimeOrder.year" /></td>  		
-  		<td><input type="text" name="machineYear" size="4" maxlength="4"
-  				 value="${first_repair_selected_year}"/></td>
-		<td><div class="error">
-			<c:out value="${message_first_repair_year}"/>
-		</div></td>
+  		<td><form:input type="text" path="machineYear" size="4" maxlength="4"
+  				 value="${orderCreateFirstDTO.machineYear}"/></td>
+		<td><form:errors path="machineYear" cssClass="error" /></td>
 		</tr>
 		<tr>
   		<td><spring:message code="label.clientpage.createFirstTimeOrder.repairType" /></td>
-  		<td><select name="repairTypeId">
+  		<td><form:select path="repairTypeId">
 		<option value="0"><spring:message code="label.clientpage.createFirstTimeOrder.selectRepairType" /></option>
   		<c:forEach var="rt" items="${repair_types}">
   			<c:choose>
-  			<c:when test="${first_repair_selected_repairtype_id == rt.repairTypeId}">
+  			<c:when test="${orderCreateFirstDTO.repairTypeId == rt.repairTypeId}">
   				<option selected value="${rt.repairTypeId}">  				
   				<c:choose>
     				<c:when test="${locale == 'ru'}">
@@ -99,16 +94,14 @@
   			</c:otherwise>
   			</c:choose>  			
   		</c:forEach>
-  		</select></td>
-  		<td><div class="error">
-  			<c:out value="${message_first_repair_repairtype_id}"/>
-  		</div></td>
+  		</form:select></td>
+  		<td><form:errors path="repairTypeId" cssClass="error" /></td>
   		</tr>
   		<tr>
   			<td><button><spring:message code="label.clientpage.buttonCreate" /></button></td>
   		</tr>
   	</table>
-  	</form>
+  	</form:form>
   	<br>
   	<c:choose>
 	<c:when test="${(past_orders_count == 0) && (current_orders_count == 0)}">				
@@ -120,17 +113,17 @@
   	</div>
   	<div class="error">
   		<c:out value="${message_repeated_repair_not_created}"/>
-  	</div>
-  	<c:out value="${message_repeated_order}"/>
-  	<form method="post" action="createorderforrepeatedrepair" accept-charset="UTF-8">
+  	</div>  	
+  	<form:form method="post" commandName="orderCreateRepeatedDTO" 
+  		action="createorderforrepeatedrepair" accept-charset="UTF-8">
   	<table>
   		<tr>
   		<td><spring:message code="label.clientpage.createRepeatedOrder.sn" /></td>
-  		<td><select name="machineSerialNumber">
+  		<td><form:select path="machineSerialNumber">
   		<option value=""><spring:message code="label.clientpage.createRepeatedOrder.selectSN" /></option>
   		<c:forEach var="sn" items="${my_machines_serial_numbers}">
   			<c:choose>
-  			<c:when test="${repeated_repair_entered_serial_number == sn}">
+  			<c:when test="${orderCreateRepeatedDTO.machineSerialNumber == sn}">
   				<option selected value="${sn}"><c:out value="${sn}" /></option>
   			</c:when>
   			<c:otherwise>
@@ -138,19 +131,17 @@
   			</c:otherwise>
   			</c:choose>  			
   		</c:forEach>
-  		</select>
+  		</form:select>
   		</td>
-  		<td><div class="error">
-  			<c:out value="${message_repeated_repair_serial_number}"/>
-  		</div></td>
+  		<td><form:errors path="machineSerialNumber" cssClass="error" /></td>
   		</tr> 
   		<tr> 		
 		<td><spring:message code="label.clientpage.createRepeatedOrder.repairType" /></td>
-		<td><select name="repairTypeId">
+		<td><form:select path="repairTypeId">
 		<option value="0"><spring:message code="label.clientpage.createRepeatedOrder.selectRepairType" /></option>
   		<c:forEach var="rt" items="${repair_types}">
   			<c:choose>
-  			<c:when test="${first_repair_selected_repairtype_id == rt.repairTypeId}">
+  			<c:when test="${orderCreateRepeatedDTO.repairTypeId == rt.repairTypeId}">
   				<option selected value="${rt.repairTypeId}">  				
   				<c:choose>
     				<c:when test="${locale == 'ru'}">
@@ -176,16 +167,14 @@
   			</c:otherwise>
   			</c:choose>
   		</c:forEach>
-  		</select></td>
-  		<td><div class="error">
-  			<c:out value="${message_repeated_repair_repairtype_id}"/>
-  		</div></td>
+  		</form:select></td>
+  		<td><form:errors path="repairTypeId" cssClass="error" /></td>
   		</tr>
   		<tr>
   			<td><button><spring:message code="label.clientpage.buttonCreate" /></button></td>
   		</tr>
   	</table>
-  	</form>
+  	</form:form>
   	</c:otherwise>
   	</c:choose>
   	</div>

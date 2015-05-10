@@ -16,10 +16,10 @@
   			</c:otherwise>
 		</c:choose>
 		<hr class="style-seven">
-		<p><a href="<c:url value="/index"/>">
+		<p><a href="<c:url value="/adminhome"/>">
 			<spring:message code="label.adminpage.sidebar.index" /></a></p>
 		<hr class="style-seven">		
-		<p><a href="<c:url value="/managerpage"/>">
+		<p><a href="<c:url value="/manageradminpage"/>">
 			<spring:message code="label.adminpage.sidebar.managerpage" /></a></p>
 		<hr class="style-seven">
 	<dl class="tabs vertical">

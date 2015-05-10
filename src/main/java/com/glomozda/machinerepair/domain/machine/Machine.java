@@ -174,12 +174,24 @@ public class Machine {
 			return false;
 		}
 		return true;
-	}    
+	}
 
 	@Override
 	public String toString() {
-		return "machine{" + "machineId=" + machineId + ", machineSerialNumber=" + machineSerialNumber + ", machineYear=" + machineYear + 
-				", machineTimesRepaired=" + machineTimesRepaired + '}'+"\n";
-	}
-	    
+		StringBuilder builder = new StringBuilder();
+		builder.append("Machine [machineId=");
+		builder.append(machineId);
+		builder.append(", machineServiceable=");
+		builder.append(machineServiceable);
+		builder.append(", machineSerialNumber=");
+		builder.append(machineSerialNumber);
+		builder.append(", machineYear=");
+		builder.append(machineYear);
+		builder.append(", machineTimesRepaired=");
+		builder.append(machineTimesRepaired);
+		builder.append(", orders=");
+		builder.append(orders);
+		builder.append("]");
+		return builder.toString();
+	}	    
 }

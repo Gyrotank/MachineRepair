@@ -3,6 +3,8 @@ package com.glomozda.machinerepair.service.client;
 import java.util.List;
 
 import com.glomozda.machinerepair.domain.client.*;
+import com.glomozda.machinerepair.domain.userauthorization.UserAuthorization;
+import com.glomozda.machinerepair.domain.userrole.UserRole;
 
 import org.springframework.stereotype.Service;
 
@@ -67,6 +69,18 @@ public class ClientServiceImpl extends ClientService {
 	@Override
 	public Boolean add(Client c, Long userId) {
 		return clientRepository.add(c, userId);
+	}
+	
+	@Override
+	public Boolean createClientAccount(Client c, Long userId) {
+		
+		if (!add(c, userId)) {
+			return false;
+		}
+		
+		UserAuthorization newUserAuthorization = 
+				new UserAuthorization(new UserRole("ROLE_CLIENT"));		
+		return userAuthorizationSvc.add(newUserAuthorization, userId);
 	}
 	
 	@Override

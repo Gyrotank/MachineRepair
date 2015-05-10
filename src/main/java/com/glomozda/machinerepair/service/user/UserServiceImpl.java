@@ -67,5 +67,13 @@ public class UserServiceImpl extends UserService {
 	@Override
 	public Boolean add(User u) {
 		return userRepository.add(u);
-	}	
+	}
+	
+	@Override
+	public Boolean add(String login, String passwordText) {
+		String passwordHashed = encoder.encode(passwordText);
+		User newUser = new User(login, passwordHashed);
+		
+		return add(newUser);
+	}
 }

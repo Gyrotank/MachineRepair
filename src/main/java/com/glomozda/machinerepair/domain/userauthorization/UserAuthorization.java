@@ -128,16 +128,22 @@ public class UserAuthorization {
 			return false;
 		}
 		return true;
-	}    
+	}
 
 	@Override
 	public String toString() {
-		if (this.user == null) {
-			return "userAuthorization{" + "userAuthorizationId=" + userAuthorizationId +
-				", role=" + role + ", user= NO USER}\n";
+		StringBuilder builder = new StringBuilder();
+		builder.append("UserAuthorization [userAuthorizationId=");
+		builder.append(userAuthorizationId);
+		builder.append(", role=");
+		builder.append(role);
+		builder.append(", user=");
+		if (user == null) {
+			builder.append("NO USER");
 		} else {
-			return "userAuthorization{" + "userAuthorizationId=" + userAuthorizationId +
-					", role=" + role + ", user=" + this.user.getLogin() + '}' + "\n";
+			builder.append(user);
 		}
+		builder.append("]");
+		return builder.toString();
 	}
 }

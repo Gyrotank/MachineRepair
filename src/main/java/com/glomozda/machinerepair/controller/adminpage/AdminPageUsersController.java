@@ -6,9 +6,7 @@ import java.util.Locale;
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSourceAware;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,15 +18,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.glomozda.machinerepair.controller.AbstractRolePageController;
 import com.glomozda.machinerepair.domain.user.User;
+import com.glomozda.machinerepair.domain.user.UserDTO;
 
 @Controller
 public class AdminPageUsersController extends AbstractRolePageController
 	implements MessageSourceAware {
 
 	static Logger log = Logger.getLogger(AdminPageUsersController.class.getName());
-	
-	@Autowired
-	private PasswordEncoder encoder;
 	
 	private String messageEnableDisableFailed = "";
 	private String messageEnableDisableSucceeded = "";
@@ -39,8 +35,8 @@ public class AdminPageUsersController extends AbstractRolePageController
 		
 		model.addAttribute("locale", locale.toString());
 		
-		if (!model.containsAttribute("user")) {
-			model.addAttribute("user", new User());
+		if (!model.containsAttribute("userDTO")) {
+			model.addAttribute("userDTO", new UserDTO());
 		}
 		
 		model.addAttribute("users_short", 
@@ -180,20 +176,19 @@ public class AdminPageUsersController extends AbstractRolePageController
 	
 	@RequestMapping(value = "/addUser", method = RequestMethod.POST)
 	public String addUser(
-			@ModelAttribute("user") @Valid final User user,
+			@ModelAttribute("userDTO") @Valid final UserDTO userDTO,
 			final BindingResult bindingResult,			
 			final RedirectAttributes redirectAttributes,
 			final Locale locale) {
 		
 		if (bindingResult.hasErrors()) {
 			redirectAttributes.addFlashAttribute
-			("org.springframework.validation.BindingResult.user", bindingResult);
-			redirectAttributes.addFlashAttribute("user", user);
+			("org.springframework.validation.BindingResult.userDTO", bindingResult);
+			redirectAttributes.addFlashAttribute("userDTO", userDTO);
 			return "redirect:/adminpageusers#add_new_user";
 		}
 		
-		if (userSvc.add(new	User(user.getLogin(), user.getPasswordText(),
-				encoder.encode(user.getPasswordText())))) {
+		if (userSvc.add(userDTO.getLogin(), userDTO.getPasswordText())) {
 			messageAdded =
 					messageSource.getMessage("popup.adminpage.userAdded", null,
 							locale);

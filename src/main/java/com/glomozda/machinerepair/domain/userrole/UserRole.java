@@ -56,5 +56,64 @@ public class UserRole {
 
 	public void setDescRu(String descRu) {
 		this.descRu = descRu;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((descEn == null) ? 0 : descEn.hashCode());
+		result = prime * result + ((descRu == null) ? 0 : descRu.hashCode());
+		result = prime * result + ((role == null) ? 0 : role.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		UserRole other = (UserRole) obj;
+		if (descEn == null) {
+			if (other.descEn != null) {
+				return false;
+			}
+		} else if (!descEn.equals(other.descEn)) {
+			return false;
+		}
+		if (descRu == null) {
+			if (other.descRu != null) {
+				return false;
+			}
+		} else if (!descRu.equals(other.descRu)) {
+			return false;
+		}
+		if (role == null) {
+			if (other.role != null) {
+				return false;
+			}
+		} else if (!role.equals(other.role)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("UserRole [role=");
+		builder.append(role);
+		builder.append(", descEn=");
+		builder.append(descEn);
+		builder.append(", descRu=");
+		builder.append(descRu);
+		builder.append("]");
+		return builder.toString();
 	}	
 }

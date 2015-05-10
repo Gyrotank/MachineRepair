@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.glomozda.machinerepair.controller.AbstractRolePageController;
 import com.glomozda.machinerepair.domain.order.Order;
+import com.glomozda.machinerepair.domain.order.OrderDTO;
 
 @Controller
 public class AdminPageOrdersController extends AbstractRolePageController
@@ -26,32 +27,14 @@ public class AdminPageOrdersController extends AbstractRolePageController
 	
 	static Logger log = Logger.getLogger(AdminPageOrdersController.class.getName());
 	
-	private String messageOrderClientId = "";
-	private Long selectedOrderClientId = 0L;
-
-	private String messageOrderRepairTypeId = "";
-	private Long selectedOrderRepairTypeId = 0L;
-	
-	private String messageOrderMachineId = "";
-	private Long selectedOrderMachineId = 0L;
-	
-	private String messageOrderOrderStatusId = "";
-	private Long selectedOrderOrderStatusId = 0L;
-	
-	private String messageOrderManager = "";
-	private String selectedOrderManager = "-";
-
-	private String messageOrderStart = "";
-	private String enteredOrderStart = "";
-	
 	@Override
 	protected void prepareModel(final Locale locale, final Principal principal, 
 			final Model model) {
 		
 		model.addAttribute("locale", locale.toString());
 		
-		if (!model.containsAttribute("order")) {
-			model.addAttribute("order", new Order());
+		if (!model.containsAttribute("orderDTO")) {
+			model.addAttribute("orderDTO", new OrderDTO());
 		}
 		
 		model.addAttribute("users", userSvc.getAll());
@@ -85,36 +68,6 @@ public class AdminPageOrdersController extends AbstractRolePageController
 		model.addAttribute("message_order_not_added",
 				messageNotAdded);
 		messageNotAdded = "";
-		
-		model.addAttribute("message_order_client_id", messageOrderClientId);
-		messageOrderClientId = "";		
-		model.addAttribute("selected_order_client_id", selectedOrderClientId);
-		selectedOrderClientId = 0L;
-		
-		model.addAttribute("message_order_repair_type_id", messageOrderRepairTypeId);
-		messageOrderRepairTypeId = "";		
-		model.addAttribute("selected_order_repair_type_id", selectedOrderRepairTypeId);
-		selectedOrderRepairTypeId = 0L;
-		
-		model.addAttribute("message_order_order_status_id", messageOrderOrderStatusId);
-		messageOrderOrderStatusId = "";		
-		model.addAttribute("selected_order_order_status_id", selectedOrderOrderStatusId);
-		selectedOrderOrderStatusId = 0L;
-		
-		model.addAttribute("message_order_machine_id", messageOrderMachineId);
-		messageOrderMachineId = "";
-		model.addAttribute("selected_order_machine_id", selectedOrderMachineId);
-		selectedOrderMachineId = 0L;
-		
-		model.addAttribute("message_order_start", messageOrderStart);
-		messageOrderStart = "";
-		model.addAttribute("entered_order_start", enteredOrderStart);
-		enteredOrderStart = "";
-		
-		model.addAttribute("message_order_manager", messageOrderManager);
-		messageOrderManager = "";
-		model.addAttribute("selected_order_manager", selectedOrderManager);
-		selectedOrderManager = "-";
 		
 		model.addAttribute("dialog_delete_order",
 				messageSource.getMessage(
@@ -151,25 +104,20 @@ public class AdminPageOrdersController extends AbstractRolePageController
 	}
 	
 	@RequestMapping(value = "/addOrder", method = RequestMethod.POST)
-	public String addOrder(@ModelAttribute("order") @Valid final Order order,
+	public String addOrder(@ModelAttribute("orderDTO") @Valid final OrderDTO orderDTO,
 			final BindingResult bindingResult,			
-			final RedirectAttributes redirectAttributes,
-			@RequestParam("clientId") final Long clientId, 
-			@RequestParam("repairTypeId") final Long repairTypeId, 
-			@RequestParam("machineId") final Long machineId,
-			@RequestParam("orderStatusId") final Long orderStatusId,
-			@RequestParam("startDate") final String startDate,			
+			final RedirectAttributes redirectAttributes,			
 			final Locale locale) {
 		
 		java.sql.Date startSqlDate = new java.sql.Date(0);
 		
 		try {
 			String startParsed = new String();
-			startParsed = startParsed.concat(startDate.substring(6));			
+			startParsed = startParsed.concat(orderDTO.getStartDate().substring(6));			
 			startParsed = startParsed.concat("-");			
-			startParsed = startParsed.concat(startDate.substring(3, 5));			
+			startParsed = startParsed.concat(orderDTO.getStartDate().substring(3, 5));			
 			startParsed = startParsed.concat("-");			
-			startParsed = startParsed.concat(startDate.substring(0, 2));			
+			startParsed = startParsed.concat(orderDTO.getStartDate().substring(0, 2));			
 			startSqlDate = java.sql.Date.valueOf(startParsed);			
 		} catch (java.lang.StringIndexOutOfBoundsException e) {
 			startSqlDate = null;
@@ -177,74 +125,33 @@ public class AdminPageOrdersController extends AbstractRolePageController
 			startSqlDate = null;
 		} catch (NullPointerException e) {
 			startSqlDate = null;
+		}
+		
+		if (orderDTO.getStartDate() != null && !orderDTO.getStartDate().isEmpty() 
+				&& startSqlDate == null) {
+			bindingResult.rejectValue("startDate", "typeMismatch.order.start", null);
+		}
+		
+		if (orderDTO.getOrderStatusId() != 0 && orderDTO.getManager().contentEquals("-") 
+				&& !orderStatusSvc.getOrderStatusById(orderDTO.getOrderStatusId())
+				.getOrderStatusName().contentEquals("pending")) {
+			bindingResult.rejectValue("manager", "error.adminpage.managerRequired", null);
+		}
+				
+		if (bindingResult.hasErrors()) {			
+			redirectAttributes.addFlashAttribute
+				("org.springframework.validation.BindingResult.orderDTO", bindingResult);
+			redirectAttributes.addFlashAttribute("orderDTO", orderDTO);			
+			
+			return "redirect:/adminpageorders#add_new_order";
 		}		
 		
-		if (clientId == 0 || repairTypeId == 0 || machineId == 0 ||
-				orderStatusId == 0 || startSqlDate == null || bindingResult.hasErrors()) {
-			
-			if (clientId == 0) {
-				messageOrderClientId = 
-						messageSource.getMessage("error.adminpage.clientId", null,
-								locale);			
-			}
-
-			if (repairTypeId == 0) {
-				messageOrderRepairTypeId = 
-						messageSource.getMessage("error.adminpage.repairTypeId", null,
-								locale);			
-			}
-			
-			if (orderStatusId == 0) {
-				messageOrderOrderStatusId = 
-						messageSource.getMessage("error.adminpage.orderStatusId", null,
-								locale);			
-			}
-
-			if (machineId == 0) {
-				messageOrderMachineId = 
-						messageSource.getMessage("error.adminpage.machineId", null,
-								locale);			
-			}
-			
-			if (startSqlDate == null) {
-				messageOrderStart = 
-						messageSource.getMessage("typeMismatch.order.start", null,
-								locale);
-			}
-
-			if (bindingResult.hasErrors()) {
-				redirectAttributes.addFlashAttribute
-				("org.springframework.validation.BindingResult.order", bindingResult);
-				redirectAttributes.addFlashAttribute("order", order);			
-			}
-			
-			selectedOrderClientId = clientId;
-			selectedOrderRepairTypeId = repairTypeId;
-			selectedOrderMachineId = machineId;
-			selectedOrderOrderStatusId = orderStatusId;
-			enteredOrderStart = startDate;
-			selectedOrderManager = order.getManager();
-			return "redirect:/adminpageorders#add_new_order";
-		}
+		Order newOrder = new Order();
+		newOrder.setStart(startSqlDate);
+		newOrder.setManager(orderDTO.getManager());
 		
-		if (order.getManager().contentEquals("-") 
-				& !orderStatusSvc.getOrderStatusById(orderStatusId)
-					.getOrderStatusName().contentEquals("pending")) {
-			messageOrderManager = 
-					messageSource.getMessage("error.adminpage.managerRequired", null,
-							locale);
-			selectedOrderClientId = clientId;
-			selectedOrderRepairTypeId = repairTypeId;
-			selectedOrderMachineId = machineId;
-			selectedOrderOrderStatusId = orderStatusId;
-			enteredOrderStart = startDate;
-			selectedOrderManager = order.getManager();
-			return "redirect:/adminpageorders#add_new_order";
-		}
-		
-		order.setStart(startSqlDate);		
-		
-		if (orderSvc.add(order, clientId, repairTypeId, machineId, orderStatusId)) {
+		if (orderSvc.add(newOrder, orderDTO.getClientId(), orderDTO.getRepairTypeId(),
+				orderDTO.getMachineId(), orderDTO.getOrderStatusId())) {
 			messageAdded =
 					messageSource.getMessage("popup.adminpage.orderAdded", null,
 							locale);

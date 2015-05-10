@@ -64,6 +64,10 @@ public class Client {
 	public Client(){
 	}
 	
+	public Client(String clientName){
+		this.clientName = clientName;
+	}
+	
 	public void addOrder(final Order order) {
         this.orders.add(order);
         if (order.getClient() != this) {
@@ -115,20 +119,29 @@ public class Client {
 			return false;
 		}
 		final Client other = (Client) obj;
-		if ((this.clientName == null) ? other.clientName != null : !this.clientName.equals(other.clientName)) {
+		if ((this.clientName == null) ? other.clientName != null 
+				: !this.clientName.equals(other.clientName)) {
 			return false;
 		}
 		return true;
-	}    
+	}
 
 	@Override
 	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Client [clientId=");
+		builder.append(clientId);
+		builder.append(", clientName=");
+		builder.append(clientName);
+		builder.append(", clientUser=");
 		if (clientUser == null) {
-			return "client{" + "clientId=" + clientId + ", clientName=" + clientName +
-				", clientUser=NO USER}\n";
+			builder.append("NO USER");
 		} else {
-			return "client{" + "clientId=" + clientId + ", clientName=" + clientName +
-					", clientUser=" + clientUser.getLogin() + '}'+"\n";
+			builder.append(clientUser.getLogin());
 		}
-	}
+		builder.append(", orders=");
+		builder.append(orders);
+		builder.append("]");
+		return builder.toString();
+	}	
 }

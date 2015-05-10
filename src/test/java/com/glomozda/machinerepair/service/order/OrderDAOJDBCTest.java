@@ -60,8 +60,8 @@ public class OrderDAOJDBCTest extends DAOTestsTemplate{
         orderStatusService.add(new OrderStatus(2, "started", "выполняется"));
         orderStatusService.add(new OrderStatus(3, "finished", "завершен"));
         
-        userService.add(new User("ivan_user", "qwerty", "qwerty_encoded"));
-        userService.add(new User("petro_user", "12345", "12345_encoded"));
+        userService.add(new User("ivan_user", "qwerty_encoded"));
+        userService.add(new User("petro_user", "12345_encoded"));
         
         machineServiceableService.add(new MachineServiceable("M-S-1", "TM-1", "UK", "ВБ"));
         machineServiceableService.add(new MachineServiceable("M-S-2", "TM-2", "USA", "США"));

@@ -13,12 +13,14 @@ import com.glomozda.machinerepair.repository.user.UserRepository;
 public abstract class UserService {
 
 	@Autowired
-	private PasswordEncoder encoder;
+	protected PasswordEncoder encoder;
 	
 	@Autowired
 	protected UserRepository userRepository;
 
 	public abstract Boolean add(User u);
+	
+	public abstract Boolean add(String login, String passwordText);
 
 	public abstract Integer setUserEnabledById(Long userId, Byte enabled);
 
@@ -42,9 +44,5 @@ public abstract class UserService {
 			String passwordText);
 
 	public abstract User getUserByLoginAndPassword(String login, String passwordText);
-
-	public UserService() {
-		super();
-	}
 
 }

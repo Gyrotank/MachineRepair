@@ -268,29 +268,64 @@ public class Order {
 			return false;
 		}
 		return true;
-	}    
+	}
 
 	@Override
 	public String toString() {
-		String res = "order{" + "orderId=" + orderId;
-		
+		StringBuilder builder = new StringBuilder();
+		builder.append("Order [orderId=");
+		builder.append(orderId);
+		builder.append(", client=");
 		if (client == null) {
-			res += ", clientId=NO CLIENT";
+			builder.append("NO CLIENT");
 		} else {
-			res += ", clientId=" + client.getClientId();
+			builder.append(client);
 		}
+		builder.append(", repairType=");
 		if (repairType == null) {
-			res += ", repairTypeId=NO REPAIR TYPE";
+			builder.append("NO REPAIR TYPE");
 		} else {
-			res += ", repairTypeId=" + repairType.getRepairTypeId();
-		}
+			builder.append(repairType);
+		}		
+		builder.append(", machine=");
 		if (machine == null) {
-			res += ", machineId=NO MACHINE";
+			builder.append("NO MACHINE");
 		} else {
-			res += ", machineId=" + machine.getMachineId();
-		}
-		res += ", start=" + start + ", status=" + status + ", manager=" + manager + '}'+"\n";				
-		
-		return res;
-	}
+			builder.append(machine);
+		}		
+		builder.append(", start=");
+		builder.append(start);
+		builder.append(", status=");
+		builder.append(status);
+		builder.append(", manager=");
+		builder.append(manager);
+		builder.append("]");
+		return builder.toString();
+	}    
+
+//	@Override
+//	public String toString() {
+//		String res = "order{" + "orderId=" + orderId;
+//		
+//		if (client == null) {
+//			res += ", clientId=NO CLIENT";
+//		} else {
+//			res += ", clientId=" + client.getClientId();
+//		}
+//		if (repairType == null) {
+//			res += ", repairTypeId=NO REPAIR TYPE";
+//		} else {
+//			res += ", repairTypeId=" + repairType.getRepairTypeId();
+//		}
+//		if (machine == null) {
+//			res += ", machineId=NO MACHINE";
+//		} else {
+//			res += ", machineId=" + machine.getMachineId();
+//		}
+//		res += ", start=" + start + ", status=" + status + ", manager=" + manager + '}'+"\n";				
+//		
+//		return res;
+//	}
+	
+	
 }

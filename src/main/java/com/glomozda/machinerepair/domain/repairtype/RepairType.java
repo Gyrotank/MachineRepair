@@ -192,16 +192,26 @@ public class RepairType {
             return false;
         }
         return true;
-    }    
-    
-    @Override
-    public String toString() {
-        return "repairType{" + 
-        		"repairTypeId=" + repairTypeId + 
-        		", repairTypeName=" + repairTypeName +
-        		", repairTypeNameRu=" + repairTypeNameRu + 
-        		", repairTypePrice=" + repairTypePrice + 
-        		", repairTypeDuration=" + repairTypeDuration + '}'+"\n";
     }
-	    
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("RepairType [repairTypeId=");
+		builder.append(repairTypeId);
+		builder.append(", repairTypeName=");
+		builder.append(repairTypeName);
+		builder.append(", repairTypeNameRu=");
+		builder.append(repairTypeNameRu);
+		builder.append(", repairTypePrice=");
+		builder.append(repairTypePrice);
+		builder.append(", repairTypeDuration=");
+		builder.append(repairTypeDuration);
+		builder.append(", available=");
+		builder.append(available);
+		builder.append(", orders=");
+		builder.append(orders);
+		builder.append("]");
+		return builder.toString();
+	}
 }

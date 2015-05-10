@@ -135,12 +135,21 @@ public class OrderStatus {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "orderStatus{" + "orderStatusId=" + orderStatusId 
-				+ ", orderStatusNumber=" + orderStatusNumber + 
-				", orderStatusName=" + orderStatusName + 
-				", orderStatusNameRu=" + orderStatusNameRu + '}'+"\n";
+		StringBuilder builder = new StringBuilder();
+		builder.append("OrderStatus [orderStatusId=");
+		builder.append(orderStatusId);
+		builder.append(", orderStatusNumber=");
+		builder.append(orderStatusNumber);
+		builder.append(", orderStatusName=");
+		builder.append(orderStatusName);
+		builder.append(", orderStatusNameRu=");
+		builder.append(orderStatusNameRu);
+		builder.append(", orders=");
+		builder.append(orders);
+		builder.append("]");
+		return builder.toString();
 	}
 }

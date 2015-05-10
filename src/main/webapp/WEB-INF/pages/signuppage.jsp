@@ -1,8 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ include file="tagsused.jsp" %>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -51,32 +47,35 @@
     	</c:otherwise>
 	</c:choose>
 	  	
-  	<form method="post" action="signuppage/signup" accept-charset="UTF-8">
+  	<form:form method="post" commandName="userRegistrationDTO" 
+  		action="signuppage/signup" accept-charset="UTF-8">
   	<table>
   		<tr>
   			<td><spring:message code="label.signuppage.name" /></td>
-  			<td><input type="text" name="name" maxlength="50" value="${entered_name}"/></td>
+  			<td><form:input type="text" path="name" 
+  				maxlength="50" value="${userRegistrationDTO.name}"/></td>
+  			<td><form:errors path="name" cssClass="error" /></td>
   		</tr>
   		<tr>
   			<td><spring:message code="label.signuppage.login" /></td>
-  			<td><input type="text" name="login" maxlength="50" value="${entered_login}"/></td>
+  			<td><form:input type="text" path="login" 
+  				maxlength="50" value="${userRegistrationDTO.login}"/></td>
+  			<td><form:errors path="login" cssClass="error" /></td>
   		</tr>
   		<tr>
   			<td><spring:message code="label.signuppage.password" /></td>
-  			<td><input type="password" maxlength="50" name="password1"/></td>
+  			<td><form:input type="password" maxlength="50" path="password1"/></td>
+  			<td><form:errors path="password1" cssClass="error" /></td>
   		</tr>
   		<tr>
   			<td><spring:message code="label.signuppage.repeatPassword" /></td>
-  			<td><input type="password" maxlength="50" name="password2"/></td>
+  			<td><form:input type="password" maxlength="50" path="password2"/></td>
+  			<td><form:errors path="password2" cssClass="error" /></td>
   		</tr>
   		<tr>
   			<td><button><spring:message code="label.signuppage.buttonRegister" /></button></td>
   		</tr>
   	</table>
-  	</form>
-  	
-<!--   	<form method="post" action="signuppage/generate" accept-charset="UTF-8"> -->
-<!--   		<button>Generate 50000 new clients</button> -->
-<!--   	</form> -->
+  	</form:form>
 </body>
 </html>

@@ -51,9 +51,6 @@ public class RepairTypeRepositoryImpl extends RepairTypeRepository {
 	@Override
 	@Transactional
 	public Boolean add(RepairType rt) {
-		
-		rt.setAvailable((byte) 1);
-		
 		em.persist(rt);
 		if (em.contains(rt)) {
 			return true;

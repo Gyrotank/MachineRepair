@@ -63,7 +63,7 @@
   	<br>
   	<a name="add_new_client"></a>
   	<h2><spring:message code="label.adminpage.addNewClient" /></h2>
-  	<form:form method="post" commandName="client" action="addClient" accept-charset="UTF-8">
+  	<form:form method="post" commandName="clientDTO" action="addClient" accept-charset="UTF-8">
   	<table>
   		<tr>
   			<td><label for="clientNameInput">
@@ -74,13 +74,13 @@
   		</tr>
   		<tr>
   			<td><label><spring:message code="label.adminpage.addNewClient.user" /></label></td>
-  			<td><select name="userId">
+  			<td><form:select path="userId">
   				<option value="0">
   					<spring:message code="label.adminpage.addNewClient.selectUser" />
   				</option>
   				<c:forEach var="u" items="${users}">
   					<c:choose>
-  					<c:when test="${selected_client_user_id == u.userId}">
+  					<c:when test="${clientDTO.userId == u.userId}">
   						<option selected value="${u.userId}">
   							<c:out value="${u.login}"/>
   						</option>
@@ -92,12 +92,8 @@
   					</c:otherwise>
   					</c:choose>  					
   				</c:forEach>
-  			</select></td>
-  			<td>
-  			<div class="error">
-  				<c:out value="${message_client_user_id}"/>
-  			</div>
-  			</td>
+  			</form:select></td>
+  			<td><form:errors path="userId" cssClass="error" /></td>
   		</tr>
   		<tr>  		
   			<td><button>

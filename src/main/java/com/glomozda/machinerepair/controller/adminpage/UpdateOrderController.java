@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.glomozda.machinerepair.controller.AbstractRolePageController;
 import com.glomozda.machinerepair.domain.order.Order;
+import com.glomozda.machinerepair.domain.order.OrderDTO;
 
 @Controller
 public class UpdateOrderController extends AbstractRolePageController
@@ -29,13 +30,6 @@ public class UpdateOrderController extends AbstractRolePageController
 	static Logger log = Logger.getLogger(UpdateOrderController.class.getName());
 	
 	private Order myOrder;
-	
-	private String messageOrderRepairTypeId = "";
-	private String messageOrderOrderStatusId = "";
-	private String messageOrderManager = "";
-	
-	private String messageOrderStart = "";
-	private String enteredOrderStart = "";
 	
 	@Override
 	protected void prepareModel(final Locale locale, final Principal principal,
@@ -50,12 +44,30 @@ public class UpdateOrderController extends AbstractRolePageController
 		
 		myOrder = orderSvc.getOrderByIdWithFetching(orderId);
 		
+		Calendar cal = new GregorianCalendar();
+        cal.setTime(myOrder.getStart());
+        String enteredStartDate = ""; 
+        if (cal.get(Calendar.DAY_OF_MONTH) < 10) {
+        	enteredStartDate += "0";
+        }
+        enteredStartDate += cal.get(Calendar.DAY_OF_MONTH) + "-";
+        if (cal.get(Calendar.MONTH) < 9) {
+        	enteredStartDate += "0";
+        }
+        enteredStartDate += (cal.get(Calendar.MONTH) + 1) +	"-" + cal.get(Calendar.YEAR);
+		
+		OrderDTO orderDTO = new OrderDTO(myOrder.getClient().getClientId(),
+				myOrder.getRepairType().getRepairTypeId(),
+				myOrder.getMachine().getMachineId(),
+				enteredStartDate, myOrder.getStatus().getOrderStatusId(),
+				myOrder.getManager());
+		
 		if (!model.containsAttribute("orderCurrent")) {
 			model.addAttribute("orderCurrent", myOrder);
 		}
 		
-		if (!model.containsAttribute("order")) {
-			model.addAttribute("order", myOrder);
+		if (!model.containsAttribute("orderDTO")) {
+			model.addAttribute("orderDTO", orderDTO);
 		}
 		
 		model.addAttribute("repair_types", repairTypeSvc.getAllAvailable());
@@ -66,22 +78,6 @@ public class UpdateOrderController extends AbstractRolePageController
 		managers.addAll(userAuthorizationSvc.getUserLoginsForRole("ROLE_ADMIN"));
 		java.util.Collections.sort(managers);
 		model.addAttribute("managers", managers);
-		
-		model.addAttribute("message_order_repair_type_id", messageOrderRepairTypeId);
-		messageOrderRepairTypeId = "";
-		model.addAttribute("message_order_order_status_id", messageOrderOrderStatusId);
-		messageOrderOrderStatusId = "";
-		model.addAttribute("message_order_manager", messageOrderManager);
-		messageOrderManager = "";
-		
-		model.addAttribute("message_order_start", messageOrderStart);
-		messageOrderStart = "";
-		Calendar cal = new GregorianCalendar();
-        cal.setTime(myOrder.getStart());
-		enteredOrderStart = cal.get(Calendar.DAY_OF_MONTH) + "-" + (cal.get(Calendar.MONTH) + 1) + 
-				"-" + cal.get(Calendar.YEAR);
-		model.addAttribute("entered_order_start", enteredOrderStart);
-		enteredOrderStart = "";
 		
 		model.addAttribute("message_order_not_updated",
 				messageUpdateFailed);
@@ -113,23 +109,20 @@ public class UpdateOrderController extends AbstractRolePageController
 	}
 	
 	@RequestMapping(value = "updateorder/updateOrder", method = RequestMethod.POST)
-	public String updateOrder(@ModelAttribute("order") @Valid final Order order,
+	public String updateOrder(@ModelAttribute("orderDTO") @Valid final OrderDTO orderDTO,
 			final BindingResult bindingResult,			
-			final RedirectAttributes redirectAttributes,
-			@RequestParam("repairTypeId") final Long repairTypeId,
-			@RequestParam("orderStatusId") final Long orderStatusId,
-			@RequestParam("startDate") final String startDate,			
+			final RedirectAttributes redirectAttributes,			
 			final Locale locale) {
 		
 		java.sql.Date startSqlDate = new java.sql.Date(0);
 		
 		try {
 			String startParsed = new String();
-			startParsed = startParsed.concat(startDate.substring(6));			
+			startParsed = startParsed.concat(orderDTO.getStartDate().substring(6));			
 			startParsed = startParsed.concat("-");			
-			startParsed = startParsed.concat(startDate.substring(3, 5));			
+			startParsed = startParsed.concat(orderDTO.getStartDate().substring(3, 5));			
 			startParsed = startParsed.concat("-");			
-			startParsed = startParsed.concat(startDate.substring(0, 2));			
+			startParsed = startParsed.concat(orderDTO.getStartDate().substring(0, 2));			
 			startSqlDate = java.sql.Date.valueOf(startParsed);			
 		} catch (java.lang.StringIndexOutOfBoundsException e) {
 			startSqlDate = null;
@@ -137,57 +130,36 @@ public class UpdateOrderController extends AbstractRolePageController
 			startSqlDate = null;
 		} catch (NullPointerException e) {
 			startSqlDate = null;
+		}
+		
+		if (orderDTO.getStartDate() != null && !orderDTO.getStartDate().isEmpty() 
+				&& startSqlDate == null) {
+			bindingResult.rejectValue("startDate", "typeMismatch.order.start", null);
+		}
+		
+		if (orderDTO.getOrderStatusId() != 0 && orderDTO.getManager().contentEquals("-") 
+				&& !orderStatusSvc.getOrderStatusById(orderDTO.getOrderStatusId())
+				.getOrderStatusName().contentEquals("pending")) {
+			bindingResult.rejectValue("manager", "error.adminpage.managerRequired", null);
+		}
+		
+		if (bindingResult.hasErrors()) {						
+			redirectAttributes.addFlashAttribute
+			("org.springframework.validation.BindingResult.orderDTO", bindingResult);
+			redirectAttributes.addFlashAttribute("orderDTO", orderDTO);			
+			return "redirect:/updateorder/?order-id=" + myOrder.getOrderId();
 		}		
 		
-		if (repairTypeId == 0 || orderStatusId == 0 
-				|| startSqlDate == null || bindingResult.hasErrors()) {
-			
-			if (startSqlDate == null) {
-				messageOrderStart = 
-						messageSource.getMessage("typeMismatch.order.start", null,
-								locale);
-			}
-			
-			if (repairTypeId == 0) {
-				messageOrderRepairTypeId = 
-						messageSource.getMessage("error.adminpage.repairTypeId", null,
-								locale);			
-			}
-			
-			if (orderStatusId == 0) {
-				messageOrderOrderStatusId = 
-						messageSource.getMessage("error.adminpage.orderStatusId", null,
-								locale);			
-			}
-
-			if (bindingResult.hasErrors()) {
-				redirectAttributes.addFlashAttribute
-				("org.springframework.validation.BindingResult.order", bindingResult);
-				redirectAttributes.addFlashAttribute("order", order);			
-			}
-			
-			enteredOrderStart = startDate;			
-			return "redirect:/updateorder/?order-id=" + myOrder.getOrderId();
-		}
+		Order newOrder = new Order();
+		newOrder.setStart(startSqlDate);
+		newOrder.setRepairType(repairTypeSvc.getRepairTypeById(orderDTO.getRepairTypeId()));
+		newOrder.setStatus(orderStatusSvc.getOrderStatusById(orderDTO.getOrderStatusId()));
+		newOrder.setManager(orderDTO.getManager());
 		
-		if (order.getManager().contentEquals("-") 
-				& !orderStatusSvc.getOrderStatusById(orderStatusId)
-					.getOrderStatusName().contentEquals("pending")) {
-			messageOrderManager = 
-					messageSource.getMessage("error.adminpage.managerRequired", null,
-							locale);
-			enteredOrderStart = startDate;			
-			return "redirect:/updateorder/?order-id=" + myOrder.getOrderId();
-		}
-		
-		order.setStart(startSqlDate);
-		order.setRepairType(repairTypeSvc.getRepairTypeById(repairTypeId));
-		order.setStatus(orderStatusSvc.getOrderStatusById(orderStatusId));
-		
-		if (order.getManager().equals(myOrder.getManager())
-				&& order.getStatus().equals(myOrder.getStatus())
-				&& order.getStart().equals(myOrder.getStart())
-				&& order.getRepairType().getRepairTypeId()
+		if (newOrder.getManager().equals(myOrder.getManager())
+				&& newOrder.getStatus().equals(myOrder.getStatus())
+				&& newOrder.getStart().equals(myOrder.getStart())
+				&& newOrder.getRepairType().getRepairTypeId()
 					.equals(myOrder.getRepairType().getRepairTypeId())) {
 			messageNoChanges = 
 					messageSource.getMessage("popup.adminpage.orderNoChanges", null,
@@ -195,7 +167,7 @@ public class UpdateOrderController extends AbstractRolePageController
 			return "redirect:/updateorder/?order-id=" + myOrder.getOrderId();
 		}
 		
-		if (orderSvc.updateOrderById(myOrder.getOrderId(), order) == 1) {
+		if (orderSvc.updateOrderById(myOrder.getOrderId(), newOrder) == 1) {
 			messageUpdateSucceeded =
 					messageSource.getMessage("popup.adminpage.orderUpdated", null,
 							locale);

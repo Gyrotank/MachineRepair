@@ -53,10 +53,6 @@ public class User {
 	@Column(name = "password")
 	private String password;
 	
-	@Column(name = "password_text")
-	@NotEmpty
-	private String passwordText;
-	
 	@Column(name = "enabled")
 	private Byte enabled;
 	
@@ -69,9 +65,8 @@ public class User {
 	public User(){
 	}
 
-	public User(final String login, final String passwordText, final String password) {
+	public User(final String login, final String password) {
 		this.login = login;
-		this.passwordText = passwordText;		
 		this.password = password;
 		this.enabled = 1;
 	}	
@@ -98,14 +93,6 @@ public class User {
 
 	public void setPassword(final String password) {		
 		this.password = password;
-	}
-	
-	public String getPasswordText() {
-		return passwordText;
-	}
-
-	public void setPasswordText(final String passwordText) {
-		this.passwordText = passwordText;
 	}
 	
 	public Client getClient() {
@@ -155,11 +142,24 @@ public class User {
 			return false;
 		}
 		return true;
-	}    
+	}
 
 	@Override
 	public String toString() {
-		return "user{" + "userId=" + userId + ", login=" + login + 
-				", password=" + password + ", passwordText=" + passwordText + '}'+"\n";
-	}	
+		StringBuilder builder = new StringBuilder();
+		builder.append("User [userId=");
+		builder.append(userId);
+		builder.append(", login=");
+		builder.append(login);
+		builder.append(", password=");
+		builder.append(password);
+		builder.append(", enabled=");
+		builder.append(enabled);
+		builder.append(", client=");
+		builder.append(client);
+		builder.append(", userAuthorizations=");
+		builder.append(userAuthorizations);
+		builder.append("]");
+		return builder.toString();
+	}
 }

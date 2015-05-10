@@ -16,10 +16,8 @@ import com.glomozda.machinerepair.service.DAOTestsTemplate;
 public class UserDAOJDBCTest extends DAOTestsTemplate{
     
 	String hashed_password_qwerty = BCrypt.hashpw("qwerty", BCrypt.gensalt());
-	String hashed_password_12345 = BCrypt.hashpw("12345", BCrypt.gensalt());
 	
-    final User u1 = new User("ivan_user", "qwerty", hashed_password_qwerty);
-    final User u2 = new User("petro_user", "12345", hashed_password_12345);
+    final User u1 = new User("ivan_user", hashed_password_qwerty);
             
     @Before
     public void prepareDB(){
@@ -39,7 +37,7 @@ public class UserDAOJDBCTest extends DAOTestsTemplate{
     	clientService.add(cl2, (long) 2);
     	
     	userService.add(u1);
-        userService.add(u2);
+        userService.add("petro_user", "12345");
     }
     
     @Test

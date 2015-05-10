@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.glomozda.machinerepair.controller.AbstractRolePageController;
 import com.glomozda.machinerepair.domain.userauthorization.UserAuthorization;
+import com.glomozda.machinerepair.domain.userauthorization.UserAuthorizationAddDTO;
 import com.glomozda.machinerepair.domain.userrole.UserRole;
 
 @Controller
@@ -28,18 +29,14 @@ public class AdminPageUserAuthorizationsController extends AbstractRolePageContr
 	
 	static Logger log = Logger.getLogger(AdminPageUserAuthorizationsController.class.getName());
 	
-	private String messageUserAuthorizationUserId = "";
-	private String messageUserAuthorizationRole = "";
-	private Long selectedUserAuthorizationUserId = 0L;
-	
 	@Override
 	protected void prepareModel(final Locale locale, final Principal principal, 
 			final Model model) {
 		
 		model.addAttribute("locale", locale.toString());
 		
-		if (!model.containsAttribute("userAuthorization")) {
-			model.addAttribute("userAuthorization", new UserAuthorization());
+		if (!model.containsAttribute("userAuthorizationAddDTO")) {
+			model.addAttribute("userAuthorizationAddDTO", new UserAuthorizationAddDTO());
 		}
 		
 		List<UserAuthorization> uas = userAuthorizationSvc
@@ -89,13 +86,6 @@ public class AdminPageUserAuthorizationsController extends AbstractRolePageContr
 				messageNotAdded);
 		messageNotAdded = "";
 		
-		model.addAttribute("message_user_authorization_user_id", messageUserAuthorizationUserId);
-		messageUserAuthorizationUserId = "";
-		model.addAttribute("message_user_authorization_role", messageUserAuthorizationRole);
-		messageUserAuthorizationRole = "";
-		model.addAttribute("selected_user_authorization_user_id", selectedUserAuthorizationUserId);
-		selectedUserAuthorizationUserId = 0L;
-		
 		model.addAttribute("dialog_delete_user_authorization",
 				messageSource.getMessage(
 						"label.adminpage.userAuthorizations.actions.delete.dialog", null,
@@ -134,50 +124,32 @@ public class AdminPageUserAuthorizationsController extends AbstractRolePageContr
 	
 	@RequestMapping(value = "/addUserAuthorization", method = RequestMethod.POST)
 	public String addUserAuthorization
-		(@ModelAttribute("userAuthorization") @Valid final UserAuthorization userAuthorization,
+		(@ModelAttribute("userAuthorizationAddDTO") 
+			@Valid final UserAuthorizationAddDTO userAuthorizationAddDTO,
 			final BindingResult bindingResult,			
-			final RedirectAttributes redirectAttributes,
-			@RequestParam("userId") final Long userId,
-			@RequestParam("role") final String role,
+			final RedirectAttributes redirectAttributes,			
 			final Locale locale) {
-		
-		if (userId == 0 || bindingResult.hasErrors()) {
-			if (userId == 0) {
-				messageUserAuthorizationUserId = 
-						messageSource.getMessage("error.adminpage.userId", null,
-								locale);			
-			}
 
-			if (bindingResult.hasErrors()) {
-				redirectAttributes.addFlashAttribute
-				("org.springframework.validation.BindingResult.userAuthorization", bindingResult);
-				redirectAttributes.addFlashAttribute("userAuthorization", userAuthorization);				
-			}
-			
-			selectedUserAuthorizationUserId = userId;
+		if (!userAuthorizationAddDTO.getRole().isEmpty() && userAuthorizationSvc
+			.getUserAuthorizationForUserIdAndRole(userAuthorizationAddDTO.getUserId(),
+					userAuthorizationAddDTO.getRole()) != null) {
+			bindingResult.rejectValue("role", 
+					"error.adminpage.userAuthorizationExists", null);			
 			return "redirect:/adminpageuserauthorizations#add_new_user_authorization";
 		}
 		
-		if (role.isEmpty()) {
-			messageUserAuthorizationRole = 
-					messageSource.getMessage("error.adminpage.userAuthorizationNoRoleChosen", null,
-							locale);
-			selectedUserAuthorizationUserId = userId;
-			return "redirect:/adminpageuserauthorizations#add_new_user_authorization";
-		}
-		
-		if (userAuthorizationSvc
-			.getUserAuthorizationForUserIdAndRole(userId,
-					userAuthorization.getRole().getRole()) != null) {
-				messageUserAuthorizationUserId = 
-					messageSource.getMessage("error.adminpage.userAuthorizationExists", null,
-							locale);
-			selectedUserAuthorizationUserId = userId;
+		if (bindingResult.hasErrors()) {			
+			redirectAttributes.addFlashAttribute
+				("org.springframework.validation.BindingResult.userAuthorizationAddDTO",
+						bindingResult);
+			redirectAttributes.addFlashAttribute("userAuthorizationAddDTO", 
+					userAuthorizationAddDTO);			
 			return "redirect:/adminpageuserauthorizations#add_new_user_authorization";
 		}
 		
 		if (userAuthorizationSvc.add(
-				new UserAuthorization(new UserRole(role)), userId)) {
+				new UserAuthorization(new UserRole(userAuthorizationAddDTO.getRole())), 
+				userAuthorizationAddDTO.getUserId())) {
 			messageAdded =
 					messageSource.getMessage("popup.adminpage.userAuthorizationAdded", null,
 							locale);

@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.glomozda.machinerepair.controller.AbstractRolePageController;
 import com.glomozda.machinerepair.domain.client.Client;
+import com.glomozda.machinerepair.domain.client.ClientDTO;
 
 @Controller
 public class AdminPageClientsController extends AbstractRolePageController 
@@ -25,17 +26,14 @@ public class AdminPageClientsController extends AbstractRolePageController
 	
 	static Logger log = Logger.getLogger(AdminPageClientsController.class.getName());	
 	
-	private String messageClientUserId = "";
-	private Long selectedClientUserId = 0L;
-	
 	@Override
 	protected void prepareModel(final Locale locale, final Principal principal, 
 			final Model model) {
 		
 		model.addAttribute("locale", locale.toString());
 		
-		if (!model.containsAttribute("client")) {
-			model.addAttribute("client", new Client());
+		if (!model.containsAttribute("clientDTO")) {
+			model.addAttribute("clientDTO", new ClientDTO());
 		}
 		
 		model.addAttribute("users", userSvc.getAll((long) 0, (long) 99));
@@ -61,11 +59,6 @@ public class AdminPageClientsController extends AbstractRolePageController
 		model.addAttribute("message_client_not_added",
 				messageNotAdded);
 		messageNotAdded = "";
-		
-		model.addAttribute("message_client_user_id", messageClientUserId);
-		messageClientUserId = "";		
-		model.addAttribute("selected_client_user_id", selectedClientUserId);
-		selectedClientUserId = (long) 0;
 		
 		model.addAttribute("dialog_delete_client",
 				messageSource.getMessage("label.adminpage.clients.actions.delete.dialog", null,
@@ -100,30 +93,19 @@ public class AdminPageClientsController extends AbstractRolePageController
 	}
 
 	@RequestMapping(value = "/addClient", method = RequestMethod.POST)
-	public String addClient(@ModelAttribute("client") @Valid final Client client,
+	public String addClient(@ModelAttribute("clientDTO") @Valid final ClientDTO clientDTO,
 			final BindingResult bindingResult,			
 			final RedirectAttributes redirectAttributes,
-			@RequestParam("userId") final Long userId,
 			final Locale locale) {
 		
-		if (userId == 0 || bindingResult.hasErrors()) {
-			if (userId == 0) {
-				messageClientUserId = 
-						messageSource.getMessage("error.adminpage.userId", null,
-								locale);			
-			}
-
-			if (bindingResult.hasErrors()) {
-				redirectAttributes.addFlashAttribute
-				("org.springframework.validation.BindingResult.client", bindingResult);
-				redirectAttributes.addFlashAttribute("client", client);				
-			}
-			
-			selectedClientUserId = userId;
-			return "redirect:/adminpageclients#add_new_client";
+		if (bindingResult.hasErrors()) {
+			redirectAttributes.addFlashAttribute
+				("org.springframework.validation.BindingResult.clientDTO", bindingResult);
+			redirectAttributes.addFlashAttribute("clientDTO", clientDTO);
+			return "redirect:/adminpageclients#add_new_client";				
 		}
 		
-		if (clientSvc.add(client, userId)) {
+		if (clientSvc.add(new Client(clientDTO.getClientName()), clientDTO.getUserId())) {
 			messageAdded =
 					messageSource.getMessage("popup.adminpage.clientAdded", null,
 							locale);

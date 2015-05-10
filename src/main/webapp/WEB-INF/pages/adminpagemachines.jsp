@@ -80,7 +80,7 @@
   	<div>
   	<a name="add_new_machine"></a>
 	<h2><spring:message code="label.adminpage.addNewMachine" /></h2>
-  	<form:form method="post" commandName="machine" action="addMachine" accept-charset="UTF-8">
+  	<form:form method="post" commandName="machineDTO" action="addMachine" accept-charset="UTF-8">
   	<table>
   		<tr>
   			<td><label for="machineServiceableId">
@@ -90,13 +90,13 @@
   				<script type="text/javascript">
   					$("#machineServiceableId").ufd();
 				</script>
-  				<select id="machineServiceableId" name="machineServiceableId">
+  				<form:select id="machineServiceableId" path="machineServiceableId">
   				<option value="0">
   					<spring:message code="label.adminpage.addNewMachine.selectMachineName" />
   				</option>
   				<c:forEach var="ms" items="${machines_serviceable}">
   				<c:choose>
-  					<c:when test="${selected_machineserviceable_id == ms.machineServiceableId}">
+  					<c:when test="${machineDTO.machineServiceableId == ms.machineServiceableId}">
   						<option selected value="${ms.machineServiceableId}">
   							<c:out value="${ms.machineServiceableName}"/>
   						</option>
@@ -108,13 +108,9 @@
   					</c:otherwise>
   				</c:choose>  					
   				</c:forEach>
-  				</select>  				
-  				</td>
-  				<td>
-  					<div class="error">
-  						<c:out value="${message_machineserviceable_id}"/>
-  					</div>
-  				</td>
+  				</form:select>  				
+  			</td>
+  			<td><form:errors path="machineServiceableId" cssClass="error" /></td>
   		</tr>
   		<tr>
   			<td><label for="machineSerialNumberInput">

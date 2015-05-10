@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.glomozda.machinerepair.controller.AbstractRolePageController;
 import com.glomozda.machinerepair.domain.machine.Machine;
+import com.glomozda.machinerepair.domain.machine.MachineDTO;
 
 @Controller
 public class AdminPageMachinesController extends AbstractRolePageController
@@ -26,17 +27,14 @@ public class AdminPageMachinesController extends AbstractRolePageController
 	
 	static Logger log = Logger.getLogger(AdminPageMachinesController.class.getName());
 	
-	private String messageMachineServiceableId = "";
-	private Long selectedMachineServiceableId = 0L;
-	
 	@Override
 	protected void prepareModel(final Locale locale, final Principal principal, 
 			final Model model) {
 		
 		model.addAttribute("locale", locale.toString());
 		
-		if (!model.containsAttribute("machine")) {
-			model.addAttribute("machine", new Machine());
+		if (!model.containsAttribute("machineDTO")) {
+			model.addAttribute("machineDTO", new MachineDTO());
 		}
 		
 		model.addAttribute("machines_short", 
@@ -59,10 +57,6 @@ public class AdminPageMachinesController extends AbstractRolePageController
 		model.addAttribute("message_machine_not_added", messageNotAdded);
 		messageNotAdded = "";
 		
-		model.addAttribute("message_machineserviceable_id", messageMachineServiceableId);
-		messageMachineServiceableId = "";		
-		model.addAttribute("selected_machineserviceable_id", selectedMachineServiceableId);
-		selectedMachineServiceableId = 0L;
 		model.addAttribute("machines_serviceable", machineServiceableSvc.getAllOrderByName());
 		
 		model.addAttribute("dialog_delete_machine",
@@ -98,35 +92,28 @@ public class AdminPageMachinesController extends AbstractRolePageController
 	}
 	
 	@RequestMapping(value = "/addMachine", method = RequestMethod.POST)
-	public String addMachine(@ModelAttribute("machine") @Valid final Machine machine,
+	public String addMachine(@ModelAttribute("machineDTO") @Valid final MachineDTO machineDTO,
 			final BindingResult bindingResult,			
 			final RedirectAttributes redirectAttributes,			
-			@RequestParam("machineServiceableId") final Long machineServiceableId,
 			final Locale locale) {
 		
-		if (machine.getMachineYear() != null)
-			if (machine.getMachineYear() > java.util.Calendar.getInstance().get(Calendar.YEAR)) {
+		if (machineDTO.getMachineYear() != null)
+			if (machineDTO.getMachineYear() 
+					> java.util.Calendar.getInstance().get(Calendar.YEAR)) {
 				bindingResult.rejectValue("machineYear", "error.adminpage.machineYear", null);
 			}
 		
-		if (machineServiceableId == 0 || bindingResult.hasErrors()) {
-			if (machineServiceableId == 0) {
-				messageMachineServiceableId = 
-						messageSource.getMessage("error.adminpage.machineServiceableId", null,
-								locale);
-			}			
-
-			if (bindingResult.hasErrors()) {
-				redirectAttributes.addFlashAttribute
-				("org.springframework.validation.BindingResult.machine", bindingResult);
-				redirectAttributes.addFlashAttribute("machine", machine);				
-			}
-			
-			selectedMachineServiceableId = machineServiceableId;
+		if (bindingResult.hasErrors()) {
+			redirectAttributes.addFlashAttribute
+				("org.springframework.validation.BindingResult.machineDTO", bindingResult);
+			redirectAttributes.addFlashAttribute("machineDTO", machineDTO);			
 			return "redirect:/adminpagemachines#add_new_machine";
 		}
 		
-		if (machineSvc.add(machine, machineServiceableId)) {
+		Machine newMachine = new Machine(machineDTO.getMachineSerialNumber(),
+				machineDTO.getMachineYear(), machineDTO.getMachineTimesRepaired());
+		
+		if (machineSvc.add(newMachine, machineDTO.getMachineServiceableId())) {
 			messageAdded =
 					messageSource.getMessage("popup.adminpage.machineAdded", null,
 							locale);

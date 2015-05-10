@@ -93,7 +93,7 @@
   	<br>
   	<a name="add_new_user"></a>
   	<h2><spring:message code="label.adminpage.addNewUser" /></h2>
-  	<form:form method="post" commandName="user" action="addUser" accept-charset="UTF-8">
+  	<form:form method="post" commandName="userDTO" action="addUser" accept-charset="UTF-8">
   	<table>
   		<tr>
   			<td><label for="loginInput">

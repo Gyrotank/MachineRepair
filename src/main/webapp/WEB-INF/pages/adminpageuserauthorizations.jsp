@@ -109,20 +109,20 @@
   	<br>
   	<a name="add_new_user_authorization"></a>
   	<h2><spring:message code="label.adminpage.addNewUserAuthorization" /></h2>
-  	<form:form method="post" commandName="userAuthorization" 
+  	<form:form method="post" commandName="userAuthorizationAddDTO" 
   		action="addUserAuthorization" accept-charset="UTF-8">
   	<table>
   		<tr>
   		<td><label>
   			<spring:message code="label.adminpage.addNewUserAuthorization.userFrom" />
   			</label></td>  		
-  		<td><select name="userId">
+  		<td><form:select path="userId">
   			<option value="0">
   				<spring:message code="label.adminpage.addNewUserAuthorization.selectUser" />
   			</option>
   			<c:forEach var="uau" items="${user_authorizations_short_users}">
   				<c:choose>
-  					<c:when test="${selected_user_authorization_user_id == uau.userId}">
+  					<c:when test="${userAuthorizationAddDTO.userId == uau.userId}">
   						<option selected value="${uau.userId}">
   							<c:out value="${uau.login}"/>
   						</option>
@@ -134,24 +134,32 @@
   					</c:otherwise>
   				</c:choose>  				
   			</c:forEach>
-  		</select></td>
-  		<td>
-  			<div class="error">
-  				<c:out value="${message_user_authorization_user_id}"/>
-  			</div>
-  		</td>
+  		</form:select></td>
+  		<td><form:errors path="userId" cssClass="error" /></td>
   		</tr>
   		<tr>  		
   		<td><label>
-  		<spring:message code="label.adminpage.userAuthorizations.role" />
+  			<spring:message code="label.adminpage.userAuthorizations.role" />
   		</label></td>
-  		<td><select name="role">
+  		<td><form:select path="role">
   			<option value="">
-  				<label>
-  					<spring:message code="label.adminpage.addNewUserAuthorization.selectRole" />
-  				</label>
+  				<spring:message code="label.adminpage.addNewUserAuthorization.selectRole" />  				
   			</option>
   			<c:forEach var="r" items="${user_roles}">
+  			<c:choose>
+  			<c:when test="${userAuthorizationAddDTO.role == r.role}">
+  				<option selected value="${r.role}">
+  					<c:choose>
+  					<c:when test="${locale == 'ru'}">
+  						<c:out value="${r.descRu}"/>
+  					</c:when>
+  					<c:otherwise>
+  						<c:out value="${r.descEn}"/>
+	  				</c:otherwise>  					
+  					</c:choose>    				
+  				</option>
+  			</c:when>
+  			<c:otherwise>
   				<option value="${r.role}">
   					<c:choose>
   					<c:when test="${locale == 'ru'}">
@@ -162,13 +170,11 @@
 	  				</c:otherwise>  					
   					</c:choose>    				
   				</option>
+  			</c:otherwise>
+  			</c:choose>
   			</c:forEach>
-  		</select></td>
-  		<td>
-  			<div class="error">
-  				<c:out value="${message_user_authorization_role}"/>
-  			</div>
-  		</td>
+  		</form:select></td>
+  		<td><form:errors path="role" cssClass="error" /></td>
   		</tr>
   		<tr>  		  
   		<td><button>

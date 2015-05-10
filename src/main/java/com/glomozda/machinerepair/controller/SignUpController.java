@@ -2,24 +2,25 @@ package com.glomozda.machinerepair.controller;
 
 import java.util.Locale;
 
+import javax.validation.Valid;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.glomozda.machinerepair.domain.client.Client;
 import com.glomozda.machinerepair.domain.user.User;
-import com.glomozda.machinerepair.domain.userauthorization.UserAuthorization;
-import com.glomozda.machinerepair.domain.userrole.UserRole;
+import com.glomozda.machinerepair.domain.user.UserRegistrationDTO;
 import com.glomozda.machinerepair.service.client.ClientService;
 import com.glomozda.machinerepair.service.user.UserService;
-import com.glomozda.machinerepair.service.userauthorization.UserAuthorizationService;
 
 @Controller
 @RequestMapping("/signuppage")
@@ -34,20 +35,12 @@ public class SignUpController implements MessageSourceAware {
 	
 	@Autowired
 	private ClientService clientSvc;
-	
-	@Autowired
-	private UserAuthorizationService userAuthorizationSvc;
-	
-	@Autowired
-	private PasswordEncoder encoder;
-	
+		
 	public void setMessageSource(final MessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
 	
 	private String message = "";
-	private String enteredName = "";
-	private String enteredLogin = "";
 	  
 	@RequestMapping(method = RequestMethod.GET)
 	public String activate(final Locale locale, final Model model) {
@@ -57,70 +50,65 @@ public class SignUpController implements MessageSourceAware {
 		model.addAttribute("message", message);
 		message = "";
 		
-		model.addAttribute("entered_name", enteredName);
-		enteredName = "";
-		
-		model.addAttribute("entered_login", enteredLogin);
-		enteredLogin = "";
+		if (!model.containsAttribute("userRegistrationDTO")) {
+			model.addAttribute("userRegistrationDTO", new UserRegistrationDTO());
+		}
 		
 		return "signuppage";
 	}
 	
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
-	public String signUp(@RequestParam("name") String name,
-			@RequestParam("login") String login,
-			@RequestParam("password1") String password1,
-			@RequestParam("password2") String password2,
+	public String signUp(@ModelAttribute("userRegistrationDTO") @Valid 
+				final UserRegistrationDTO userRegistrationDTO,
+			final BindingResult bindingResult,			
+			final RedirectAttributes redirectAttributes,
 			Locale locale) {
 		
 		User queryRes;
 		
-		enteredName = name;
-		enteredLogin = login;
+		if (bindingResult.hasErrors()) {
+			redirectAttributes.addFlashAttribute
+				("org.springframework.validation.BindingResult.userRegistrationDTO", 
+						bindingResult);
+			redirectAttributes.addFlashAttribute("userRegistrationDTO", userRegistrationDTO);
+			return "redirect:/signuppage";				
+		}		
 		
-		if (name.isEmpty()) {
-			message = messageSource.getMessage("error.signuppage.nameEmpty", null,
-					locale);
+		if (!userRegistrationDTO.getPassword1()
+				.contentEquals(userRegistrationDTO.getPassword2())) {
+			bindingResult.rejectValue("password2", "error.signuppage.passwordsNotMatch", null);
+			redirectAttributes.addFlashAttribute
+			("org.springframework.validation.BindingResult.userRegistrationDTO", 
+					bindingResult);
+			redirectAttributes.addFlashAttribute("userRegistrationDTO", userRegistrationDTO);
 			return "redirect:/signuppage"; 
 		}
 		
-		if (login.isEmpty()) {
-			message = messageSource.getMessage("error.signuppage.loginEmpty", null,
-					locale);
+		queryRes = userSvc.getUserByLogin(userRegistrationDTO.getLogin());
+		if (queryRes != null) {			
+			bindingResult.rejectValue("login", "error.signuppage.loginInUse", null);
+			redirectAttributes.addFlashAttribute
+			("org.springframework.validation.BindingResult.userRegistrationDTO", 
+					bindingResult);
+			redirectAttributes.addFlashAttribute("userRegistrationDTO", userRegistrationDTO);			
 			return "redirect:/signuppage"; 
 		}
 		
-		if (password1.isEmpty()) {
-			message = messageSource.getMessage("error.signuppage.passwordEmpty", null,
+		if (!userSvc.add(userRegistrationDTO.getLogin(), userRegistrationDTO.getPassword1())) {
+			message = messageSource.getMessage("error.signuppage.userNotCreated", null,
 					locale);
-			return "redirect:/signuppage"; 
+			return "redirect:/signuppage";
 		}
 		
-		if (!password1.contentEquals(password2)) {
-			message = messageSource.getMessage("error.signuppage.passwordsNotMatch", null,
-					locale);
-			return "redirect:/signuppage"; 
-		}
-		
-		queryRes = userSvc.getUserByLogin(login);
-		if (queryRes != null) {
-			message = messageSource.getMessage("error.signuppage.loginInUse", null,
-					locale);
-			return "redirect:/signuppage"; 
-		}
-		
-		String passwordHashed = encoder.encode(password1);
-		User newUser = new User(login, password1, passwordHashed);
-		userSvc.add(newUser);
-		queryRes = userSvc.getUserByLoginAndPassword(login, password1);
-		
+		queryRes = userSvc.getUserByLoginAndPassword(userRegistrationDTO.getLogin(),
+				userRegistrationDTO.getPassword1());
 		Client newClient = new Client();
-		newClient.setClientName(name);
-		clientSvc.add(newClient, queryRes.getUserId());
-		
-		UserAuthorization newUserAuthorization = 
-				new UserAuthorization(new UserRole("ROLE_CLIENT"));
-		userAuthorizationSvc.add(newUserAuthorization, queryRes.getUserId());
+		newClient.setClientName(userRegistrationDTO.getName());
+		if (!clientSvc.createClientAccount(newClient, queryRes.getUserId())) {
+			message = messageSource.getMessage("error.signuppage.clientNotCreated", null,
+					locale);
+			return "redirect:/signuppage";
+		}
 				
 		return "redirect:/login";
 	}

@@ -205,16 +205,26 @@ public class MachineServiceable {
 			return false;
 		}
 		return true;
-	}    
+	}
 
 	@Override
 	public String toString() {
-		return "machineServiceable{" + 
-				"machineServiceableId=" + machineServiceableId + 
-				", machineServiceableName=" + machineServiceableName + 
-				", machineServiceableTrademark=" + machineServiceableTrademark +
-				", machineServiceableCountry=" + machineServiceableCountry +
-				", machineServiceableCountryRu=" + machineServiceableCountryRu + '}'+"\n";
-	}
-	    
+		StringBuilder builder = new StringBuilder();
+		builder.append("MachineServiceable [machineServiceableId=");
+		builder.append(machineServiceableId);
+		builder.append(", machineServiceableName=");
+		builder.append(machineServiceableName);
+		builder.append(", machineServiceableTrademark=");
+		builder.append(machineServiceableTrademark);
+		builder.append(", machineServiceableCountry=");
+		builder.append(machineServiceableCountry);
+		builder.append(", machineServiceableCountryRu=");
+		builder.append(machineServiceableCountryRu);
+		builder.append(", available=");
+		builder.append(available);
+		builder.append(", machines=");
+		builder.append(machines);
+		builder.append("]");
+		return builder.toString();
+	}	    
 }

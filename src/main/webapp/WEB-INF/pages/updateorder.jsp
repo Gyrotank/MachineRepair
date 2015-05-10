@@ -69,9 +69,18 @@
 	<div class="tabs-content">
 	<div class="content">
 	<h2><spring:message code="label.adminpage.updateOrder" /></h2>
-	<form:form method="post" commandName="order" 
+	<form:form method="post" commandName="orderDTO" 
 		action="updateOrder" accept-charset="UTF-8">
   	<table>
+  		<tr>
+  			<td><label>
+  				<spring:message code="label.adminpage.orders.client" />
+  			</label></td>
+  			<td>
+  				<input value="${orderCurrent.client.clientName}" maxlength="50" 
+  					size="50" readonly="readonly" disabled="disabled"/>
+  			</td>
+  		</tr>
   		<tr>
   			<td><label>
   				<spring:message code="label.adminpage.orders.repairType" />
@@ -89,14 +98,13 @@
     			</c:choose>  				
   			</td>
   			<td>
-  			<select name="repairTypeId">
+  			<form:select path="repairTypeId">
   			<option value="0">
   				<spring:message code="label.adminpage.addNewOrder.selectRepairType" />
   			</option>
-<!-- !!!ONLY 100 REPAIR TYPES ARE FETCHED AS OF NOW!!! -->
   			<c:forEach var="rt" items="${repair_types}">
   				<c:choose>
-  					<c:when test="${orderCurrent.repairType.repairTypeId == rt.repairTypeId}">
+  					<c:when test="${orderDTO.repairTypeId == rt.repairTypeId}">
   						<option selected value="${rt.repairTypeId}">
   							<c:choose>
     							<c:when test="${locale == 'ru'}">
@@ -122,28 +130,20 @@
   					</c:otherwise>
   				</c:choose>  				
   			</c:forEach>
-  			</select>
+  			</form:select>
   			</td>
-  			<td>
-  			<div class="error">
-  				<c:out value="${message_order_repair_type_id}"/>
-  			</div>
-  			</td>
+  			<td><form:errors path="repairTypeId" cssClass="error" /></td>
   		</tr>  		
   		<tr>  		
   			<td><label>
   				<spring:message code="label.adminpage.addNewOrder.date" />
   			</label></td>
   			<td>
-  				<input value="${entered_order_start}" maxlength="50" 
+  				<input value="${orderDTO.startDate}" maxlength="50" 
   					size="50" readonly="readonly" disabled="disabled"/>
   			</td>
-  			<td><input name="startDate" value="${entered_order_start}"/></td>                
-  			<td>
-  			<div class="error">
-  				<c:out value="${message_order_start}"/>
-  			</div>
-  			</td>  			  		
+  			<td><form:input path="startDate" value="${orderDTO.startDate}"/></td>                
+  			<td><form:errors path="startDate" cssClass="error" /></td> 			  		
   		</tr>
   		<tr>
   			<td><label for="statusInput">
@@ -161,13 +161,13 @@
   				</c:otherwise>
   				</c:choose>    			
   			</td>
-  			<td><select name="orderStatusId">
+  			<td><form:select path="orderStatusId">
   				<option value="0">
   					<spring:message code="label.adminpage.addNewOrder.selectStatus" />
   				</option>
   				<c:forEach var="os" items="${order_statuses}">
   				<c:choose>
-  					<c:when test="${orderCurrent.status.orderStatusId == os.orderStatusId}">
+  					<c:when test="${orderDTO.orderStatusId == os.orderStatusId}">
   						<option selected value="${os.orderStatusId}">
   							<c:choose>
   							<c:when test="${locale == 'ru'}">
@@ -193,12 +193,8 @@
   					</c:otherwise>
   				</c:choose>  				
   			</c:forEach>
-  			</select></td>
-  			<td>
-  				<div class="error">
-  					<c:out value="${message_order_order_status_id}"/>
-  				</div>
-  			</td>  			
+  			</form:select></td>
+  			<td><form:errors path="orderStatusId" cssClass="error" /></td>  			
   		</tr>
   		<tr>
   			<td>
@@ -208,13 +204,13 @@
   				<input value="${orderCurrent.manager}" maxlength="50" 
   					size="50" readonly="readonly" disabled="disabled"/>
   			</td>
-  			<td><select name="manager">
+  			<td><form:select path="manager">
   			<option value="-">
   				<spring:message code="label.adminpage.addNewOrder.selectManager" />
   			</option>
   			<c:forEach var="man" items="${managers}">
   				<c:choose>
-  					<c:when test="${orderCurrent.manager == man}">
+  					<c:when test="${orderDTO.manager == man}">
   						<option selected value="${man}">
   							<c:out value="${man}"/>
   						</option>
@@ -226,12 +222,8 @@
   					</c:otherwise>
   				</c:choose>  				
   			</c:forEach>
-  			</select></td>
-  			<td>
-  			<div class="error">
-  				<c:out value="${message_order_manager}"/>
-  			</div>
-  			</td>
+  			</form:select></td>
+  			<td><form:errors path="manager" cssClass="error" /></td>
   		</tr>
   		<tr>  
   			<td><button>

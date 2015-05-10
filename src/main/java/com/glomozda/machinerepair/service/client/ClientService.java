@@ -7,16 +7,22 @@ import org.springframework.stereotype.Service;
 
 import com.glomozda.machinerepair.domain.client.Client;
 import com.glomozda.machinerepair.repository.client.ClientRepository;
+import com.glomozda.machinerepair.service.userauthorization.UserAuthorizationService;
 
 @Service
 public abstract class ClientService {
 
 	@Autowired
 	protected ClientRepository clientRepository;
+	
+	@Autowired
+	protected UserAuthorizationService userAuthorizationSvc;
 
 	public abstract Integer updateClientNameById(Long clientId, String name);
 
 	public abstract Boolean add(Client c, Long userId);
+	
+	public abstract Boolean createClientAccount(Client c, Long userId);
 
 	public abstract Long getClientCount();
 
@@ -39,5 +45,4 @@ public abstract class ClientService {
 	public abstract List<Client> getAll(Long start, Long length);
 
 	public abstract List<Client> getAll();
-
 }

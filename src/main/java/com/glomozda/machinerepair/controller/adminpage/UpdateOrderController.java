@@ -46,20 +46,24 @@ public class UpdateOrderController extends AbstractRolePageController
 		
 		Calendar cal = new GregorianCalendar();
         cal.setTime(myOrder.getStart());
-        String enteredStartDate = ""; 
+        
+        StringBuilder enteredStartDate = new StringBuilder();
         if (cal.get(Calendar.DAY_OF_MONTH) < 10) {
-        	enteredStartDate += "0";
+        	enteredStartDate.append("0");
         }
-        enteredStartDate += cal.get(Calendar.DAY_OF_MONTH) + "-";
+        enteredStartDate.append(cal.get(Calendar.DAY_OF_MONTH)); 
+        enteredStartDate.append("-");
         if (cal.get(Calendar.MONTH) < 9) {
-        	enteredStartDate += "0";
+        	enteredStartDate.append("0");
         }
-        enteredStartDate += (cal.get(Calendar.MONTH) + 1) +	"-" + cal.get(Calendar.YEAR);
-		
+        enteredStartDate.append(cal.get(Calendar.MONTH) + 1);
+        enteredStartDate.append("-");
+        enteredStartDate.append(cal.get(Calendar.YEAR));
+        
 		OrderDTO orderDTO = new OrderDTO(myOrder.getClient().getClientId(),
 				myOrder.getRepairType().getRepairTypeId(),
 				myOrder.getMachine().getMachineId(),
-				enteredStartDate, myOrder.getStatus().getOrderStatusId(),
+				enteredStartDate.toString(), myOrder.getStatus().getOrderStatusId(),
 				myOrder.getManager());
 		
 		if (!model.containsAttribute("orderCurrent")) {

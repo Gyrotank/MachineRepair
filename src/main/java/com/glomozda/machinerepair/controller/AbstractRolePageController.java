@@ -27,7 +27,7 @@ public abstract class AbstractRolePageController implements MessageSourceAware {
 	
 	@Autowired
 	protected MachineServiceableService machineServiceableSvc;
-
+	
 	@Autowired
 	protected RepairTypeService repairTypeSvc;
 	
@@ -79,9 +79,12 @@ public abstract class AbstractRolePageController implements MessageSourceAware {
 		return true;
 	}
 	
-	protected abstract void prepareModel(final Locale locale, final Principal principal, 
+	protected abstract void prepareModel(final Locale locale,
+			final Principal principal, 
 			final Model model);
 	
-	protected abstract void prepareModel(final Locale locale, final Principal principal, 
-			final Model model, final Long id);
+	protected abstract void prepareModel(final Locale locale,
+			final Principal principal, 
+			final Model model,
+			final Long id);
 }

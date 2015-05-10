@@ -27,15 +27,14 @@ public class AdminPageClientsController extends AbstractRolePageController
 	static Logger log = Logger.getLogger(AdminPageClientsController.class.getName());	
 	
 	@Override
-	protected void prepareModel(final Locale locale, final Principal principal, 
-			final Model model) {
+	protected void prepareModel(final Locale locale, final Principal principal,	final Model model) {
 		
 		model.addAttribute("locale", locale.toString());
 		
 		if (!model.containsAttribute("clientDTO")) {
 			model.addAttribute("clientDTO", new ClientDTO());
 		}
-		
+				
 		model.addAttribute("users", userSvc.getAll((long) 0, (long) 99));
 		
 		model.addAttribute("clients_short",
@@ -78,7 +77,7 @@ public class AdminPageClientsController extends AbstractRolePageController
 		}
 		
 		prepareModel(locale, principal, model);
-		
+				
 		return "adminpageclients";
 	}
 	

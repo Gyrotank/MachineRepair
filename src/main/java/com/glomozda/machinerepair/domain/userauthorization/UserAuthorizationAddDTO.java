@@ -1,6 +1,7 @@
 package com.glomozda.machinerepair.domain.userauthorization;
 
 import javax.validation.constraints.Min;
+
 import org.hibernate.validator.constraints.NotEmpty;
 
 public class UserAuthorizationAddDTO {

@@ -21,15 +21,12 @@ public class ManagerHomeController {
 		if (null == principal) {
 			return "redirect:/index";
 		}
-		
-		String login = "";
-		UsernamePasswordAuthenticationToken userToken = null;
-		
-		userToken = (UsernamePasswordAuthenticationToken)principal;
-		login = userToken.getName();
+	
+		UsernamePasswordAuthenticationToken userToken 
+			= (UsernamePasswordAuthenticationToken)principal;		
 		
 		model.addAttribute("locale", locale.toString());
-	    model.addAttribute("login", login);
+	    model.addAttribute("login", userToken.getName());
 	    return "managerhome";
 	}
 }

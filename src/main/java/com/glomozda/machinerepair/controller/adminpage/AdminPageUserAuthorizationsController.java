@@ -39,33 +39,8 @@ public class AdminPageUserAuthorizationsController extends AbstractRolePageContr
 			model.addAttribute("userAuthorizationAddDTO", new UserAuthorizationAddDTO());
 		}
 		
-		List<UserAuthorization> uas = userAuthorizationSvc
-				.getAllWithFetching(pagingFirstIndex, 
-				pagingLastIndex - pagingFirstIndex + 1);
-		List<UserAuthorization> uash = new ArrayList<UserAuthorization>();
-		for (UserAuthorization ua : uas) {
-			if (uash.isEmpty()) {
-				uash.add(ua);				
-				continue;
-			}
-			if (uash.get(uash.size() - 1).getUser().getLogin()
-					.contentEquals(ua.getUser().getLogin())) {
-				uash.get(uash.size() - 1).getRole()
-					.setDescEn(uash.get(uash.size() - 1).getRole().getDescEn()
-							.concat(", " + ua.getRole().getDescEn()));
-				uash.get(uash.size() - 1).getRole()
-					.setDescRu(uash.get(uash.size() - 1).getRole().getDescRu()
-						.concat(", " + ua.getRole().getDescRu()));
-				continue;
-			}
-			uash.add(ua);
-		}		
-		model.addAttribute("user_authorizations_short", uash);
-		model.addAttribute("user_authorizations_short_users", 
-				userAuthorizationSvc
-					.getDistinctUsersWithFetching(pagingFirstIndex, 
-						pagingLastIndex - pagingFirstIndex + 1)
-				);
+		List<UserAuthorization> uas;
+		List<UserAuthorization> uash;
 		
 		Long userAuthorizationsCount = userAuthorizationSvc.getUserAuthorizationCount();
 		model.addAttribute("user_authorizations_count",	userAuthorizationsCount);
@@ -75,16 +50,81 @@ public class AdminPageUserAuthorizationsController extends AbstractRolePageContr
 		}
 		model.addAttribute("pages_count", pagesCount);
 		model.addAttribute("pages_size", DEFAULT_PAGE_SIZE);
-		model.addAttribute("page_number", pageNumber);
+		Long pageNumber = sessionScopeInfoService.getSessionScopeInfo().getPageNumber();
+		if (pageNumber >= pagesCount) {
+			model.addAttribute("page_number", 0L);
+			model.addAttribute("repair_types_short", 
+					repairTypeSvc.getAll(
+							0L, DEFAULT_PAGE_SIZE));
+			uas = userAuthorizationSvc
+					.getAllWithFetching(0L, DEFAULT_PAGE_SIZE);
+			uash = new ArrayList<UserAuthorization>();
+			for (UserAuthorization ua : uas) {
+				if (uash.isEmpty()) {
+					uash.add(ua);				
+					continue;
+				}
+				if (uash.get(uash.size() - 1).getUser().getLogin()
+						.contentEquals(ua.getUser().getLogin())) {
+					uash.get(uash.size() - 1).getRole()
+						.setDescEn(uash.get(uash.size() - 1).getRole().getDescEn()
+								.concat(", " + ua.getRole().getDescEn()));
+					uash.get(uash.size() - 1).getRole()
+						.setDescRu(uash.get(uash.size() - 1).getRole().getDescRu()
+							.concat(", " + ua.getRole().getDescRu()));
+					continue;
+				}
+				uash.add(ua);
+			}		
+			model.addAttribute("user_authorizations_short", uash);
+			model.addAttribute("user_authorizations_short_users", 
+					userAuthorizationSvc
+						.getDistinctUsersWithFetching(0L, DEFAULT_PAGE_SIZE));			
+		} else {
+			model.addAttribute("page_number", pageNumber);
+			uas = userAuthorizationSvc
+					.getAllWithFetching(
+							sessionScopeInfoService.getSessionScopeInfo().getPagingFirstIndex(), 
+							sessionScopeInfoService.getSessionScopeInfo().getPagingLastIndex() 
+							- sessionScopeInfoService
+								.getSessionScopeInfo().getPagingFirstIndex() + 1);
+			uash = new ArrayList<UserAuthorization>();
+			for (UserAuthorization ua : uas) {
+				if (uash.isEmpty()) {
+					uash.add(ua);				
+					continue;
+				}
+				if (uash.get(uash.size() - 1).getUser().getLogin()
+						.contentEquals(ua.getUser().getLogin())) {
+					uash.get(uash.size() - 1).getRole()
+						.setDescEn(uash.get(uash.size() - 1).getRole().getDescEn()
+								.concat(", " + ua.getRole().getDescEn()));
+					uash.get(uash.size() - 1).getRole()
+						.setDescRu(uash.get(uash.size() - 1).getRole().getDescRu()
+							.concat(", " + ua.getRole().getDescRu()));
+					continue;
+				}
+				uash.add(ua);
+			}		
+			model.addAttribute("user_authorizations_short", uash);
+			model.addAttribute("user_authorizations_short_users", 
+					userAuthorizationSvc
+						.getDistinctUsersWithFetching(
+								sessionScopeInfoService.getSessionScopeInfo().getPagingFirstIndex(), 
+								sessionScopeInfoService.getSessionScopeInfo().getPagingLastIndex() 
+								- sessionScopeInfoService
+									.getSessionScopeInfo().getPagingFirstIndex() + 1)
+					);
+		}
 		
 		model.addAttribute("user_roles", userAuthorizationSvc.getAllRoles());
 		
 		model.addAttribute("message_user_authorization_added",
-				messageAdded);
-		messageAdded = "";
+			sessionScopeInfoService.getSessionScopeInfo().getMessageAdded());
+			sessionScopeInfoService.getSessionScopeInfo().setMessageAdded("");
 		model.addAttribute("message_user_authorization_not_added",
-				messageNotAdded);
-		messageNotAdded = "";
+			sessionScopeInfoService.getSessionScopeInfo().getMessageNotAdded());
+			sessionScopeInfoService.getSessionScopeInfo().setMessageNotAdded("");
 		
 		model.addAttribute("dialog_delete_user_authorization",
 				messageSource.getMessage(
@@ -114,10 +154,9 @@ public class AdminPageUserAuthorizationsController extends AbstractRolePageContr
 	public String userAuthorizationPaging(
 			@RequestParam("userAuthorizationPageNumber") final Long userAuthorizationPageNumber) {
 		
-		pagingFirstIndex = userAuthorizationPageNumber * DEFAULT_PAGE_SIZE;
-		pagingLastIndex = 
-				DEFAULT_PAGE_SIZE * (userAuthorizationPageNumber + 1) - 1;
-		pageNumber = userAuthorizationPageNumber;				
+		changeSessionScopePagingInfo(userAuthorizationPageNumber * DEFAULT_PAGE_SIZE,
+				DEFAULT_PAGE_SIZE * (userAuthorizationPageNumber + 1) - 1,
+				userAuthorizationPageNumber);				
 		
 		return "redirect:/adminpageuserauthorizations";
 	}
@@ -150,13 +189,15 @@ public class AdminPageUserAuthorizationsController extends AbstractRolePageContr
 		if (userAuthorizationSvc.add(
 				new UserAuthorization(new UserRole(userAuthorizationAddDTO.getRole())), 
 				userAuthorizationAddDTO.getUserId())) {
-			messageAdded =
-					messageSource.getMessage("popup.adminpage.userAuthorizationAdded", null,
-							locale);
+			changeSessionScopeAddingInfo(
+					messageSource.getMessage("popup.adminpage.userAuthorizationAdded", null, 
+							locale),
+					"");
 		} else {
-			messageNotAdded = 
-					messageSource.getMessage("popup.adminpage.userAuthorizationNotAdded", null,
-							locale);
+			changeSessionScopeAddingInfo(
+					"",
+					messageSource.getMessage("popup.adminpage.userAuthorizationAdded", null,
+							locale));
 		}		
 		return "redirect:/adminpageuserauthorizations";
 	}

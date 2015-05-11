@@ -50,14 +50,14 @@ public class UpdateMachineController extends AbstractRolePageController
 		}
 		
 		model.addAttribute("message_machine_not_updated",
-				messageUpdateFailed);
-		messageUpdateFailed = "";
+				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateFailed());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateFailed("");
 		model.addAttribute("message_machine_updated",
-				messageUpdateSucceeded);
-		messageUpdateSucceeded = "";
+				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateSucceeded());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateSucceeded("");
 		model.addAttribute("message_machine_no_changes",
-				messageNoChanges);
-		messageNoChanges = "";
+				sessionScopeInfoService.getSessionScopeInfo().getMessageNoChanges());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageNoChanges("");
 	}
 	
 	@RequestMapping(value = "/updatemachine", method = RequestMethod.GET)
@@ -101,24 +101,30 @@ public class UpdateMachineController extends AbstractRolePageController
 				&& machine.getMachineYear().intValue() == myMachine.getMachineYear().intValue()
 				&& machine.getMachineTimesRepaired().intValue() 
 					== myMachine.getMachineTimesRepaired().intValue()) {
-
-			messageNoChanges = 
-					messageSource.getMessage("popup.adminpage.machineNoChanges", null,
-							locale);
+			
+			changeSessionScopeUpdateInfo(
+					"",
+					"", messageSource.getMessage("popup.adminpage.machineNoChanges", null,
+							locale));
+			
 			return "redirect:/updatemachine/?machine-id=" + myMachine.getMachineId();
 		}
 		
 		if (machineSvc.updateMachineById(myMachine.getMachineId(), machine)
 				== 1) {
-			messageUpdateSucceeded =
+			changeSessionScopeUpdateInfo(
+					"",
 					messageSource.getMessage("popup.adminpage.machineUpdated", null,
-							locale);
-
+							locale), 
+					"");
+			
 			return "redirect:/updatemachine/?machine-id=" + myMachine.getMachineId();
 		} else {
-			messageUpdateFailed = 
+			changeSessionScopeUpdateInfo(
 					messageSource.getMessage("popup.adminpage.machineNotUpdated", null,
-							locale);
+							locale),
+					"", 
+					"");			
 
 			return "redirect:/updatemachine/?machine-id=" + myMachine.getMachineId();
 		}		

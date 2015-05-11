@@ -9,6 +9,7 @@ import org.springframework.context.MessageSourceAware;
 import org.springframework.ui.Model;
 
 import com.glomozda.machinerepair.domain.user.User;
+import com.glomozda.machinerepair.service.SessionScopeInfoService;
 import com.glomozda.machinerepair.service.client.ClientService;
 import com.glomozda.machinerepair.service.machine.MachineService;
 import com.glomozda.machinerepair.service.machineserviceable.MachineServiceableService;
@@ -46,20 +47,18 @@ public abstract class AbstractRolePageController implements MessageSourceAware {
 	@Autowired
 	protected OrderService orderSvc;
 	
-	protected User myUser;
+	@Autowired
+	protected SessionScopeInfoService sessionScopeInfoService;
+	
+    protected User myUser;
 	
 	protected static final Long DEFAULT_PAGE_SIZE = 10L;
 	
-	protected String messageAdded = "";
-	protected String messageNotAdded = "";
-	
-	protected String messageUpdateFailed = "";
-	protected String messageUpdateSucceeded = "";
-	protected String messageNoChanges = "";
-	
-	protected Long pagingFirstIndex = 0L;
-	protected Long pagingLastIndex = DEFAULT_PAGE_SIZE - 1;
-	protected Long pageNumber = 0L;
+	/**/
+//	protected String messageUpdateFailed = "";
+//	protected String messageUpdateSucceeded = "";
+//	protected String messageNoChanges = "";
+	/**/
 	
 	@Override
 	public void setMessageSource(MessageSource messageSource) {
@@ -78,6 +77,43 @@ public abstract class AbstractRolePageController implements MessageSourceAware {
 		
 		return true;
 	}
+	
+	public void changeSessionScopePagingInfo(final Long pagingFirstIndex,
+			final Long pagingLastIndex,
+			final Long pageNumber) {
+    	this.sessionScopeInfoService
+    		.changeSessionScopePagingInfo(pagingFirstIndex, pagingLastIndex, pageNumber);
+    }
+	
+	public void changeSessionScopePagingPlusInfo(final Long pagingFirstIndexPlus,
+			final Long pagingLastIndexPlus,
+			final Long pageNumberPlus) {
+    	this.sessionScopeInfoService
+    		.changeSessionScopePagingPlusInfo(pagingFirstIndexPlus,
+    				pagingLastIndexPlus, pageNumberPlus);
+    }
+	
+	public void changeSessionScopePagingPlusPlusInfo(final Long pagingFirstIndexPlusPlus,
+			final Long pagingLastIndexPlusPlus,
+			final Long pageNumberPlusPlus) {
+    	this.sessionScopeInfoService
+    		.changeSessionScopePagingPlusPlusInfo(pagingFirstIndexPlusPlus,
+    				pagingLastIndexPlusPlus, pageNumberPlusPlus);
+    }
+	
+	public void changeSessionScopeAddingInfo(final String messageAdded,
+			final String messageNotAdded) {
+    	this.sessionScopeInfoService
+    		.changeSessionScopeAddingInfo(messageAdded, messageNotAdded);
+    }
+	
+	public void changeSessionScopeUpdateInfo(final String messageUpdateFailed,
+			final String messageUpdateSucceeded,
+			final String messageNoChanges) {
+    	this.sessionScopeInfoService
+    		.changeSessionScopeUpdateInfo(messageUpdateFailed, messageUpdateSucceeded, 
+    			messageNoChanges);
+    }
 	
 	protected abstract void prepareModel(final Locale locale,
 			final Principal principal, 

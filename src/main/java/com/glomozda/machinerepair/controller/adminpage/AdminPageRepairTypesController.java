@@ -39,10 +39,7 @@ public class AdminPageRepairTypesController extends AbstractRolePageController
 		}
 		
 		model.addAttribute("repair_types", repairTypeSvc.getAll());
-		model.addAttribute("repair_types_short", 
-				repairTypeSvc.getAll(pagingFirstIndex, 
-						pagingLastIndex - pagingFirstIndex + 1));
-		
+				
 		Long repairTypesCount = repairTypeSvc.getRepairTypeCount();
 		model.addAttribute("repair_types_count", repairTypesCount);
 		Long pagesCount = repairTypesCount / DEFAULT_PAGE_SIZE;
@@ -51,14 +48,28 @@ public class AdminPageRepairTypesController extends AbstractRolePageController
 		}
 		model.addAttribute("pages_count", pagesCount);
 		model.addAttribute("pages_size", DEFAULT_PAGE_SIZE);
-		model.addAttribute("page_number", pageNumber);
+		Long pageNumber = sessionScopeInfoService.getSessionScopeInfo().getPageNumber();
+		if (pageNumber >= pagesCount) {
+			model.addAttribute("page_number", 0L);
+			model.addAttribute("repair_types_short", 
+					repairTypeSvc.getAll(
+							0L, DEFAULT_PAGE_SIZE));						
+		} else {
+			model.addAttribute("page_number", pageNumber);
+			model.addAttribute("repair_types_short", 
+					repairTypeSvc.getAll(
+							sessionScopeInfoService.getSessionScopeInfo().getPagingFirstIndex(), 
+							sessionScopeInfoService.getSessionScopeInfo().getPagingLastIndex() 
+							- sessionScopeInfoService
+								.getSessionScopeInfo().getPagingFirstIndex() + 1));
+		}
 		
 		model.addAttribute("message_repair_type_added",
-				messageAdded);
-		messageAdded = "";
+			sessionScopeInfoService.getSessionScopeInfo().getMessageAdded());
+			sessionScopeInfoService.getSessionScopeInfo().setMessageAdded("");
 		model.addAttribute("message_repair_type_not_added",
-				messageNotAdded);
-		messageNotAdded = "";
+			sessionScopeInfoService.getSessionScopeInfo().getMessageNotAdded());
+			sessionScopeInfoService.getSessionScopeInfo().setMessageNotAdded("");
 		
 		model.addAttribute("message_enable_disable_failed",
 				messageEnableDisableFailed);
@@ -98,10 +109,9 @@ public class AdminPageRepairTypesController extends AbstractRolePageController
 	public String repairTypePaging(
 			@RequestParam("repairTypePageNumber") final Long repairTypePageNumber) {
 		
-		pagingFirstIndex = repairTypePageNumber * DEFAULT_PAGE_SIZE;
-		pagingLastIndex = 
-				DEFAULT_PAGE_SIZE * (repairTypePageNumber + 1) - 1;
-		pageNumber = repairTypePageNumber;		 	
+		changeSessionScopePagingInfo(repairTypePageNumber * DEFAULT_PAGE_SIZE,
+				DEFAULT_PAGE_SIZE * (repairTypePageNumber + 1) - 1,
+				repairTypePageNumber);		 	
 		
 		return "redirect:/adminpagerepairtypes";
 	}
@@ -121,13 +131,15 @@ public class AdminPageRepairTypesController extends AbstractRolePageController
 		}
 		
 		if (repairTypeSvc.add(repairType)) {
-			messageAdded =
-					messageSource.getMessage("popup.adminpage.repairTypeAdded", null,
-							locale);
+			changeSessionScopeAddingInfo(
+					messageSource.getMessage("popup.adminpage.repairTypeAdded", null, 
+							locale),
+					"");			
 		} else {
-			messageNotAdded = 
+			changeSessionScopeAddingInfo(
+					"",
 					messageSource.getMessage("popup.adminpage.repairTypeNotAdded", null,
-							locale);
+							locale));			
 		}		
 		return "redirect:/adminpagerepairtypes";
 	}

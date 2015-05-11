@@ -3,6 +3,7 @@ package com.glomozda.machinerepair.controller.adminpage;
 import java.security.Principal;
 import java.util.Locale;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
@@ -24,7 +25,7 @@ import com.glomozda.machinerepair.domain.client.ClientDTO;
 public class AdminPageClientsController extends AbstractRolePageController 
 	implements MessageSourceAware {
 	
-	static Logger log = Logger.getLogger(AdminPageClientsController.class.getName());	
+	static Logger log = Logger.getLogger(AdminPageClientsController.class.getName());
 	
 	@Override
 	protected void prepareModel(final Locale locale, final Principal principal,	final Model model) {
@@ -37,10 +38,6 @@ public class AdminPageClientsController extends AbstractRolePageController
 				
 		model.addAttribute("users", userSvc.getAll((long) 0, (long) 99));
 		
-		model.addAttribute("clients_short",
-				clientSvc.getAllWithFetching(pagingFirstIndex,
-						pagingLastIndex - pagingFirstIndex + 1));
-
 		Long clientsCount = clientSvc.getClientCount();
 		model.addAttribute("clients_count", clientsCount);
 		
@@ -50,14 +47,28 @@ public class AdminPageClientsController extends AbstractRolePageController
 		}
 		model.addAttribute("pages_count", pagesCount);
 		model.addAttribute("pages_size", DEFAULT_PAGE_SIZE);
-		model.addAttribute("page_number", pageNumber);
+		Long pageNumber = sessionScopeInfoService.getSessionScopeInfo().getPageNumber();
+		if (pageNumber >= pagesCount) {
+			model.addAttribute("page_number", 0L);
+			model.addAttribute("clients_short",
+					clientSvc.getAllWithFetching(
+							0L,	DEFAULT_PAGE_SIZE));
+		} else {
+			model.addAttribute("page_number", pageNumber);
+			model.addAttribute("clients_short",
+					clientSvc.getAllWithFetching(
+							sessionScopeInfoService.getSessionScopeInfo().getPagingFirstIndex(),
+							sessionScopeInfoService.getSessionScopeInfo().getPagingLastIndex() 
+								- sessionScopeInfoService.getSessionScopeInfo()
+									.getPagingFirstIndex() + 1));
+		}
 				
 		model.addAttribute("message_client_added",
-				messageAdded);
-		messageAdded = "";
+				sessionScopeInfoService.getSessionScopeInfo().getMessageAdded());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageAdded("");
 		model.addAttribute("message_client_not_added",
-				messageNotAdded);
-		messageNotAdded = "";
+				sessionScopeInfoService.getSessionScopeInfo().getMessageNotAdded());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageNotAdded("");
 		
 		model.addAttribute("dialog_delete_client",
 				messageSource.getMessage("label.adminpage.clients.actions.delete.dialog", null,
@@ -70,11 +81,12 @@ public class AdminPageClientsController extends AbstractRolePageController
 	}
 	
 	@RequestMapping(value = "/adminpageclients", method = RequestMethod.GET)
-	public String activate(final Locale locale, final Principal principal, final Model model) {
+	public String activate(HttpServletRequest request, 
+			final Locale locale, final Principal principal, final Model model) {
 		
 		if (!isMyUserSet(principal)) {
 			return "redirect:/index";
-		}
+		}	
 		
 		prepareModel(locale, principal, model);
 				
@@ -84,10 +96,10 @@ public class AdminPageClientsController extends AbstractRolePageController
 	@RequestMapping(value = "/adminpageclients/clientpaging", method = RequestMethod.POST)
 	public String clientPaging(@RequestParam("clientPageNumber") final Long clientPageNumber) {
 		
-		pagingFirstIndex = clientPageNumber * DEFAULT_PAGE_SIZE;
-		pagingLastIndex = DEFAULT_PAGE_SIZE * (clientPageNumber + 1) - 1;
-		pageNumber = clientPageNumber;
-		
+		changeSessionScopePagingInfo(clientPageNumber * DEFAULT_PAGE_SIZE,
+				DEFAULT_PAGE_SIZE * (clientPageNumber + 1) - 1,
+				clientPageNumber);
+
 		return "redirect:/adminpageclients";
 	}
 
@@ -105,13 +117,14 @@ public class AdminPageClientsController extends AbstractRolePageController
 		}
 		
 		if (clientSvc.add(new Client(clientDTO.getClientName()), clientDTO.getUserId())) {
-			messageAdded =
-					messageSource.getMessage("popup.adminpage.clientAdded", null,
-							locale);
+			changeSessionScopeAddingInfo(
+					messageSource.getMessage("popup.adminpage.clientAdded", null,locale),
+					"");			
 		} else {
-			messageNotAdded = 
+			changeSessionScopeAddingInfo(
+					"",
 					messageSource.getMessage("popup.adminpage.clientNotAdded", null,
-							locale);
+							locale));			
 		}		
 		return "redirect:/adminpageclients";
 	}	

@@ -14,8 +14,9 @@
 <http auto-config="true"> 
    <intercept-url pattern="/index*" access="ROLE_CLIENT,ROLE_ANONYMOUS"/> 
    <intercept-url pattern="/client*" access="ROLE_CLIENT"/>
-   <intercept-url pattern="/manager*" access="ROLE_MANAGER,ROLE_ADMIN"/>
-   <intercept-url pattern="/admin*" access="ROLE_ADMIN"/>
+   <intercept-url pattern="/manageradmin*" access="ROLE_ADMIN"/>
+   <intercept-url pattern="/manager*" access="ROLE_MANAGER"/>
+   <intercept-url pattern="/admin*" access="ROLE_ADMIN"/>   
    <intercept-url pattern="/update*" access="ROLE_ADMIN"/>  
    <form-login login-page="/login"
    				username-parameter="login"  

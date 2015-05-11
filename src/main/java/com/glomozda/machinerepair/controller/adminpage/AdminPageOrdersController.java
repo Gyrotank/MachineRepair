@@ -47,11 +47,7 @@ public class AdminPageOrdersController extends AbstractRolePageController
 		managers.addAll(userAuthorizationSvc.getUserLoginsForRole("ROLE_ADMIN"));
 		java.util.Collections.sort(managers);
 		model.addAttribute("managers", managers);
-		
-		model.addAttribute("orders_short", 
-				orderSvc.getAllWithFetching(pagingFirstIndex,
-						pagingLastIndex - pagingFirstIndex + 1));
-		
+				
 		Long ordersCount = orderSvc.getOrderCount();
 		model.addAttribute("orders_count", ordersCount);
 		Long pagesCount = ordersCount / DEFAULT_PAGE_SIZE;
@@ -60,14 +56,28 @@ public class AdminPageOrdersController extends AbstractRolePageController
 		}
 		model.addAttribute("pages_count", pagesCount);
 		model.addAttribute("pages_size", DEFAULT_PAGE_SIZE);
-		model.addAttribute("page_number", pageNumber);
+		Long pageNumber = sessionScopeInfoService.getSessionScopeInfo().getPageNumber();
+		if (pageNumber >= pagesCount) {
+			model.addAttribute("page_number", 0L);
+			model.addAttribute("orders_short", 
+					orderSvc.getAllWithFetching(
+							0L, DEFAULT_PAGE_SIZE));			
+		} else {
+			model.addAttribute("page_number", pageNumber);
+			model.addAttribute("orders_short", 
+					orderSvc.getAllWithFetching(
+						sessionScopeInfoService.getSessionScopeInfo().getPagingFirstIndex(), 
+						sessionScopeInfoService.getSessionScopeInfo().getPagingLastIndex() 
+							- sessionScopeInfoService
+								.getSessionScopeInfo().getPagingFirstIndex() + 1));
+		}
 		
 		model.addAttribute("message_order_added",
-				messageAdded);
-		messageAdded = "";
+			sessionScopeInfoService.getSessionScopeInfo().getMessageAdded());
+			sessionScopeInfoService.getSessionScopeInfo().setMessageAdded("");
 		model.addAttribute("message_order_not_added",
-				messageNotAdded);
-		messageNotAdded = "";
+			sessionScopeInfoService.getSessionScopeInfo().getMessageNotAdded());
+			sessionScopeInfoService.getSessionScopeInfo().setMessageNotAdded("");
 		
 		model.addAttribute("dialog_delete_order",
 				messageSource.getMessage(
@@ -95,10 +105,9 @@ public class AdminPageOrdersController extends AbstractRolePageController
 	@RequestMapping(value = "/adminpageorders/orderpaging", method = RequestMethod.POST)
 	public String orderPaging(@RequestParam("orderPageNumber") final Long orderPageNumber) {
 		
-		pagingFirstIndex = orderPageNumber * DEFAULT_PAGE_SIZE;
-		pagingLastIndex = 
-				DEFAULT_PAGE_SIZE * (orderPageNumber + 1) - 1;
-		pageNumber = orderPageNumber;
+		changeSessionScopePagingInfo(orderPageNumber * DEFAULT_PAGE_SIZE,
+				DEFAULT_PAGE_SIZE * (orderPageNumber + 1) - 1,
+				orderPageNumber);
 		
 		return "redirect:/adminpageorders";
 	}
@@ -152,13 +161,15 @@ public class AdminPageOrdersController extends AbstractRolePageController
 		
 		if (orderSvc.add(newOrder, orderDTO.getClientId(), orderDTO.getRepairTypeId(),
 				orderDTO.getMachineId(), orderDTO.getOrderStatusId())) {
-			messageAdded =
-					messageSource.getMessage("popup.adminpage.orderAdded", null,
-							locale);
+			changeSessionScopeAddingInfo(
+					messageSource.getMessage("popup.adminpage.orderAdded", null, 
+							locale),
+					"");
 		} else {
-			messageNotAdded = 
+			changeSessionScopeAddingInfo(
+					"",
 					messageSource.getMessage("popup.adminpage.orderNotAdded", null,
-							locale);
+							locale));			
 		}		
 		return "redirect:/adminpageorders";
 	}

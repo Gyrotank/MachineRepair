@@ -4,6 +4,8 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Locale;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,10 +40,8 @@ public class ManagerPagePendingOrdersController extends AbstractRolePageControll
 		model.addAttribute("message_cancel_succeeded", messageCancelSucceeded);
 		messageCancelSucceeded = "";
 		
-		List<Order> pendingOrders = orderSvc.getOrdersForStatusWithFetching("pending",
-				pagingFirstIndex,
-				pagingLastIndex - pagingFirstIndex + 1);
-		model.addAttribute("pending_orders", pendingOrders);
+		List<Order> pendingOrders;
+		
 		Long pendingOrdersCount = orderSvc.getCountOrdersForStatus("pending");
 		model.addAttribute("pending_orders_count", pendingOrdersCount);
 		Long pagesCount = pendingOrdersCount / DEFAULT_PAGE_SIZE;
@@ -50,7 +50,21 @@ public class ManagerPagePendingOrdersController extends AbstractRolePageControll
 		}
 		model.addAttribute("pages_count", pagesCount);
 		model.addAttribute("pages_size", DEFAULT_PAGE_SIZE);
-		model.addAttribute("page_number", pageNumber);
+		Long pageNumber = sessionScopeInfoService.getSessionScopeInfo().getPageNumber();
+		if (pageNumber >= pagesCount) {
+			model.addAttribute("page_number", 0L);
+			pendingOrders =	orderSvc.getOrdersForStatusWithFetching("pending", 
+					0L, DEFAULT_PAGE_SIZE);						
+		} else {
+			model.addAttribute("page_number", pageNumber);
+			pendingOrders = orderSvc.getOrdersForStatusWithFetching("pending",
+					sessionScopeInfoService.getSessionScopeInfo().getPagingFirstIndex(), 
+					sessionScopeInfoService.getSessionScopeInfo().getPagingLastIndex() 
+					- sessionScopeInfoService.getSessionScopeInfo()
+						.getPagingFirstIndex() + 1);
+		}
+		
+		model.addAttribute("pending_orders", pendingOrders);
 		
 		model.addAttribute("dialog_confirm_order",
 				messageSource.getMessage("label.managerpage.pending.actions.confirm.dialog", null,
@@ -65,8 +79,10 @@ public class ManagerPagePendingOrdersController extends AbstractRolePageControll
 			final Model model, final Long id) {		
 	}
 	
-	@RequestMapping(value = "/managerpagependingorders", method = RequestMethod.GET)
-	public String activate(final Locale locale, final Principal principal, final Model model) {
+	@RequestMapping(value = {"/managerpagependingorders", "/manageradminpagependingorders"},
+			method = RequestMethod.GET)
+	public String activate(HttpServletRequest request,
+			final Locale locale, final Principal principal, final Model model) {
 		
 		if (!isMyUserSet(principal)) {
 			return "redirect:/index";
@@ -74,61 +90,56 @@ public class ManagerPagePendingOrdersController extends AbstractRolePageControll
 		
 		prepareModel(locale, principal, model);
 		
-		return "managerpagependingorders";
-	}
-	
-	@RequestMapping(value = "/manageradminpagependingorders", method = RequestMethod.GET)
-	public String activateAdmin(final Locale locale, final Principal principal, final Model model) {
-		
-		if (!isMyUserSet(principal)) {
-			return "redirect:/index";
+		if (request.getRequestURI().contains("admin")) {
+			return "manageradminpagependingorders";
+		} else {		
+			return "managerpagependingorders";
 		}
-		
-		prepareModel(locale, principal, model);
-		
-		return "manageradminpagependingorders";
 	}
 	
-	@RequestMapping(value = "/managerpagependingorders/pendingorderspaging",
+	@RequestMapping(value = {"/managerpagependingorders/pendingorderspaging", 
+					"/manageradminpagependingorders/pendingorderspaging"},
 			method = RequestMethod.POST)
-	public String pendingOrdersPaging(
+	public String pendingOrdersPaging(HttpServletRequest request,
 			@RequestParam("pendingOrdersPageNumber") final Long pendingOrdersPageNumber) {
 		
-		pagingFirstIndex = pendingOrdersPageNumber * DEFAULT_PAGE_SIZE;
-		pagingLastIndex = DEFAULT_PAGE_SIZE * (pendingOrdersPageNumber + 1) - 1;
-		pageNumber = pendingOrdersPageNumber;	
+		changeSessionScopePagingInfo(pendingOrdersPageNumber * DEFAULT_PAGE_SIZE,
+				DEFAULT_PAGE_SIZE * (pendingOrdersPageNumber + 1) - 1,
+				pendingOrdersPageNumber);
 		
-		return "redirect:/managerpagependingorders";
-	}
+		if (request.getRequestURI().contains("admin")) {
+			return "redirect:/manageradminpagependingorders";
+		} else {		
+			return "redirect:/managerpagependingorders";
+		}		
+	}	
 	
-	@RequestMapping(value = "/manageradminpagependingorders/pendingorderspaging",
-			method = RequestMethod.POST)
-	public String pendingOrdersPagingAdmin(
-			@RequestParam("pendingOrdersPageNumber") final Long pendingOrdersPageNumber) {
+	@RequestMapping(value = {"/confirm", "/confirmadmin"}, method = RequestMethod.GET)
+	public String confirmOrder(HttpServletRequest request,
+			@RequestParam("order_id") Long orderId, final Locale locale) {
 		
-		pagingFirstIndex = pendingOrdersPageNumber * DEFAULT_PAGE_SIZE;
-		pagingLastIndex = DEFAULT_PAGE_SIZE * (pendingOrdersPageNumber + 1) - 1;
-		pageNumber = pendingOrdersPageNumber;	
-		
-		return "redirect:/manageradminpagependingorders";
-	}
-	
-	@RequestMapping(value = "/confirm", method = RequestMethod.GET)
-	public String confirmOrder(@RequestParam("order_id") Long orderId, final Locale locale) {
 		Order myOrder = orderSvc.getOrderById(orderId);
 		if (myOrder == null) {			
 			messageConfirmFailed = 
 					messageSource
 					.getMessage("popup.managerpage.pending.actions.confirm.failed.orderNotExists",
 							null, locale);
-			return "redirect:/managerpagependingorders";
+			if (request.getRequestURI().contains("admin")) {
+				return "redirect:/manageradminpagependingorders";
+			} else {		
+				return "redirect:/managerpagependingorders";
+			}			
 		}
 		if (!myOrder.getStatus().getOrderStatusName().contentEquals("pending")) {			
 			messageConfirmFailed = 
 					messageSource
 					.getMessage("popup.managerpage.pending.actions.confirm.failed.orderNotPending",
 							null, locale);
-			return "redirect:/managerpagependingorders";
+			if (request.getRequestURI().contains("admin")) {
+				return "redirect:/manageradminpagependingorders";
+			} else {		
+				return "redirect:/managerpagependingorders";
+			}			
 		}
 		orderSvc.confirmOrderById(orderId, myUser.getLogin(),
 				orderStatusSvc.getOrderStatusByName("started").getOrderStatusId());
@@ -136,82 +147,48 @@ public class ManagerPagePendingOrdersController extends AbstractRolePageControll
 				messageSource
 				.getMessage("popup.managerpage.pending.actions.confirm.succeeded",
 						null, locale);
-		return "redirect:/managerpagependingorders";
-	}
-	
-	@RequestMapping(value = "/confirmadmin", method = RequestMethod.GET)
-	public String confirmOrderAdmin(@RequestParam("order_id") Long orderId, final Locale locale) {
-		Order myOrder = orderSvc.getOrderById(orderId);
-		if (myOrder == null) {			
-			messageConfirmFailed = 
-					messageSource
-					.getMessage("popup.managerpage.pending.actions.confirm.failed.orderNotExists",
-							null, locale);
+		if (request.getRequestURI().contains("admin")) {
 			return "redirect:/manageradminpagependingorders";
-		}
-		if (!myOrder.getStatus().getOrderStatusName().contentEquals("pending")) {			
-			messageConfirmFailed = 
-					messageSource
-					.getMessage("popup.managerpage.pending.actions.confirm.failed.orderNotPending",
-							null, locale);
-			return "redirect:/manageradminpagependingorders";
-		}
-		orderSvc.confirmOrderById(orderId, myUser.getLogin(),
-				orderStatusSvc.getOrderStatusByName("started").getOrderStatusId());
-		messageConfirmSucceeded = 
-				messageSource
-				.getMessage("popup.managerpage.pending.actions.confirm.succeeded",
-						null, locale);
-		return "redirect:/manageradminpagependingorders";
-	}
-	
-	@RequestMapping(value = "/cancel", method = RequestMethod.GET)
-	public String cancelOrder(@RequestParam("order_id") Long orderId, final Locale locale) {
-		Order myOrder = orderSvc.getOrderById(orderId);
-		if (myOrder == null) {
-			messageCancelFailed = 
-					messageSource
-					.getMessage("popup.managerpage.pending.actions.cancel.failed.orderNotExists",
-							null, locale);
-			return "redirect:/managerpagependingorders";			
-		}
-		if (!myOrder.getStatus().getOrderStatusName().contentEquals("pending")) {
-			messageCancelFailed = 
-					messageSource
-					.getMessage("popup.managerpage.pending.actions.cancel.failed.orderNotPending",
-							null, locale);			
+		} else {		
 			return "redirect:/managerpagependingorders";
-		}
-		orderSvc.cancelOrderById(orderId);
-		messageCancelSucceeded = 
-				messageSource
-				.getMessage("popup.managerpage.pending.actions.cancel.succeeded",
-						null, locale);
-		return "redirect:/managerpagependingorders";
-	}
+		}		
+	}	
 	
-	@RequestMapping(value = "/canceladmin", method = RequestMethod.GET)
-	public String cancelOrderAdmin(@RequestParam("order_id") Long orderId, final Locale locale) {
+	@RequestMapping(value = {"/cancel", "/canceladmin"}, method = RequestMethod.GET)
+	public String cancelOrder(HttpServletRequest request,
+			@RequestParam("order_id") Long orderId, final Locale locale) {
 		Order myOrder = orderSvc.getOrderById(orderId);
 		if (myOrder == null) {
 			messageCancelFailed = 
 					messageSource
 					.getMessage("popup.managerpage.pending.actions.cancel.failed.orderNotExists",
 							null, locale);
-			return "redirect:/manageradminpagependingorders";			
+			if (request.getRequestURI().contains("admin")) {
+				return "redirect:/manageradminpagependingorders";
+			} else {		
+				return "redirect:/managerpagependingorders";
+			}						
 		}
 		if (!myOrder.getStatus().getOrderStatusName().contentEquals("pending")) {
 			messageCancelFailed = 
 					messageSource
 					.getMessage("popup.managerpage.pending.actions.cancel.failed.orderNotPending",
-							null, locale);			
-			return "redirect:/manageradminpagependingorders";
+							null, locale);
+			if (request.getRequestURI().contains("admin")) {
+				return "redirect:/manageradminpagependingorders";
+			} else {		
+				return "redirect:/managerpagependingorders";
+			}			
 		}
 		orderSvc.cancelOrderById(orderId);
 		messageCancelSucceeded = 
 				messageSource
 				.getMessage("popup.managerpage.pending.actions.cancel.succeeded",
 						null, locale);
-		return "redirect:/manageradminpagependingorders";
-	}
+		if (request.getRequestURI().contains("admin")) {
+			return "redirect:/manageradminpagependingorders";
+		} else {		
+			return "redirect:/managerpagependingorders";
+		}		
+	}	
 }

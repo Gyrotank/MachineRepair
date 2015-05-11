@@ -49,14 +49,14 @@ public class UpdateRepairTypeController extends AbstractRolePageController
 		}
 		
 		model.addAttribute("message_repair_type_not_updated",
-				messageUpdateFailed);
-		messageUpdateFailed = "";
+				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateFailed());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateFailed("");
 		model.addAttribute("message_repair_type_updated",
-				messageUpdateSucceeded);
-		messageUpdateSucceeded = "";
+				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateSucceeded());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateSucceeded("");
 		model.addAttribute("message_repair_type_no_changes",
-				messageNoChanges);
-		messageNoChanges = "";
+				sessionScopeInfoService.getSessionScopeInfo().getMessageNoChanges());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageNoChanges("");		
 	}
 	
 	@RequestMapping(value = "/updaterepairtype", method = RequestMethod.GET)
@@ -92,21 +92,30 @@ public class UpdateRepairTypeController extends AbstractRolePageController
 		}
 		
 		if (repairType.equals(myRepairType)) {
-			messageNoChanges = 
-					messageSource.getMessage("popup.adminpage.repairTypeNoChanges", null,
-							locale);			
+			changeSessionScopeUpdateInfo(
+					"",
+					"", messageSource.getMessage("popup.adminpage.repairTypeNoChanges",
+							null,
+							locale));
+						
 			return "redirect:/updaterepairtype/?repair-type-id=" + myRepairType.getRepairTypeId();
 		}
 		
 		if (repairTypeSvc.updateRepairTypeById(myRepairType.getRepairTypeId(),
 				repairType) == 1) {
-			messageUpdateSucceeded =
+			changeSessionScopeUpdateInfo(
+					"",
 					messageSource.getMessage("popup.adminpage.repairTypeUpdated", null,
-							locale);			
+							locale), 
+					"");
+					
 		} else {
-			messageUpdateFailed = 
+			changeSessionScopeUpdateInfo(
 					messageSource.getMessage("popup.adminpage.repairTypeNotUpdated", null,
-							locale);			
+							locale),
+					"", 
+					"");
+						
 		}		
 		return "redirect:/updaterepairtype/?repair-type-id=" + myRepairType.getRepairTypeId();
 	}

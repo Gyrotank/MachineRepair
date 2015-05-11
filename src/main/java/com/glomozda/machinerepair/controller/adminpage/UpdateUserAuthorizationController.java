@@ -70,14 +70,14 @@ public class UpdateUserAuthorizationController extends AbstractRolePageControlle
 		}
 		
 		model.addAttribute("message_user_authorization_not_updated",
-				messageUpdateFailed);
-		messageUpdateFailed = "";
+				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateFailed());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateFailed("");
 		model.addAttribute("message_user_authorization_updated",
-				messageUpdateSucceeded);
-		messageUpdateSucceeded = "";
+				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateSucceeded());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateSucceeded("");
 		model.addAttribute("message_user_authorization_no_changes",
-				messageNoChanges);
-		messageNoChanges = "";		
+				sessionScopeInfoService.getSessionScopeInfo().getMessageNoChanges());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageNoChanges("");			
 	}
 	
 	@RequestMapping(value = "/updateuserauthorization", method = RequestMethod.GET)
@@ -102,9 +102,12 @@ public class UpdateUserAuthorizationController extends AbstractRolePageControlle
 		if (userAuthorizationDTO.getIsAdmin() == false
 				&& userAuthorizationDTO.getIsClient() == false
 				&& userAuthorizationDTO.getIsManager() == false) {
-			messageUpdateFailed = 
+			
+			changeSessionScopeUpdateInfo(
 					messageSource.getMessage("popup.adminpage.userAuthorizationNotUpdated", null,
-							locale);
+							locale),
+					"", 
+					"");			
 			
 			return "redirect:/updateuserauthorization/?user-authorization-id=" 
 			+ myUserAuthorizationDTO.getUserAuthorizationId();
@@ -116,9 +119,12 @@ public class UpdateUserAuthorizationController extends AbstractRolePageControlle
 					.equals(myUserAuthorizationDTO.getIsClient())
 				&& userAuthorizationDTO.getIsManager()
 					.equals(myUserAuthorizationDTO.getIsManager())) {
-			messageNoChanges = 
+			
+			changeSessionScopeUpdateInfo(
 					messageSource.getMessage("popup.adminpage.userAuthorizationNoChanges", null,
-							locale);
+							locale),
+					"", 
+					"");			
 			
 			return "redirect:/updateuserauthorization/?user-authorization-id=" 
 			+ myUserAuthorizationDTO.getUserAuthorizationId();
@@ -129,10 +135,12 @@ public class UpdateUserAuthorizationController extends AbstractRolePageControlle
 					new UserAuthorization(new UserRole("ROLE_ADMIN")),
 						myUserAuthorizationDTO.getUser().getUserId())) {
 				
-				messageUpdateFailed = 
+				changeSessionScopeUpdateInfo(
 						messageSource.getMessage("popup.adminpage.userAuthorizationNotUpdated",
 								null,
-								locale);
+								locale),
+						"", 
+						"");				
 				
 				return "redirect:/updateuserauthorization/?user-authorization-id=" 
 				+ myUserAuthorizationDTO.getUserAuthorizationId();
@@ -147,10 +155,12 @@ public class UpdateUserAuthorizationController extends AbstractRolePageControlle
 							"ROLE_ADMIN")
 					.intValue() != 1) {
 				
-				messageUpdateFailed = 
+				changeSessionScopeUpdateInfo(
 						messageSource.getMessage("popup.adminpage.userAuthorizationNotUpdated",
 								null,
-								locale);
+								locale),
+						"", 
+						"");				
 				
 				return "redirect:/updateuserauthorization/?user-authorization-id=" 
 				+ myUserAuthorizationDTO.getUserAuthorizationId();
@@ -162,10 +172,12 @@ public class UpdateUserAuthorizationController extends AbstractRolePageControlle
 					new UserAuthorization(new UserRole("ROLE_CLIENT")),
 						myUserAuthorizationDTO.getUser().getUserId())) {
 				
-				messageUpdateFailed = 
+				changeSessionScopeUpdateInfo(
 						messageSource.getMessage("popup.adminpage.userAuthorizationNotUpdated",
 								null,
-								locale);
+								locale),
+						"", 
+						"");				
 				
 				return "redirect:/updateuserauthorization/?user-authorization-id=" 
 				+ myUserAuthorizationDTO.getUserAuthorizationId();
@@ -179,10 +191,12 @@ public class UpdateUserAuthorizationController extends AbstractRolePageControlle
 							"ROLE_CLIENT")
 					.intValue() != 1) {
 				
-				messageUpdateFailed = 
+				changeSessionScopeUpdateInfo(
 						messageSource.getMessage("popup.adminpage.userAuthorizationNotUpdated",
 								null,
-								locale);
+								locale),
+						"", 
+						"");				
 				
 				return "redirect:/updateuserauthorization/?user-authorization-id=" 
 				+ myUserAuthorizationDTO.getUserAuthorizationId();
@@ -194,10 +208,12 @@ public class UpdateUserAuthorizationController extends AbstractRolePageControlle
 					new UserAuthorization(new UserRole("ROLE_MANAGER")),
 						myUserAuthorizationDTO.getUser().getUserId())) {
 				
-				messageUpdateFailed = 
+				changeSessionScopeUpdateInfo(
 						messageSource.getMessage("popup.adminpage.userAuthorizationNotUpdated",
 								null,
-								locale);
+								locale),
+						"", 
+						"");				
 				
 				return "redirect:/updateuserauthorization/?user-authorization-id=" 
 				+ myUserAuthorizationDTO.getUserAuthorizationId();
@@ -211,20 +227,24 @@ public class UpdateUserAuthorizationController extends AbstractRolePageControlle
 							"ROLE_MANAGER")
 					.intValue() != 1) {
 				
-				messageUpdateFailed = 
+				changeSessionScopeUpdateInfo(
 						messageSource.getMessage("popup.adminpage.userAuthorizationNotUpdated",
 								null,
-								locale);
+								locale),
+						"", 
+						"");				
 				
 				return "redirect:/updateuserauthorization/?user-authorization-id=" 
 				+ myUserAuthorizationDTO.getUserAuthorizationId();
 			}
 		}
 		
-		messageUpdateSucceeded =
+		changeSessionScopeUpdateInfo(
+				"",
 				messageSource.getMessage("popup.adminpage.userAuthorizationUpdated", null,
-						locale);
-		
+						locale), 
+				"");
+				
 		if (null != userAuthorizationSvc
 				.getUserForUserAuthorizationId(myUserAuthorizationDTO.getUserAuthorizationId())) {
 			return "redirect:/updateuserauthorization/?user-authorization-id=" 

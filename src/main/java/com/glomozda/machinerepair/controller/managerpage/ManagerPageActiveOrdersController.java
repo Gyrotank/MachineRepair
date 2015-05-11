@@ -4,6 +4,8 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,21 +23,9 @@ public class ManagerPageActiveOrdersController extends AbstractRolePageControlle
 	private String messageSetReadyFailed = "";
 	private String messageSetReadySucceeded = "";
 	
-	private Long startedOrdersPagingFirstIndex = 0L;
-	private Long startedOrdersPagingLastIndex = DEFAULT_PAGE_SIZE - 1;
-	private Long startedOrdersPageNumber = 0L;
-	
-	private Long readyOrdersPagingFirstIndex = 0L;
-	private Long readyOrdersPagingLastIndex = DEFAULT_PAGE_SIZE - 1;
-	private Long readyOrdersPageNumber = 0L;
-	
-	private Long selectedClientId = 0L;
-	private ArrayList<Order> startedOrdersForSelectedClient = new ArrayList<Order>();
-	private ArrayList<Order> readyOrdersForSelectedClient = new ArrayList<Order>();
-	
 	@Override
 	protected void prepareModel(final Locale locale, final Principal principal, 
-			final Model model) {		
+			final Model model, final Long selectedId) {		
 		
 		model.addAttribute("locale", locale.toString());
 		
@@ -48,24 +38,33 @@ public class ManagerPageActiveOrdersController extends AbstractRolePageControlle
 				messageSource.getMessage("label.managerpage.started.actions.setReady.dialog", null,
 				locale));
 		
-		model.addAttribute("selected_client_id", selectedClientId);
-		if (selectedClientId != 0) {
-			startedOrdersForSelectedClient.clear();
-			readyOrdersForSelectedClient.clear();
+		model.addAttribute("selected_client_id", selectedId);
+		
+		ArrayList<Order> startedOrdersForSelectedClient = new ArrayList<Order>();
+		ArrayList<Order> readyOrdersForSelectedClient = new ArrayList<Order>();
+		
+		if (selectedId != 0L) {			
 			
 			startedOrdersForSelectedClient.addAll(
-					orderSvc.getOrdersForClientIdAndStatusWithFetching(selectedClientId, "started", 
-							startedOrdersPagingFirstIndex,
-							startedOrdersPagingLastIndex - startedOrdersPagingFirstIndex + 1));
+				orderSvc.getOrdersForClientIdAndStatusWithFetching(selectedId, 
+						"started", 
+						sessionScopeInfoService.getSessionScopeInfo().getPagingFirstIndexPlus(), 
+						sessionScopeInfoService.getSessionScopeInfo().getPagingLastIndexPlus() 
+						- sessionScopeInfoService.getSessionScopeInfo()
+							.getPagingFirstIndexPlus() + 1));
 			
 			readyOrdersForSelectedClient.addAll(
-					orderSvc.getOrdersForClientIdAndStatusWithFetching(selectedClientId, "ready", 
-							readyOrdersPagingFirstIndex,
-							readyOrdersPagingLastIndex - readyOrdersPagingFirstIndex + 1));
+				orderSvc.getOrdersForClientIdAndStatusWithFetching(selectedId, 
+					"ready", 
+					sessionScopeInfoService.getSessionScopeInfo().getPagingFirstIndexPlusPlus(), 
+					sessionScopeInfoService.getSessionScopeInfo().getPagingLastIndexPlusPlus() 
+					- sessionScopeInfoService.getSessionScopeInfo()
+						.getPagingFirstIndexPlusPlus() + 1));
 		}
 		
 		model.addAttribute("started_orders_for_selected_client", startedOrdersForSelectedClient);		
-		Long startedOrdersCount = orderSvc.getCountOrdersForClientIdAndStatus(selectedClientId, "started");
+		Long startedOrdersCount = 
+				orderSvc.getCountOrdersForClientIdAndStatus(selectedId, "started");
 		model.addAttribute("started_orders_count", startedOrdersCount);
 		Long startedOrdersPagesCount = startedOrdersCount / DEFAULT_PAGE_SIZE;
 		if (startedOrdersCount % DEFAULT_PAGE_SIZE != 0) {
@@ -73,10 +72,12 @@ public class ManagerPageActiveOrdersController extends AbstractRolePageControlle
 		}
 		model.addAttribute("started_orders_pages_count", startedOrdersPagesCount);
 		model.addAttribute("started_orders_pages_size", DEFAULT_PAGE_SIZE);
-		model.addAttribute("started_orders_page_number", startedOrdersPageNumber);
+		model.addAttribute("started_orders_page_number", 
+			sessionScopeInfoService.getSessionScopeInfo().getPageNumberPlus());
 		
 		model.addAttribute("ready_orders_for_selected_client", readyOrdersForSelectedClient);
-		Long readyOrdersCount = orderSvc.getCountOrdersForClientIdAndStatus(selectedClientId, "ready");
+		Long readyOrdersCount = 
+				orderSvc.getCountOrdersForClientIdAndStatus(selectedId, "ready");
 		model.addAttribute("ready_orders_count", readyOrdersCount);
 		Long readyOrdersPagesCount = readyOrdersCount / DEFAULT_PAGE_SIZE;
 		if (readyOrdersCount % DEFAULT_PAGE_SIZE != 0) {
@@ -84,11 +85,15 @@ public class ManagerPageActiveOrdersController extends AbstractRolePageControlle
 		}
 		model.addAttribute("ready_orders_pages_count", readyOrdersPagesCount);
 		model.addAttribute("ready_orders_pages_size", DEFAULT_PAGE_SIZE);
-		model.addAttribute("ready_orders_page_number", readyOrdersPageNumber);	
+		model.addAttribute("ready_orders_page_number", 
+				sessionScopeInfoService.getSessionScopeInfo().getPageNumberPlusPlus());	
 		
 		model.addAttribute("clients_short",
-				clientSvc.getAllWithFetching(pagingFirstIndex,
-						pagingLastIndex - pagingFirstIndex + 1));
+				clientSvc.getAllWithFetching(
+						sessionScopeInfoService.getSessionScopeInfo().getPagingFirstIndex(), 
+						sessionScopeInfoService.getSessionScopeInfo().getPagingLastIndex() 
+						- sessionScopeInfoService.getSessionScopeInfo()
+							.getPagingFirstIndex() + 1));
 		Long clientsCount = clientSvc.getClientCount();
 		model.addAttribute("clients_count", clientsCount);
 		Long clientPagesCount = clientsCount / DEFAULT_PAGE_SIZE;
@@ -97,161 +102,117 @@ public class ManagerPageActiveOrdersController extends AbstractRolePageControlle
 		}
 		model.addAttribute("client_pages_count", clientPagesCount);
 		model.addAttribute("client_pages_size", DEFAULT_PAGE_SIZE);
-		model.addAttribute("client_page_number", pageNumber);		
+		model.addAttribute("client_page_number", 
+				sessionScopeInfoService.getSessionScopeInfo().getPageNumber());		
 	}
 	
 	@Override
 	protected void prepareModel(final Locale locale, final Principal principal, 
-			final Model model, final Long id) {		
+			final Model model) {		
 	}
 	
-	@RequestMapping(value = "/managerpageactiveorders", method = RequestMethod.GET)
-	public String activate(final Locale locale, final Principal principal, final Model model) {
+	@RequestMapping(value = {"/managerpageactiveorders", "/manageradminpageactiveorders"},
+			method = RequestMethod.GET)
+	public String activate(HttpServletRequest request,
+			final Locale locale, final Principal principal, final Model model) {
 		
 		if (!isMyUserSet(principal)) {
 			return "redirect:/index";
 		}		
 		
-		prepareModel(locale, principal, model);
+		prepareModel(locale, principal, model, 
+				sessionScopeInfoService.getSessionScopeInfo().getSelectedId());
 		
-		return "managerpageactiveorders";
+		if (request.getRequestURI().contains("admin")) {
+			return "manageradminpageactiveorders";
+		} else {		
+			return "managerpageactiveorders";
+		}
 	}
 	
-	@RequestMapping(value = "/manageradminpageactiveorders", method = RequestMethod.GET)
-	public String activateAdmin(final Locale locale, final Principal principal, final Model model) {
+	@RequestMapping(value = {"/managerpageactiveorders/clientpaging", 
+					"/manageradminpageactiveorders/clientpaging"},
+			method = RequestMethod.POST)
+	public String clientPaging(HttpServletRequest request,
+			@RequestParam("clientPageNumber") final Long clientPageNumber) {
 		
-		if (!isMyUserSet(principal)) {
-			return "redirect:/index";
+		changeSessionScopePagingInfo(clientPageNumber * DEFAULT_PAGE_SIZE,
+				DEFAULT_PAGE_SIZE * (clientPageNumber + 1) - 1,
+				clientPageNumber);		
+		
+		sessionScopeInfoService.getSessionScopeInfo().setSelectedId(0L);
+		
+		if (request.getRequestURI().contains("admin")) {
+			return "redirect:/manageradminpageactiveorders";
+		} else {		
+			return "redirect:/managerpageactiveorders";
 		}		
-		
-		prepareModel(locale, principal, model);
-		
-		return "manageradminpageactiveorders";
 	}
 	
-	@RequestMapping(value = "/managerpageactiveorders/clientpaging", method = RequestMethod.POST)
-	public String clientPaging(@RequestParam("clientPageNumber") final Long clientPageNumber) {
-		
-		pagingFirstIndex = clientPageNumber * DEFAULT_PAGE_SIZE;
-		pagingLastIndex = DEFAULT_PAGE_SIZE * (clientPageNumber + 1) - 1;
-		this.pageNumber = clientPageNumber;		
-		
-		selectedClientId = 0L;
-		startedOrdersForSelectedClient.clear();
-		readyOrdersForSelectedClient.clear();
-		
-		return "redirect:/managerpageactiveorders";
-	}
-	
-	@RequestMapping(value = "/manageradminpageactiveorders/clientpaging", method = RequestMethod.POST)
-	public String clientPagingAdmin(@RequestParam("clientPageNumber") final Long clientPageNumber) {
-		
-		pagingFirstIndex = clientPageNumber * DEFAULT_PAGE_SIZE;
-		pagingLastIndex = DEFAULT_PAGE_SIZE * (clientPageNumber + 1) - 1;
-		this.pageNumber = clientPageNumber;		
-		
-		selectedClientId = 0L;
-		startedOrdersForSelectedClient.clear();
-		readyOrdersForSelectedClient.clear();
-		
-		return "redirect:/manageradminpageactiveorders";
-	}
-	
-	@RequestMapping(value = "/managerpageactiveorders/startedorderspaging",
+	@RequestMapping(value = {"/managerpageactiveorders/startedorderspaging", 
+					"/manageradminpageactiveorders/startedorderspaging"},
 			method = RequestMethod.POST)
-	public String startedOrdersPaging(			
+	public String startedOrdersPaging(HttpServletRequest request,
 			@RequestParam("startedOrdersPageNumber") final Long startedOrdersPageNumber) {
 		
-		startedOrdersPagingFirstIndex = startedOrdersPageNumber * DEFAULT_PAGE_SIZE;
-		startedOrdersPagingLastIndex = DEFAULT_PAGE_SIZE * (startedOrdersPageNumber + 1) - 1;
-		this.startedOrdersPageNumber = startedOrdersPageNumber;
+		changeSessionScopePagingPlusInfo(startedOrdersPageNumber * DEFAULT_PAGE_SIZE,
+				DEFAULT_PAGE_SIZE * (startedOrdersPageNumber + 1) - 1,
+				startedOrdersPageNumber);
 		
-		return "redirect:/managerpageactiveorders";
+		if (request.getRequestURI().contains("admin")) {
+			return "redirect:/manageradminpageactiveorders";
+		} else {		
+			return "redirect:/managerpageactiveorders";
+		}		
 	}
 	
-	@RequestMapping(value = "/manageradminpageactiveorders/startedorderspaging",
+	@RequestMapping(value = {"/managerpageactiveorders/readyorderspaging", 
+					"/manageradminpageactiveorders/readyorderspaging"},
 			method = RequestMethod.POST)
-	public String startedOrdersPagingAdmin(			
-			@RequestParam("startedOrdersPageNumber") final Long startedOrdersPageNumber) {
-		
-		startedOrdersPagingFirstIndex = startedOrdersPageNumber * DEFAULT_PAGE_SIZE;
-		startedOrdersPagingLastIndex = DEFAULT_PAGE_SIZE * (startedOrdersPageNumber + 1) - 1;
-		this.startedOrdersPageNumber = startedOrdersPageNumber;
-		
-		return "redirect:/manageradminpageactiveorders";
-	}
-	
-	@RequestMapping(value = "/managerpageactiveorders/readyorderspaging",
-			method = RequestMethod.POST)
-	public String readyOrdersPaging(			
+	public String readyOrdersPaging(HttpServletRequest request,
 			@RequestParam("readyOrdersPageNumber") final Long readyOrdersPageNumber) {
 		
-		readyOrdersPagingFirstIndex = readyOrdersPageNumber * DEFAULT_PAGE_SIZE;
-		readyOrdersPagingLastIndex = DEFAULT_PAGE_SIZE * (readyOrdersPageNumber + 1) - 1;
-		this.readyOrdersPageNumber = readyOrdersPageNumber;
+		changeSessionScopePagingPlusPlusInfo(readyOrdersPageNumber * DEFAULT_PAGE_SIZE,
+				DEFAULT_PAGE_SIZE * (readyOrdersPageNumber + 1) - 1,
+				readyOrdersPageNumber);
 		
-		return "redirect:/managerpageactiveorders";
+		if (request.getRequestURI().contains("admin")) {
+			return "redirect:/manageradminpageactiveorders";
+		} else {		
+			return "redirect:/managerpageactiveorders";
+		}		
 	}
 	
-	@RequestMapping(value = "/manageradminpageactiveorders/readyorderspaging",
+	@RequestMapping(value = {"/listactiveordersforselectedclient", 
+					"/listactiveordersforselectedclientadmin"},
 			method = RequestMethod.POST)
-	public String readyOrdersPagingAdmin(			
-			@RequestParam("readyOrdersPageNumber") final Long readyOrdersPageNumber) {
+	public String listActiveOrdersForSelectedClient(HttpServletRequest request,
+			@RequestParam("clientId") Long clientId) {
 		
-		readyOrdersPagingFirstIndex = readyOrdersPageNumber * DEFAULT_PAGE_SIZE;
-		readyOrdersPagingLastIndex = DEFAULT_PAGE_SIZE * (readyOrdersPageNumber + 1) - 1;
-		this.readyOrdersPageNumber = readyOrdersPageNumber;
+		sessionScopeInfoService.getSessionScopeInfo().setSelectedId(clientId);
 		
-		return "redirect:/manageradminpageactiveorders";
+		if (request.getRequestURI().contains("admin")) {
+			return "redirect:/manageradminpageactiveorders";
+		} else {		
+			return "redirect:/managerpageactiveorders";
+		}		
 	}
 	
-	@RequestMapping(value = "/listactiveordersforselectedclient", method = RequestMethod.POST)
-	public String listActiveOrdersForSelectedClient(@RequestParam("clientId") Long clientId) {
-		startedOrdersForSelectedClient.clear();
-		readyOrdersForSelectedClient.clear();
+	@RequestMapping(value = {"/setready", "/setreadyadmin"}, method = RequestMethod.GET)
+	public String setOrderReady(HttpServletRequest request,
+			@RequestParam("order_id") Long orderId, final Locale locale) {
 		
-		startedOrdersForSelectedClient.addAll(
-				orderSvc.getOrdersForClientIdAndStatusWithFetching(clientId, "started", 
-						startedOrdersPagingFirstIndex,
-						startedOrdersPagingLastIndex - startedOrdersPagingFirstIndex + 1));
-		
-		readyOrdersForSelectedClient.addAll(
-				orderSvc.getOrdersForClientIdAndStatusWithFetching(clientId, "ready", 
-						readyOrdersPagingFirstIndex,
-						readyOrdersPagingLastIndex - readyOrdersPagingFirstIndex + 1));
-		
-		selectedClientId = clientId;
-		return "redirect:/managerpageactiveorders";
-	}
-	
-	@RequestMapping(value = "/listactiveordersforselectedclientadmin", method = RequestMethod.POST)
-	public String listActiveOrdersForSelectedClientAdmin(@RequestParam("clientId") Long clientId) {
-		startedOrdersForSelectedClient.clear();
-		readyOrdersForSelectedClient.clear();
-		
-		startedOrdersForSelectedClient.addAll(
-				orderSvc.getOrdersForClientIdAndStatusWithFetching(clientId, "started", 
-						startedOrdersPagingFirstIndex,
-						startedOrdersPagingLastIndex - startedOrdersPagingFirstIndex + 1));
-		
-		readyOrdersForSelectedClient.addAll(
-				orderSvc.getOrdersForClientIdAndStatusWithFetching(clientId, "ready", 
-						readyOrdersPagingFirstIndex,
-						readyOrdersPagingLastIndex - readyOrdersPagingFirstIndex + 1));
-		
-		selectedClientId = clientId;
-		return "redirect:/manageradminpageactiveorders";
-	}
-	
-	@RequestMapping(value = "/setready", method = RequestMethod.GET)
-	public String setOrderReady(@RequestParam("order_id") Long orderId, final Locale locale) {
 		Order myOrder = orderSvc.getOrderById(orderId);
 		if (myOrder == null) {
 			messageSetReadyFailed = 
 					messageSource
 					.getMessage("popup.managerpage.started.actions.setReady.failed.orderNotExists",
 							null, locale);
-			return "redirect:/managerpageactiveorders";
+			if (request.getRequestURI().contains("admin")) {
+				return "redirect:/manageradminpageactiveorders";
+			} else {		
+				return "redirect:/managerpageactiveorders";
+			}			
 		}
 		if (!myOrder.getStatus().getOrderStatusName().contentEquals("started")) {
 			messageSetReadyFailed = 
@@ -259,51 +220,24 @@ public class ManagerPageActiveOrdersController extends AbstractRolePageControlle
 					.getMessage(
 							"popup.managerpage.started.actions.setReady.failed.orderNotStarted",
 							null, locale);
+			if (request.getRequestURI().contains("admin")) {
+				return "redirect:/manageradminpageactiveorders";
+			} else {		
+				return "redirect:/managerpageactiveorders";
+			}			
+		}
+		orderSvc.setOrderStatusById(orderId, 
+			orderStatusSvc.getOrderStatusByName("ready").getOrderStatusId());
+		myOrder = orderSvc.getOrderByIdWithFetching(orderId);
+		machineSvc.incrementTimesRepairedById(myOrder.getMachine().getMachineId());
+		messageSetReadySucceeded = 
+				messageSource
+				.getMessage("popup.managerpage.started.actions.setReady.succeeded",
+						null, locale);
+		if (request.getRequestURI().contains("admin")) {
+			return "redirect:/manageradminpageactiveorders";
+		} else {		
 			return "redirect:/managerpageactiveorders";
-		}
-		orderSvc.setOrderStatusById(orderId, 
-			orderStatusSvc.getOrderStatusByName("ready").getOrderStatusId());
-		myOrder = orderSvc.getOrderByIdWithFetching(orderId);
-		startedOrdersForSelectedClient.remove(
-				startedOrdersForSelectedClient.indexOf(myOrder));		
-		machineSvc.incrementTimesRepairedById(myOrder.getMachine().getMachineId());
-		readyOrdersForSelectedClient.add(myOrder);
-		messageSetReadySucceeded = 
-				messageSource
-				.getMessage("popup.managerpage.started.actions.setReady.succeeded",
-						null, locale);
-		return "redirect:/managerpageactiveorders";
-	}
-	
-	@RequestMapping(value = "/setreadyadmin", method = RequestMethod.GET)
-	public String setOrderReadyAdmin(@RequestParam("order_id") Long orderId, final Locale locale) {
-		Order myOrder = orderSvc.getOrderById(orderId);
-		if (myOrder == null) {
-			messageSetReadyFailed = 
-					messageSource
-					.getMessage("popup.managerpage.started.actions.setReady.failed.orderNotExists",
-							null, locale);
-			return "redirect:/manageradminpageactiveorders";
-		}
-		if (!myOrder.getStatus().getOrderStatusName().contentEquals("started")) {
-			messageSetReadyFailed = 
-					messageSource
-					.getMessage(
-							"popup.managerpage.started.actions.setReady.failed.orderNotStarted",
-							null, locale);
-			return "redirect:/manageradminpageactiveorders";
-		}
-		orderSvc.setOrderStatusById(orderId, 
-			orderStatusSvc.getOrderStatusByName("ready").getOrderStatusId());
-		myOrder = orderSvc.getOrderByIdWithFetching(orderId);
-		startedOrdersForSelectedClient.remove(
-				startedOrdersForSelectedClient.indexOf(myOrder));		
-		machineSvc.incrementTimesRepairedById(myOrder.getMachine().getMachineId());
-		readyOrdersForSelectedClient.add(myOrder);
-		messageSetReadySucceeded = 
-				messageSource
-				.getMessage("popup.managerpage.started.actions.setReady.succeeded",
-						null, locale);
-		return "redirect:/manageradminpageactiveorders";
+		}		
 	}
 }

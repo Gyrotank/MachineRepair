@@ -44,10 +44,6 @@ public class AdminPageMachinesServiceableController extends AbstractRolePageCont
 			model.addAttribute("machineServiceable", new MachineServiceable());
 		}
 		
-		model.addAttribute("machines_serviceable_short", 
-				machineServiceableSvc.getAll(pagingFirstIndex, 
-					pagingLastIndex - pagingFirstIndex + 1));
-		
 		Long machinesServiceableCount = machineServiceableSvc.getMachineServiceableCount();
 		model.addAttribute("machines_serviceable_count", 
 				machinesServiceableCount);
@@ -58,13 +54,28 @@ public class AdminPageMachinesServiceableController extends AbstractRolePageCont
 		}
 		model.addAttribute("pages_count", pagesCount);
 		model.addAttribute("pages_size", DEFAULT_PAGE_SIZE);
-		model.addAttribute("page_number", pageNumber);
+		Long pageNumber = sessionScopeInfoService.getSessionScopeInfo().getPageNumber();
+		if (pageNumber >= pagesCount) {
+			model.addAttribute("page_number", 0L);
+			model.addAttribute("machines_serviceable_short", 
+					machineServiceableSvc.getAll(
+							0L, DEFAULT_PAGE_SIZE));
+		} else {
+			model.addAttribute("page_number", pageNumber);
+			model.addAttribute("machines_serviceable_short", 
+					machineServiceableSvc.getAll(
+						sessionScopeInfoService.getSessionScopeInfo().getPagingFirstIndex(), 
+						sessionScopeInfoService.getSessionScopeInfo().getPagingLastIndex() 
+						- sessionScopeInfoService
+							.getSessionScopeInfo().getPagingFirstIndex() + 1));
+		}
 		
-		model.addAttribute("message_machine_serviceable_added", messageAdded);
-		messageAdded = "";
+		model.addAttribute("message_machine_serviceable_added",
+			sessionScopeInfoService.getSessionScopeInfo().getMessageAdded());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageAdded("");
 		model.addAttribute("message_machine_serviceable_not_added",
-				messageNotAdded);
-		messageNotAdded = "";
+			sessionScopeInfoService.getSessionScopeInfo().getMessageNotAdded());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageNotAdded("");
 		
 		model.addAttribute("message_enable_disable_failed",
 				messageEnableDisableFailed);
@@ -106,10 +117,9 @@ public class AdminPageMachinesServiceableController extends AbstractRolePageCont
 			@RequestParam("machineServiceablePageNumber") 
 				final Long machineServiceablePageNumber) {
 		
-		pagingFirstIndex = machineServiceablePageNumber * DEFAULT_PAGE_SIZE;
-		pagingLastIndex = 
-				DEFAULT_PAGE_SIZE * (machineServiceablePageNumber + 1) - 1;
-		pageNumber = machineServiceablePageNumber;				
+		changeSessionScopePagingInfo(machineServiceablePageNumber * DEFAULT_PAGE_SIZE,
+				DEFAULT_PAGE_SIZE * (machineServiceablePageNumber + 1) - 1,
+				machineServiceablePageNumber);
 		
 		return "redirect:/adminpagemachinesserviceable";
 	}
@@ -130,13 +140,15 @@ public class AdminPageMachinesServiceableController extends AbstractRolePageCont
 		}
 		
 		if (machineServiceableSvc.add(machineServiceable)) {
-			messageAdded =
-					messageSource.getMessage("popup.adminpage.machineServiceableAdded", null,
-							locale);
+			changeSessionScopeAddingInfo(
+					messageSource.getMessage("popup.adminpage.machineServiceableAdded", null, 
+							locale),
+					"");			
 		} else {
-			messageNotAdded = 
+			changeSessionScopeAddingInfo(
+					"",
 					messageSource.getMessage("popup.adminpage.machineServiceableNotAdded", null,
-							locale);
+							locale));			
 		}		
 		return "redirect:/adminpagemachinesserviceable";
 	}

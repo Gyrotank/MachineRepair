@@ -3,6 +3,8 @@ package com.glomozda.machinerepair.controller.managerpage;
 import java.security.Principal;
 import java.util.Locale;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,28 +33,23 @@ public class ManagerPageController extends AbstractRolePageController
 			final Model model, final Long id) {		
 	}
 	
-	@RequestMapping(value = "/managerpage", method = RequestMethod.GET)
-	public String activate(final Locale locale, final Principal principal, final Model model) {
-		
-		if (!isMyUserSet(principal)) {
-			return "redirect:/index";
-		}	
-		
-		prepareModel(locale, principal, model);
-		
-		return "managerpage";
-	}
-	
-	@RequestMapping(value = "/manageradminpage", method = RequestMethod.GET)
-	public String activateAdmin(final Locale locale, final Principal principal, 
+	@RequestMapping(value = {"/managerpage", "/manageradminpage"}, method = RequestMethod.GET)
+	public String activate(
+			HttpServletRequest request,
+			final Locale locale,
+			final Principal principal,
 			final Model model) {
 		
 		if (!isMyUserSet(principal)) {
 			return "redirect:/index";
 		}	
-		
+				
 		prepareModel(locale, principal, model);
 		
-		return "manageradminpage";
+		if (request.getRequestURI().contains("admin")) {
+			return "manageradminpage";
+		} else {		
+			return "managerpage";
+		}
 	}
 }

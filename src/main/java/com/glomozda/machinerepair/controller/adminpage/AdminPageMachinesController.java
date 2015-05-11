@@ -38,8 +38,11 @@ public class AdminPageMachinesController extends AbstractRolePageController
 		}
 		
 		model.addAttribute("machines_short", 
-				machineSvc.getAllWithFetching(pagingFirstIndex, 
-						pagingLastIndex - pagingFirstIndex + 1));
+				machineSvc.getAllWithFetching(
+						sessionScopeInfoService.getSessionScopeInfo().getPagingFirstIndex(), 
+						sessionScopeInfoService.getSessionScopeInfo().getPagingLastIndex() 
+						- sessionScopeInfoService
+							.getSessionScopeInfo().getPagingFirstIndex() + 1));
 		
 		Long machinesCount = machineSvc.getMachineCount();
 		model.addAttribute("machines_count", machinesCount);
@@ -50,12 +53,28 @@ public class AdminPageMachinesController extends AbstractRolePageController
 		}
 		model.addAttribute("pages_count", pagesCount);
 		model.addAttribute("pages_size", DEFAULT_PAGE_SIZE);
-		model.addAttribute("page_number", pageNumber);
+		Long pageNumber = sessionScopeInfoService.getSessionScopeInfo().getPageNumber();
+		if (pageNumber >= pagesCount) {
+			model.addAttribute("page_number", 0L);
+			model.addAttribute("machines_short", 
+					machineSvc.getAllWithFetching(
+							0L, DEFAULT_PAGE_SIZE));
+		} else {
+			model.addAttribute("page_number", pageNumber);
+			model.addAttribute("machines_short", 
+					machineSvc.getAllWithFetching(
+							sessionScopeInfoService.getSessionScopeInfo().getPagingFirstIndex(), 
+							sessionScopeInfoService.getSessionScopeInfo().getPagingLastIndex() 
+							- sessionScopeInfoService
+								.getSessionScopeInfo().getPagingFirstIndex() + 1));
+		}
 		
-		model.addAttribute("message_machine_added", messageAdded);
-		messageAdded = "";
-		model.addAttribute("message_machine_not_added", messageNotAdded);
-		messageNotAdded = "";
+		model.addAttribute("message_machine_added", 
+			sessionScopeInfoService.getSessionScopeInfo().getMessageAdded());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageAdded("");
+		model.addAttribute("message_machine_not_added",
+			sessionScopeInfoService.getSessionScopeInfo().getMessageNotAdded());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageNotAdded("");
 		
 		model.addAttribute("machines_serviceable", machineServiceableSvc.getAllOrderByName());
 		
@@ -84,9 +103,9 @@ public class AdminPageMachinesController extends AbstractRolePageController
 	@RequestMapping(value = "/adminpagemachines/machinepaging", method = RequestMethod.POST)
 	public String machinePaging(@RequestParam("machinePageNumber") final Long machinePageNumber) {
 		
-		pagingFirstIndex = machinePageNumber * DEFAULT_PAGE_SIZE;
-		pagingLastIndex = DEFAULT_PAGE_SIZE * (machinePageNumber + 1) - 1;
-		pageNumber = machinePageNumber;
+		changeSessionScopePagingInfo(machinePageNumber * DEFAULT_PAGE_SIZE,
+				DEFAULT_PAGE_SIZE * (machinePageNumber + 1) - 1,
+				machinePageNumber);
 		
 		return "redirect:/adminpagemachines";
 	}
@@ -114,13 +133,14 @@ public class AdminPageMachinesController extends AbstractRolePageController
 				machineDTO.getMachineYear(), machineDTO.getMachineTimesRepaired());
 		
 		if (machineSvc.add(newMachine, machineDTO.getMachineServiceableId())) {
-			messageAdded =
-					messageSource.getMessage("popup.adminpage.machineAdded", null,
-							locale);
+			changeSessionScopeAddingInfo(
+					messageSource.getMessage("popup.adminpage.machineAdded", null,locale),
+					"");			
 		} else {
-			messageNotAdded = 
+			changeSessionScopeAddingInfo(
+					"",
 					messageSource.getMessage("popup.adminpage.machineNotAdded", null,
-							locale);
+							locale));			
 		}
 		return "redirect:/adminpagemachines";
 	}

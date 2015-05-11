@@ -38,18 +38,32 @@ public class ClientPagePastOrdersController extends AbstractRolePageController
 		
 		Long pastOrdersCount = orderSvc.getCountOrdersForClientIdAndStatus(myClient.getClientId(), "finished");
 		model.addAttribute("past_orders_count", pastOrdersCount);
-		List<Order> myPastOrders =
-				orderSvc.getOrdersForClientIdAndStatusWithFetching(myClient.getClientId(),
-						"finished", pagingFirstIndex, 
-						pagingLastIndex - pagingFirstIndex + 1);
-		model.addAttribute("my_past_orders", myPastOrders);
+		List<Order> myPastOrders;
+		
 		Long pagesCount = pastOrdersCount / DEFAULT_PAGE_SIZE;
 		if (pastOrdersCount % DEFAULT_PAGE_SIZE != 0) {
 			pagesCount++;
 		}
 		model.addAttribute("pages_count", pagesCount);
 		model.addAttribute("pages_size", DEFAULT_PAGE_SIZE);
-		model.addAttribute("page_number", pageNumber);
+		Long pageNumber = sessionScopeInfoService.getSessionScopeInfo().getPageNumber();
+		if (pageNumber >= pagesCount) {
+			model.addAttribute("page_number", 0L);
+			myPastOrders =
+					orderSvc.getOrdersForClientIdAndStatusWithFetching(myClient.getClientId(),
+							"finished", 
+							0L, DEFAULT_PAGE_SIZE);						
+		} else {
+			model.addAttribute("page_number", pageNumber);
+			myPastOrders =
+					orderSvc.getOrdersForClientIdAndStatusWithFetching(myClient.getClientId(),
+							"finished", 
+							sessionScopeInfoService.getSessionScopeInfo().getPagingFirstIndex(), 
+							sessionScopeInfoService.getSessionScopeInfo().getPagingLastIndex() 
+							- sessionScopeInfoService.getSessionScopeInfo()
+								.getPagingFirstIndex() + 1);
+		}
+		model.addAttribute("my_past_orders", myPastOrders);
 	}
 	
 	@Override
@@ -75,9 +89,9 @@ public class ClientPagePastOrdersController extends AbstractRolePageController
 	public String pastOrdersPaging(
 			@RequestParam("pastOrdersPageNumber") final Long pastOrdersPageNumber) {
 		
-		pagingFirstIndex = pastOrdersPageNumber * DEFAULT_PAGE_SIZE;
-		pagingLastIndex = DEFAULT_PAGE_SIZE * (pastOrdersPageNumber + 1) - 1;
-		pageNumber = pastOrdersPageNumber;		
+		changeSessionScopePagingInfo(pastOrdersPageNumber * DEFAULT_PAGE_SIZE,
+				DEFAULT_PAGE_SIZE * (pastOrdersPageNumber + 1) - 1,
+				pastOrdersPageNumber);		
 		
 		return "redirect:/clientpagepastorders";
 	}	

@@ -39,10 +39,6 @@ public class AdminPageUsersController extends AbstractRolePageController
 			model.addAttribute("userDTO", new UserDTO());
 		}
 		
-		model.addAttribute("users_short", 
-				userSvc.getAll(pagingFirstIndex, 
-						pagingLastIndex - pagingFirstIndex + 1));
-		
 		Long usersCount = userSvc.getUserCount();
 		model.addAttribute("users_count", usersCount);
 		Long pagesCount = usersCount / DEFAULT_PAGE_SIZE;
@@ -51,7 +47,20 @@ public class AdminPageUsersController extends AbstractRolePageController
 		}
 		model.addAttribute("pages_count", pagesCount);
 		model.addAttribute("pages_size", DEFAULT_PAGE_SIZE);
-		model.addAttribute("page_number", pageNumber);
+		Long pageNumber = sessionScopeInfoService.getSessionScopeInfo().getPageNumber();
+		if (pageNumber >= pagesCount) {
+			model.addAttribute("page_number", 0L);
+			model.addAttribute("users_short", 
+					userSvc.getAll(0L, DEFAULT_PAGE_SIZE));
+		} else {
+			model.addAttribute("page_number", pageNumber);
+			model.addAttribute("users_short", 
+					userSvc.getAll(
+						sessionScopeInfoService.getSessionScopeInfo().getPagingFirstIndex(), 
+						sessionScopeInfoService.getSessionScopeInfo().getPagingLastIndex() 
+							- sessionScopeInfoService
+								.getSessionScopeInfo().getPagingFirstIndex() + 1));
+		}
 		
 		model.addAttribute("dialog_enable_user",
 				messageSource.getMessage("label.adminpage.users.actions.enable.dialog", null,
@@ -68,11 +77,11 @@ public class AdminPageUsersController extends AbstractRolePageController
 		messageEnableDisableSucceeded = "";
 		
 		model.addAttribute("message_user_added",
-				messageAdded);
-		messageAdded = "";
+			sessionScopeInfoService.getSessionScopeInfo().getMessageAdded());
+			sessionScopeInfoService.getSessionScopeInfo().setMessageAdded("");
 		model.addAttribute("message_user_not_added",
-				messageNotAdded);
-		messageNotAdded = "";		
+			sessionScopeInfoService.getSessionScopeInfo().getMessageNotAdded());
+			sessionScopeInfoService.getSessionScopeInfo().setMessageNotAdded("");	
 	}
 	
 	@Override
@@ -95,10 +104,9 @@ public class AdminPageUsersController extends AbstractRolePageController
 	@RequestMapping(value = "/adminpageusers/userpaging", method = RequestMethod.POST)
 	public String userPaging(@RequestParam("userPageNumber") final Long userPageNumber) {
 		
-		pagingFirstIndex = userPageNumber * DEFAULT_PAGE_SIZE;
-		pagingLastIndex = 
-				DEFAULT_PAGE_SIZE * (userPageNumber + 1) - 1;
-		pageNumber = userPageNumber;
+		changeSessionScopePagingInfo(userPageNumber * DEFAULT_PAGE_SIZE,
+				DEFAULT_PAGE_SIZE * (userPageNumber + 1) - 1,
+				userPageNumber);
 		
 		return "redirect:/adminpageusers";
 	}
@@ -189,13 +197,15 @@ public class AdminPageUsersController extends AbstractRolePageController
 		}
 		
 		if (userSvc.add(userDTO.getLogin(), userDTO.getPasswordText())) {
-			messageAdded =
-					messageSource.getMessage("popup.adminpage.userAdded", null,
-							locale);
+			changeSessionScopeAddingInfo(
+					messageSource.getMessage("popup.adminpage.userAdded", null, 
+							locale),
+					"");			
 		} else {
-			messageNotAdded = 
-					messageSource.getMessage("popup.adminpage.userNotAdded", null,
-							locale);
+			changeSessionScopeAddingInfo(
+					"",
+					messageSource.getMessage("popup.adminpage.userAdded", null,
+							locale));
 		}
 		return "redirect:/adminpageusers";
 	}

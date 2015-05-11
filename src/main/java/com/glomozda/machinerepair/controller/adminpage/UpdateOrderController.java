@@ -84,14 +84,14 @@ public class UpdateOrderController extends AbstractRolePageController
 		model.addAttribute("managers", managers);
 		
 		model.addAttribute("message_order_not_updated",
-				messageUpdateFailed);
-		messageUpdateFailed = "";
+				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateFailed());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateFailed("");
 		model.addAttribute("message_order_updated",
-				messageUpdateSucceeded);
-		messageUpdateSucceeded = "";
+				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateSucceeded());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateSucceeded("");
 		model.addAttribute("message_order_no_changes",
-				messageNoChanges);
-		messageNoChanges = "";
+				sessionScopeInfoService.getSessionScopeInfo().getMessageNoChanges());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageNoChanges("");		
 	}
 	
 	@RequestMapping(value = "/updateorder", method = RequestMethod.GET)
@@ -165,20 +165,29 @@ public class UpdateOrderController extends AbstractRolePageController
 				&& newOrder.getStart().equals(myOrder.getStart())
 				&& newOrder.getRepairType().getRepairTypeId()
 					.equals(myOrder.getRepairType().getRepairTypeId())) {
-			messageNoChanges = 
-					messageSource.getMessage("popup.adminpage.orderNoChanges", null,
-							locale);
+			
+			changeSessionScopeUpdateInfo(
+					"",
+					"", messageSource.getMessage("popup.adminpage.orderNoChanges",
+							null,
+							locale));
 			return "redirect:/updateorder/?order-id=" + myOrder.getOrderId();
 		}
 		
 		if (orderSvc.updateOrderById(myOrder.getOrderId(), newOrder) == 1) {
-			messageUpdateSucceeded =
+			changeSessionScopeUpdateInfo(
+					"",
 					messageSource.getMessage("popup.adminpage.orderUpdated", null,
-							locale);
+							locale), 
+					"");
+			
 		} else {
-			messageUpdateFailed = 
+			changeSessionScopeUpdateInfo(
 					messageSource.getMessage("popup.adminpage.orderNotUpdated", null,
-							locale);
+							locale),
+					"", 
+					"");
+			
 		}		
 		return "redirect:/updateorder/?order-id=" + myOrder.getOrderId();
 	}	

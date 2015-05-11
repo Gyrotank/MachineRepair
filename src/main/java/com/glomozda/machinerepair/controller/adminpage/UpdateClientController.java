@@ -49,14 +49,14 @@ public class UpdateClientController extends AbstractRolePageController
 		}
 		
 		model.addAttribute("message_client_not_updated",
-				messageUpdateFailed);
-		messageUpdateFailed = "";
+				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateFailed());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateFailed("");
 		model.addAttribute("message_client_updated",
-				messageUpdateSucceeded);
-		messageUpdateSucceeded = "";
+				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateSucceeded());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateSucceeded("");
 		model.addAttribute("message_client_no_changes",
-				messageNoChanges);
-		messageNoChanges = "";
+				sessionScopeInfoService.getSessionScopeInfo().getMessageNoChanges());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageNoChanges("");		
 	}
 	
 	@RequestMapping(value = "/updateclient", method = RequestMethod.GET)
@@ -92,24 +92,29 @@ public class UpdateClientController extends AbstractRolePageController
 		}
 		
 		if (client.getClientName().contentEquals(myClient.getClientName())) {
-			messageNoChanges = 
-					messageSource.getMessage("popup.adminpage.clientNoChanges", null,
-							locale);
+			changeSessionScopeUpdateInfo(
+					"",
+					"", messageSource.getMessage("popup.adminpage.clientNoChanges", null,
+							locale));			
 			
 			return "redirect:/updateclient/?client-id=" + myClient.getClientId();
 		}
 		
 		if (clientSvc.updateClientNameById(myClient.getClientId(), client.getClientName())
 				== 1) {
-			messageUpdateSucceeded =
+			changeSessionScopeUpdateInfo(
+					"",
 					messageSource.getMessage("popup.adminpage.clientUpdated", null,
-							locale);
+							locale), 
+					"");	
 			
 			return "redirect:/updateclient/?client-id=" + myClient.getClientId();
 		} else {
-			messageUpdateFailed = 
+			changeSessionScopeUpdateInfo(
 					messageSource.getMessage("popup.adminpage.clientNotUpdated", null,
-							locale);
+							locale),
+					"", 
+					"");			
 
 			return "redirect:/updateclient/?client-id=" + myClient.getClientId();
 		}		

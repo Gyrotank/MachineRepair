@@ -50,14 +50,14 @@ public class UpdateMachineServiceableController extends AbstractRolePageControll
 		}
 		
 		model.addAttribute("message_machine_serviceable_not_updated",
-				messageUpdateFailed);
-		messageUpdateFailed = "";
+				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateFailed());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateFailed("");
 		model.addAttribute("message_machine_serviceable_updated",
-				messageUpdateSucceeded);
-		messageUpdateSucceeded = "";
+				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateSucceeded());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateSucceeded("");
 		model.addAttribute("message_machine_serviceable_no_changes",
-				messageNoChanges);
-		messageNoChanges = "";
+				sessionScopeInfoService.getSessionScopeInfo().getMessageNoChanges());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageNoChanges("");		
 	}
 	
 	@RequestMapping(value = "/updatemachineserviceable", method = RequestMethod.GET)
@@ -96,9 +96,12 @@ public class UpdateMachineServiceableController extends AbstractRolePageControll
 		}
 		
 		if (machineServiceable.equals(myMachineServiceable)) {
-			messageNoChanges = 
-					messageSource.getMessage("popup.adminpage.machineServiceableNoChanges", null,
-							locale);
+			changeSessionScopeUpdateInfo(
+					"",
+					"", messageSource.getMessage("popup.adminpage.machineServiceableNoChanges",
+							null,
+							locale));
+			
 			return "redirect:/updatemachineserviceable/?machine-serviceable-id="
 				+ myMachineServiceable.getMachineServiceableId();
 		}
@@ -107,17 +110,21 @@ public class UpdateMachineServiceableController extends AbstractRolePageControll
 				myMachineServiceable.getMachineServiceableId(),
 				machineServiceable)
 				== 1) {
-			messageUpdateSucceeded =
+			changeSessionScopeUpdateInfo(
+					"",
 					messageSource.getMessage("popup.adminpage.machineServiceableUpdated", null,
-							locale);
+							locale), 
+					"");			
 
 			return "redirect:/updatemachineserviceable/?machine-serviceable-id="
 				+ myMachineServiceable.getMachineServiceableId();
 		} else {
-			messageUpdateFailed = 
+			changeSessionScopeUpdateInfo(
 					messageSource.getMessage("popup.adminpage.machineServiceableNotUpdated", null,
-							locale);
-
+							locale),
+					"", 
+					"");
+			
 			return "redirect:/updatemachineserviceable/?machine-serviceable-id="
 				+ myMachineServiceable.getMachineServiceableId();
 		}		

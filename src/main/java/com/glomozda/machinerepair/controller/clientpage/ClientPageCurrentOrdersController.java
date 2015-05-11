@@ -41,18 +41,31 @@ public class ClientPageCurrentOrdersController extends AbstractRolePageControlle
 		
 		Long currentOrdersCount = orderSvc.getCountCurrentOrderForClientId(myClient.getClientId());
 		model.addAttribute("current_orders_count", currentOrdersCount);
-		List<Order> myCurrentOrders =
-				orderSvc.getCurrentOrdersForClientIdWithFetching(myClient.getClientId(),
-						pagingFirstIndex, 
-						pagingLastIndex - pagingFirstIndex + 1);
-		model.addAttribute("my_current_orders", myCurrentOrders);
+		List<Order> myCurrentOrders;
+		
 		Long pagesCount = currentOrdersCount / DEFAULT_PAGE_SIZE;
 		if (currentOrdersCount % DEFAULT_PAGE_SIZE != 0) {
 			pagesCount++;
 		}
 		model.addAttribute("pages_count", pagesCount);
 		model.addAttribute("pages_size", DEFAULT_PAGE_SIZE);
-		model.addAttribute("page_number", pageNumber);
+		Long pageNumber = sessionScopeInfoService.getSessionScopeInfo().getPageNumber();
+		if (pageNumber >= pagesCount) {
+			model.addAttribute("page_number", 0L);
+			myCurrentOrders =
+					orderSvc.getCurrentOrdersForClientIdWithFetching(
+							myClient.getClientId(), 0L, DEFAULT_PAGE_SIZE);			
+		} else {
+			model.addAttribute("page_number", pageNumber);
+			myCurrentOrders =
+					orderSvc.getCurrentOrdersForClientIdWithFetching(myClient.getClientId(),
+							sessionScopeInfoService.getSessionScopeInfo().getPagingFirstIndex(),
+							sessionScopeInfoService.getSessionScopeInfo().getPagingLastIndex() 
+								- sessionScopeInfoService.getSessionScopeInfo()
+									.getPagingFirstIndex() + 1);
+		}
+		
+		model.addAttribute("my_current_orders", myCurrentOrders);
 		
 		model.addAttribute("dialog_pay_order",
 				messageSource.getMessage("label.clientpage.yourOrders.actions.pay.dialog", null,
@@ -88,9 +101,9 @@ public class ClientPageCurrentOrdersController extends AbstractRolePageControlle
 	public String currentOrdersPaging(
 			@RequestParam("currentOrdersPageNumber") final Long currentOrdersPageNumber) {
 		
-		pagingFirstIndex = currentOrdersPageNumber * DEFAULT_PAGE_SIZE;
-		pagingLastIndex = DEFAULT_PAGE_SIZE * (currentOrdersPageNumber + 1) - 1;
-		pageNumber = currentOrdersPageNumber;
+		changeSessionScopePagingInfo(currentOrdersPageNumber * DEFAULT_PAGE_SIZE,
+				DEFAULT_PAGE_SIZE * (currentOrdersPageNumber + 1) - 1,
+				currentOrdersPageNumber);
 		
 		return "redirect:/clientpagecurrentorders";
 	}

@@ -13,7 +13,7 @@
 	</h1>
 
 	<mycustomtags:updatesidebar requestParamName="repair-type-id"
-		requestParamValue="${repairType.repairTypeId}" />
+		requestParamValue="${entityCurrent.repairTypeId}" />
 
 	<div id="content">
 		<div class="tabs-content">
@@ -21,14 +21,14 @@
 				<h2>
 					<spring:message code="label.adminpage.updateRepairType" />
 				</h2>
-				<form:form method="post" commandName="repairType"
+				<form:form method="post" commandName="entity"
 					action="updateRepairType" accept-charset="UTF-8">
 					<table>
 						<tr>
 							<td><label for="repairTypeNameInput"> <spring:message
 										code="label.adminpage.repairTypes.nameForm" />
 							</label></td>
-							<td><input value="${repairTypeCurrent.repairTypeName}"
+							<td><input value="${entityCurrent.repairTypeName}"
 								maxlength="50" size="50" readonly="readonly" disabled="disabled" />
 							</td>
 							<td><form:input path="repairTypeName"
@@ -39,7 +39,7 @@
 							<td><label for="repairTypeNameInputRu"> <spring:message
 										code="label.adminpage.repairTypes.nameRu" />
 							</label></td>
-							<td><input value="${repairTypeCurrent.repairTypeNameRu}"
+							<td><input value="${entityCurrent.repairTypeNameRu}"
 								maxlength="50" size="50" readonly="readonly" disabled="disabled" />
 							</td>
 							<td><form:input path="repairTypeNameRu"
@@ -50,7 +50,7 @@
 							<td><label for="repairTypePriceInput"> <spring:message
 										code="label.adminpage.repairTypes.price" />
 							</label></td>
-							<td><input value="${repairTypeCurrent.repairTypePrice}"
+							<td><input value="${entityCurrent.repairTypePrice}"
 								maxlength="50" size="50" readonly="readonly" disabled="disabled" />
 							</td>
 							<td><form:input path="repairTypePrice"
@@ -61,7 +61,7 @@
 							<td><label for="repairTypeDurationInput"> <spring:message
 										code="label.adminpage.repairTypes.duration" />
 							</label></td>
-							<td><input value="${repairTypeCurrent.repairTypeDuration}"
+							<td><input value="${entityCurrent.repairTypeDuration}"
 								maxlength="50" size="50" readonly="readonly" disabled="disabled" />
 							</td>
 							<td><form:input path="repairTypeDuration"
@@ -76,13 +76,13 @@
 					</table>
 				</form:form>
 				<div class="success">
-					<c:out value="${message_repair_type_updated}" />
+					<c:out value="${message_entity_updated}" />
 				</div>
 				<div class="error">
-					<c:out value="${message_repair_type_not_updated}" />
+					<c:out value="${message_entity_not_updated}" />
 				</div>
 				<div class="info">
-					<c:out value="${message_repair_type_no_changes}" />
+					<c:out value="${message_entity_no_changes}" />
 				</div>
 			</div>
 		</div>

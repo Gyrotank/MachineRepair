@@ -37,27 +37,10 @@ public class UpdateMachineController extends AbstractRolePageController
 	protected void prepareModel(final Locale locale, final Principal principal,
 			final Model model, final Long machineId) {
 		
-		model.addAttribute("locale", locale.toString());
-		
 		myMachine = machineSvc.getMachineByIdWithFetching(machineId);
 		
-		if (!model.containsAttribute("machineCurrent")) {
-			model.addAttribute("machineCurrent", myMachine);
-		}
-		
-		if (!model.containsAttribute("machine")) {
-			model.addAttribute("machine", myMachine);
-		}
-		
-		model.addAttribute("message_machine_not_updated",
-				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateFailed());
-		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateFailed("");
-		model.addAttribute("message_machine_updated",
-				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateSucceeded());
-		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateSucceeded("");
-		model.addAttribute("message_machine_no_changes",
-				sessionScopeInfoService.getSessionScopeInfo().getMessageNoChanges());
-		sessionScopeInfoService.getSessionScopeInfo().setMessageNoChanges("");
+		prepareModelUpdate(locale, model, myMachine);		
+
 	}
 	
 	@RequestMapping(value = "/updatemachine", method = RequestMethod.GET)
@@ -79,7 +62,7 @@ public class UpdateMachineController extends AbstractRolePageController
 	}
 	
 	@RequestMapping(value = "updatemachine/updateMachine", method = RequestMethod.POST)
-	public String updateMachine(@ModelAttribute("machine") @Valid final Machine machine,
+	public String updateMachine(@ModelAttribute("entity") @Valid final Machine machine,
 			final BindingResult bindingResult,			
 			final RedirectAttributes redirectAttributes,
 			final Locale locale) {
@@ -91,8 +74,8 @@ public class UpdateMachineController extends AbstractRolePageController
 		
 		if (bindingResult.hasErrors()) {
 			redirectAttributes.addFlashAttribute
-			("org.springframework.validation.BindingResult.machine", bindingResult);
-			redirectAttributes.addFlashAttribute("machine", machine);						
+			("org.springframework.validation.BindingResult.entity", bindingResult);
+			redirectAttributes.addFlashAttribute("entity", machine);						
 			
 			return "redirect:/updatemachine/?machine-id=" + myMachine.getMachineId();
 		}

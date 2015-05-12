@@ -13,7 +13,7 @@
 	</h1>
 
 	<mycustomtags:updatesidebar requestParamName="user-authorization-id"
-		requestParamValue="${userAuthorizationDTO.userAuthorizationId}" />
+		requestParamValue="${userAuthorizationDTOCurrent.userAuthorizationId}" />
 
 	<div id="content">
 		<div class="tabs-content">
@@ -118,13 +118,13 @@
 					</p>
 				</form:form>
 				<div class="success">
-					<c:out value="${message_user_authorization_updated}" />
+					<c:out value="${message_entity_updated}" />
 				</div>
 				<div class="error">
-					<c:out value="${message_user_authorization_not_updated}" />
+					<c:out value="${message_entity_not_updated}" />
 				</div>
 				<div class="info">
-					<c:out value="${message_user_authorization_no_changes}" />
+					<c:out value="${message_entity_no_changes}" />
 				</div>
 			</div>
 		</div>

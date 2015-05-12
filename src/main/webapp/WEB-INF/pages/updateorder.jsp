@@ -13,7 +13,7 @@
 	</h1>
 
 	<mycustomtags:updatesidebar requestParamName="order-id"
-		requestParamValue="${orderCurrent.orderId}" />
+		requestParamValue="${entityCurrent.orderId}" />
 
 	<div id="content">
 		<div class="tabs-content">
@@ -28,7 +28,7 @@
 							<td><label> <spring:message
 										code="label.adminpage.orders.client" />
 							</label></td>
-							<td><input value="${orderCurrent.client.clientName}"
+							<td><input value="${entityCurrent.client.clientName}"
 								maxlength="50" size="50" readonly="readonly" disabled="disabled" />
 							</td>
 						</tr>
@@ -38,12 +38,12 @@
 							</label></td>
 							<td><c:choose>
 									<c:when test="${locale == 'ru'}">
-										<input value="${orderCurrent.repairType.repairTypeNameRu}"
+										<input value="${entityCurrent.repairType.repairTypeNameRu}"
 											maxlength="50" size="50" readonly="readonly"
 											disabled="disabled" />
 									</c:when>
 									<c:otherwise>
-										<input value="${orderCurrent.repairType.repairTypeName}"
+										<input value="${entityCurrent.repairType.repairTypeName}"
 											maxlength="50" size="50" readonly="readonly"
 											disabled="disabled" />
 									</c:otherwise>
@@ -100,12 +100,12 @@
 							</label></td>
 							<td><c:choose>
 									<c:when test="${locale == 'ru'}">
-										<input value="${orderCurrent.status.orderStatusNameRu}"
+										<input value="${entityCurrent.status.orderStatusNameRu}"
 											maxlength="50" size="50" readonly="readonly"
 											disabled="disabled" />
 									</c:when>
 									<c:otherwise>
-										<input value="${orderCurrent.status.orderStatusName}"
+										<input value="${entityCurrent.status.orderStatusName}"
 											maxlength="50" size="50" readonly="readonly"
 											disabled="disabled" />
 									</c:otherwise>
@@ -149,7 +149,7 @@
 						<tr>
 							<td><label><spring:message
 										code="label.adminpage.addNewOrder.manager" /></label></td>
-							<td><input value="${orderCurrent.manager}" maxlength="50"
+							<td><input value="${entityCurrent.manager}" maxlength="50"
 								size="50" readonly="readonly" disabled="disabled" /></td>
 							<td><form:select path="manager">
 									<option value="-">
@@ -181,13 +181,13 @@
 					</table>
 				</form:form>
 				<div class="success">
-					<c:out value="${message_order_updated}" />
+					<c:out value="${message_entity_updated}" />
 				</div>
 				<div class="error">
-					<c:out value="${message_order_not_updated}" />
+					<c:out value="${message_entity_not_updated}" />
 				</div>
 				<div class="info">
-					<c:out value="${message_order_no_changes}" />
+					<c:out value="${message_entity_no_changes}" />
 				</div>
 			</div>
 		</div>

@@ -54,12 +54,6 @@ public abstract class AbstractRolePageController implements MessageSourceAware {
 	
 	protected static final Long DEFAULT_PAGE_SIZE = 10L;
 	
-	/**/
-//	protected String messageUpdateFailed = "";
-//	protected String messageUpdateSucceeded = "";
-//	protected String messageNoChanges = "";
-	/**/
-	
 	@Override
 	public void setMessageSource(MessageSource messageSource) {
 		this.messageSource = messageSource;
@@ -123,4 +117,26 @@ public abstract class AbstractRolePageController implements MessageSourceAware {
 			final Principal principal, 
 			final Model model,
 			final Long id);
+	
+	protected void prepareModelUpdate(final Locale locale, final Model model, final Object entity) {
+		model.addAttribute("locale", locale.toString());
+		
+		if (!model.containsAttribute("entityCurrent")) {
+			model.addAttribute("entityCurrent", entity);
+		}
+		
+		if (!model.containsAttribute("entity")) {
+			model.addAttribute("entity", entity);
+		}
+		
+		model.addAttribute("message_entity_not_updated",
+				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateFailed());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateFailed("");
+		model.addAttribute("message_entity_updated",
+				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateSucceeded());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateSucceeded("");
+		model.addAttribute("message_entity_no_changes",
+				sessionScopeInfoService.getSessionScopeInfo().getMessageNoChanges());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageNoChanges("");
+	}
 }

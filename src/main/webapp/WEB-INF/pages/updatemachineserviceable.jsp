@@ -13,7 +13,7 @@
 	</h1>
 
 	<mycustomtags:updatesidebar requestParamName="machine-serviceable-id"
-		requestParamValue="${machineServiceable.machineServiceableId}" />
+		requestParamValue="${entityCurrent.machineServiceableId}" />
 
 	<div id="content">
 		<div class="tabs-content">
@@ -21,14 +21,14 @@
 				<h2>
 					<spring:message code="label.adminpage.updateMachineServiceable" />
 				</h2>
-				<form:form method="post" commandName="machineServiceable"
+				<form:form method="post" commandName="entity"
 					action="updateMachineServiceable" accept-charset="UTF-8">
 					<table>
 						<tr>
 							<td><label for="machineServiceableNameInput"> <spring:message
 										code="label.adminpage.serviceableMachines.name" /></label></td>
 							<td><input
-								value="${machineServiceableCurrent.machineServiceableName}"
+								value="${entityCurrent.machineServiceableName}"
 								maxlength="50" size="50" readonly="readonly" disabled="disabled" />
 							</td>
 							<td><form:input path="machineServiceableName"
@@ -41,7 +41,7 @@
 										code="label.adminpage.serviceableMachines.trademark" />
 							</label></td>
 							<td><input
-								value="${machineServiceableCurrent.machineServiceableTrademark}"
+								value="${entityCurrent.machineServiceableTrademark}"
 								size="50" maxlength="50" readonly="readonly" disabled="disabled" />
 							</td>
 							<td><form:input path="machineServiceableTrademark"
@@ -55,7 +55,7 @@
 										code="label.adminpage.serviceableMachines.countryForm" />
 							</label></td>
 							<td><input
-								value="${machineServiceableCurrent.machineServiceableCountry}"
+								value="${entityCurrent.machineServiceableCountry}"
 								size="50" maxlength="50" readonly="readonly" disabled="disabled" />
 							</td>
 							<td><form:input path="machineServiceableCountry"
@@ -69,7 +69,7 @@
 										code="label.adminpage.serviceableMachines.countryRu" />
 							</label></td>
 							<td><input
-								value="${machineServiceableCurrent.machineServiceableCountryRu}"
+								value="${entityCurrent.machineServiceableCountryRu}"
 								size="50" maxlength="50" readonly="readonly" disabled="disabled" />
 							</td>
 							<td><form:input path="machineServiceableCountryRu"
@@ -86,13 +86,13 @@
 					</table>
 				</form:form>
 				<div class="success">
-					<c:out value="${message_machine_serviceable_updated}" />
+					<c:out value="${message_entity_updated}" />
 				</div>
 				<div class="error">
-					<c:out value="${message_machine_serviceable_not_updated}" />
+					<c:out value="${message_entity_not_updated}" />
 				</div>
 				<div class="info">
-					<c:out value="${message_machine_serviceable_no_changes}" />
+					<c:out value="${message_entity_no_changes}" />
 				</div>
 			</div>
 		</div>

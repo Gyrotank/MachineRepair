@@ -36,27 +36,10 @@ public class UpdateClientController extends AbstractRolePageController
 	protected void prepareModel(final Locale locale, final Principal principal, 
 			final Model model, final Long clientId) {
 		
-		model.addAttribute("locale", locale.toString());
-		
 		myClient = clientSvc.getClientById(clientId);
 		
-		if (!model.containsAttribute("clientCurrent")) {
-			model.addAttribute("clientCurrent", myClient);
-		}
-		
-		if (!model.containsAttribute("client")) {
-			model.addAttribute("client", myClient);
-		}
-		
-		model.addAttribute("message_client_not_updated",
-				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateFailed());
-		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateFailed("");
-		model.addAttribute("message_client_updated",
-				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateSucceeded());
-		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateSucceeded("");
-		model.addAttribute("message_client_no_changes",
-				sessionScopeInfoService.getSessionScopeInfo().getMessageNoChanges());
-		sessionScopeInfoService.getSessionScopeInfo().setMessageNoChanges("");		
+		prepareModelUpdate(locale, model, myClient);
+	
 	}
 	
 	@RequestMapping(value = "/updateclient", method = RequestMethod.GET)
@@ -78,19 +61,19 @@ public class UpdateClientController extends AbstractRolePageController
 	}
 	
 	@RequestMapping(value = "updateclient/updateClient", method = RequestMethod.POST)
-	public String updateClient(@ModelAttribute("client") @Valid final Client client,
+	public String updateClient(@ModelAttribute("entity") @Valid final Client client,
 			final BindingResult bindingResult,			
 			final RedirectAttributes redirectAttributes,
 			final Locale locale) {
 		
 		if (bindingResult.hasErrors()) {
 			redirectAttributes.addFlashAttribute
-			("org.springframework.validation.BindingResult.client", bindingResult);
-			redirectAttributes.addFlashAttribute("client", client);						
+			("org.springframework.validation.BindingResult.entity", bindingResult);
+			redirectAttributes.addFlashAttribute("entity", client);						
 			
 			return "redirect:/updateclient/?client-id=" + myClient.getClientId();
 		}
-		
+				
 		if (client.getClientName().contentEquals(myClient.getClientName())) {
 			changeSessionScopeUpdateInfo(
 					"",

@@ -13,7 +13,7 @@
 	</h1>
 
 	<mycustomtags:updatesidebar requestParamName="machine-id"
-		requestParamValue="${machine.machineId}" />
+		requestParamValue="${entityCurrent.machineId}" />
 
 	<div id="content">
 		<div class="tabs-content">
@@ -21,7 +21,7 @@
 				<h2>
 					<spring:message code="label.adminpage.updateMachine" />
 				</h2>
-				<form:form method="post" commandName="machine"
+				<form:form method="post" commandName="entity"
 					action="updateMachine" accept-charset="UTF-8">
 					<table>
 						<tr>
@@ -29,7 +29,7 @@
 										code="label.adminpage.machines.name" />
 							</label></td>
 							<td><input
-								value="${machineCurrent.machineServiceable.machineServiceableName}"
+								value="${entityCurrent.machineServiceable.machineServiceableName}"
 								maxlength="32" size="32" readonly="readonly" disabled="disabled" />
 							</td>
 						</tr>
@@ -37,7 +37,7 @@
 							<td><label for="machineSerialNumberInput"> <spring:message
 										code="label.adminpage.addNewMachine.sn" />
 							</label></td>
-							<td><input value="${machineCurrent.machineSerialNumber}"
+							<td><input value="${entityCurrent.machineSerialNumber}"
 								maxlength="32" size="32" readonly="readonly" disabled="disabled" />
 							</td>
 							<td><form:input path="machineSerialNumber"
@@ -48,7 +48,7 @@
 							<td><label for="machineYearInput"> <spring:message
 										code="label.adminpage.addNewMachine.year" />
 							</label></td>
-							<td><input value="${machineCurrent.machineYear}"
+							<td><input value="${entityCurrent.machineYear}"
 								maxlength="4" size="4" readonly="readonly" disabled="disabled" />
 							</td>
 							<td><form:input size="4" minlength="4" maxlength="4"
@@ -59,7 +59,7 @@
 							<td><label for="machineTimesRepairedInput"> <spring:message
 										code="label.adminpage.addNewMachine.timesRepaired" />
 							</label></td>
-							<td><input value="${machineCurrent.machineTimesRepaired}"
+							<td><input value="${entityCurrent.machineTimesRepaired}"
 								maxlength="3" size="3" readonly="readonly" disabled="disabled" />
 							</td>
 							<td><form:input size="3" maxlength="3"
@@ -75,13 +75,13 @@
 					</table>
 				</form:form>
 				<div class="success">
-					<c:out value="${message_machine_updated}" />
+					<c:out value="${message_entity_updated}" />
 				</div>
 				<div class="error">
-					<c:out value="${message_machine_not_updated}" />
+					<c:out value="${message_entity_not_updated}" />
 				</div>
 				<div class="info">
-					<c:out value="${message_machine_no_changes}" />
+					<c:out value="${message_entity_no_changes}" />
 				</div>
 			</div>
 		</div>

@@ -36,27 +36,10 @@ public class UpdateRepairTypeController extends AbstractRolePageController
 	protected void prepareModel(final Locale locale, final Principal principal, 
 			final Model model, final Long repairTypeId) {
 		
-		model.addAttribute("locale", locale.toString());
-		
 		myRepairType = repairTypeSvc.getRepairTypeById(repairTypeId);
 		
-		if (!model.containsAttribute("repairTypeCurrent")) {
-			model.addAttribute("repairTypeCurrent", myRepairType);
-		}
-		
-		if (!model.containsAttribute("repairType")) {
-			model.addAttribute("repairType", myRepairType);
-		}
-		
-		model.addAttribute("message_repair_type_not_updated",
-				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateFailed());
-		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateFailed("");
-		model.addAttribute("message_repair_type_updated",
-				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateSucceeded());
-		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateSucceeded("");
-		model.addAttribute("message_repair_type_no_changes",
-				sessionScopeInfoService.getSessionScopeInfo().getMessageNoChanges());
-		sessionScopeInfoService.getSessionScopeInfo().setMessageNoChanges("");		
+		prepareModelUpdate(locale, model, myRepairType);
+	
 	}
 	
 	@RequestMapping(value = "/updaterepairtype", method = RequestMethod.GET)
@@ -79,15 +62,15 @@ public class UpdateRepairTypeController extends AbstractRolePageController
 	
 	@RequestMapping(value = "updaterepairtype/updateRepairType", method = RequestMethod.POST)
 	public String updateRepairType(
-			@ModelAttribute("repairType") @Valid final RepairType repairType,
+			@ModelAttribute("entity") @Valid final RepairType repairType,
 			final BindingResult bindingResult,			
 			final RedirectAttributes redirectAttributes,
 			final Locale locale) {
 		
 		if (bindingResult.hasErrors()) {
 			redirectAttributes.addFlashAttribute
-			("org.springframework.validation.BindingResult.repairType", bindingResult);
-			redirectAttributes.addFlashAttribute("repairType", repairType);			
+			("org.springframework.validation.BindingResult.entity", bindingResult);
+			redirectAttributes.addFlashAttribute("entity", repairType);			
 			return "redirect:/updaterepairtype/?repair-type-id=" + myRepairType.getRepairTypeId();
 		}
 		

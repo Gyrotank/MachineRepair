@@ -36,7 +36,7 @@ public class UpdateUserAuthorizationController extends AbstractRolePageControlle
 	protected void prepareModel(final Locale locale, final Principal principal, 
 			final Model model, final Long userAuthorizationId) {
 
-		model.addAttribute("locale", locale.toString());
+//		model.addAttribute("locale", locale.toString());
 		
 		model.addAttribute("userRoles", userAuthorizationSvc.getAllRoles());
 		
@@ -69,15 +69,17 @@ public class UpdateUserAuthorizationController extends AbstractRolePageControlle
 			model.addAttribute("userAuthorizationDTO", myUserAuthorizationDTO);
 		}
 		
-		model.addAttribute("message_user_authorization_not_updated",
-				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateFailed());
-		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateFailed("");
-		model.addAttribute("message_user_authorization_updated",
-				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateSucceeded());
-		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateSucceeded("");
-		model.addAttribute("message_user_authorization_no_changes",
-				sessionScopeInfoService.getSessionScopeInfo().getMessageNoChanges());
-		sessionScopeInfoService.getSessionScopeInfo().setMessageNoChanges("");			
+		prepareModelUpdate(locale, model, null);
+		
+//		model.addAttribute("message_user_authorization_not_updated",
+//				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateFailed());
+//		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateFailed("");
+//		model.addAttribute("message_user_authorization_updated",
+//				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateSucceeded());
+//		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateSucceeded("");
+//		model.addAttribute("message_user_authorization_no_changes",
+//				sessionScopeInfoService.getSessionScopeInfo().getMessageNoChanges());
+//		sessionScopeInfoService.getSessionScopeInfo().setMessageNoChanges("");			
 	}
 	
 	@RequestMapping(value = "/updateuserauthorization", method = RequestMethod.GET)
@@ -121,10 +123,10 @@ public class UpdateUserAuthorizationController extends AbstractRolePageControlle
 					.equals(myUserAuthorizationDTO.getIsManager())) {
 			
 			changeSessionScopeUpdateInfo(
-					messageSource.getMessage("popup.adminpage.userAuthorizationNoChanges", null,
-							locale),
+					"",
 					"", 
-					"");			
+					messageSource.getMessage("popup.adminpage.userAuthorizationNoChanges", null,
+							locale));			
 			
 			return "redirect:/updateuserauthorization/?user-authorization-id=" 
 			+ myUserAuthorizationDTO.getUserAuthorizationId();

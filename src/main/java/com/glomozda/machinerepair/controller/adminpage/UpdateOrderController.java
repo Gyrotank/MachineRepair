@@ -40,9 +40,9 @@ public class UpdateOrderController extends AbstractRolePageController
 	protected void prepareModel(final Locale locale, final Principal principal, 
 			final Model model, final Long orderId) {
 		
-		model.addAttribute("locale", locale.toString());
-		
 		myOrder = orderSvc.getOrderByIdWithFetching(orderId);
+		
+		prepareModelUpdate(locale, model, myOrder);
 		
 		Calendar cal = new GregorianCalendar();
         cal.setTime(myOrder.getStart());
@@ -66,10 +66,6 @@ public class UpdateOrderController extends AbstractRolePageController
 				enteredStartDate.toString(), myOrder.getStatus().getOrderStatusId(),
 				myOrder.getManager());
 		
-		if (!model.containsAttribute("orderCurrent")) {
-			model.addAttribute("orderCurrent", myOrder);
-		}
-		
 		if (!model.containsAttribute("orderDTO")) {
 			model.addAttribute("orderDTO", orderDTO);
 		}
@@ -82,16 +78,6 @@ public class UpdateOrderController extends AbstractRolePageController
 		managers.addAll(userAuthorizationSvc.getUserLoginsForRole("ROLE_ADMIN"));
 		java.util.Collections.sort(managers);
 		model.addAttribute("managers", managers);
-		
-		model.addAttribute("message_order_not_updated",
-				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateFailed());
-		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateFailed("");
-		model.addAttribute("message_order_updated",
-				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateSucceeded());
-		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateSucceeded("");
-		model.addAttribute("message_order_no_changes",
-				sessionScopeInfoService.getSessionScopeInfo().getMessageNoChanges());
-		sessionScopeInfoService.getSessionScopeInfo().setMessageNoChanges("");		
 	}
 	
 	@RequestMapping(value = "/updateorder", method = RequestMethod.GET)

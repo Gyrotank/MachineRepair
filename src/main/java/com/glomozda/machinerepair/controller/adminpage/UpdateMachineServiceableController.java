@@ -36,28 +36,10 @@ public class UpdateMachineServiceableController extends AbstractRolePageControll
 	protected void prepareModel(final Locale locale, final Principal principal, 
 			final Model model, final Long machineServiceableId) {
 		
-		model.addAttribute("locale", locale.toString());
-		
 		myMachineServiceable = 
 				machineServiceableSvc.getMachineServiceableById(machineServiceableId);
 		
-		if (!model.containsAttribute("machineServiceableCurrent")) {
-			model.addAttribute("machineServiceableCurrent", myMachineServiceable);
-		}
-		
-		if (!model.containsAttribute("machineServiceable")) {
-			model.addAttribute("machineServiceable", myMachineServiceable);
-		}
-		
-		model.addAttribute("message_machine_serviceable_not_updated",
-				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateFailed());
-		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateFailed("");
-		model.addAttribute("message_machine_serviceable_updated",
-				sessionScopeInfoService.getSessionScopeInfo().getMessageUpdateSucceeded());
-		sessionScopeInfoService.getSessionScopeInfo().setMessageUpdateSucceeded("");
-		model.addAttribute("message_machine_serviceable_no_changes",
-				sessionScopeInfoService.getSessionScopeInfo().getMessageNoChanges());
-		sessionScopeInfoService.getSessionScopeInfo().setMessageNoChanges("");		
+		prepareModelUpdate(locale, model, myMachineServiceable);		
 	}
 	
 	@RequestMapping(value = "/updatemachineserviceable", method = RequestMethod.GET)
@@ -82,15 +64,15 @@ public class UpdateMachineServiceableController extends AbstractRolePageControll
 	@RequestMapping(value = "updatemachineserviceable/updateMachineServiceable",
 			method = RequestMethod.POST)
 	public String updateMachineServiceable(
-			@ModelAttribute("machineServiceable") @Valid final MachineServiceable machineServiceable,
+			@ModelAttribute("entity") @Valid final MachineServiceable machineServiceable,
 			final BindingResult bindingResult,			
 			final RedirectAttributes redirectAttributes,
 			final Locale locale) {
 		
 		if (bindingResult.hasErrors()) {
 			redirectAttributes.addFlashAttribute
-			("org.springframework.validation.BindingResult.machineServiceable", bindingResult);
-			redirectAttributes.addFlashAttribute("machineServiceable", machineServiceable);
+			("org.springframework.validation.BindingResult.entity", bindingResult);
+			redirectAttributes.addFlashAttribute("entity", machineServiceable);
 			return "redirect:/updatemachineserviceable/?machine-serviceable-id="
 				+ myMachineServiceable.getMachineServiceableId();
 		}

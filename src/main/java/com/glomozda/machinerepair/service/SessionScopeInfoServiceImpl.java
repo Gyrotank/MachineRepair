@@ -3,6 +3,7 @@ package com.glomozda.machinerepair.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.glomozda.machinerepair.controller.SearchQuery;
 import com.glomozda.machinerepair.controller.SessionScopeInfo;
 
 @Service
@@ -64,5 +65,10 @@ public class SessionScopeInfoServiceImpl implements SessionScopeInfoService {
 		this.sessionScopeInfo.setMessageUpdateFailed(messageUpdateFailed);
 		this.sessionScopeInfo.setMessageUpdateSucceeded(messageUpdateSucceeded);
 		this.sessionScopeInfo.setMessageNoChanges(messageNoChanges);
+	}
+	
+	@Override
+	public void changeSessionScopeSearchQuery(final SearchQuery searchQuery) {
+		this.sessionScopeInfo.setSearchQuery(searchQuery);
 	}
 }

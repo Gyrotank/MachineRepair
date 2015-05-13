@@ -43,4 +43,11 @@ public abstract class ClientRepository {
 	
 	@Transactional
 	public abstract Integer updateClientNameById(Long clientId, String name);
+
+	public abstract Long getClientCountLikeName(String likePattern);
+
+	public abstract List<Client> getClientsLikeName(String likePattern);
+
+	public abstract List<Client> getClientsLikeName(String likePattern, Long start, Long length);
+	
 }

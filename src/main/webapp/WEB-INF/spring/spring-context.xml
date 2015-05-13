@@ -21,6 +21,11 @@
   </beans:bean>  
   
   <default-servlet-handler/>
+  
+  <beans:bean id="propertyConfigurer" 
+    class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <beans:property name="location" value="classpath:jdbc.properties"></beans:property>   
+  </beans:bean>
    
   <!-- MySQL Datasource with Commons DBCP connection pooling -->
   <beans:bean class="org.apache.commons.dbcp.BasicDataSource" id="dataSource">

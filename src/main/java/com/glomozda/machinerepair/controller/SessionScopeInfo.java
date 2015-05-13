@@ -32,6 +32,8 @@ public class SessionScopeInfo implements Serializable {
 	private String messageUpdateSucceeded;
 	private String messageNoChanges;
 	
+	private SearchQuery searchQuery;
+	
 	public SessionScopeInfo() {
 		this.selectedId = 0L;
 		
@@ -53,6 +55,8 @@ public class SessionScopeInfo implements Serializable {
 		this.messageUpdateFailed = "";
 		this.messageUpdateSucceeded = "";
 		this.messageNoChanges = "";
+		
+		this.searchQuery = new SearchQuery();
 	}
 	
 	public SessionScopeInfo(final Long selectedId,
@@ -69,7 +73,8 @@ public class SessionScopeInfo implements Serializable {
 			final String messageNotAdded,
 			final String messageUpdateFailed,
 			final String messageUpdateSucceeded,
-			final String messageNoChanges) {
+			final String messageNoChanges,
+			final SearchQuery searchQuery) {
 		
 		this.selectedId = selectedId;
 		
@@ -90,7 +95,9 @@ public class SessionScopeInfo implements Serializable {
 		
 		this.messageUpdateFailed = "";
 		this.messageUpdateSucceeded = "";
-		this.messageNoChanges = "";		
+		this.messageNoChanges = "";
+		
+		this.searchQuery = searchQuery;
 	}
 
 	public Long getSelectedId() {
@@ -211,5 +218,13 @@ public class SessionScopeInfo implements Serializable {
 
 	public void setMessageNoChanges(String messageNoChanges) {
 		this.messageNoChanges = messageNoChanges;
+	}
+
+	public SearchQuery getSearchQuery() {
+		return searchQuery;
+	}
+
+	public void setSearchQuery(SearchQuery searchQuery) {
+		this.searchQuery = searchQuery;
 	}	
 }

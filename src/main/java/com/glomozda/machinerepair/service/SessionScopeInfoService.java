@@ -1,5 +1,6 @@
 package com.glomozda.machinerepair.service;
 
+import com.glomozda.machinerepair.controller.SearchQuery;
 import com.glomozda.machinerepair.controller.SessionScopeInfo;
 
 public interface SessionScopeInfoService {
@@ -26,4 +27,6 @@ public interface SessionScopeInfoService {
     public void changeSessionScopeUpdateInfo(final String messageUpdateFailed,
 			final String messageUpdateSucceeded,
 			final String messageNoChanges);
+    
+    public void changeSessionScopeSearchQuery(final SearchQuery searchQuery);
 }

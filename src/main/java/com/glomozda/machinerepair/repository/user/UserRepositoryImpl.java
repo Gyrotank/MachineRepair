@@ -138,4 +138,11 @@ public class UserRepositoryImpl extends UserRepository {
 			return false;
 		}
 	}
+
+	@Override
+	public Long getUserCountLikeName(String likePattern) {
+		return em.createNamedQuery("User.countLikeName", Long.class)
+			.setParameter("likePattern", "%" + likePattern + "%")
+			.getSingleResult();
+	}
 }

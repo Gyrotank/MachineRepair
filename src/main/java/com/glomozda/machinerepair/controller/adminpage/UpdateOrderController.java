@@ -104,23 +104,7 @@ public class UpdateOrderController extends AbstractRolePageController
 			final RedirectAttributes redirectAttributes,			
 			final Locale locale) {
 		
-		java.sql.Date startSqlDate = new java.sql.Date(0);
-		
-		try {
-			String startParsed = new String();
-			startParsed = startParsed.concat(orderDTO.getStartDate().substring(6));			
-			startParsed = startParsed.concat("-");			
-			startParsed = startParsed.concat(orderDTO.getStartDate().substring(3, 5));			
-			startParsed = startParsed.concat("-");			
-			startParsed = startParsed.concat(orderDTO.getStartDate().substring(0, 2));			
-			startSqlDate = java.sql.Date.valueOf(startParsed);			
-		} catch (java.lang.StringIndexOutOfBoundsException e) {
-			startSqlDate = null;
-		} catch (IllegalArgumentException e) {
-			startSqlDate = null;
-		} catch (NullPointerException e) {
-			startSqlDate = null;
-		}
+		java.sql.Date startSqlDate = StringToSqlDateParser(orderDTO.getStartDate());
 		
 		if (orderDTO.getStartDate() != null && !orderDTO.getStartDate().isEmpty() 
 				&& startSqlDate == null) {

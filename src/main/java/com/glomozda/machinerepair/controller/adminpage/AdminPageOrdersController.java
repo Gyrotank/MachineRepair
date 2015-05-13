@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.glomozda.machinerepair.controller.AbstractRolePageController;
+import com.glomozda.machinerepair.controller.SearchQuery;
 import com.glomozda.machinerepair.domain.order.Order;
 import com.glomozda.machinerepair.domain.order.OrderDTO;
 
@@ -37,9 +38,39 @@ public class AdminPageOrdersController extends AbstractRolePageController
 			model.addAttribute("orderDTO", new OrderDTO());
 		}
 		
-		model.addAttribute("users", userSvc.getAll());
+		if (!model.containsAttribute("clientSearchQuery")) {
+			model.addAttribute("clientSearchQuery", new SearchQuery());
+		}
 		
-		model.addAttribute("clients", clientSvc.getAll());
+		if (sessionScopeInfoService.getSessionScopeInfo()
+				.getSearchQuery().getSearchQueryArgument().isEmpty()) {
+			model.addAttribute("clients", clientSvc.getAll(0L, 99L));
+			model.addAttribute("message_search_results", "");
+		} else {
+			model.addAttribute("clientSearchQuery",
+					sessionScopeInfoService.getSessionScopeInfo().getSearchQuery());
+			Long resultSetSize 
+				= clientSvc.getClientCountLikeName(sessionScopeInfoService.getSessionScopeInfo()
+						.getSearchQuery().getSearchQueryArgument());
+			if (resultSetSize > DEFAULT_PAGE_SIZE * 2) {
+				model.addAttribute("clients", 
+					clientSvc.getClientsLikeName(sessionScopeInfoService.getSessionScopeInfo()
+						.getSearchQuery().getSearchQueryArgument(), 0L, (DEFAULT_PAGE_SIZE * 2 - 1)));
+				model.addAttribute("message_search_results",
+						messageSource.getMessage(
+							"popup.adminpage.addNewOrder.clientSearchMessageTooMany", 
+								new Object[] { resultSetSize, DEFAULT_PAGE_SIZE * 2 }, locale));
+			} else {
+				model.addAttribute("clients", 
+						clientSvc.getClientsLikeName(sessionScopeInfoService.getSessionScopeInfo()
+							.getSearchQuery().getSearchQueryArgument()));
+					model.addAttribute("message_search_results",
+							messageSource.getMessage(
+								"popup.adminpage.addNewOrder.clientSearchMessageNormal", 
+									new Object[] { resultSetSize }, locale));
+			}
+		}
+		
 		model.addAttribute("repair_types", repairTypeSvc.getAllAvailable());
 		model.addAttribute("machines", machineSvc.getAll());
 		model.addAttribute("order_statuses", orderStatusSvc.getAll());
@@ -112,29 +143,23 @@ public class AdminPageOrdersController extends AbstractRolePageController
 		return "redirect:/adminpageorders";
 	}
 	
+	@RequestMapping(value = "/searchClients", method = RequestMethod.POST)
+	public String searchClients(
+		@ModelAttribute("clientSearchQuery") final SearchQuery clientSearchQuery, 
+		final Model model, final Locale locale) {
+		
+		sessionScopeInfoService.getSessionScopeInfo().setSearchQuery(clientSearchQuery);
+		
+		return "redirect:/adminpageorders#add_new_order";
+	}
+	
 	@RequestMapping(value = "/addOrder", method = RequestMethod.POST)
 	public String addOrder(@ModelAttribute("orderDTO") @Valid final OrderDTO orderDTO,
 			final BindingResult bindingResult,			
 			final RedirectAttributes redirectAttributes,			
 			final Locale locale) {
 		
-		java.sql.Date startSqlDate = new java.sql.Date(0);
-		
-		try {
-			String startParsed = new String();
-			startParsed = startParsed.concat(orderDTO.getStartDate().substring(6));			
-			startParsed = startParsed.concat("-");			
-			startParsed = startParsed.concat(orderDTO.getStartDate().substring(3, 5));			
-			startParsed = startParsed.concat("-");			
-			startParsed = startParsed.concat(orderDTO.getStartDate().substring(0, 2));			
-			startSqlDate = java.sql.Date.valueOf(startParsed);			
-		} catch (java.lang.StringIndexOutOfBoundsException e) {
-			startSqlDate = null;
-		} catch (IllegalArgumentException e) {
-			startSqlDate = null;
-		} catch (NullPointerException e) {
-			startSqlDate = null;
-		}
+		java.sql.Date startSqlDate = StringToSqlDateParser(orderDTO.getStartDate());
 		
 		if (orderDTO.getStartDate() != null && !orderDTO.getStartDate().isEmpty() 
 				&& startSqlDate == null) {

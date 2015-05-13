@@ -36,7 +36,9 @@ import com.glomozda.machinerepair.domain.userauthorization.UserAuthorization;
 			+ "ORDER BY u.login"),
 	@NamedQuery(name="User.setUserEnabledById", query="UPDATE User u SET enabled = :enabled "
 			+ " WHERE u.userId = :id"),
-	@NamedQuery(name="User.countAll", query="SELECT COUNT(u) FROM User u")
+	@NamedQuery(name="User.countAll", query="SELECT COUNT(u) FROM User u"),
+	@NamedQuery(name="User.countLikeName", query="SELECT COUNT(u) FROM User u "
+			+ " WHERE u.client.clientName LIKE :likePattern")
 })
 @Entity
 @Table(name = "users")

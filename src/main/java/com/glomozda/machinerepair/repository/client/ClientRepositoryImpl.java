@@ -49,9 +49,7 @@ public class ClientRepositoryImpl extends ClientRepository {
 	
 	@Override
 	public List<Long> getAllClientIds() {
-		List<Long> result = 
-				em.createNamedQuery("Client.findAllClientIds", Long.class).getResultList();
-		return result;
+		return em.createNamedQuery("Client.findAllClientIds", Long.class).getResultList();		
 	}
 	
 	@Override
@@ -138,5 +136,28 @@ public class ClientRepositoryImpl extends ClientRepository {
 		query.setParameter("name", name);
 		int updateCount = query.executeUpdate();
 		return updateCount;
+	}
+
+	@Override
+	public Long getClientCountLikeName(String likePattern) {
+		return em.createNamedQuery("Client.countLikeName", Long.class)
+				.setParameter("likePattern", "%" + likePattern + "%")
+				.getSingleResult();
+	}
+	
+	@Override
+	public List<Client> getClientsLikeName(String likePattern) {
+		return em.createNamedQuery("Client.findClientsLikeName", Client.class)
+				.setParameter("likePattern", "%" + likePattern + "%")
+				.getResultList();
+	}
+	
+	@Override
+	public List<Client> getClientsLikeName(String likePattern, Long start, Long length) {
+		return em.createNamedQuery("Client.findClientsLikeName", Client.class)
+				.setParameter("likePattern", "%" + likePattern + "%")
+				.setFirstResult(start.intValue())
+				.setMaxResults(length.intValue())
+				.getResultList();
 	}
 }

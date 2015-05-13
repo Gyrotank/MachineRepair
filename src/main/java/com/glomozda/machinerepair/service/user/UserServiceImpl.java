@@ -76,4 +76,9 @@ public class UserServiceImpl extends UserService {
 		
 		return add(newUser);
 	}
+
+	@Override
+	public Long getUserCountLikeName(String likePattern) {
+		return userRepository.getUserCountLikeName(likePattern);
+	}
 }

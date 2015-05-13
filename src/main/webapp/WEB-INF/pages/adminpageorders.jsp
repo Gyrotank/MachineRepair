@@ -29,7 +29,7 @@
 				</div>
 				<table data-toggle="table"
 					data-classes="table table-hover table-condensed"
-					data-striped="true" border="1" style="width: 900px" align="center">
+					data-striped="true" border="1" style="width: 900px; margin: 0 auto">
 					<thead>
 						<tr>
 							<th align="center" data-sortable="true"></th>
@@ -113,10 +113,34 @@
 				<mycustomtags:tablepaging action="adminpageorders/orderpaging"
 					buttonName="orderPageNumber" pages_count="${pages_count}"
 					page_number="${page_number}" pages_size="${pages_size}" />
-				<br> <a name="add_new_order"></a>
+				<br> <a id="add_new_order"></a>
 				<h2>
 					<spring:message code="label.adminpage.addNewOrder" />
 				</h2>
+				<form:form method="post" commandName="clientSearchQuery" action="searchClients"
+					accept-charset="UTF-8">
+					<c:if test="${empty message_search_results}">
+						<br>
+					</c:if>
+					<c:if test="${not empty message_search_results}">
+						<c:out value="${message_search_results}" />
+					</c:if>
+					<table>
+						<tr>
+							<td><label>
+								<spring:message
+									code="label.adminpage.addNewOrder.clientSearchForm" />
+							</label></td>
+							<td>
+								<form:input path="searchQueryArgument" 
+									value="${clientSearchQuery.searchQueryArgument}"/>
+							</td>							
+							<td><button>
+								<spring:message code="label.adminpage.buttonSearch" />
+							</button></td>
+						</tr>
+					</table>
+				</form:form>
 				<form:form method="post" commandName="orderDTO" action="addOrder"
 					accept-charset="UTF-8">
 					<table>

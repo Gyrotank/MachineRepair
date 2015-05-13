@@ -39,7 +39,11 @@ import com.glomozda.machinerepair.domain.user.User;
 			+ "WHERE c.clientUser.login = :login"),
 	@NamedQuery(name="Client.setClientNameById", query="UPDATE Client c SET clientName = :name "
 			+ " WHERE c.clientId = :id"),
-	@NamedQuery(name="Client.countAll", query="SELECT COUNT(c) FROM Client c")
+	@NamedQuery(name="Client.countAll", query="SELECT COUNT(c) FROM Client c"),
+	@NamedQuery(name="Client.countLikeName", query="SELECT COUNT(c) FROM Client c "
+			+ " WHERE c.clientName LIKE :likePattern"),
+	@NamedQuery(name="Client.findClientsLikeName", query="SELECT c FROM Client c "
+			+ " WHERE c.clientName LIKE :likePattern")
 })
 @Entity
 @Table(name = "clients")

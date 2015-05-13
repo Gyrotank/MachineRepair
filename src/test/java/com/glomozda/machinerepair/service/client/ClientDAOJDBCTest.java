@@ -112,4 +112,28 @@ public class ClientDAOJDBCTest extends DAOTestsTemplate{
     	Assert.assertTrue(clientService.updateClientNameById(1L, "i_user") == 1);
     	Assert.assertTrue(clientService.updateClientNameById(3L, "s_user") == 0);
     }
+    
+    @Test
+    public void testGetClientCountLikeName() {
+    	Assert.assertTrue(clientService.getClientCountLikeName("va") == 1);
+    	Assert.assertTrue(clientService.getClientCountLikeName("Pet") == 1);
+    	Assert.assertTrue(clientService.getClientCountLikeName("oo") == 0);
+    }
+    
+    @Test
+    public void testGetClientsLikeName() {
+    	Assert.assertTrue(clientService.getClientsLikeName("va").size() == 1);
+    	Assert.assertTrue(clientService.getClientsLikeName("Pet").size() == 1);
+    	Assert.assertTrue(clientService.getClientsLikeName("oo").isEmpty());
+    }
+    
+    @Test
+    public void testGetClientsLikeNameWithLimits() {
+    	Assert.assertTrue(clientService
+    			.getClientsLikeName("va", 0L, 100L).size() == 1);
+    	Assert.assertTrue(clientService
+    			.getClientsLikeName("Pet", 0L, 100L).size() == 1);
+    	Assert.assertTrue(clientService
+    			.getClientsLikeName("oo", 0L, 100L).isEmpty());
+    }
 }

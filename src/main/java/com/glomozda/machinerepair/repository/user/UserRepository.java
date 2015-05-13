@@ -48,4 +48,6 @@ public abstract class UserRepository {
 
 	public abstract User getUserByLoginAndPassword(String login, String passwordText);
 
+	public abstract Long getUserCountLikeName(String likePattern);
+
 }

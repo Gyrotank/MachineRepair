@@ -45,4 +45,10 @@ public abstract class ClientService {
 	public abstract List<Client> getAll(Long start, Long length);
 
 	public abstract List<Client> getAll();
+
+	public abstract Long getClientCountLikeName(String searchQueryArgument);
+	
+	public abstract List<Client> getClientsLikeName(String searchQueryArgument);
+
+	public abstract List<Client> getClientsLikeName(String likePattern, Long start,	Long length);
 }

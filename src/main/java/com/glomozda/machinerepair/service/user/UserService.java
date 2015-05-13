@@ -45,4 +45,6 @@ public abstract class UserService {
 
 	public abstract User getUserByLoginAndPassword(String login, String passwordText);
 
+	public abstract Long getUserCountLikeName(String likePattern);
+
 }

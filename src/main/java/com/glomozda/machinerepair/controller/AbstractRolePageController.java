@@ -1,6 +1,7 @@
 package com.glomozda.machinerepair.controller;
 
 import java.security.Principal;
+import java.sql.Date;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -138,5 +139,27 @@ public abstract class AbstractRolePageController implements MessageSourceAware {
 		model.addAttribute("message_entity_no_changes",
 				sessionScopeInfoService.getSessionScopeInfo().getMessageNoChanges());
 		sessionScopeInfoService.getSessionScopeInfo().setMessageNoChanges("");
+	}
+	
+	protected Date StringToSqlDateParser(String stringToParse) {		
+		Date result;
+		
+		try {
+			String startParsed = new String();
+			startParsed = startParsed.concat(stringToParse.substring(6));			
+			startParsed = startParsed.concat("-");			
+			startParsed = startParsed.concat(stringToParse.substring(3, 5));			
+			startParsed = startParsed.concat("-");			
+			startParsed = startParsed.concat(stringToParse.substring(0, 2));			
+			result = java.sql.Date.valueOf(startParsed);			
+		} catch (java.lang.StringIndexOutOfBoundsException e) {
+			result = null;
+		} catch (IllegalArgumentException e) {
+			result = null;
+		} catch (NullPointerException e) {
+			result = null;
+		}
+		
+		return result;
 	}
 }

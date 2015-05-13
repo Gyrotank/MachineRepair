@@ -87,4 +87,19 @@ public class ClientServiceImpl extends ClientService {
 	public Integer updateClientNameById(Long clientId, String name) {
 		return clientRepository.updateClientNameById(clientId, name);
 	}
+
+	@Override
+	public Long getClientCountLikeName(String likePattern) {
+		return clientRepository.getClientCountLikeName(likePattern);
+	}
+
+	@Override
+	public List<Client> getClientsLikeName(String likePattern) {
+		return clientRepository.getClientsLikeName(likePattern);
+	}
+	
+	@Override
+	public List<Client> getClientsLikeName(String likePattern, Long start, Long length) {
+		return clientRepository.getClientsLikeName(likePattern, start, length);
+	}
 }

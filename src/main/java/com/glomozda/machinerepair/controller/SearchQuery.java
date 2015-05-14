@@ -1,6 +1,13 @@
 package com.glomozda.machinerepair.controller;
 
-public class SearchQuery {
+import java.io.Serializable;
+
+public class SearchQuery implements Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2765402440209161913L;
 	
 	private String searchQueryArgument;
 	

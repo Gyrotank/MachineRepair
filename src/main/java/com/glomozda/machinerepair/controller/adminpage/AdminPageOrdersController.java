@@ -44,7 +44,7 @@ public class AdminPageOrdersController extends AbstractRolePageController
 		
 		if (sessionScopeInfoService.getSessionScopeInfo()
 				.getSearchQuery().getSearchQueryArgument().isEmpty()) {
-			model.addAttribute("clients", clientSvc.getAll(0L, 99L));
+			model.addAttribute("clients", clientSvc.getAll(0L, DEFAULT_PAGE_SIZE * 10));
 			model.addAttribute("message_search_results", "");
 		} else {
 			model.addAttribute("clientSearchQuery",
@@ -118,7 +118,7 @@ public class AdminPageOrdersController extends AbstractRolePageController
 	
 	@Override
 	protected void prepareModel(final Locale locale, final Principal principal, 
-			final Model model, final Long id) {				
+			final Model model, final long id) {				
 	}
 
 	@RequestMapping(value = "/adminpageorders", method = RequestMethod.GET)

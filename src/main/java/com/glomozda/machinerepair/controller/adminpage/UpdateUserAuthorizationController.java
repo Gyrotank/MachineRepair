@@ -34,10 +34,8 @@ public class UpdateUserAuthorizationController extends AbstractRolePageControlle
 
 	@Override
 	protected void prepareModel(final Locale locale, final Principal principal, 
-			final Model model, final Long userAuthorizationId) {
+			final Model model, final long userAuthorizationId) {
 
-//		model.addAttribute("locale", locale.toString());
-		
 		model.addAttribute("userRoles", userAuthorizationSvc.getAllRoles());
 		
 		User userInQuestion = 

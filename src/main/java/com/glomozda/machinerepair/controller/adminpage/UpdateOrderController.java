@@ -38,7 +38,7 @@ public class UpdateOrderController extends AbstractRolePageController
 
 	@Override
 	protected void prepareModel(final Locale locale, final Principal principal, 
-			final Model model, final Long orderId) {
+			final Model model, final long orderId) {
 		
 		myOrder = orderSvc.getOrderByIdWithFetching(orderId);
 		

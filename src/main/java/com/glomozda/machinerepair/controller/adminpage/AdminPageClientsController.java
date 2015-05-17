@@ -38,16 +38,16 @@ public class AdminPageClientsController extends AbstractRolePageController
 				
 		model.addAttribute("users", userSvc.getAll((long) 0, (long) 99));
 		
-		Long clientsCount = clientSvc.getClientCount();
+		long clientsCount = clientSvc.getClientCount();
 		model.addAttribute("clients_count", clientsCount);
 		
-		Long pagesCount = clientsCount / DEFAULT_PAGE_SIZE;
+		long pagesCount = clientsCount / DEFAULT_PAGE_SIZE;
 		if (clientsCount % DEFAULT_PAGE_SIZE != 0) {
 			pagesCount++;
 		}
 		model.addAttribute("pages_count", pagesCount);
 		model.addAttribute("pages_size", DEFAULT_PAGE_SIZE);
-		Long pageNumber = sessionScopeInfoService.getSessionScopeInfo().getPageNumber();
+		long pageNumber = sessionScopeInfoService.getSessionScopeInfo().getPageNumber();
 		if (pageNumber >= pagesCount) {
 			model.addAttribute("page_number", 0L);
 			model.addAttribute("clients_short",
@@ -77,7 +77,7 @@ public class AdminPageClientsController extends AbstractRolePageController
 	
 	@Override
 	protected void prepareModel(final Locale locale, final Principal principal, 
-			final Model model, final Long id) {				
+			final Model model, final long id) {				
 	}
 	
 	@RequestMapping(value = "/adminpageclients", method = RequestMethod.GET)

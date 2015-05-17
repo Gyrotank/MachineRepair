@@ -34,7 +34,7 @@ public class UpdateRepairTypeController extends AbstractRolePageController
 
 	@Override
 	protected void prepareModel(final Locale locale, final Principal principal, 
-			final Model model, final Long repairTypeId) {
+			final Model model, final long repairTypeId) {
 		
 		myRepairType = repairTypeSvc.getRepairTypeById(repairTypeId);
 		

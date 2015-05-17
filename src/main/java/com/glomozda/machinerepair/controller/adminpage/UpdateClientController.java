@@ -34,7 +34,7 @@ public class UpdateClientController extends AbstractRolePageController
 	
 	@Override
 	protected void prepareModel(final Locale locale, final Principal principal, 
-			final Model model, final Long clientId) {
+			final Model model, final long clientId) {
 		
 		myClient = clientSvc.getClientById(clientId);
 		

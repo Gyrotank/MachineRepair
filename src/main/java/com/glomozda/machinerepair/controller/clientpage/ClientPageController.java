@@ -48,6 +48,6 @@ public class ClientPageController extends AbstractRolePageController
 
 	@Override
 	protected void prepareModel(Locale locale, final Principal principal, 
-			final Model model, final Long id) {		
+			final Model model, final long id) {		
 	}
 }

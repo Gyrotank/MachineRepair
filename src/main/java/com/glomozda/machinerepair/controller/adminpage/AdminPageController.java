@@ -25,7 +25,7 @@ public class AdminPageController extends AbstractRolePageController implements M
 	
 	@Override
 	protected void prepareModel(final Locale locale, final Principal principal, 
-			final Model model, final Long id) {				
+			final Model model, final long id) {				
 	}
 	
 	@RequestMapping(value = "/adminpage", method = RequestMethod.GET)

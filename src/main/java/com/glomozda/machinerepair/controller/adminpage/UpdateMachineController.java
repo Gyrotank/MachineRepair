@@ -35,7 +35,7 @@ public class UpdateMachineController extends AbstractRolePageController
 
 	@Override
 	protected void prepareModel(final Locale locale, final Principal principal,
-			final Model model, final Long machineId) {
+			final Model model, final long machineId) {
 		
 		myMachine = machineSvc.getMachineByIdWithFetching(machineId);
 		

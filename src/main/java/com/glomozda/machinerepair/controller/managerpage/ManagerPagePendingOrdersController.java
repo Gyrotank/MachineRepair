@@ -76,7 +76,7 @@ public class ManagerPagePendingOrdersController extends AbstractRolePageControll
 	
 	@Override
 	protected void prepareModel(final Locale locale, final Principal principal,
-			final Model model, final Long id) {		
+			final Model model, final long id) {		
 	}
 	
 	@RequestMapping(value = {"/managerpagependingorders", "/manageradminpagependingorders"},

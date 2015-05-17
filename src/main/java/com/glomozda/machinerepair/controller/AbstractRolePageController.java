@@ -53,7 +53,7 @@ public abstract class AbstractRolePageController implements MessageSourceAware {
 	
     protected User myUser;
 	
-	protected static final Long DEFAULT_PAGE_SIZE = 10L;
+	protected static final long DEFAULT_PAGE_SIZE = 10;
 	
 	@Override
 	public void setMessageSource(MessageSource messageSource) {
@@ -73,24 +73,24 @@ public abstract class AbstractRolePageController implements MessageSourceAware {
 		return true;
 	}
 	
-	public void changeSessionScopePagingInfo(final Long pagingFirstIndex,
-			final Long pagingLastIndex,
-			final Long pageNumber) {
+	public void changeSessionScopePagingInfo(final long pagingFirstIndex,
+			final long pagingLastIndex,
+			final long pageNumber) {
     	this.sessionScopeInfoService
     		.changeSessionScopePagingInfo(pagingFirstIndex, pagingLastIndex, pageNumber);
     }
 	
-	public void changeSessionScopePagingPlusInfo(final Long pagingFirstIndexPlus,
-			final Long pagingLastIndexPlus,
-			final Long pageNumberPlus) {
+	public void changeSessionScopePagingPlusInfo(final long pagingFirstIndexPlus,
+			final long pagingLastIndexPlus,
+			final long pageNumberPlus) {
     	this.sessionScopeInfoService
     		.changeSessionScopePagingPlusInfo(pagingFirstIndexPlus,
     				pagingLastIndexPlus, pageNumberPlus);
     }
 	
-	public void changeSessionScopePagingPlusPlusInfo(final Long pagingFirstIndexPlusPlus,
-			final Long pagingLastIndexPlusPlus,
-			final Long pageNumberPlusPlus) {
+	public void changeSessionScopePagingPlusPlusInfo(final long pagingFirstIndexPlusPlus,
+			final long pagingLastIndexPlusPlus,
+			final long pageNumberPlusPlus) {
     	this.sessionScopeInfoService
     		.changeSessionScopePagingPlusPlusInfo(pagingFirstIndexPlusPlus,
     				pagingLastIndexPlusPlus, pageNumberPlusPlus);
@@ -117,7 +117,7 @@ public abstract class AbstractRolePageController implements MessageSourceAware {
 	protected abstract void prepareModel(final Locale locale,
 			final Principal principal, 
 			final Model model,
-			final Long id);
+			final long id);
 	
 	protected void prepareModelUpdate(final Locale locale, final Model model, final Object entity) {
 		model.addAttribute("locale", locale.toString());

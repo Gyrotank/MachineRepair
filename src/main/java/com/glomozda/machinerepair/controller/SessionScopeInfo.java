@@ -9,21 +9,21 @@ public class SessionScopeInfo implements Serializable {
 	 */
 	private static final long serialVersionUID = 9079771536236334622L;
 	
-	private static final Long DEFAULT_PAGE_SIZE = 10L;
+	private static final long DEFAULT_PAGE_SIZE = 10L;
 	
-	private Long selectedId;
+	private long selectedId;
 	
-	private Long pagingFirstIndex;
-	private Long pagingLastIndex;
-	private Long pageNumber;
+	private long pagingFirstIndex;
+	private long pagingLastIndex;
+	private long pageNumber;
 	
-	private Long pagingFirstIndexPlus;
-	private Long pagingLastIndexPlus;
-	private Long pageNumberPlus;
+	private long pagingFirstIndexPlus;
+	private long pagingLastIndexPlus;
+	private long pageNumberPlus;
 	
-	private Long pagingFirstIndexPlusPlus;
-	private Long pagingLastIndexPlusPlus;
-	private Long pageNumberPlusPlus;
+	private long pagingFirstIndexPlusPlus;
+	private long pagingLastIndexPlusPlus;
+	private long pageNumberPlusPlus;
 	
 	private String messageAdded;
 	private String messageNotAdded;
@@ -35,19 +35,19 @@ public class SessionScopeInfo implements Serializable {
 	private SearchQuery searchQuery;
 	
 	public SessionScopeInfo() {
-		this.selectedId = 0L;
+		this.selectedId = 0;
 		
-		this.pagingFirstIndex = 0L;
+		this.pagingFirstIndex = 0;
 		this.pagingLastIndex = DEFAULT_PAGE_SIZE - 1;
-		this.pageNumber = 0L;
+		this.pageNumber = 0;
 		
-		this.pagingFirstIndexPlus = 0L;
+		this.pagingFirstIndexPlus = 0;
 		this.pagingLastIndexPlus = DEFAULT_PAGE_SIZE - 1;
-		this.pageNumberPlus = 0L;
+		this.pageNumberPlus = 0;
 		
-		this.pagingFirstIndexPlusPlus = 0L;
+		this.pagingFirstIndexPlusPlus = 0;
 		this.pagingLastIndexPlusPlus = DEFAULT_PAGE_SIZE - 1;
-		this.pageNumberPlusPlus = 0L;
+		this.pageNumberPlusPlus = 0;
 		
 		this.messageAdded = "";
 		this.messageNotAdded = "";
@@ -59,16 +59,16 @@ public class SessionScopeInfo implements Serializable {
 		this.searchQuery = new SearchQuery();
 	}
 	
-	public SessionScopeInfo(final Long selectedId,
-			final Long pagingFirstIndex,
-			final Long pagingLastIndex,
-			final Long pageNumber,
-			final Long pagingFirstIndexPlus,
-			final Long pagingLastIndexPlus,
-			final Long pageNumberPlus,
-			final Long pagingFirstIndexPlusPlus,
-			final Long pagingLastIndexPlusPlus,
-			final Long pageNumberPlusPlus,
+	public SessionScopeInfo(final long selectedId,
+			final long pagingFirstIndex,
+			final long pagingLastIndex,
+			final long pageNumber,
+			final long pagingFirstIndexPlus,
+			final long pagingLastIndexPlus,
+			final long pageNumberPlus,
+			final long pagingFirstIndexPlusPlus,
+			final long pagingLastIndexPlusPlus,
+			final long pageNumberPlusPlus,
 			final String messageAdded,
 			final String messageNotAdded,
 			final String messageUpdateFailed,
@@ -104,79 +104,79 @@ public class SessionScopeInfo implements Serializable {
 		return selectedId;
 	}
 
-	public void setSelectedId(Long selectedId) {
+	public void setSelectedId(long selectedId) {
 		this.selectedId = selectedId;
 	}
 
-	public Long getPagingFirstIndex() {
+	public long getPagingFirstIndex() {
 		return pagingFirstIndex;
 	}
 
-	public void setPagingFirstIndex(Long pagingFirstIndex) {
+	public void setPagingFirstIndex(long pagingFirstIndex) {
 		this.pagingFirstIndex = pagingFirstIndex;
 	}
 
-	public Long getPagingLastIndex() {
+	public long getPagingLastIndex() {
 		return pagingLastIndex;
 	}
 
-	public void setPagingLastIndex(Long pagingLastIndex) {
+	public void setPagingLastIndex(long pagingLastIndex) {
 		this.pagingLastIndex = pagingLastIndex;
 	}
 
-	public Long getPageNumber() {
+	public long getPageNumber() {
 		return pageNumber;
 	}
 
-	public void setPageNumber(Long pageNumber) {
+	public void setPageNumber(long pageNumber) {
 		this.pageNumber = pageNumber;
 	}
 
-	public Long getPagingFirstIndexPlus() {
+	public long getPagingFirstIndexPlus() {
 		return pagingFirstIndexPlus;
 	}
 
-	public void setPagingFirstIndexPlus(Long pagingFirstIndexPlus) {
+	public void setPagingFirstIndexPlus(long pagingFirstIndexPlus) {
 		this.pagingFirstIndexPlus = pagingFirstIndexPlus;
 	}
 
-	public Long getPagingLastIndexPlus() {
+	public long getPagingLastIndexPlus() {
 		return pagingLastIndexPlus;
 	}
 
-	public void setPagingLastIndexPlus(Long pagingLastIndexPlus) {
+	public void setPagingLastIndexPlus(long pagingLastIndexPlus) {
 		this.pagingLastIndexPlus = pagingLastIndexPlus;
 	}
 
-	public Long getPageNumberPlus() {
+	public long getPageNumberPlus() {
 		return pageNumberPlus;
 	}
 
-	public void setPageNumberPlus(Long pageNumberPlus) {
+	public void setPageNumberPlus(long pageNumberPlus) {
 		this.pageNumberPlus = pageNumberPlus;
 	}
 
-	public Long getPagingFirstIndexPlusPlus() {
+	public long getPagingFirstIndexPlusPlus() {
 		return pagingFirstIndexPlusPlus;
 	}
 
-	public void setPagingFirstIndexPlusPlus(Long pagingFirstIndexPlusPlus) {
+	public void setPagingFirstIndexPlusPlus(long pagingFirstIndexPlusPlus) {
 		this.pagingFirstIndexPlusPlus = pagingFirstIndexPlusPlus;
 	}
 
-	public Long getPagingLastIndexPlusPlus() {
+	public long getPagingLastIndexPlusPlus() {
 		return pagingLastIndexPlusPlus;
 	}
 
-	public void setPagingLastIndexPlusPlus(Long pagingLastIndexPlusPlus) {
+	public void setPagingLastIndexPlusPlus(long pagingLastIndexPlusPlus) {
 		this.pagingLastIndexPlusPlus = pagingLastIndexPlusPlus;
 	}
 
-	public Long getPageNumberPlusPlus() {
+	public long getPageNumberPlusPlus() {
 		return pageNumberPlusPlus;
 	}
 
-	public void setPageNumberPlusPlus(Long pageNumberPlusPlus) {
+	public void setPageNumberPlusPlus(long pageNumberPlusPlus) {
 		this.pageNumberPlusPlus = pageNumberPlusPlus;
 	}
 

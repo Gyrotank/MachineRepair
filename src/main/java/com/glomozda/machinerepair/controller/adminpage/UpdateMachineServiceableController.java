@@ -34,7 +34,7 @@ public class UpdateMachineServiceableController extends AbstractRolePageControll
 
 	@Override
 	protected void prepareModel(final Locale locale, final Principal principal, 
-			final Model model, final Long machineServiceableId) {
+			final Model model, final long machineServiceableId) {
 		
 		myMachineServiceable = 
 				machineServiceableSvc.getMachineServiceableById(machineServiceableId);

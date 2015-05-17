@@ -96,7 +96,7 @@ public class AdminPageMachinesServiceableController extends AbstractRolePageCont
 	
 	@Override
 	protected void prepareModel(final Locale locale, final Principal principal, 
-			final Model model, final Long id) {				
+			final Model model, final long id) {				
 	}
 	
 	@RequestMapping(value = "/adminpagemachinesserviceable", method = RequestMethod.GET)

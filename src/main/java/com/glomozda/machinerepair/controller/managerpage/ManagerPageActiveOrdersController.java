@@ -25,7 +25,7 @@ public class ManagerPageActiveOrdersController extends AbstractRolePageControlle
 	
 	@Override
 	protected void prepareModel(final Locale locale, final Principal principal, 
-			final Model model, final Long selectedId) {		
+			final Model model, final long selectedId) {		
 		
 		model.addAttribute("locale", locale.toString());
 		

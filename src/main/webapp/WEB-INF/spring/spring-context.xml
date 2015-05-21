@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="http://www.springframework.org/schema/mvc"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
   xmlns:context="http://www.springframework.org/schema/context"
   xmlns:tx="http://www.springframework.org/schema/tx"
   xmlns:aop="http://www.springframework.org/schema/aop"
@@ -12,7 +12,7 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
  
   <!-- Enable annotation-based Spring MVC controllers (eg: @Controller annotation) -->
-  <annotation-driven/>
+  <mvc:annotation-driven/>
   
   <!-- Resolve view name into jsp file located on /WEB-INF -->
   <beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -20,7 +20,7 @@
     <beans:property name="suffix" value=".jsp" />
   </beans:bean>  
   
-  <default-servlet-handler/>
+  <mvc:default-servlet-handler/>
   
   <beans:bean id="propertyConfigurer" 
     class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -29,10 +29,10 @@
    
   <!-- MySQL Datasource with Commons DBCP connection pooling -->
   <beans:bean class="org.apache.commons.dbcp.BasicDataSource" id="dataSource">
-    <beans:property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-    <beans:property name="url" value="jdbc:mysql://localhost/machinerepair?tinyInt1isBit=false&amp;user=root&amp;password=kokokoR2&amp;characterEncoding=UTF-8"/>
-    <beans:property name="username" value="root"/>
-    <beans:property name="password" value="kokokoR2"/>
+    <beans:property name="driverClassName" value="${jdbc.driverClassName}"/>
+    <beans:property name="url" value="${jdbc.databaseurl}"/>
+    <beans:property name="username" value="${jdbc.username}"/>
+    <beans:property name="password" value="${jdbc.password}"/>
   </beans:bean>
    
   <!-- EntityManagerFactory -->
@@ -57,7 +57,7 @@
   	<beans:property name="basename" value="messages"/>
   </beans:bean>
   
-  <resources mapping="/resources/**" location="/resources/" />
+  <mvc:resources mapping="/resources/**" location="/resources/" />
   
   <beans:bean id="localeResolver"
         class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
@@ -66,11 +66,11 @@
         <beans:property name="cookieMaxAge" value="36000"></beans:property>
   </beans:bean>
   
-  <interceptors>
+  <mvc:interceptors>
         <beans:bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
             <beans:property name="paramName" value="locale" />
         </beans:bean>
-   </interceptors>
+   </mvc:interceptors>
     
   <!-- Classpath scanning of @Component, @Service, etc annotated class -->
   <context:component-scan base-package="com.glomozda.machinerepair" />

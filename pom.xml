@@ -10,54 +10,150 @@
 	<name>MachineRepair</name>
 
 	<properties>
+		<org.springframework.version>4.1.0.RELEASE</org.springframework.version>
+		<hibernate.version>4.2.8.Final</hibernate.version>
+		<apache.tiles>3.0.3</apache.tiles>
+		<org.apache.logging.log4j>2.1</org.apache.logging.log4j>
+		<spring.security.version>3.2.5.RELEASE</spring.security.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<resource.dir>src/main/resources</resource.dir>
 	</properties>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>maven-db-plugin-repo</id>
+			<name>maven db plugin repository</name>
+			<url>http://maven-db-plugin.googlecode.com/svn/maven/repo</url>
+			<layout>default</layout>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<profiles>
 		<profile>
 			<id>profile-development</id>
 			<properties>
-				<environment>dev</environment>
 				<db.username>root</db.username>
 				<db.password>kokokoR2</db.password>
-				<db.url>jdbc:mysql://localhost/machinerepair?tinyInt1isBit=false&amp;characterEncoding=UTF-8</db.url>
+				<db.url>jdbc:mysql://localhost/</db.url>
+				<db.name>machinerepair</db.name>
+				<db.url.full>${db.url}${db.name}?tinyInt1isBit=false&amp;characterEncoding=UTF-8</db.url.full>
 				<db.dialect>org.hibernate.dialect.MySQLDialect</db.dialect>
 				<db.driver>com.mysql.jdbc.Driver</db.driver>
+				<tomcat.url>http://localhost:8085</tomcat.url>
+				<tomcat.deploy.url>${tomcat.url}/manager/text</tomcat.deploy.url>
+				<tomcat.deploy.server>Tomcat8-localhost</tomcat.deploy.server>
 			</properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>
-				<property>
-					<name>environment</name>
-					<value>dev</value>
-				</property>
 			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.googlecode</groupId>
+						<artifactId>maven-db-plugin</artifactId>
+						<version>1.4</version>
+						<configuration>
+							<adminDbConnectionSettings>
+								<jdbcDriver>${db.driver}</jdbcDriver>
+								<jdbcUrl>${db.url}</jdbcUrl>
+								<userName>${db.username}</userName>
+								<password>${db.password}</password>
+							</adminDbConnectionSettings>
+							<appDbConnectionSettings>
+								<jdbcDriver>${db.driver}</jdbcDriver>
+								<jdbcUrl>${db.url.full}</jdbcUrl>
+								<userName>${db.username}</userName>
+								<password>${db.password}</password>
+							</appDbConnectionSettings>
+							<sqlDelimiter>;</sqlDelimiter>
+							<dbDataScriptsDirectory>
+								<param>src/main/sql/data</param>
+							</dbDataScriptsDirectory>
+							<dbSchemaScriptsDirectory>
+								<param>src/main/sql/schema</param>
+							</dbSchemaScriptsDirectory>
+							<dbUpdateScriptsDirectory>
+								<param>src/main/sql/update</param>
+							</dbUpdateScriptsDirectory>
+							<dbCreateStatements>
+								CREATE DATABASE IF NOT EXISTS ${db.name}
+								DEFAULT CHARACTER SET utf8
+  								DEFAULT COLLATE utf8_general_ci;								
+							</dbCreateStatements>
+							<dbDropStatements>
+								DROP DATABASE IF EXISTS ${db.name};
+							</dbDropStatements>
+							<encoding>UTF-8</encoding>
+							<scriptEncoding>UTF-8</scriptEncoding>
+						</configuration>
+						<dependencies>
+							<dependency>
+								<groupId>mysql</groupId>
+								<artifactId>mysql-connector-java</artifactId>
+								<version>5.1.9</version>
+							</dependency>
+						</dependencies>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
 
 	<build>
 		<finalName>${project.name}</finalName>
-		
+
 		<resources>
 			<resource>
 				<directory>${resource.dir}</directory>
 				<filtering>true</filtering>
 			</resource>
 		</resources>
-		
+
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.7</version>
 				<configuration>
 					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<url>${tomcat.deploy.url}</url>
+					<server>${tomcat.deploy.server}</server>
+					<path>/${db.name}</path>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<webResources>
+						<resource>
+							<filtering>true</filtering>
+							<directory>src/main/webapp</directory>
+							<excludes>
+								<exclude>**/*.jsp</exclude>
+								<exclude>**/*.xml</exclude>
+							</excludes>
+						</resource>
+					</webResources>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -68,32 +164,32 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>4.1.0.RELEASE</version>
+			<version>${org.springframework.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>4.1.0.RELEASE</version>
+			<version>${org.springframework.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
-			<version>4.1.0.RELEASE</version>
+			<version>${org.springframework.version}</version>
 		</dependency>
 
 		<!-- Hibernate -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>4.2.8.Final</version>
+			<version>${hibernate.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
-			<version>4.2.8.Final</version>
+			<version>${hibernate.version}</version>
 		</dependency>
 
 		<!-- Java EE -->
@@ -127,7 +223,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
-			<version>4.1.1.RELEASE</version>
+			<version>${org.springframework.version}</version>
 		</dependency>
 
 		<dependency>
@@ -176,19 +272,19 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
-			<version>3.2.5.RELEASE</version>
+			<version>${spring.security.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-web</artifactId>
-			<version>3.2.5.RELEASE</version>
+			<version>${spring.security.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
-			<version>3.2.5.RELEASE</version>
+			<version>${spring.security.version}</version>
 		</dependency>
 
 		<dependency>

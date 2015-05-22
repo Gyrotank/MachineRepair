@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +28,7 @@ public abstract class RepairTypeRepository {
 	public abstract RepairType getRepairTypeById(Long repairTypeId);
 	
 	@Transactional
-	public abstract Boolean add(RepairType rt);
+	public abstract Boolean add(RepairType rt) throws PersistenceException;
 
 	public abstract Long getRepairTypeCount();
 

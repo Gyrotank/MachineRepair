@@ -22,11 +22,11 @@
 					<spring:message code="label.adminpage.serviceableMachines" />
 				</h1>
 				<div class="success">
-					<c:out value="${message_machine_serviceable_added}" />
+					<c:out value="${message_added}" />
 					<c:out value="${message_enable_disable_succeeded}" />
 				</div>
 				<div class="error">
-					<c:out value="${message_machine_serviceable_not_added}" />
+					<c:out value="${message_not_added}" />
 					<c:out value="${message_enable_disable_failed}" />
 				</div>
 				<table border="1" data-toggle="table"
@@ -46,7 +46,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<c:forEach var="ms" items="${machines_serviceable_short}"
+						<c:forEach var="ms" items="${entities}"
 							varStatus="loopStatus">
 							<tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
 								<td><c:choose>
@@ -139,7 +139,7 @@
 					<h2>
 						<spring:message code="label.adminpage.addNewServiceableMachine" />
 					</h2>
-					<form:form method="post" commandName="machineServiceable"
+					<form:form method="post" commandName="dataObject"
 						action="addMachineServiceable" accept-charset="UTF-8">
 						<table>
 							<tr>

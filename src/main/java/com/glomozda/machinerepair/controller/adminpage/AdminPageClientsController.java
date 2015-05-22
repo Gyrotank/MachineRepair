@@ -30,49 +30,9 @@ public class AdminPageClientsController extends AbstractRolePageController
 	@Override
 	protected void prepareModel(final Locale locale, final Principal principal,	final Model model) {
 		
-		model.addAttribute("locale", locale.toString());
+		prepareModelAdminPage(locale, model, new ClientDTO(), clientSvc);
 		
-		if (!model.containsAttribute("clientDTO")) {
-			model.addAttribute("clientDTO", new ClientDTO());
-		}
-				
 		model.addAttribute("users", userSvc.getAll((long) 0, (long) 99));
-		
-		long clientsCount = clientSvc.getClientCount();
-		model.addAttribute("clients_count", clientsCount);
-		
-		long pagesCount = clientsCount / DEFAULT_PAGE_SIZE;
-		if (clientsCount % DEFAULT_PAGE_SIZE != 0) {
-			pagesCount++;
-		}
-		model.addAttribute("pages_count", pagesCount);
-		model.addAttribute("pages_size", DEFAULT_PAGE_SIZE);
-		long pageNumber = sessionScopeInfoService.getSessionScopeInfo().getPageNumber();
-		if (pageNumber >= pagesCount) {
-			model.addAttribute("page_number", 0L);
-			model.addAttribute("clients_short",
-					clientSvc.getAllWithFetching(
-							0L,	DEFAULT_PAGE_SIZE));
-		} else {
-			model.addAttribute("page_number", pageNumber);
-			model.addAttribute("clients_short",
-					clientSvc.getAllWithFetching(
-							sessionScopeInfoService.getSessionScopeInfo().getPagingFirstIndex(),
-							sessionScopeInfoService.getSessionScopeInfo().getPagingLastIndex() 
-								- sessionScopeInfoService.getSessionScopeInfo()
-									.getPagingFirstIndex() + 1));
-		}
-				
-		model.addAttribute("message_client_added",
-				sessionScopeInfoService.getSessionScopeInfo().getMessageAdded());
-		sessionScopeInfoService.getSessionScopeInfo().setMessageAdded("");
-		model.addAttribute("message_client_not_added",
-				sessionScopeInfoService.getSessionScopeInfo().getMessageNotAdded());
-		sessionScopeInfoService.getSessionScopeInfo().setMessageNotAdded("");
-		
-		model.addAttribute("dialog_delete_client",
-				messageSource.getMessage("label.adminpage.clients.actions.delete.dialog", null,
-				locale));
 	}
 	
 	@Override
@@ -104,28 +64,23 @@ public class AdminPageClientsController extends AbstractRolePageController
 	}
 
 	@RequestMapping(value = "/addClient", method = RequestMethod.POST)
-	public String addClient(@ModelAttribute("clientDTO") @Valid final ClientDTO clientDTO,
+	public String addClient(@ModelAttribute("dataObject") @Valid final ClientDTO clientDTO,
 			final BindingResult bindingResult,			
 			final RedirectAttributes redirectAttributes,
 			final Locale locale) {
 		
 		if (bindingResult.hasErrors()) {
 			redirectAttributes.addFlashAttribute
-				("org.springframework.validation.BindingResult.clientDTO", bindingResult);
-			redirectAttributes.addFlashAttribute("clientDTO", clientDTO);
+				("org.springframework.validation.BindingResult.dataObject", bindingResult);
+			redirectAttributes.addFlashAttribute("dataObject", clientDTO);
 			return "redirect:/adminpageclients#add_new_client";				
 		}
 		
-		if (clientSvc.add(new Client(clientDTO.getClientName()), clientDTO.getUserId())) {
-			changeSessionScopeAddingInfo(
-					messageSource.getMessage("popup.adminpage.clientAdded", null,locale),
-					"");			
-		} else {
-			changeSessionScopeAddingInfo(
-					"",
-					messageSource.getMessage("popup.adminpage.clientNotAdded", null,
-							locale));			
-		}		
+		addMessages(clientSvc.add(new Client(clientDTO.getClientName()), clientDTO.getUserId()),
+				"popup.adminpage.clientAdded",
+				"popup.adminpage.clientNotAdded",
+				locale);
+		
 		return "redirect:/adminpageclients";
 	}	
 }

@@ -2,8 +2,11 @@ package com.glomozda.machinerepair.service.machine;
 
 import java.util.List;
 
+import javax.persistence.PersistenceException;
+
 import com.glomozda.machinerepair.domain.machine.*;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -46,7 +49,22 @@ public class MachineServiceImpl extends MachineService {
 
 	@Override
 	public Boolean add(Machine m, Long machineServiceableId) {
-		return machineRepository.add(m, machineServiceableId);
+		Boolean result = false;
+		
+		try {
+			result = machineRepository.add(m, machineServiceableId);
+		} catch (PersistenceException e) {
+			Throwable t = e.getCause();
+		    while ((t != null) && !(t instanceof ConstraintViolationException)) {
+		        t = t.getCause();
+		    }
+		    if (t instanceof ConstraintViolationException) {
+		        return false;
+		    }
+		    throw (e);
+		}
+		
+		return result;
 	}
 	
 	@Override
@@ -67,5 +85,25 @@ public class MachineServiceImpl extends MachineService {
 	@Override
 	public Integer updateMachineById(Long machineId, Machine machine) {
 		return machineRepository.updateMachineById(machineId, machine);
+	}
+	
+	/*
+	 * Methods of EntityService interface
+	 * */
+	@SuppressWarnings("rawtypes")
+	@Override
+	public List getAllEntities() {
+		return getAllWithFetching();
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public List getAllEntities(Long start, Long length) {
+		return getAllWithFetching(start, length);
+	}
+
+	@Override
+	public Long getCountEntities() {
+		return getMachineCount();
 	}
 }

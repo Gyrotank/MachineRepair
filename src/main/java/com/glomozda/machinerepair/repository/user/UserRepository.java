@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,7 +23,7 @@ public abstract class UserRepository {
 	protected PasswordEncoder encoder;
 	
 	@Transactional
-	public abstract Boolean add(User u);
+	public abstract Boolean add(User u) throws PersistenceException;
 
 	@Transactional
 	public abstract Integer setUserEnabledById(Long userId, Byte enabled);

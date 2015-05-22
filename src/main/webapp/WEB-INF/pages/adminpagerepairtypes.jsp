@@ -22,11 +22,11 @@
 					<spring:message code="label.adminpage.repairTypes" />
 				</h1>
 				<div class="success">
-					<c:out value="${message_repair_type_added}" />
+					<c:out value="${message_added}" />
 					<c:out value="${message_enable_disable_succeeded}" />
 				</div>
 				<div class="error">
-					<c:out value="${message_repair_type_not_added}" />
+					<c:out value="${message_not_added}" />
 					<c:out value="${message_enable_disable_failed}" />
 				</div>
 				<table data-toggle="table"
@@ -46,7 +46,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<c:forEach var="rt" items="${repair_types_short}"
+						<c:forEach var="rt" items="${entities}"
 							varStatus="loopStatus">
 							<tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
 								<td><c:choose>
@@ -131,7 +131,7 @@
 				<h2>
 					<spring:message code="label.adminpage.addNewRepairType" />
 				</h2>
-				<form:form method="post" commandName="repairType"
+				<form:form method="post" commandName="dataObject"
 					action="addRepairType" accept-charset="UTF-8">
 					<table>
 						<tr>

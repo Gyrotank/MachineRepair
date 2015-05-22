@@ -21,10 +21,10 @@
 					<spring:message code="label.adminpage.clients" />
 				</h1>
 				<div class="success">
-					<c:out value="${message_client_added}" />
+					<c:out value="${message_added}" />
 				</div>
 				<div class="error">
-					<c:out value="${message_client_not_added}" />
+					<c:out value="${message_not_added}" />
 				</div>
 				<table data-toggle="table"
 					data-classes="table table-hover table-condensed"
@@ -41,7 +41,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<c:forEach var="c" items="${clients_short}" varStatus="loopStatus">
+						<c:forEach var="c" items="${entities}" varStatus="loopStatus">
 							<tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
 								<td><c:out
 										value="${loopStatus.index + 1 + page_number * pages_size}" /></td>
@@ -64,7 +64,7 @@
 				<h2>
 					<spring:message code="label.adminpage.addNewClient" />
 				</h2>
-				<form:form method="post" commandName="clientDTO" action="addClient"
+				<form:form method="post" commandName="dataObject" action="addClient"
 					accept-charset="UTF-8">
 					<table>
 						<tr>
@@ -84,7 +84,7 @@
 									</option>
 									<c:forEach var="u" items="${users}">
 										<c:choose>
-											<c:when test="${clientDTO.userId == u.userId}">
+											<c:when test="${dataObject.userId == u.userId}">
 												<option selected value="${u.userId}">
 													<c:out value="${u.login}" />
 												</option>

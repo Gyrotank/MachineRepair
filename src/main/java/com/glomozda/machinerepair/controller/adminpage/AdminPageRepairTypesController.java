@@ -32,44 +32,7 @@ public class AdminPageRepairTypesController extends AbstractRolePageController
 	protected void prepareModel(final Locale locale, final Principal principal, 
 			final Model model) {
 
-		model.addAttribute("locale", locale.toString());
-		
-		if (!model.containsAttribute("repairType")) {
-			model.addAttribute("repairType", new RepairType());
-		}
-		
-		model.addAttribute("repair_types", repairTypeSvc.getAll());
-				
-		Long repairTypesCount = repairTypeSvc.getRepairTypeCount();
-		model.addAttribute("repair_types_count", repairTypesCount);
-		Long pagesCount = repairTypesCount / DEFAULT_PAGE_SIZE;
-		if (repairTypesCount % DEFAULT_PAGE_SIZE != 0) {
-			pagesCount++;
-		}
-		model.addAttribute("pages_count", pagesCount);
-		model.addAttribute("pages_size", DEFAULT_PAGE_SIZE);
-		Long pageNumber = sessionScopeInfoService.getSessionScopeInfo().getPageNumber();
-		if (pageNumber >= pagesCount) {
-			model.addAttribute("page_number", 0L);
-			model.addAttribute("repair_types_short", 
-					repairTypeSvc.getAll(
-							0L, DEFAULT_PAGE_SIZE));						
-		} else {
-			model.addAttribute("page_number", pageNumber);
-			model.addAttribute("repair_types_short", 
-					repairTypeSvc.getAll(
-							sessionScopeInfoService.getSessionScopeInfo().getPagingFirstIndex(), 
-							sessionScopeInfoService.getSessionScopeInfo().getPagingLastIndex() 
-							- sessionScopeInfoService
-								.getSessionScopeInfo().getPagingFirstIndex() + 1));
-		}
-		
-		model.addAttribute("message_repair_type_added",
-			sessionScopeInfoService.getSessionScopeInfo().getMessageAdded());
-			sessionScopeInfoService.getSessionScopeInfo().setMessageAdded("");
-		model.addAttribute("message_repair_type_not_added",
-			sessionScopeInfoService.getSessionScopeInfo().getMessageNotAdded());
-			sessionScopeInfoService.getSessionScopeInfo().setMessageNotAdded("");
+		prepareModelAdminPage(locale, model, new RepairType(), repairTypeSvc);
 		
 		model.addAttribute("message_enable_disable_failed",
 				messageEnableDisableFailed);
@@ -118,29 +81,23 @@ public class AdminPageRepairTypesController extends AbstractRolePageController
 	
 	@RequestMapping(value = "/addRepairType", method = RequestMethod.POST)
 	public String addRepairType(
-			@ModelAttribute("repairType") @Valid final RepairType repairType,
+			@ModelAttribute("dataObject") @Valid final RepairType repairType,
 			final BindingResult bindingResult,			
 			final RedirectAttributes redirectAttributes,
 			final Locale locale) {
 		
 		if (bindingResult.hasErrors()) {
 			redirectAttributes.addFlashAttribute
-				("org.springframework.validation.BindingResult.repairType", bindingResult);
-			redirectAttributes.addFlashAttribute("repairType", repairType);
+				("org.springframework.validation.BindingResult.dataObject", bindingResult);
+			redirectAttributes.addFlashAttribute("dataObject", repairType);
 			return "redirect:/adminpagerepairtypes#add_new_repair_type";
 		}
 		
-		if (repairTypeSvc.add(repairType)) {
-			changeSessionScopeAddingInfo(
-					messageSource.getMessage("popup.adminpage.repairTypeAdded", null, 
-							locale),
-					"");			
-		} else {
-			changeSessionScopeAddingInfo(
-					"",
-					messageSource.getMessage("popup.adminpage.repairTypeNotAdded", null,
-							locale));			
-		}		
+		addMessages(repairTypeSvc.add(repairType),
+				"popup.adminpage.repairTypeAdded",
+				"popup.adminpage.repairTypeNotAdded",
+				locale);
+		
 		return "redirect:/adminpagerepairtypes";
 	}
 	

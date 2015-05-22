@@ -2,8 +2,11 @@ package com.glomozda.machinerepair.service.user;
 
 import java.util.List;
 
+import javax.persistence.PersistenceException;
+
 import com.glomozda.machinerepair.domain.user.*;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -66,7 +69,22 @@ public class UserServiceImpl extends UserService {
 
 	@Override
 	public Boolean add(User u) {
-		return userRepository.add(u);
+		Boolean result = false;
+		
+		try {
+			result = userRepository.add(u);
+		} catch (PersistenceException e) {
+			Throwable t = e.getCause();
+		    while ((t != null) && !(t instanceof ConstraintViolationException)) {
+		        t = t.getCause();
+		    }
+		    if (t instanceof ConstraintViolationException) {
+		        return false;
+		    }
+		    throw (e);
+		}
+		
+		return result;
 	}
 	
 	@Override
@@ -80,5 +98,22 @@ public class UserServiceImpl extends UserService {
 	@Override
 	public Long getUserCountLikeName(String likePattern) {
 		return userRepository.getUserCountLikeName(likePattern);
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public List getAllEntities() {
+		return getAll();
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public List getAllEntities(Long start, Long length) {
+		return getAll(start, length);
+	}
+
+	@Override
+	public Long getCountEntities() {
+		return getUserCount();
 	}
 }

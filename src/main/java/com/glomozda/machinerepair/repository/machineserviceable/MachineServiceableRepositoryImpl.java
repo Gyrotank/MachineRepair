@@ -2,6 +2,7 @@ package com.glomozda.machinerepair.repository.machineserviceable;
 
 import java.util.List;
 
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
@@ -57,8 +58,13 @@ public class MachineServiceableRepositoryImpl extends MachineServiceableReposito
 	
 	@Override
 	@Transactional
-	public Boolean add(MachineServiceable ms) {
+	public Boolean add(MachineServiceable ms) throws PersistenceException {
+		if (em.contains(ms)) {
+			return false;
+		}
+		
 		em.persist(ms);
+		
 		if (em.contains(ms)) {
 			return true;
 		} else {

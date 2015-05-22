@@ -10,6 +10,7 @@ import org.springframework.context.MessageSourceAware;
 import org.springframework.ui.Model;
 
 import com.glomozda.machinerepair.domain.user.User;
+import com.glomozda.machinerepair.service.EntityService;
 import com.glomozda.machinerepair.service.SessionScopeInfoService;
 import com.glomozda.machinerepair.service.client.ClientService;
 import com.glomozda.machinerepair.service.machine.MachineService;
@@ -119,6 +120,48 @@ public abstract class AbstractRolePageController implements MessageSourceAware {
 			final Model model,
 			final long id);
 	
+	protected void prepareModelAdminPage(final Locale locale, final Model model,
+		final Object dataObject, final EntityService entityService) {
+		
+		model.addAttribute("locale", locale.toString());
+		
+		if (!model.containsAttribute("dataObject")) {
+			model.addAttribute("dataObject", dataObject);
+		}
+		
+		Long entitiesCount = entityService.getCountEntities();
+		model.addAttribute("entities_count", entitiesCount);
+		
+		Long pagesCount = entitiesCount / DEFAULT_PAGE_SIZE;
+		if (entitiesCount % DEFAULT_PAGE_SIZE != 0) {
+			pagesCount++;
+		}
+		model.addAttribute("pages_count", pagesCount);
+		model.addAttribute("pages_size", DEFAULT_PAGE_SIZE);
+		Long pageNumber = sessionScopeInfoService.getSessionScopeInfo().getPageNumber();
+		if (pageNumber >= pagesCount) {
+			model.addAttribute("page_number", 0L);
+			model.addAttribute("entities", 
+					entityService.getAllEntities(
+							0L, DEFAULT_PAGE_SIZE));
+		} else {
+			model.addAttribute("page_number", pageNumber);
+			model.addAttribute("entities", 
+					entityService.getAllEntities(
+							sessionScopeInfoService.getSessionScopeInfo().getPagingFirstIndex(), 
+							sessionScopeInfoService.getSessionScopeInfo().getPagingLastIndex() 
+							- sessionScopeInfoService
+								.getSessionScopeInfo().getPagingFirstIndex() + 1));
+		}
+		
+		model.addAttribute("message_added", 
+			sessionScopeInfoService.getSessionScopeInfo().getMessageAdded());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageAdded("");
+		model.addAttribute("message_not_added",
+			sessionScopeInfoService.getSessionScopeInfo().getMessageNotAdded());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageNotAdded("");
+	}
+	
 	protected void prepareModelUpdate(final Locale locale, final Model model, final Object entity) {
 		model.addAttribute("locale", locale.toString());
 		
@@ -139,7 +182,7 @@ public abstract class AbstractRolePageController implements MessageSourceAware {
 		model.addAttribute("message_entity_no_changes",
 				sessionScopeInfoService.getSessionScopeInfo().getMessageNoChanges());
 		sessionScopeInfoService.getSessionScopeInfo().setMessageNoChanges("");
-	}
+	}	
 	
 	protected Date StringToSqlDateParser(String stringToParse) {		
 		Date result;
@@ -161,5 +204,21 @@ public abstract class AbstractRolePageController implements MessageSourceAware {
 		}
 		
 		return result;
+	}
+	
+	protected void addMessages(Boolean condition,
+			String messageIfTrue,
+			String messageIfFalse,
+			final Locale locale) {
+		
+		if (condition) {
+			changeSessionScopeAddingInfo(
+					messageSource.getMessage(messageIfTrue, null, locale),
+					"");
+		} else {
+			changeSessionScopeAddingInfo(
+					"",
+					messageSource.getMessage(messageIfFalse, null, locale));
+		}		
 	}
 }

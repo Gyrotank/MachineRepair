@@ -22,11 +22,11 @@
 					<spring:message code="label.adminpage.users" />
 				</h1>
 				<div class="success">
-					<c:out value="${message_user_added}" />
+					<c:out value="${message_added}" />
 					<c:out value="${message_enable_disable_succeeded}" />
 				</div>
 				<div class="error">
-					<c:out value="${message_user_not_added}" />
+					<c:out value="${message_not_added}" />
 					<c:out value="${message_enable_disable_failed}" />
 				</div>
 				<table data-toggle="table"
@@ -42,7 +42,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<c:forEach var="u" items="${users_short}" varStatus="loopStatus">
+						<c:forEach var="u" items="${entities}" varStatus="loopStatus">
 							<tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
 								<td><c:choose>
 										<c:when test="${u.enabled == 0}">
@@ -90,7 +90,7 @@
 				<h2>
 					<spring:message code="label.adminpage.addNewUser" />
 				</h2>
-				<form:form method="post" commandName="userDTO" action="addUser"
+				<form:form method="post" commandName="dataObject" action="addUser"
 					accept-charset="UTF-8">
 					<table>
 						<tr>

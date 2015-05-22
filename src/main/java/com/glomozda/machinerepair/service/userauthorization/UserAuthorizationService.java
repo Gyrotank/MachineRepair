@@ -10,9 +10,10 @@ import com.glomozda.machinerepair.domain.user.User;
 import com.glomozda.machinerepair.domain.userauthorization.UserAuthorization;
 import com.glomozda.machinerepair.domain.userrole.UserRole;
 import com.glomozda.machinerepair.repository.userauthorization.UserAuthorizationRepository;
+import com.glomozda.machinerepair.service.EntityService;
 
 @Service
-public abstract class UserAuthorizationService {
+public abstract class UserAuthorizationService implements EntityService {
 
 	@Autowired
 	protected UserAuthorizationRepository userAuthorizationRepository;

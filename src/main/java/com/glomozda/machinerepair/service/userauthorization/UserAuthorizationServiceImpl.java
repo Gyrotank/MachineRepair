@@ -86,4 +86,23 @@ public class UserAuthorizationServiceImpl extends UserAuthorizationService {
 	public List<UserAuthorization> getUserAuthorizationsByUserId(Long userId) {
 		return userAuthorizationRepository.getUserAuthorizationsByUserId(userId);
 	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public List getAllEntities() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public List getAllEntities(Long start, Long length) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Long getCountEntities() {
+		return getUserAuthorizationCount();
+	}
 }

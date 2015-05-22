@@ -3,6 +3,7 @@ package com.glomozda.machinerepair.repository.client;
 import java.util.List;
 
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
@@ -113,12 +114,17 @@ public class ClientRepositoryImpl extends ClientRepository {
 	
 	@Override
 	@Transactional
-	public Boolean add(Client c, Long userId) {
+	public Boolean add(Client c, Long userId) throws PersistenceException {
 		User user = em.getReference(User.class, userId);
 
 		Client newClient = new Client();
 		newClient.setClientName(c.getClientName());
 		newClient.setClientUser(user);
+		
+		if (em.contains(newClient)) {
+			return false;
+		}
+		
 		em.persist(newClient);
 		
 		if (em.contains(newClient)) {

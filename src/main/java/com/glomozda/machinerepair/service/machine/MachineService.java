@@ -7,9 +7,10 @@ import org.springframework.stereotype.Service;
 
 import com.glomozda.machinerepair.domain.machine.Machine;
 import com.glomozda.machinerepair.repository.machine.MachineRepository;
+import com.glomozda.machinerepair.service.EntityService;
 
 @Service
-public abstract class MachineService {
+public abstract class MachineService implements EntityService {
 
 	@Autowired
 	protected MachineRepository machineRepository;

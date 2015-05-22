@@ -3,6 +3,7 @@ package com.glomozda.machinerepair.repository.repairtype;
 import java.util.List;
 
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
@@ -50,8 +51,14 @@ public class RepairTypeRepositoryImpl extends RepairTypeRepository {
 
 	@Override
 	@Transactional
-	public Boolean add(RepairType rt) {
+	public Boolean add(RepairType rt) throws PersistenceException {
+		
+		if (em.contains(rt)) {
+			return false;
+		}
+		
 		em.persist(rt);
+		
 		if (em.contains(rt)) {
 			return true;
 		} else {

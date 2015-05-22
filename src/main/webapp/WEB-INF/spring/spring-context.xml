@@ -24,7 +24,8 @@
   
   <beans:bean id="propertyConfigurer" 
     class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-    <beans:property name="location" value="classpath:jdbc.properties"></beans:property>   
+    <beans:property name="location" value="classpath:jdbc.properties"></beans:property>
+    <beans:property name="ignoreUnresolvablePlaceholders" value="true" />
   </beans:bean>
    
   <!-- MySQL Datasource with Commons DBCP connection pooling -->

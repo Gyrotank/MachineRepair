@@ -31,7 +31,8 @@ CREATE TABLE IF NOT EXISTS `machines_serviceable` (
   `country` varchar(50) NOT NULL,
   `country_ru` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `available` tinyint(1) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`machines_serviceable_id`)
+  PRIMARY KEY (`machines_serviceable_id`),
+  UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
 
 CREATE TABLE IF NOT EXISTS `orders` (
@@ -68,7 +69,8 @@ CREATE TABLE IF NOT EXISTS `repair_types` (
   `duration` int(2) NOT NULL,
   `available` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`repair_types_id`),
-  UNIQUE KEY `name` (`name`)
+  UNIQUE KEY `name` (`name`),
+  UNIQUE KEY `name_ru` (`name_ru`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
 
 CREATE TABLE IF NOT EXISTS `users` (

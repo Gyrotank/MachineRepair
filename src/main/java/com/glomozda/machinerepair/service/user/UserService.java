@@ -8,9 +8,10 @@ import org.springframework.stereotype.Service;
 
 import com.glomozda.machinerepair.domain.user.User;
 import com.glomozda.machinerepair.repository.user.UserRepository;
+import com.glomozda.machinerepair.service.EntityService;
 
 @Service
-public abstract class UserService {
+public abstract class UserService implements EntityService {
 
 	@Autowired
 	protected PasswordEncoder encoder;

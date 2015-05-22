@@ -31,56 +31,9 @@ public class AdminPageMachinesController extends AbstractRolePageController
 	protected void prepareModel(final Locale locale, final Principal principal, 
 			final Model model) {
 		
-		model.addAttribute("locale", locale.toString());
-		
-		if (!model.containsAttribute("machineDTO")) {
-			model.addAttribute("machineDTO", new MachineDTO());
-		}
-		
-		model.addAttribute("machines_short", 
-				machineSvc.getAllWithFetching(
-						sessionScopeInfoService.getSessionScopeInfo().getPagingFirstIndex(), 
-						sessionScopeInfoService.getSessionScopeInfo().getPagingLastIndex() 
-						- sessionScopeInfoService
-							.getSessionScopeInfo().getPagingFirstIndex() + 1));
-		
-		Long machinesCount = machineSvc.getMachineCount();
-		model.addAttribute("machines_count", machinesCount);
-		
-		Long pagesCount = machinesCount / DEFAULT_PAGE_SIZE;
-		if (machinesCount % DEFAULT_PAGE_SIZE != 0) {
-			pagesCount++;
-		}
-		model.addAttribute("pages_count", pagesCount);
-		model.addAttribute("pages_size", DEFAULT_PAGE_SIZE);
-		Long pageNumber = sessionScopeInfoService.getSessionScopeInfo().getPageNumber();
-		if (pageNumber >= pagesCount) {
-			model.addAttribute("page_number", 0L);
-			model.addAttribute("machines_short", 
-					machineSvc.getAllWithFetching(
-							0L, DEFAULT_PAGE_SIZE));
-		} else {
-			model.addAttribute("page_number", pageNumber);
-			model.addAttribute("machines_short", 
-					machineSvc.getAllWithFetching(
-							sessionScopeInfoService.getSessionScopeInfo().getPagingFirstIndex(), 
-							sessionScopeInfoService.getSessionScopeInfo().getPagingLastIndex() 
-							- sessionScopeInfoService
-								.getSessionScopeInfo().getPagingFirstIndex() + 1));
-		}
-		
-		model.addAttribute("message_machine_added", 
-			sessionScopeInfoService.getSessionScopeInfo().getMessageAdded());
-		sessionScopeInfoService.getSessionScopeInfo().setMessageAdded("");
-		model.addAttribute("message_machine_not_added",
-			sessionScopeInfoService.getSessionScopeInfo().getMessageNotAdded());
-		sessionScopeInfoService.getSessionScopeInfo().setMessageNotAdded("");
-		
+		prepareModelAdminPage(locale, model, new MachineDTO(), machineSvc);		
+
 		model.addAttribute("machines_serviceable", machineServiceableSvc.getAllOrderByName());
-		
-		model.addAttribute("dialog_delete_machine",
-				messageSource.getMessage("label.adminpage.machines.actions.delete.dialog", null,
-				locale));		
 	}
 	
 	@Override
@@ -111,7 +64,7 @@ public class AdminPageMachinesController extends AbstractRolePageController
 	}
 	
 	@RequestMapping(value = "/addMachine", method = RequestMethod.POST)
-	public String addMachine(@ModelAttribute("machineDTO") @Valid final MachineDTO machineDTO,
+	public String addMachine(@ModelAttribute("dataObject") @Valid final MachineDTO machineDTO,
 			final BindingResult bindingResult,			
 			final RedirectAttributes redirectAttributes,			
 			final Locale locale) {
@@ -124,24 +77,19 @@ public class AdminPageMachinesController extends AbstractRolePageController
 		
 		if (bindingResult.hasErrors()) {
 			redirectAttributes.addFlashAttribute
-				("org.springframework.validation.BindingResult.machineDTO", bindingResult);
-			redirectAttributes.addFlashAttribute("machineDTO", machineDTO);			
+				("org.springframework.validation.BindingResult.dataObject", bindingResult);
+			redirectAttributes.addFlashAttribute("dataObject", machineDTO);			
 			return "redirect:/adminpagemachines#add_new_machine";
 		}
 		
 		Machine newMachine = new Machine(machineDTO.getMachineSerialNumber(),
 				machineDTO.getMachineYear(), machineDTO.getMachineTimesRepaired());
 		
-		if (machineSvc.add(newMachine, machineDTO.getMachineServiceableId())) {
-			changeSessionScopeAddingInfo(
-					messageSource.getMessage("popup.adminpage.machineAdded", null,locale),
-					"");			
-		} else {
-			changeSessionScopeAddingInfo(
-					"",
-					messageSource.getMessage("popup.adminpage.machineNotAdded", null,
-							locale));			
-		}
+		addMessages(machineSvc.add(newMachine, machineDTO.getMachineServiceableId()),
+				"popup.adminpage.machineAdded",
+				"popup.adminpage.machineNotAdded",
+				locale);
+		
 		return "redirect:/adminpagemachines";
 	}
 }

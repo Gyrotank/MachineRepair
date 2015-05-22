@@ -22,10 +22,10 @@
 					<spring:message code="label.adminpage.orders" />
 				</h1>
 				<div class="success">
-					<c:out value="${message_order_added}" />
+					<c:out value="${message_added}" />
 				</div>
 				<div class="error">
-					<c:out value="${message_order_not_added}" />
+					<c:out value="${message_not_added}" />
 				</div>
 				<table data-toggle="table"
 					data-classes="table table-hover table-condensed"
@@ -52,7 +52,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<c:forEach var="o" items="${orders_short}" varStatus="loopStatus">
+						<c:forEach var="o" items="${entities}" varStatus="loopStatus">
 							<tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
 								<td><c:out
 										value="${loopStatus.index + 1 + page_number * pages_size}" /></td>
@@ -141,7 +141,7 @@
 						</tr>
 					</table>
 				</form:form>
-				<form:form method="post" commandName="orderDTO" action="addOrder"
+				<form:form method="post" commandName="dataObject" action="addOrder"
 					accept-charset="UTF-8">
 					<table>
 						<tr>
@@ -155,7 +155,7 @@
 									</option>
 									<c:forEach var="c" items="${clients}">
 										<c:choose>
-											<c:when test="${orderDTO.clientId == c.clientId}">
+											<c:when test="${dataObject.clientId == c.clientId}">
 												<option selected value="${c.clientId}">
 													<c:out value="${c.clientName}" />
 												</option>
@@ -181,7 +181,7 @@
 									</option>
 									<c:forEach var="rt" items="${repair_types}">
 										<c:choose>
-											<c:when test="${orderDTO.repairTypeId == rt.repairTypeId}">
+											<c:when test="${dataObject.repairTypeId == rt.repairTypeId}">
 												<option selected value="${rt.repairTypeId}">
 													<c:choose>
 														<c:when test="${locale == 'ru'}">
@@ -220,7 +220,7 @@
 									</option>
 									<c:forEach var="m" items="${machines}">
 										<c:choose>
-											<c:when test="${orderDTO.machineId == m.machineId}">
+											<c:when test="${dataObject.machineId == m.machineId}">
 												<option selected value="${m.machineId}">
 													<c:out value="${m.machineSerialNumber}" />
 												</option>
@@ -240,7 +240,7 @@
 										code="label.adminpage.addNewOrder.date" />
 							</label></td>
 							<td><form:input path="startDate"
-									value="${orderDTO.startDate}" /></td>
+									value="${dataObject.startDate}" /></td>
 							<td><form:errors path="startDate" cssClass="error" /></td>
 						</tr>
 						<tr>
@@ -254,7 +254,7 @@
 									</option>
 									<c:forEach var="os" items="${order_statuses}">
 										<c:choose>
-											<c:when test="${orderDTO.orderStatusId == os.orderStatusId}">
+											<c:when test="${dataObject.orderStatusId == os.orderStatusId}">
 												<option selected value="${os.orderStatusId}">
 													<c:choose>
 														<c:when test="${locale == 'ru'}">
@@ -293,7 +293,7 @@
 									</option>
 									<c:forEach var="man" items="${managers}">
 										<c:choose>
-											<c:when test="${orderDTO.manager == man}">
+											<c:when test="${dataObject.manager == man}">
 												<option selected value="${man}">
 													<c:out value="${man}" />
 												</option>

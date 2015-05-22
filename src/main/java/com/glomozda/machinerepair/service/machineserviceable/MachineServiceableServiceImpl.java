@@ -2,8 +2,11 @@ package com.glomozda.machinerepair.service.machineserviceable;
 
 import java.util.List;
 
+import javax.persistence.PersistenceException;
+
 import com.glomozda.machinerepair.domain.machineserviceable.MachineServiceable;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -41,7 +44,22 @@ public class MachineServiceableServiceImpl extends MachineServiceableService {
 	
 	@Override
 	public Boolean add(MachineServiceable ms) {
-		return machineServiceableRepository.add(ms);
+		Boolean result = false;
+		
+		try {
+			result = machineServiceableRepository.add(ms);
+		} catch (PersistenceException e) {
+			Throwable t = e.getCause();
+		    while ((t != null) && !(t instanceof ConstraintViolationException)) {
+		        t = t.getCause();
+		    }
+		    if (t instanceof ConstraintViolationException) {
+		        return false;
+		    }
+		    throw(e);
+		}
+		
+		return result;
 	}
 	
 	@Override
@@ -62,5 +80,22 @@ public class MachineServiceableServiceImpl extends MachineServiceableService {
 	public List<MachineServiceable> getAllAvailableOrderByTrademark() {
 		return machineServiceableRepository
 				.getAllAvailableOrderByTrademark();
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public List getAllEntities() {
+		return getAll();
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public List getAllEntities(Long start, Long length) {
+		return getAll(start, length);
+	}
+
+	@Override
+	public Long getCountEntities() {
+		return getMachineServiceableCount();
 	}
 }

@@ -3,6 +3,7 @@ package com.glomozda.machinerepair.repository.machine;
 import java.util.List;
 
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
@@ -90,7 +91,8 @@ public class MachineRepositoryImpl extends MachineRepository {
 	
 	@Override
 	@Transactional
-	public Boolean add(Machine m, Long machineServiceableId) {
+	public Boolean add(Machine m, Long machineServiceableId) 
+			throws PersistenceException {
 		MachineServiceable machineServiceable =
 				em.getReference(MachineServiceable.class, machineServiceableId);
 
@@ -99,7 +101,13 @@ public class MachineRepositoryImpl extends MachineRepository {
 		newMachine.setMachineYear(m.getMachineYear());
 		newMachine.setMachineTimesRepaired(m.getMachineTimesRepaired());
 		newMachine.setMachineServiceable(machineServiceable);
+		
+		if (em.contains(newMachine)) {
+			return false;
+		}
+		
 		em.persist(newMachine);
+		
 		if (em.contains(newMachine)) {
 			return true;
 		} else {

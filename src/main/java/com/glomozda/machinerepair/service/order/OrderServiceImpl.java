@@ -139,4 +139,21 @@ public class OrderServiceImpl extends OrderService {
 	public Integer updateOrderById(Long orderId, Order order) {
 		return orderRepository.updateOrderById(orderId, order);
 	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public List getAllEntities() {
+		return getAllWithFetching();
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public List getAllEntities(Long start, Long length) {
+		return getAllWithFetching(start, length);
+	}
+
+	@Override
+	public Long getCountEntities() {
+		return getOrderCount();
+	}
 }

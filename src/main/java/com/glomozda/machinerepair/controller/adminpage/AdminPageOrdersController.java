@@ -32,11 +32,7 @@ public class AdminPageOrdersController extends AbstractRolePageController
 	protected void prepareModel(final Locale locale, final Principal principal, 
 			final Model model) {
 		
-		model.addAttribute("locale", locale.toString());
-		
-		if (!model.containsAttribute("orderDTO")) {
-			model.addAttribute("orderDTO", new OrderDTO());
-		}
+		prepareModelAdminPage(locale, model, new OrderDTO(), orderSvc);
 		
 		if (!model.containsAttribute("clientSearchQuery")) {
 			model.addAttribute("clientSearchQuery", new SearchQuery());
@@ -79,41 +75,6 @@ public class AdminPageOrdersController extends AbstractRolePageController
 		java.util.Collections.sort(managers);
 		model.addAttribute("managers", managers);
 				
-		Long ordersCount = orderSvc.getOrderCount();
-		model.addAttribute("orders_count", ordersCount);
-		Long pagesCount = ordersCount / DEFAULT_PAGE_SIZE;
-		if (ordersCount % DEFAULT_PAGE_SIZE != 0) {
-			pagesCount++;
-		}
-		model.addAttribute("pages_count", pagesCount);
-		model.addAttribute("pages_size", DEFAULT_PAGE_SIZE);
-		Long pageNumber = sessionScopeInfoService.getSessionScopeInfo().getPageNumber();
-		if (pageNumber >= pagesCount) {
-			model.addAttribute("page_number", 0L);
-			model.addAttribute("orders_short", 
-					orderSvc.getAllWithFetching(
-							0L, DEFAULT_PAGE_SIZE));			
-		} else {
-			model.addAttribute("page_number", pageNumber);
-			model.addAttribute("orders_short", 
-					orderSvc.getAllWithFetching(
-						sessionScopeInfoService.getSessionScopeInfo().getPagingFirstIndex(), 
-						sessionScopeInfoService.getSessionScopeInfo().getPagingLastIndex() 
-							- sessionScopeInfoService
-								.getSessionScopeInfo().getPagingFirstIndex() + 1));
-		}
-		
-		model.addAttribute("message_order_added",
-			sessionScopeInfoService.getSessionScopeInfo().getMessageAdded());
-			sessionScopeInfoService.getSessionScopeInfo().setMessageAdded("");
-		model.addAttribute("message_order_not_added",
-			sessionScopeInfoService.getSessionScopeInfo().getMessageNotAdded());
-			sessionScopeInfoService.getSessionScopeInfo().setMessageNotAdded("");
-		
-		model.addAttribute("dialog_delete_order",
-				messageSource.getMessage(
-						"label.adminpage.orders.actions.delete.dialog", null,
-				locale));		
 	}
 	
 	@Override
@@ -154,7 +115,7 @@ public class AdminPageOrdersController extends AbstractRolePageController
 	}
 	
 	@RequestMapping(value = "/addOrder", method = RequestMethod.POST)
-	public String addOrder(@ModelAttribute("orderDTO") @Valid final OrderDTO orderDTO,
+	public String addOrder(@ModelAttribute("dataObject") @Valid final OrderDTO orderDTO,
 			final BindingResult bindingResult,			
 			final RedirectAttributes redirectAttributes,			
 			final Locale locale) {
@@ -174,8 +135,8 @@ public class AdminPageOrdersController extends AbstractRolePageController
 				
 		if (bindingResult.hasErrors()) {			
 			redirectAttributes.addFlashAttribute
-				("org.springframework.validation.BindingResult.orderDTO", bindingResult);
-			redirectAttributes.addFlashAttribute("orderDTO", orderDTO);			
+				("org.springframework.validation.BindingResult.dataObject", bindingResult);
+			redirectAttributes.addFlashAttribute("dataObject", orderDTO);			
 			
 			return "redirect:/adminpageorders#add_new_order";
 		}		
@@ -184,18 +145,12 @@ public class AdminPageOrdersController extends AbstractRolePageController
 		newOrder.setStart(startSqlDate);
 		newOrder.setManager(orderDTO.getManager());
 		
-		if (orderSvc.add(newOrder, orderDTO.getClientId(), orderDTO.getRepairTypeId(),
-				orderDTO.getMachineId(), orderDTO.getOrderStatusId())) {
-			changeSessionScopeAddingInfo(
-					messageSource.getMessage("popup.adminpage.orderAdded", null, 
-							locale),
-					"");
-		} else {
-			changeSessionScopeAddingInfo(
-					"",
-					messageSource.getMessage("popup.adminpage.orderNotAdded", null,
-							locale));			
-		}		
+		addMessages(orderSvc.add(newOrder, orderDTO.getClientId(), orderDTO.getRepairTypeId(),
+				orderDTO.getMachineId(), orderDTO.getOrderStatusId()),
+				"popup.adminpage.orderAdded",
+				"popup.adminpage.orderNotAdded",
+				locale);
+		
 		return "redirect:/adminpageorders";
 	}
 }

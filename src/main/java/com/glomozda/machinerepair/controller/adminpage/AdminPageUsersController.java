@@ -33,34 +33,7 @@ public class AdminPageUsersController extends AbstractRolePageController
 	protected void prepareModel(final Locale locale, final Principal principal, 
 			final Model model) {
 		
-		model.addAttribute("locale", locale.toString());
-		
-		if (!model.containsAttribute("userDTO")) {
-			model.addAttribute("userDTO", new UserDTO());
-		}
-		
-		Long usersCount = userSvc.getUserCount();
-		model.addAttribute("users_count", usersCount);
-		Long pagesCount = usersCount / DEFAULT_PAGE_SIZE;
-		if (usersCount % DEFAULT_PAGE_SIZE != 0) {
-			pagesCount++;
-		}
-		model.addAttribute("pages_count", pagesCount);
-		model.addAttribute("pages_size", DEFAULT_PAGE_SIZE);
-		Long pageNumber = sessionScopeInfoService.getSessionScopeInfo().getPageNumber();
-		if (pageNumber >= pagesCount) {
-			model.addAttribute("page_number", 0L);
-			model.addAttribute("users_short", 
-					userSvc.getAll(0L, DEFAULT_PAGE_SIZE));
-		} else {
-			model.addAttribute("page_number", pageNumber);
-			model.addAttribute("users_short", 
-					userSvc.getAll(
-						sessionScopeInfoService.getSessionScopeInfo().getPagingFirstIndex(), 
-						sessionScopeInfoService.getSessionScopeInfo().getPagingLastIndex() 
-							- sessionScopeInfoService
-								.getSessionScopeInfo().getPagingFirstIndex() + 1));
-		}
+		prepareModelAdminPage(locale, model, new UserDTO(), userSvc);
 		
 		model.addAttribute("dialog_enable_user",
 				messageSource.getMessage("label.adminpage.users.actions.enable.dialog", null,
@@ -75,13 +48,6 @@ public class AdminPageUsersController extends AbstractRolePageController
 		model.addAttribute("message_enable_disable_succeeded",
 				messageEnableDisableSucceeded);
 		messageEnableDisableSucceeded = "";
-		
-		model.addAttribute("message_user_added",
-			sessionScopeInfoService.getSessionScopeInfo().getMessageAdded());
-			sessionScopeInfoService.getSessionScopeInfo().setMessageAdded("");
-		model.addAttribute("message_user_not_added",
-			sessionScopeInfoService.getSessionScopeInfo().getMessageNotAdded());
-			sessionScopeInfoService.getSessionScopeInfo().setMessageNotAdded("");	
 	}
 	
 	@Override
@@ -184,29 +150,23 @@ public class AdminPageUsersController extends AbstractRolePageController
 	
 	@RequestMapping(value = "/addUser", method = RequestMethod.POST)
 	public String addUser(
-			@ModelAttribute("userDTO") @Valid final UserDTO userDTO,
+			@ModelAttribute("dataObject") @Valid final UserDTO userDTO,
 			final BindingResult bindingResult,			
 			final RedirectAttributes redirectAttributes,
 			final Locale locale) {
 		
 		if (bindingResult.hasErrors()) {
 			redirectAttributes.addFlashAttribute
-			("org.springframework.validation.BindingResult.userDTO", bindingResult);
-			redirectAttributes.addFlashAttribute("userDTO", userDTO);
+			("org.springframework.validation.BindingResult.dataObject", bindingResult);
+			redirectAttributes.addFlashAttribute("dataObject", userDTO);
 			return "redirect:/adminpageusers#add_new_user";
 		}
 		
-		if (userSvc.add(userDTO.getLogin(), userDTO.getPasswordText())) {
-			changeSessionScopeAddingInfo(
-					messageSource.getMessage("popup.adminpage.userAdded", null, 
-							locale),
-					"");			
-		} else {
-			changeSessionScopeAddingInfo(
-					"",
-					messageSource.getMessage("popup.adminpage.userAdded", null,
-							locale));
-		}
+		addMessages(userSvc.add(userDTO.getLogin(), userDTO.getPasswordText()),
+				"popup.adminpage.userAdded",
+				"popup.adminpage.userNotAdded",
+				locale);
+		
 		return "redirect:/adminpageusers";
 	}
 

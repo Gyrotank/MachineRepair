@@ -2,10 +2,13 @@ package com.glomozda.machinerepair.service.client;
 
 import java.util.List;
 
+import javax.persistence.PersistenceException;
+
 import com.glomozda.machinerepair.domain.client.*;
 import com.glomozda.machinerepair.domain.userauthorization.UserAuthorization;
 import com.glomozda.machinerepair.domain.userrole.UserRole;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -68,7 +71,22 @@ public class ClientServiceImpl extends ClientService {
 
 	@Override
 	public Boolean add(Client c, Long userId) {
-		return clientRepository.add(c, userId);
+		Boolean result = false;
+		
+		try {
+			result = clientRepository.add(c, userId);
+		} catch (PersistenceException e) {
+			Throwable t = e.getCause();
+		    while ((t != null) && !(t instanceof ConstraintViolationException)) {
+		        t = t.getCause();
+		    }
+		    if (t instanceof ConstraintViolationException) {
+		        return false;
+		    }
+		    throw(e);
+		}
+		
+		return result;
 	}
 	
 	@Override
@@ -101,5 +119,22 @@ public class ClientServiceImpl extends ClientService {
 	@Override
 	public List<Client> getClientsLikeName(String likePattern, Long start, Long length) {
 		return clientRepository.getClientsLikeName(likePattern, start, length);
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public List getAllEntities() {
+		return getAllWithFetching();
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public List getAllEntities(Long start, Long length) {
+		return getAllWithFetching(start, length);
+	}
+
+	@Override
+	public Long getCountEntities() {
+		return getClientCount();
 	}
 }

@@ -6,7 +6,6 @@ import java.util.Locale;
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
-import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,52 +29,10 @@ public class AdminPageMachinesServiceableController extends AbstractRolePageCont
 	private String messageEnableDisableSucceeded = "";
 	
 	@Override
-	public void setMessageSource(MessageSource messageSource) {
-		this.messageSource = messageSource;
-	}
-	
-	@Override
 	protected void prepareModel(final Locale locale, final Principal principal, 
 			final Model model) {
 		
-		model.addAttribute("locale", locale.toString());
-		
-		if (!model.containsAttribute("machineServiceable")) {
-			model.addAttribute("machineServiceable", new MachineServiceable());
-		}
-		
-		Long machinesServiceableCount = machineServiceableSvc.getMachineServiceableCount();
-		model.addAttribute("machines_serviceable_count", 
-				machinesServiceableCount);
-		 
-		Long pagesCount = machinesServiceableCount / DEFAULT_PAGE_SIZE;
-		if (machinesServiceableCount % DEFAULT_PAGE_SIZE != 0) {
-			pagesCount++;
-		}
-		model.addAttribute("pages_count", pagesCount);
-		model.addAttribute("pages_size", DEFAULT_PAGE_SIZE);
-		Long pageNumber = sessionScopeInfoService.getSessionScopeInfo().getPageNumber();
-		if (pageNumber >= pagesCount) {
-			model.addAttribute("page_number", 0L);
-			model.addAttribute("machines_serviceable_short", 
-					machineServiceableSvc.getAll(
-							0L, DEFAULT_PAGE_SIZE));
-		} else {
-			model.addAttribute("page_number", pageNumber);
-			model.addAttribute("machines_serviceable_short", 
-					machineServiceableSvc.getAll(
-						sessionScopeInfoService.getSessionScopeInfo().getPagingFirstIndex(), 
-						sessionScopeInfoService.getSessionScopeInfo().getPagingLastIndex() 
-						- sessionScopeInfoService
-							.getSessionScopeInfo().getPagingFirstIndex() + 1));
-		}
-		
-		model.addAttribute("message_machine_serviceable_added",
-			sessionScopeInfoService.getSessionScopeInfo().getMessageAdded());
-		sessionScopeInfoService.getSessionScopeInfo().setMessageAdded("");
-		model.addAttribute("message_machine_serviceable_not_added",
-			sessionScopeInfoService.getSessionScopeInfo().getMessageNotAdded());
-		sessionScopeInfoService.getSessionScopeInfo().setMessageNotAdded("");
+		prepareModelAdminPage(locale, model, new MachineServiceable(), machineServiceableSvc);
 		
 		model.addAttribute("message_enable_disable_failed",
 				messageEnableDisableFailed);
@@ -126,7 +83,7 @@ public class AdminPageMachinesServiceableController extends AbstractRolePageCont
 	
 	@RequestMapping(value = "/addMachineServiceable", method = RequestMethod.POST)
 	public String addMachineServiceable(
-			@ModelAttribute("machineServiceable") 
+			@ModelAttribute("dataObject") 
 				@Valid final MachineServiceable machineServiceable,
 			final BindingResult bindingResult,			
 			final RedirectAttributes redirectAttributes,
@@ -134,22 +91,16 @@ public class AdminPageMachinesServiceableController extends AbstractRolePageCont
 		
 		if (bindingResult.hasErrors()) {
 			redirectAttributes.addFlashAttribute
-			("org.springframework.validation.BindingResult.machineServiceable", bindingResult);
-			redirectAttributes.addFlashAttribute("machineServiceable", machineServiceable);
+			("org.springframework.validation.BindingResult.dataObject", bindingResult);
+			redirectAttributes.addFlashAttribute("dataObject", machineServiceable);
 			return "redirect:/adminpagemachinesserviceable#add_new_serviceable_machine";
 		}
 		
-		if (machineServiceableSvc.add(machineServiceable)) {
-			changeSessionScopeAddingInfo(
-					messageSource.getMessage("popup.adminpage.machineServiceableAdded", null, 
-							locale),
-					"");			
-		} else {
-			changeSessionScopeAddingInfo(
-					"",
-					messageSource.getMessage("popup.adminpage.machineServiceableNotAdded", null,
-							locale));			
-		}		
+		addMessages(machineServiceableSvc.add(machineServiceable),
+				"popup.adminpage.machineServiceableAdded",
+				"popup.adminpage.machineServiceableNotAdded",
+				locale);
+		
 		return "redirect:/adminpagemachinesserviceable";
 	}
 	

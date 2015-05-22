@@ -3,6 +3,7 @@ package com.glomozda.machinerepair.repository.user;
 import java.util.List;
 
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
@@ -130,8 +131,13 @@ public class UserRepositoryImpl extends UserRepository {
 
 	@Override
 	@Transactional
-	public Boolean add(User u) {
+	public Boolean add(User u) throws PersistenceException {
+		if (em.contains(u)) {
+			return false;
+		}
+		
 		em.persist(u);
+		
 		if (em.contains(u)) {
 			return true;
 		} else {

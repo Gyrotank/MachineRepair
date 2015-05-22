@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +28,7 @@ public abstract class MachineServiceableRepository {
 			MachineServiceable machineServiceable);
 	
 	@Transactional
-	public abstract Boolean add(MachineServiceable ms);
+	public abstract Boolean add(MachineServiceable ms) throws PersistenceException;
 
 	public abstract Long getMachineServiceableCount();
 

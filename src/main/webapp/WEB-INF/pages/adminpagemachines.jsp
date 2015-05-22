@@ -21,10 +21,10 @@
 					<spring:message code="label.adminpage.machines" />
 				</h1>
 				<div class="success">
-					<c:out value="${message_machine_added}" />
+					<c:out value="${message_added}" />
 				</div>
 				<div class="error">
-					<c:out value="${message_machine_not_added}" />
+					<c:out value="${message_not_added}" />
 				</div>
 				<table data-toggle="table"
 					data-classes="table table-hover table-condensed"
@@ -45,7 +45,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<c:forEach var="m" items="${machines_short}"
+						<c:forEach var="m" items="${entities}"
 							varStatus="loopStatus">
 							<tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
 								<td><c:out
@@ -81,7 +81,7 @@
 					<h2>
 						<spring:message code="label.adminpage.addNewMachine" />
 					</h2>
-					<form:form method="post" commandName="machineDTO"
+					<form:form method="post" commandName="dataObject"
 						action="addMachine" accept-charset="UTF-8">
 						<table>
 							<tr>
@@ -98,7 +98,7 @@
 										<c:forEach var="ms" items="${machines_serviceable}">
 											<c:choose>
 												<c:when
-													test="${machineDTO.machineServiceableId == ms.machineServiceableId}">
+													test="${dataObject.machineServiceableId == ms.machineServiceableId}">
 													<option selected value="${ms.machineServiceableId}">
 														<c:out value="${ms.machineServiceableName}" />
 													</option>

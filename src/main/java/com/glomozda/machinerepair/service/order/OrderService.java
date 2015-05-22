@@ -7,9 +7,10 @@ import org.springframework.stereotype.Service;
 
 import com.glomozda.machinerepair.domain.order.Order;
 import com.glomozda.machinerepair.repository.order.OrderRepository;
+import com.glomozda.machinerepair.service.EntityService;
 
 @Service
-public abstract class OrderService {
+public abstract class OrderService implements EntityService {
 
 	@Autowired
 	protected OrderRepository orderRepository;

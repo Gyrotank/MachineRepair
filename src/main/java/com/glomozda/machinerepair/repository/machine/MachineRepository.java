@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +32,8 @@ public abstract class MachineRepository {
 	public abstract Machine getMachineByIdWithFetching(Long machineId);
 
 	@Transactional
-	public abstract Boolean add(Machine m, Long machineServiceableId);
+	public abstract Boolean add(Machine m, Long machineServiceableId) 
+			throws PersistenceException;
 	
 	@Transactional	
 	public abstract Integer incrementTimesRepairedById(Long machineId);

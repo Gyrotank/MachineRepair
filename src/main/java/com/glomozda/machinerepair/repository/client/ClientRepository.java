@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +40,7 @@ public abstract class ClientRepository {
 	public abstract Long getClientCount();
 	
 	@Transactional
-	public abstract Boolean add(Client c, Long userId);
+	public abstract Boolean add(Client c, Long userId) throws PersistenceException;
 	
 	@Transactional
 	public abstract Integer updateClientNameById(Long clientId, String name);

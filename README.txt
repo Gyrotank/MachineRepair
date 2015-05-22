@@ -70,3 +70,16 @@ mvn db:drop db:create db:schema db:data clean tomcat7:redeploy
 
 9. If you don't need or want to reinitialize the DB, use the following command:
 mvn clean tomcat7:redeploy
+
+
+USING THE APPLICATION
+---------------------
+
+You can test the application's functionality by using predefined user credentials, such as:
+
+login:   | password:  | role
+------------------------------------
+admin    | kokoko     | Administrator
+manager1 | koko       | Manager
+proletar | qwerty     | User with active and finished orders
+мао      | мао        | User with cyrillic login and password and name in Chinese (for UTF-8 testing)

@@ -56,6 +56,11 @@ public class UserDAOJDBCTest extends DAOTestsTemplate{
     }
     
     @Test
+    public void testGetAllIdsAndLoginsWithLimits() {
+    	Assert.assertTrue(userService.getAllIdsAndLogins((long) 0, (long) 100).size() == 2);
+    }
+    
+    @Test
     public void testGetUserByLoginAndPassword() {    	
     	Assert.assertTrue((BCrypt.checkpw("qwerty", 
     			userService.getUserByLoginAndPassword("ivan_user", "qwerty").getPassword())));
@@ -97,6 +102,28 @@ public class UserDAOJDBCTest extends DAOTestsTemplate{
     @Test
     public void testGetUserCount() {
     	Assert.assertTrue(userService.getUserCount() == 2);
+    } 
+    
+    @Test
+    public void testGetAllEntities() {
+    	Assert.assertTrue(userService.getAllEntities().size() == 2);
+    }
+    
+    @Test
+    public void testGetAllEntitiesWithLimits() {
+    	Assert.assertTrue(userService
+    			.getAllEntities((long) 0, (long) 100).size() == 2);
+    }
+    
+    @Test
+    public void testGetCountEntitites() {
+    	Assert.assertTrue(userService.getCountEntities() == 2);
+    }
+    
+    @Test
+    public void testAddExisting() {
+    	User u3 = new User("ivan_user", "54321");
+    	Assert.assertFalse(userService.add(u3));
     }
     
     @Test

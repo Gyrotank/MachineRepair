@@ -9,8 +9,6 @@
 
 <http pattern="/error/**" security="none"/>
 
-<!-- <http access-denied-page="/error403.jsp"> -->
-
 <http auto-config="true"> 
    <intercept-url pattern="/index*" access="ROLE_CLIENT,ROLE_ANONYMOUS"/> 
    <intercept-url pattern="/client*" access="ROLE_CLIENT"/>
@@ -18,6 +16,9 @@
    <intercept-url pattern="/manager*" access="ROLE_MANAGER"/>
    <intercept-url pattern="/admin*" access="ROLE_ADMIN"/>   
    <intercept-url pattern="/update*" access="ROLE_ADMIN"/>  
+   
+   <access-denied-handler error-page="/WEB-INF/pages/error403.jsp" />
+   
    <form-login login-page="/login"
    				username-parameter="login"  
    				password-parameter="password"   				
@@ -30,7 +31,7 @@
         <concurrency-control max-sessions="1"
          expired-url="/Login.html"
          error-if-maximum-exceeded="true"/>
-	</session-management> 
+	</session-management>	
 </http>
 
 <beans:bean id="urlAuthenticationSuccessHandler"

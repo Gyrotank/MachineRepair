@@ -21,11 +21,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.glomozda.machinerepair.controller.AbstractRolePageController;
 import com.glomozda.machinerepair.domain.client.Client;
 import com.glomozda.machinerepair.domain.machine.Machine;
-import com.glomozda.machinerepair.domain.machineserviceable.MachineServiceable;
 import com.glomozda.machinerepair.domain.order.Order;
 import com.glomozda.machinerepair.domain.order.OrderCreateFirstDTO;
 import com.glomozda.machinerepair.domain.order.OrderCreateRepeatedDTO;
-import com.glomozda.machinerepair.domain.repairtype.RepairType;
 
 @Controller
 public class ClientPageCreateOrdersController extends AbstractRolePageController
@@ -90,10 +88,6 @@ public class ClientPageCreateOrdersController extends AbstractRolePageController
 		
 		ArrayList<String> myMachinesSNs = new ArrayList<String>();
 		
-		List<RepairType> repairTypes = repairTypeSvc.getAllAvailable();
-		List<MachineServiceable> machinesServiceable =
-				machineServiceableSvc.getAllAvailableOrderByTrademark();
-		
 		if (myPastOrders.isEmpty() && myCurrentOrders.isEmpty()) {			
 			model.addAttribute("my_machines_serial_numbers", myMachinesSNs);
 		} else {
@@ -127,8 +121,12 @@ public class ClientPageCreateOrdersController extends AbstractRolePageController
 		model.addAttribute("message_first_repair_not_created", messageFirstRepairNotCreated);
 		messageFirstRepairNotCreated = "";
 				
-		model.addAttribute("machines_serviceable", machinesServiceable);
-		model.addAttribute("repair_types", repairTypes);
+		model.addAttribute("machines_serviceable", machineServiceableSvc.getAllIdsAndNames());
+		if (locale.toString().contains("ru")) {
+			model.addAttribute("repair_types", repairTypeSvc.getIdsAndNamesRuOfAvailable());
+		} else {
+			model.addAttribute("repair_types", repairTypeSvc.getIdsAndNamesOfAvailable());
+		}
 		
 	}
 

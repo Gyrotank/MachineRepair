@@ -287,6 +287,22 @@ public class OrderDAOJDBCTest extends DAOTestsTemplate{
     }
     
     @Test
+    public void testGetAllEntities() {
+    	Assert.assertTrue(orderService.getAllEntities().size() == 2);
+    }
+    
+    @Test
+    public void testGetAllEntitiesWithLimits() {
+    	Assert.assertTrue(orderService
+    			.getAllEntities((long) 0, (long) 100).size() == 2);
+    }
+    
+    @Test
+    public void testGetCountEntitites() {
+    	Assert.assertTrue(orderService.getCountEntities() == 2);
+    }
+    
+    @Test
     public void testConfirmOrderById() {    	
         Assert.assertTrue(orderService.confirmOrderById((long) 2, "Manager", (long) 2) == 1);
         Assert.assertTrue(orderService.confirmOrderById((long) 3, "Manager", (long) 2) == 0);

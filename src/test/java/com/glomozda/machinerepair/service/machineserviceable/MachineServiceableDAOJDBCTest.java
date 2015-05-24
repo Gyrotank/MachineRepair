@@ -15,7 +15,7 @@ public class MachineServiceableDAOJDBCTest extends DAOTestsTemplate{
     
     final MachineServiceable ms1 = new MachineServiceable("M-S-3", "TM-1", "UK", "��");
     final MachineServiceable ms2 = new MachineServiceable("M-S-2", "ATM-2",
-    		"USA", "���", (byte) 0);
+    		"USA", "���", (byte) 0);    
             
     @Before
     public void prepareDB(){
@@ -67,6 +67,34 @@ public class MachineServiceableDAOJDBCTest extends DAOTestsTemplate{
     }
     
     @Test
+    public void testGetAllIdsAndNames() {
+    	Assert.assertTrue(machineServiceableService.getAllIdsAndNames().size() == 2);
+    }
+    
+    @Test
+    public void testGetAllEntities() {
+    	Assert.assertTrue(machineServiceableService.getAllEntities().size() == 2);
+    }
+    
+    @Test
+    public void testGetAllEntitiesWithLimits() {
+    	Assert.assertTrue(machineServiceableService
+    			.getAllEntities((long) 0, (long) 100).size() == 2);
+    }
+    
+    @Test
+    public void testGetCountEntitites() {
+    	Assert.assertTrue(machineServiceableService.getCountEntities() == 2);
+    }
+    
+    @Test
+    public void testAddExisting() {
+    	MachineServiceable ms3 = new MachineServiceable("M-S-2", "ATM-2",
+        		"USA", "���", (byte) 0);
+    	Assert.assertFalse(machineServiceableService.add(ms3));
+    }
+    
+    @Test
     public void testSetMachineServiceableAvailableById() {
     	Assert.assertTrue(machineServiceableService
     			.setMachineServiceableAvailableById((long) 1, (byte) 0) == 1);
@@ -76,7 +104,7 @@ public class MachineServiceableDAOJDBCTest extends DAOTestsTemplate{
     
     @Test
     public void testUpdateMachineServiceableById() {
-    	final MachineServiceable ms3 = new MachineServiceable("M-S-2", "ATM-2", "USA", "���");
+    	final MachineServiceable ms3 = new MachineServiceable("M-S-1", "ATM-1", "USA", "���");
     	Assert.assertTrue(machineServiceableService
     			.updateMachineServiceableById((long) 1, ms3) == 1);
     	Assert.assertTrue(machineServiceableService

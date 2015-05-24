@@ -140,6 +140,22 @@ public class UserAuthorizationDAOJDBCTest extends DAOTestsTemplate{
     }
     
     @Test
+    public void testGetAllEntities() {
+    	Assert.assertTrue(userAuthorizationService.getAllEntities().size() == 2);
+    }
+    
+    @Test
+    public void testGetAllEntitiesWithLimits() {
+    	Assert.assertTrue(userAuthorizationService
+    			.getAllEntities((long) 0, (long) 100).size() == 2);
+    }
+    
+    @Test
+    public void testGetCountEntitites() {
+    	Assert.assertTrue(userAuthorizationService.getCountEntities() == 2);
+    }
+    
+    @Test
     public void testDeleteUserAuthorizationByUserIdAndRole() {
     	userAuthorizationService.add(new UserAuthorization(new UserRole("ROLE_CLIENT")), (long) 1);
     	Assert.assertTrue(userAuthorizationService

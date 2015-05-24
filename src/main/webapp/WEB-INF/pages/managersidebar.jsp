@@ -1,4 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <div id="sidebar">
 	<c:choose>
 		<c:when test="${locale == 'en'}">
@@ -39,9 +41,12 @@
 			<a href="<c:url value="/managerpageactiveorders"/>"> <spring:message
 					code="label.managerpage.sidebar.active" /></a>
 		</dd>
-		<hr class="style-seven">
-		<p>
+	</dl>
+	<hr class="style-seven">
+	<dl class="tabs vertical">	
+		<dd>
 			<a href="<c:url value="/logout"/>"> <spring:message
 					code="label.managerpage.sidebar.logout" /></a>
-		</p>
+		</dd>
+	</dl>
 </div>

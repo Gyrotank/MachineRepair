@@ -52,12 +52,12 @@ public class MachineServiceImpl extends MachineService {
 	@Override
 	public Map<Long, String> getIdsAndSNs() {		
 		List<Object[]> idsAndSNsList = machineRepository.getIdsAndSNs();
-				
-				Map<Long, String> idsAndSNsMap = 
-						new LinkedHashMap<Long, String>(idsAndSNsList.size());
-				for (Object[] idAndSN : idsAndSNsList)
-					idsAndSNsMap.put((Long)idAndSN[0], (String)idAndSN[1]);
-				
+
+		Map<Long, String> idsAndSNsMap = 
+				new LinkedHashMap<Long, String>(idsAndSNsList.size());
+		for (Object[] idAndSN : idsAndSNsList)
+			idsAndSNsMap.put((Long)idAndSN[0], (String)idAndSN[1]);
+
 		return idsAndSNsMap;
 	}
 

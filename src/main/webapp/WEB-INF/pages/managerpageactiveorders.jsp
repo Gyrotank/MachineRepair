@@ -39,16 +39,16 @@
 						<option value="0">
 							<spring:message code="label.managerpage.started.selectClient" />
 						</option>
-						<c:forEach var="c" items="${clients_short}">
+						<c:forEach var="c" items="${clients}">
 							<c:choose>
-								<c:when test="${selected_client_id == c.clientId}">
-									<option selected value="${c.clientId}">
-										<c:out value="${c.clientName}" />
+								<c:when test="${selected_client_id == c.key}">
+									<option selected value="${c.key}">
+										<c:out value="${c.value}" />
 									</option>
 								</c:when>
 								<c:otherwise>
-									<option value="${c.clientId}">
-										<c:out value="${c.clientName}" />
+									<option value="${c.key}">
+										<c:out value="${c.value}" />
 									</option>
 								</c:otherwise>
 							</c:choose>

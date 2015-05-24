@@ -73,4 +73,14 @@ public class OrderStatusDAOJDBCTest extends DAOTestsTemplate {
 				.getOrderStatusNameRu().contentEquals("завершен"));
 		Assert.assertTrue(orderStatusService.getOrderStatusByName("cancelled") == null);
 	}
+	
+	@Test
+	public void testGetIdsAndNames() {
+		Assert.assertTrue(orderStatusService.getIdsAndNames().size() == 3);
+	}
+	
+	@Test
+	public void testGetIdsAndNamesRu() {
+		Assert.assertTrue(orderStatusService.getIdsAndNamesRu().size() == 3);
+	}
 }

@@ -88,12 +88,12 @@ public class ManagerPageActiveOrdersController extends AbstractRolePageControlle
 		model.addAttribute("ready_orders_page_number", 
 				sessionScopeInfoService.getSessionScopeInfo().getPageNumberPlusPlus());	
 		
-		model.addAttribute("clients_short",
-				clientSvc.getAllWithFetching(
-						sessionScopeInfoService.getSessionScopeInfo().getPagingFirstIndex(), 
-						sessionScopeInfoService.getSessionScopeInfo().getPagingLastIndex() 
-						- sessionScopeInfoService.getSessionScopeInfo()
-							.getPagingFirstIndex() + 1));
+		model.addAttribute("clients", 
+			clientSvc.getIdsAndNamesLikeName("%", 
+				sessionScopeInfoService.getSessionScopeInfo().getPagingFirstIndex(),
+				sessionScopeInfoService.getSessionScopeInfo().getPagingLastIndex() 
+				- sessionScopeInfoService.getSessionScopeInfo()
+					.getPagingFirstIndex() + 1));
 		Long clientsCount = clientSvc.getClientCount();
 		model.addAttribute("clients_count", clientsCount);
 		Long clientPagesCount = clientsCount / DEFAULT_PAGE_SIZE;

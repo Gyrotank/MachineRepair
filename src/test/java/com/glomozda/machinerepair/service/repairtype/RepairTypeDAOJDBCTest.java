@@ -62,6 +62,39 @@ public class RepairTypeDAOJDBCTest extends DAOTestsTemplate{
     }
     
     @Test
+    public void testGetIdsAndNamesOfAvailable() {
+    	Assert.assertTrue(repairTypeService.getIdsAndNamesOfAvailable().size() == 1);
+    }
+    
+    @Test
+    public void testGetIdsAndNamesRuOfAvailable() {
+    	Assert.assertTrue(repairTypeService.getIdsAndNamesRuOfAvailable().size() == 1);
+    }
+    
+    @Test
+    public void testGetAllEntities() {
+    	Assert.assertTrue(repairTypeService.getAllEntities().size() == 2);
+    }
+    
+    @Test
+    public void testGetAllEntitiesWithLimits() {
+    	Assert.assertTrue(repairTypeService
+    			.getAllEntities((long) 0, (long) 100).size() == 2);
+    }
+    
+    @Test
+    public void testGetCountEntitites() {
+    	Assert.assertTrue(repairTypeService.getCountEntities() == 2);
+    }
+    
+    @Test
+    public void testAddExisting() {
+    	RepairType rt3 = new RepairType("Partial", "���������", new BigDecimal(500),
+        		1, (byte) 1);
+    	Assert.assertFalse(repairTypeService.add(rt3));
+    }
+    
+    @Test
     public void testSetRepairTypeAvailableById() {
     	Assert.assertTrue(repairTypeService.setRepairTypeAvailableById((long) 1, (byte) 0) == 1);
     	Assert.assertTrue(repairTypeService.setRepairTypeAvailableById((long) 3, (byte) 0) == 0);
@@ -69,7 +102,7 @@ public class RepairTypeDAOJDBCTest extends DAOTestsTemplate{
     
     @Test
     public void testUpdateRepairTypeById() {
-    	RepairType rt3 = new RepairType("Partial", "���������", new BigDecimal(5000), 3);
+    	RepairType rt3 = new RepairType("PI", "ЧС", new BigDecimal(5000), 3);
     	Assert.assertTrue(repairTypeService.updateRepairTypeById((long) 1, rt3) == 1);
     	Assert.assertTrue(repairTypeService.updateRepairTypeById((long) 3, rt3) == 0);
     }

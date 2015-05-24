@@ -38,25 +38,10 @@
 							<td><spring:message
 									code="label.clientpage.createFirstTimeOrder.machine" /></td>
 							<td><form:select path="machineServiceableId">
-									<option value="0"><spring:message
-											code="label.clientpage.createFirstTimeOrder.selectMachine" /></option>
-									<c:forEach var="ms" items="${machines_serviceable}">
-										<c:choose>
-											<c:when
-												test="${orderCreateFirstDTO.machineServiceableId == ms.machineServiceableId}">
-												<option selected value="${ms.machineServiceableId}">
-													<c:out
-														value="${ms.machineServiceableTrademark} - ${ms.machineServiceableName}" />
-												</option>
-											</c:when>
-											<c:otherwise>
-												<option value="${ms.machineServiceableId}">
-													<c:out
-														value="${ms.machineServiceableTrademark} - ${ms.machineServiceableName}" />
-												</option>
-											</c:otherwise>
-										</c:choose>
-									</c:forEach>
+									<form:option value="0"><spring:message
+										code="label.clientpage.createFirstTimeOrder.selectMachine" />
+									</form:option>
+									<form:options items="${machines_serviceable}"/>
 								</form:select></td>
 							<td><form:errors path="machineServiceableId"
 									cssClass="error" /></td>
@@ -80,41 +65,10 @@
 							<td><spring:message
 									code="label.clientpage.createFirstTimeOrder.repairType" /></td>
 							<td><form:select path="repairTypeId">
-									<option value="0"><spring:message
-											code="label.clientpage.createFirstTimeOrder.selectRepairType" /></option>
-									<c:forEach var="rt" items="${repair_types}">
-										<c:choose>
-											<c:when
-												test="${orderCreateFirstDTO.repairTypeId == rt.repairTypeId}">
-												<option selected value="${rt.repairTypeId}">
-													<c:choose>
-														<c:when test="${locale == 'ru'}">
-															<c:out
-																value="${rt.repairTypeNameRu} (${rt.repairTypePrice})" />
-														</c:when>
-														<c:otherwise>
-															<c:out
-																value="${rt.repairTypeName} (${rt.repairTypePrice})" />
-														</c:otherwise>
-													</c:choose>
-												</option>
-											</c:when>
-											<c:otherwise>
-												<option value="${rt.repairTypeId}">
-													<c:choose>
-														<c:when test="${locale == 'ru'}">
-															<c:out
-																value="${rt.repairTypeNameRu} (${rt.repairTypePrice})" />
-														</c:when>
-														<c:otherwise>
-															<c:out
-																value="${rt.repairTypeName} (${rt.repairTypePrice})" />
-														</c:otherwise>
-													</c:choose>
-												</option>
-											</c:otherwise>
-										</c:choose>
-									</c:forEach>
+									<form:option value="0"><spring:message
+										code="label.clientpage.createFirstTimeOrder.selectRepairType" />
+									</form:option>
+									<form:options items="${repair_types}"/>
 								</form:select></td>
 							<td><form:errors path="repairTypeId" cssClass="error" /></td>
 						</tr>
@@ -147,20 +101,10 @@
 									<td><spring:message
 											code="label.clientpage.createRepeatedOrder.sn" /></td>
 									<td><form:select path="machineSerialNumber">
-											<option value=""><spring:message
-													code="label.clientpage.createRepeatedOrder.selectSN" /></option>
-											<c:forEach var="sn" items="${my_machines_serial_numbers}">
-												<c:choose>
-													<c:when
-														test="${orderCreateRepeatedDTO.machineSerialNumber == sn}">
-														<option selected value="${sn}"><c:out
-																value="${sn}" /></option>
-													</c:when>
-													<c:otherwise>
-														<option value="${sn}"><c:out value="${sn}" /></option>
-													</c:otherwise>
-												</c:choose>
-											</c:forEach>
+											<form:option value=""><spring:message
+												code="label.clientpage.createRepeatedOrder.selectSN" />
+											</form:option>
+											<form:options items="${my_machines_serial_numbers}"/>
 										</form:select></td>
 									<td><form:errors path="machineSerialNumber"
 											cssClass="error" /></td>
@@ -169,41 +113,10 @@
 									<td><spring:message
 											code="label.clientpage.createRepeatedOrder.repairType" /></td>
 									<td><form:select path="repairTypeId">
-											<option value="0"><spring:message
-													code="label.clientpage.createRepeatedOrder.selectRepairType" /></option>
-											<c:forEach var="rt" items="${repair_types}">
-												<c:choose>
-													<c:when
-														test="${orderCreateRepeatedDTO.repairTypeId == rt.repairTypeId}">
-														<option selected value="${rt.repairTypeId}">
-															<c:choose>
-																<c:when test="${locale == 'ru'}">
-																	<c:out
-																		value="${rt.repairTypeNameRu} (${rt.repairTypePrice})" />
-																</c:when>
-																<c:otherwise>
-																	<c:out
-																		value="${rt.repairTypeName} (${rt.repairTypePrice})" />
-																</c:otherwise>
-															</c:choose>
-														</option>
-													</c:when>
-													<c:otherwise>
-														<option value="${rt.repairTypeId}">
-															<c:choose>
-																<c:when test="${locale == 'ru'}">
-																	<c:out
-																		value="${rt.repairTypeNameRu} (${rt.repairTypePrice})" />
-																</c:when>
-																<c:otherwise>
-																	<c:out
-																		value="${rt.repairTypeName} (${rt.repairTypePrice})" />
-																</c:otherwise>
-															</c:choose>
-														</option>
-													</c:otherwise>
-												</c:choose>
-											</c:forEach>
+											<form:option value="0"><spring:message
+												code="label.clientpage.createRepeatedOrder.selectRepairType" />
+											</form:option>
+											<form:options items="${repair_types}"/>
 										</form:select></td>
 									<td><form:errors path="repairTypeId" cssClass="error" /></td>
 								</tr>

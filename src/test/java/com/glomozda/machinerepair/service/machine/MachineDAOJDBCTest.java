@@ -91,6 +91,33 @@ public class MachineDAOJDBCTest extends DAOTestsTemplate{
     	Assert.assertEquals(m1, actualResult);
     }
     
+    @Test
+    public void testGetIdsAndSNs() {
+    	Assert.assertTrue(machineService.getIdsAndSNs().size() == 2);
+    }
+    
+    @Test
+    public void testGetAllEntities() {
+    	Assert.assertTrue(machineService.getAllEntities().size() == 2);
+    }
+    
+    @Test
+    public void testGetAllEntitiesWithLimits() {
+    	Assert.assertTrue(machineService
+    			.getAllEntities((long) 0, (long) 100).size() == 2);
+    }
+    
+    @Test
+    public void testGetCountEntitites() {
+    	Assert.assertTrue(machineService.getCountEntities() == 2);
+    }
+    
+    @Test
+    public void testAddExisting() {
+    	Machine m3 = new Machine("SN2", 2015, 10);
+    	Assert.assertFalse(machineService.add(m3, (long) 2));
+    }
+    
     @Test    
     public void testUpdateMachineById() {    	
         Machine machineExisting = machineService.getMachineForSerialNumber("SN2");

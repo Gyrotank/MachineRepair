@@ -90,15 +90,13 @@ public class UserAuthorizationServiceImpl extends UserAuthorizationService {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public List getAllEntities() {
-		// TODO Auto-generated method stub
-		return null;
+		return getAll();
 	}
 
 	@SuppressWarnings("rawtypes")
 	@Override
 	public List getAllEntities(Long start, Long length) {
-		// TODO Auto-generated method stub
-		return null;
+		return getAll(start, length);
 	}
 
 	@Override

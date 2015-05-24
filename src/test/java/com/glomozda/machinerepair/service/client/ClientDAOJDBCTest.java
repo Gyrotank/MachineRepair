@@ -108,6 +108,39 @@ public class ClientDAOJDBCTest extends DAOTestsTemplate{
     }
     
     @Test
+    public void testGetIdsAndNamesLikeName() {
+    	Assert.assertTrue(clientService.getIdsAndNamesLikeName("%").size() == 2);
+    	Assert.assertTrue(clientService.getIdsAndNamesLikeName("van").size() == 1);
+    	Assert.assertTrue(clientService.getIdsAndNamesLikeName("bbb").size() == 0);
+    }
+    
+    @Test
+    public void testGetIdsAndNamesLikeNameWithLimits() {
+    	Assert.assertTrue(clientService
+    			.getIdsAndNamesLikeName("%", 0L, 100L).size() == 2);
+    	Assert.assertTrue(clientService
+    			.getIdsAndNamesLikeName("van", 0L, 100L).size() == 1);
+    	Assert.assertTrue(clientService
+    			.getIdsAndNamesLikeName("bbb", 0L, 100L).size() == 0);
+    }
+    
+    @Test
+    public void testGetAllEntities() {
+    	Assert.assertTrue(clientService.getAllEntities().size() == 2);
+    }
+    
+    @Test
+    public void testGetAllEntitiesWithLimits() {
+    	Assert.assertTrue(clientService
+    			.getAllEntities((long) 0, (long) 100).size() == 2);
+    }
+    
+    @Test
+    public void testGetCountEntitites() {
+    	Assert.assertTrue(clientService.getCountEntities() == 2);
+    }
+    
+    @Test
     public void testUpdateClientNameById() {
     	Assert.assertTrue(clientService.updateClientNameById(1L, "i_user") == 1);
     	Assert.assertTrue(clientService.updateClientNameById(3L, "s_user") == 0);
@@ -135,5 +168,12 @@ public class ClientDAOJDBCTest extends DAOTestsTemplate{
     			.getClientsLikeName("Pet", 0L, 100L).size() == 1);
     	Assert.assertTrue(clientService
     			.getClientsLikeName("oo", 0L, 100L).isEmpty());
+    }
+    
+    @Test
+    public void testAddExisting() {
+    	Client cl3 = new Client();
+    	cl3.setClientName("Petro");
+    	Assert.assertFalse(clientService.add(cl3, 2L));
     }
 }

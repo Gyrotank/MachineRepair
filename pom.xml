@@ -13,7 +13,7 @@
 		<org.springframework.version>4.1.0.RELEASE</org.springframework.version>
 		<hibernate.version>4.2.8.Final</hibernate.version>
 		<apache.tiles>3.0.3</apache.tiles>
-		<org.apache.logging.log4j>2.1</org.apache.logging.log4j>
+		<org.apache.logging.log4j>1.2.17</org.apache.logging.log4j>
 		<spring.security.version>3.2.5.RELEASE</spring.security.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<resource.dir>src/main/resources</resource.dir>
@@ -290,7 +290,7 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
+			<version>${org.apache.logging.log4j}</version>
 		</dependency>
 
 		<dependency>

@@ -1,3 +1,35 @@
+PROJECT OVERVIEW
+----------------
+
+The project is a web-application simulating the operation of a machine repairing company.
+
+There are three types of actors: clients, managers and administrators.
+
+Clients (all new users who sign up become clients by default) can create orders (either first-time 
+or repeated if they need to repair the machine they have had repaired before) and pay when the order 
+is ready.
+
+Managers can confirm/decline pending (newly created) orders and set orders status to 'ready', which 
+is an indication that it's time for the client to pay for them.
+
+Administrators can view the contents of the database and manually create and edit new entities (users, clients,
+serviceable machines, machines, repair types and orders), manage users' credentials by assigning/removing their  
+roles. They can also do everything managers can.
+
+
+
+USED TOOLS AND TECHNOLOGIES
+---------------------------
+
+Maven 3.2.2
+Spring MVC Framework 4.1.0
+Spring Security 3.2.5
+Hibernate 4.2.8
+Log4j 1.2.17
+JUnit 4.11
+
+
+
 DEPLOYING AND RUNNING THE PROJECT
 ---------------------------------
 

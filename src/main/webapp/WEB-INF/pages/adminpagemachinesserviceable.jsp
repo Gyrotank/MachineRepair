@@ -110,14 +110,14 @@
 										<c:when test="${ms.available == 0}">
 											<a
 												href="<c:url value="setMSAvailable/?machine-serviceable-id=${ms.machineServiceableId}"/>"
-												onclick="return confirm('${dialog_available_machine_serviceable}')">
+												onclick="return confirm('${dialog_enable}')">
 												<img src="resources/images/enable.png" width="24">
 											</a>
 										</c:when>
 										<c:otherwise>
 											<a
 												href="<c:url value="setMSUnavailable/?machine-serviceable-id=${ms.machineServiceableId}"/>"
-												onclick="return confirm('${dialog_not_available_machine_serviceable}')">
+												onclick="return confirm('${dialog_disable}')">
 												<img src="resources/images/disable.png" width="24">
 											</a>
 										</c:otherwise>

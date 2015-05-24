@@ -43,6 +43,9 @@ import com.glomozda.machinerepair.domain.user.User;
 	@NamedQuery(name="Client.countLikeName", query="SELECT COUNT(c) FROM Client c "
 			+ " WHERE c.clientName LIKE :likePattern"),
 	@NamedQuery(name="Client.findClientsLikeName", query="SELECT c FROM Client c "
+			+ " WHERE c.clientName LIKE :likePattern"),
+	@NamedQuery(name="Client.findIdsAndNamesLikeName", 
+		query="SELECT c.clientId, c.clientName FROM Client c "
 			+ " WHERE c.clientName LIKE :likePattern")
 })
 @Entity

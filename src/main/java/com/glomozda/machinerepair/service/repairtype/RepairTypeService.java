@@ -1,6 +1,7 @@
 package com.glomozda.machinerepair.service.repairtype;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,5 +37,9 @@ public abstract class RepairTypeService implements EntityService {
 	public RepairTypeService() {
 		super();
 	}
+
+	public abstract Map<Long, String> getIdsAndNamesOfAvailable();
+
+	public abstract Map<Long, String> getIdsAndNamesRuOfAvailable();
 
 }

@@ -15,9 +15,8 @@ public class OrderStatusRepositoryImpl extends OrderStatusRepository {
 	
 	@Override
 	public List<OrderStatus> getAll() {
-		List<OrderStatus> result = em.createNamedQuery(
-				"OrderStatus.findAll", OrderStatus.class).getResultList();
-		return result;
+		return em.createNamedQuery(
+				"OrderStatus.findAll", OrderStatus.class).getResultList();		
 	}
 	
 	@Override
@@ -36,6 +35,18 @@ public class OrderStatusRepositoryImpl extends OrderStatusRepository {
 		} catch (NoResultException nre){}
 		
 		return result;
+	}
+	
+	@Override
+	public List<Object[]> getIdsAndNames() {
+		return em.createNamedQuery(
+				"OrderStatus.findIdsAndNames", Object[].class).getResultList();
+	}
+	
+	@Override
+	public List<Object[]> getIdsAndNamesRu() {
+		return em.createNamedQuery(
+				"OrderStatus.findIdsAndNamesRu", Object[].class).getResultList();
 	}
 	
 	@Override

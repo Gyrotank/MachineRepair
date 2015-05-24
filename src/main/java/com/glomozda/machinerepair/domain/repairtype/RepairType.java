@@ -40,7 +40,15 @@ import com.glomozda.machinerepair.domain.order.Order;
 			+ "WHERE rt.repairTypeId = :id"),
 	@NamedQuery(name="RepairType.setRepairTypeAvailableById",
 		query="UPDATE RepairType rt SET available = :available "
-			+ " WHERE rt.repairTypeId = :id")
+			+ " WHERE rt.repairTypeId = :id"),
+	@NamedQuery(name="RepairType.findIdsAndNamesOfAvailable", 
+		query="SELECT rt.repairTypeId, rt.repairTypeName FROM RepairType rt "
+				+ "WHERE rt.available = 1 "
+				+ "ORDER BY rt.repairTypePrice DESC"),
+	@NamedQuery(name="RepairType.findIdsAndNamesRuOfAvailable", 
+		query="SELECT rt.repairTypeId, rt.repairTypeNameRu FROM RepairType rt "
+				+ "WHERE rt.available = 1 "
+				+ "ORDER BY rt.repairTypePrice DESC")
 })
 @Entity
 @Table(name = "repair_types")

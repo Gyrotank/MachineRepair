@@ -82,4 +82,5 @@ login:   | password:  | role
 admin    | kokoko     | Administrator
 manager1 | koko       | Manager
 proletar | qwerty     | User with active and finished orders
-мао      | мао        | User with cyrillic login and password and name in Chinese (for UTF-8 testing)
+мао      | мао        | User with cyrillic login and password 
+         |            | and name in Chinese (for UTF-8 testing)

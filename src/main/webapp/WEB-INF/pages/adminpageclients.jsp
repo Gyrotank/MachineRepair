@@ -79,23 +79,10 @@
 							<td><label><spring:message
 										code="label.adminpage.addNewClient.user" /></label></td>
 							<td><form:select path="userId">
-									<option value="0">
+									<form:option value="0">
 										<spring:message code="label.adminpage.addNewClient.selectUser" />
-									</option>
-									<c:forEach var="u" items="${users}">
-										<c:choose>
-											<c:when test="${dataObject.userId == u.userId}">
-												<option selected value="${u.userId}">
-													<c:out value="${u.login}" />
-												</option>
-											</c:when>
-											<c:otherwise>
-												<option value="${u.userId}">
-													<c:out value="${u.login}" />
-												</option>
-											</c:otherwise>
-										</c:choose>
-									</c:forEach>
+									</form:option>
+									<form:options items="${users}" />
 								</form:select></td>
 							<td><form:errors path="userId" cssClass="error" /></td>
 						</tr>

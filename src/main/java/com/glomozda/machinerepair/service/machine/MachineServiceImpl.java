@@ -1,6 +1,8 @@
 package com.glomozda.machinerepair.service.machine;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.PersistenceException;
 
@@ -45,6 +47,18 @@ public class MachineServiceImpl extends MachineService {
 	@Override
 	public Machine getMachineByIdWithFetching(Long machineId) {
 		return machineRepository.getMachineByIdWithFetching(machineId);
+	}
+	
+	@Override
+	public Map<Long, String> getIdsAndSNs() {		
+		List<Object[]> idsAndSNsList = machineRepository.getIdsAndSNs();
+				
+				Map<Long, String> idsAndSNsMap = 
+						new LinkedHashMap<Long, String>(idsAndSNsList.size());
+				for (Object[] idAndSN : idsAndSNsList)
+					idsAndSNsMap.put((Long)idAndSN[0], (String)idAndSN[1]);
+				
+		return idsAndSNsMap;
 	}
 
 	@Override

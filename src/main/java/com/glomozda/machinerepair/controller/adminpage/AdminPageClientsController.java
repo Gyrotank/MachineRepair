@@ -31,8 +31,8 @@ public class AdminPageClientsController extends AbstractRolePageController
 	protected void prepareModel(final Locale locale, final Principal principal,	final Model model) {
 		
 		prepareModelAdminPage(locale, model, new ClientDTO(), clientSvc);
-		
-		model.addAttribute("users", userSvc.getAll((long) 0, (long) 99));
+				
+		model.addAttribute("users", userSvc.getAllIdsAndLogins());
 	}
 	
 	@Override

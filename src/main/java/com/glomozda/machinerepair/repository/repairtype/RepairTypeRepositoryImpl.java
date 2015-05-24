@@ -101,4 +101,16 @@ public class RepairTypeRepositoryImpl extends RepairTypeRepository {
 					RepairType.class).getResultList();
 		return result;
 	}
+	
+	@Override
+	public List<Object[]> getIdsAndNamesOfAvailable() {
+		return em.createNamedQuery("RepairType.findIdsAndNamesOfAvailable", Object[].class)				
+				.getResultList();
+	}
+	
+	@Override
+	public List<Object[]> getIdsAndNamesRuOfAvailable() {
+		return em.createNamedQuery("RepairType.findIdsAndNamesRuOfAvailable", Object[].class)				
+				.getResultList();
+	}
 }

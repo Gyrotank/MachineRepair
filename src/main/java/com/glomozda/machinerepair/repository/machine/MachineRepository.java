@@ -44,4 +44,6 @@ public abstract class MachineRepository {
 	
 	@Transactional
 	public abstract Integer updateMachineById(Long machineId, Machine machine);
+
+	public abstract List<Object[]> getIdsAndSNs();
 }

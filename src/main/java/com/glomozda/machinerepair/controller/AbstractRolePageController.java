@@ -162,6 +162,28 @@ public abstract class AbstractRolePageController implements MessageSourceAware {
 		sessionScopeInfoService.getSessionScopeInfo().setMessageNotAdded("");
 	}
 	
+	protected void prepareModelAdminPageWithEnableDisable (final Locale locale,
+			final Model model,
+			final String messageDialogEnableLabel,
+			final String messageDialogDisableLabel) {
+		
+		model.addAttribute("message_enable_disable_failed",
+				sessionScopeInfoService.getSessionScopeInfo().getMessageEnableDisableFailed());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageEnableDisableFailed("");
+		model.addAttribute("message_enable_disable_succeeded",
+				sessionScopeInfoService.getSessionScopeInfo().getMessageEnableDisableSucceeded());
+		sessionScopeInfoService.getSessionScopeInfo().setMessageEnableDisableSucceeded("");
+		
+		model.addAttribute("dialog_enable",
+				messageSource.getMessage(
+					messageDialogEnableLabel, null,
+					locale));
+		model.addAttribute("dialog_disable",
+				messageSource.getMessage(
+					messageDialogDisableLabel, null,
+					locale));
+	}
+	
 	protected void prepareModelUpdate(final Locale locale, final Model model, final Object entity) {
 		model.addAttribute("locale", locale.toString());
 		

@@ -25,4 +25,8 @@ public abstract class OrderStatusRepository {
 
 	public abstract List<OrderStatus> getAll();
 
+	public abstract List<Object[]> getIdsAndNames();
+
+	public abstract List<Object[]> getIdsAndNamesRu();
+
 }

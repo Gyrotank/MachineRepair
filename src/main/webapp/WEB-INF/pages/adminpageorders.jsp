@@ -149,24 +149,11 @@
 										code="label.adminpage.addNewOrder.clientFrom" />
 							</label></td>
 							<td><form:select path="clientId">
-									<option value="0">
+									<form:option value="0">
 										<spring:message
 											code="label.adminpage.addNewOrder.selectClient" />
-									</option>
-									<c:forEach var="c" items="${clients}">
-										<c:choose>
-											<c:when test="${dataObject.clientId == c.clientId}">
-												<option selected value="${c.clientId}">
-													<c:out value="${c.clientName}" />
-												</option>
-											</c:when>
-											<c:otherwise>
-												<option value="${c.clientId}">
-													<c:out value="${c.clientName}" />
-												</option>
-											</c:otherwise>
-										</c:choose>
-									</c:forEach>
+									</form:option>
+									<form:options items="${clients}" />
 								</form:select></td>
 							<td><form:errors path="clientId" cssClass="error" /></td>
 						</tr>
@@ -175,38 +162,11 @@
 										code="label.adminpage.orders.repairType" />
 							</label></td>
 							<td><form:select path="repairTypeId">
-									<option value="0">
+									<form:option value="0">
 										<spring:message
 											code="label.adminpage.addNewOrder.selectRepairType" />
-									</option>
-									<c:forEach var="rt" items="${repair_types}">
-										<c:choose>
-											<c:when test="${dataObject.repairTypeId == rt.repairTypeId}">
-												<option selected value="${rt.repairTypeId}">
-													<c:choose>
-														<c:when test="${locale == 'ru'}">
-															<c:out value="${rt.repairTypeNameRu}" />
-														</c:when>
-														<c:otherwise>
-															<c:out value="${rt.repairTypeName}" />
-														</c:otherwise>
-													</c:choose>
-												</option>
-											</c:when>
-											<c:otherwise>
-												<option value="${rt.repairTypeId}">
-													<c:choose>
-														<c:when test="${locale == 'ru'}">
-															<c:out value="${rt.repairTypeNameRu}" />
-														</c:when>
-														<c:otherwise>
-															<c:out value="${rt.repairTypeName}" />
-														</c:otherwise>
-													</c:choose>
-												</option>
-											</c:otherwise>
-										</c:choose>
-									</c:forEach>
+									</form:option>
+									<form:options items="${repair_types}" />
 								</form:select></td>
 							<td><form:errors path="repairTypeId" cssClass="error" /></td>
 						</tr>
@@ -214,24 +174,11 @@
 							<td><label><spring:message
 										code="label.adminpage.addNewOrder.machineFrom" /> </label></td>
 							<td><form:select path="machineId">
-									<option value="0">
+									<form:option value="0">
 										<spring:message
 											code="label.adminpage.addNewOrder.selectMachine" />
-									</option>
-									<c:forEach var="m" items="${machines}">
-										<c:choose>
-											<c:when test="${dataObject.machineId == m.machineId}">
-												<option selected value="${m.machineId}">
-													<c:out value="${m.machineSerialNumber}" />
-												</option>
-											</c:when>
-											<c:otherwise>
-												<option value="${m.machineId}">
-													<c:out value="${m.machineSerialNumber}" />
-												</option>
-											</c:otherwise>
-										</c:choose>
-									</c:forEach>
+									</form:option>
+									<form:options items="${machines}" />
 								</form:select></td>
 							<td><form:errors path="machineId" cssClass="error" /></td>
 						</tr>
@@ -248,38 +195,11 @@
 										code="label.adminpage.addNewOrder.status" />
 							</label></td>
 							<td><form:select path="orderStatusId">
-									<option value="0">
+									<form:option value="0">
 										<spring:message
 											code="label.adminpage.addNewOrder.selectStatus" />
-									</option>
-									<c:forEach var="os" items="${order_statuses}">
-										<c:choose>
-											<c:when test="${dataObject.orderStatusId == os.orderStatusId}">
-												<option selected value="${os.orderStatusId}">
-													<c:choose>
-														<c:when test="${locale == 'ru'}">
-															<c:out value="${os.orderStatusNameRu}" />
-														</c:when>
-														<c:otherwise>
-															<c:out value="${os.orderStatusName}" />
-														</c:otherwise>
-													</c:choose>
-												</option>
-											</c:when>
-											<c:otherwise>
-												<option value="${os.orderStatusId}">
-													<c:choose>
-														<c:when test="${locale == 'ru'}">
-															<c:out value="${os.orderStatusNameRu}" />
-														</c:when>
-														<c:otherwise>
-															<c:out value="${os.orderStatusName}" />
-														</c:otherwise>
-													</c:choose>
-												</option>
-											</c:otherwise>
-										</c:choose>
-									</c:forEach>
+									</form:option>
+									<form:options items="${order_statuses}" />
 								</form:select></td>
 							<td><form:errors path="orderStatusId" cssClass="error" /></td>
 						</tr>
@@ -287,24 +207,11 @@
 							<td><label><spring:message
 										code="label.adminpage.addNewOrder.manager" /></label></td>
 							<td><form:select path="manager">
-									<option value="-">
+									<form:option value="-">
 										<spring:message
 											code="label.adminpage.addNewOrder.selectManager" />
-									</option>
-									<c:forEach var="man" items="${managers}">
-										<c:choose>
-											<c:when test="${dataObject.manager == man}">
-												<option selected value="${man}">
-													<c:out value="${man}" />
-												</option>
-											</c:when>
-											<c:otherwise>
-												<option value="${man}">
-													<c:out value="${man}" />
-												</option>
-											</c:otherwise>
-										</c:choose>
-									</c:forEach>
+									</form:option>
+									<form:options items="${managers}" />
 								</form:select></td>
 							<td><form:errors path="manager" cssClass="error" /></td>
 						</tr>

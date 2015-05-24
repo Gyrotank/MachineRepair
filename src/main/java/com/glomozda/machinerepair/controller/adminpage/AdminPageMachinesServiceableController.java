@@ -25,30 +25,15 @@ public class AdminPageMachinesServiceableController extends AbstractRolePageCont
 	
 	static Logger log = Logger.getLogger(AdminPageMachinesServiceableController.class.getName());
 	
-	private String messageEnableDisableFailed = "";
-	private String messageEnableDisableSucceeded = "";
-	
 	@Override
 	protected void prepareModel(final Locale locale, final Principal principal, 
 			final Model model) {
 		
 		prepareModelAdminPage(locale, model, new MachineServiceable(), machineServiceableSvc);
 		
-		model.addAttribute("message_enable_disable_failed",
-				messageEnableDisableFailed);
-		messageEnableDisableFailed = "";
-		model.addAttribute("message_enable_disable_succeeded",
-				messageEnableDisableSucceeded);
-		messageEnableDisableSucceeded = "";
-		
-		model.addAttribute("dialog_available_machine_serviceable",
-				messageSource.getMessage(
-					"label.adminpage.machinesServiceable.actions.enable.dialog", null,
-					locale));
-		model.addAttribute("dialog_not_available_machine_serviceable",
-				messageSource.getMessage(
-					"label.adminpage.machinesServiceable.actions.disable.dialog", null,
-					locale));		
+		prepareModelAdminPageWithEnableDisable(locale, model, 
+				"label.adminpage.machinesServiceable.actions.enable.dialog",
+				"label.adminpage.machinesServiceable.actions.disable.dialog");		
 	}
 	
 	@Override
@@ -113,31 +98,31 @@ public class AdminPageMachinesServiceableController extends AbstractRolePageCont
 				machineServiceableSvc.getMachineServiceableById(machineServiceableId);
 		
 		if (machineServiceableInQuestion == null) {			
-			messageEnableDisableFailed = 
+			sessionScopeInfoService.getSessionScopeInfo().setMessageEnableDisableFailed( 
 					messageSource
 					.getMessage("popup.adminpage.machinesServiceable.actions.failed.msNotExists",
-							null, locale);
+							null, locale));
 			return "redirect:/adminpagemachinesserviceable";
 		}
 		if (machineServiceableInQuestion.getAvailable() != 0) {			
-			messageEnableDisableFailed = 
+			sessionScopeInfoService.getSessionScopeInfo().setMessageEnableDisableFailed( 
 					messageSource
 					.getMessage("popup.adminpage.machinesServiceable.actions.failed.msNotUnavailable",
-							null, locale);
+							null, locale));
 			return "redirect:/adminpagemachinesserviceable";
 		}
 		
 		if (machineServiceableSvc
 				.setMachineServiceableAvailableById(machineServiceableId, (byte) 1) == 1) {
-			messageEnableDisableSucceeded = 
+			sessionScopeInfoService.getSessionScopeInfo().setMessageEnableDisableSucceeded( 
 				messageSource
 				.getMessage("popup.adminpage.machinesServiceable.actions.succeeded",
-						null, locale);
+						null, locale));
 		} else {
-			messageEnableDisableFailed = 
+			sessionScopeInfoService.getSessionScopeInfo().setMessageEnableDisableFailed( 
 					messageSource
 					.getMessage("popup.adminpage.machinesServiceable.actions.failed.updateFailed",
-							null, locale);
+							null, locale));
 		}
 		
 		return "redirect:/adminpagemachinesserviceable";
@@ -152,31 +137,31 @@ public class AdminPageMachinesServiceableController extends AbstractRolePageCont
 				machineServiceableSvc.getMachineServiceableById(machineServiceableId);
 		
 		if (machineServiceableInQuestion == null) {			
-			messageEnableDisableFailed = 
+			sessionScopeInfoService.getSessionScopeInfo().setMessageEnableDisableFailed( 
 					messageSource
 					.getMessage("popup.adminpage.machinesServiceable.actions.failed.msNotExists",
-							null, locale);
+							null, locale));
 			return "redirect:/adminpagemachinesserviceable";
 		}
 		if (machineServiceableInQuestion.getAvailable() != 1) {			
-			messageEnableDisableFailed = 
+			sessionScopeInfoService.getSessionScopeInfo().setMessageEnableDisableFailed( 
 					messageSource
 					.getMessage("popup.adminpage.machinesServiceable.actions.failed.msNotAvailable",
-							null, locale);
+							null, locale));
 			return "redirect:/adminpagemachinesserviceable";
 		}
 		
 		if (machineServiceableSvc
 				.setMachineServiceableAvailableById(machineServiceableId, (byte) 0) == 1) {
-			messageEnableDisableSucceeded = 
+			sessionScopeInfoService.getSessionScopeInfo().setMessageEnableDisableSucceeded( 
 				messageSource
 				.getMessage("popup.adminpage.machinesServiceable.actions.succeeded",
-						null, locale);
+						null, locale));
 		} else {
-			messageEnableDisableFailed = 
+			sessionScopeInfoService.getSessionScopeInfo().setMessageEnableDisableFailed( 
 					messageSource
 					.getMessage("popup.adminpage.machinesServiceable.actions.failed.updateFailed",
-							null, locale);
+							null, locale));
 		}
 		
 		return "redirect:/adminpagemachinesserviceable";

@@ -90,6 +90,12 @@ public class MachineRepositoryImpl extends MachineRepository {
 	}
 	
 	@Override
+	public List<Object[]> getIdsAndSNs() {
+		return em.createNamedQuery("Machine.findIdsAndSNs", Object[].class)				
+				.getResultList();		
+	}
+	
+	@Override
 	@Transactional
 	public Boolean add(Machine m, Long machineServiceableId) 
 			throws PersistenceException {

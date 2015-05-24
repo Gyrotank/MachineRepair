@@ -40,7 +40,8 @@ public class AdminPageOrdersController extends AbstractRolePageController
 		
 		if (sessionScopeInfoService.getSessionScopeInfo()
 				.getSearchQuery().getSearchQueryArgument().isEmpty()) {
-			model.addAttribute("clients", clientSvc.getAll(0L, DEFAULT_PAGE_SIZE * 10));
+			model.addAttribute("clients", 
+				clientSvc.getIdsAndNamesLikeName("%", 0L, DEFAULT_PAGE_SIZE * 10));
 			model.addAttribute("message_search_results", "");
 		} else {
 			model.addAttribute("clientSearchQuery",
@@ -50,7 +51,7 @@ public class AdminPageOrdersController extends AbstractRolePageController
 						.getSearchQuery().getSearchQueryArgument());
 			if (resultSetSize > DEFAULT_PAGE_SIZE * 2) {
 				model.addAttribute("clients", 
-					clientSvc.getClientsLikeName(sessionScopeInfoService.getSessionScopeInfo()
+					clientSvc.getIdsAndNamesLikeName(sessionScopeInfoService.getSessionScopeInfo()
 						.getSearchQuery().getSearchQueryArgument(), 0L, (DEFAULT_PAGE_SIZE * 2 - 1)));
 				model.addAttribute("message_search_results",
 						messageSource.getMessage(
@@ -58,7 +59,8 @@ public class AdminPageOrdersController extends AbstractRolePageController
 								new Object[] { resultSetSize, DEFAULT_PAGE_SIZE * 2 }, locale));
 			} else {
 				model.addAttribute("clients", 
-						clientSvc.getClientsLikeName(sessionScopeInfoService.getSessionScopeInfo()
+					clientSvc.getIdsAndNamesLikeName(
+						sessionScopeInfoService.getSessionScopeInfo()
 							.getSearchQuery().getSearchQueryArgument()));
 					model.addAttribute("message_search_results",
 							messageSource.getMessage(
@@ -67,9 +69,16 @@ public class AdminPageOrdersController extends AbstractRolePageController
 			}
 		}
 		
-		model.addAttribute("repair_types", repairTypeSvc.getAllAvailable());
-		model.addAttribute("machines", machineSvc.getAll());
-		model.addAttribute("order_statuses", orderStatusSvc.getAll());
+		if (locale.toString().contains("ru")) {
+			model.addAttribute("repair_types", repairTypeSvc.getIdsAndNamesRuOfAvailable());
+			model.addAttribute("order_statuses", orderStatusSvc.getIdsAndNamesRu());
+		} else {
+			model.addAttribute("repair_types", repairTypeSvc.getIdsAndNamesOfAvailable());
+			model.addAttribute("order_statuses", orderStatusSvc.getIdsAndNames());
+		}
+		
+		model.addAttribute("machines", machineSvc.getIdsAndSNs());
+				
 		List<String> managers = userAuthorizationSvc.getUserLoginsForRole("ROLE_MANAGER");
 		managers.addAll(userAuthorizationSvc.getUserLoginsForRole("ROLE_ADMIN"));
 		java.util.Collections.sort(managers);

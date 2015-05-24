@@ -1,6 +1,8 @@
 package com.glomozda.machinerepair.service.client;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.PersistenceException;
 
@@ -119,6 +121,31 @@ public class ClientServiceImpl extends ClientService {
 	@Override
 	public List<Client> getClientsLikeName(String likePattern, Long start, Long length) {
 		return clientRepository.getClientsLikeName(likePattern, start, length);
+	}
+	
+	@Override
+	public Map<Long, String> getIdsAndNamesLikeName(String likePattern) {
+		List<Object[]> idsAndNamesList = clientRepository.getIdsAndNamesLikeName(likePattern);
+		
+		Map<Long, String> idsAndNamesMap = 
+				new LinkedHashMap<Long, String>(idsAndNamesList.size());
+		for (Object[] idAndName : idsAndNamesList)
+			idsAndNamesMap.put((Long)idAndName[0], (String)idAndName[1]);
+		
+		return idsAndNamesMap;
+	}
+	
+	@Override
+	public Map<Long, String> getIdsAndNamesLikeName(String likePattern, Long start, Long length) {
+		List<Object[]> idsAndNamesList 
+			= clientRepository.getIdsAndNamesLikeName(likePattern, start, length);
+		
+		Map<Long, String> idsAndNamesMap = 
+				new LinkedHashMap<Long, String>(idsAndNamesList.size());
+		for (Object[] idAndName : idsAndNamesList)
+			idsAndNamesMap.put((Long)idAndName[0], (String)idAndName[1]);
+		
+		return idsAndNamesMap;
 	}
 
 	@SuppressWarnings("rawtypes")

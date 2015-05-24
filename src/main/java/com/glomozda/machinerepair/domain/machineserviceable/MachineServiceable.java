@@ -31,6 +31,10 @@ import com.glomozda.machinerepair.domain.machine.Machine;
 	@NamedQuery(name="MachineServiceable.findMachineServiceableById",
 		query="SELECT ms FROM MachineServiceable ms"
 			+ " WHERE ms.machineServiceableId = :id"),
+	@NamedQuery(name="MachineServiceable.findAllIdsAndNames", 
+		query="SELECT ms.machineServiceableId, ms.machineServiceableName "
+			+ "FROM MachineServiceable ms "
+			+ "ORDER BY ms.machineServiceableName"),
 	@NamedQuery(name="MachineServiceable.countAll", query="SELECT COUNT(ms) "
 		+ "FROM MachineServiceable ms"),
 	@NamedQuery(name="MachineServiceable.updateMachineServiceableById", 

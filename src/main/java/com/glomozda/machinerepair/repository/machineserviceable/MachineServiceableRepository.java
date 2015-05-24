@@ -42,4 +42,6 @@ public abstract class MachineServiceableRepository {
 
 	public abstract List<MachineServiceable> getAll();
 
+	public abstract List<Object[]> getAllIdsAndNames();
+
 }

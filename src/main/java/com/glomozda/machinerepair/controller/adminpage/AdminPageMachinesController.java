@@ -33,7 +33,7 @@ public class AdminPageMachinesController extends AbstractRolePageController
 		
 		prepareModelAdminPage(locale, model, new MachineDTO(), machineSvc);		
 
-		model.addAttribute("machines_serviceable", machineServiceableSvc.getAllOrderByName());
+		model.addAttribute("machines_serviceable", machineServiceableSvc.getAllIdsAndNames());
 	}
 	
 	@Override

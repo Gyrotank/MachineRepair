@@ -38,6 +38,9 @@ import com.glomozda.machinerepair.domain.order.Order;
 			query="SELECT m FROM Machine m "
 			+ "LEFT JOIN FETCH m.machineServiceable "
 			+ "WHERE m.machineSerialNumber = :msn"),
+	@NamedQuery(name="Machine.findIdsAndSNs", query="SELECT m.machineId, m.machineSerialNumber "
+			+ "FROM Machine m "
+			+ "ORDER BY m.machineSerialNumber"),
 	@NamedQuery(name="Machine.incrementTimesRepairedById", query="UPDATE Machine m "
 			+ "SET m.machineTimesRepaired = m.machineTimesRepaired + 1 "
 			+ "WHERE m.machineId = :id"),

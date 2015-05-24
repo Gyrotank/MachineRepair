@@ -166,4 +166,20 @@ public class ClientRepositoryImpl extends ClientRepository {
 				.setMaxResults(length.intValue())
 				.getResultList();
 	}
+	
+	@Override
+	public List<Object[]> getIdsAndNamesLikeName(String likePattern) {
+		return em.createNamedQuery("Client.findIdsAndNamesLikeName", Object[].class)
+				.setParameter("likePattern", "%" + likePattern + "%")				
+				.getResultList();
+	}
+	
+	@Override
+	public List<Object[]> getIdsAndNamesLikeName(String likePattern, Long start, Long length) {
+		return em.createNamedQuery("Client.findIdsAndNamesLikeName", Object[].class)
+				.setParameter("likePattern", "%" + likePattern + "%")
+				.setFirstResult(start.intValue())
+				.setMaxResults(length.intValue())
+				.getResultList();
+	}
 }

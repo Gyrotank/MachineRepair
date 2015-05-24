@@ -1,6 +1,7 @@
 package com.glomozda.machinerepair.service.orderstatus;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,5 +26,9 @@ public abstract class OrderStatusService {
 	public OrderStatusService() {
 		super();
 	}
+
+	public abstract Map<Long, String> getIdsAndNames();
+
+	public abstract Map<Long, String> getIdsAndNamesRu();
 
 }

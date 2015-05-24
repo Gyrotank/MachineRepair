@@ -26,28 +26,15 @@ public class AdminPageUsersController extends AbstractRolePageController
 
 	static Logger log = Logger.getLogger(AdminPageUsersController.class.getName());
 	
-	private String messageEnableDisableFailed = "";
-	private String messageEnableDisableSucceeded = "";
-	
 	@Override
 	protected void prepareModel(final Locale locale, final Principal principal, 
 			final Model model) {
 		
 		prepareModelAdminPage(locale, model, new UserDTO(), userSvc);
 		
-		model.addAttribute("dialog_enable_user",
-				messageSource.getMessage("label.adminpage.users.actions.enable.dialog", null,
-				locale));
-		model.addAttribute("dialog_disable_user",
-				messageSource.getMessage("label.adminpage.users.actions.disable.dialog", null,
-				locale));
-		
-		model.addAttribute("message_enable_disable_failed",
-				messageEnableDisableFailed);
-		messageEnableDisableFailed = "";
-		model.addAttribute("message_enable_disable_succeeded",
-				messageEnableDisableSucceeded);
-		messageEnableDisableSucceeded = "";
+		prepareModelAdminPageWithEnableDisable(locale, model, 
+				"label.adminpage.users.actions.enable.dialog",
+				"label.adminpage.users.actions.disable.dialog");
 	}
 	
 	@Override
@@ -81,30 +68,30 @@ public class AdminPageUsersController extends AbstractRolePageController
 	public String enableUser(@RequestParam("user_id") Long userId, final Locale locale) {
 		User userInQuestion = userSvc.getUserById(userId);
 		if (userInQuestion == null) {			
-			messageEnableDisableFailed = 
+			sessionScopeInfoService.getSessionScopeInfo().setMessageEnableDisableFailed( 
 					messageSource
 					.getMessage("popup.adminpage.users.actions.failed.userNotExists",
-							null, locale);
+							null, locale));
 			return "redirect:/adminpageusers";
 		}
 		if (userInQuestion.getEnabled() != 0) {			
-			messageEnableDisableFailed = 
+			sessionScopeInfoService.getSessionScopeInfo().setMessageEnableDisableFailed( 
 					messageSource
 					.getMessage("popup.adminpage.users.actions.failed.userNotDisabled",
-							null, locale);
+							null, locale));
 			return "redirect:/adminpageusers";
 		}
 		
 		if (userSvc.setUserEnabledById(userId, (byte) 1) == 1) {
-			messageEnableDisableSucceeded = 
+			sessionScopeInfoService.getSessionScopeInfo().setMessageEnableDisableSucceeded( 
 				messageSource
 				.getMessage("popup.adminpage.users.actions.succeeded",
-						null, locale);
+						null, locale));
 		} else {
-			messageEnableDisableFailed = 
+			sessionScopeInfoService.getSessionScopeInfo().setMessageEnableDisableFailed( 
 					messageSource
 					.getMessage("popup.adminpage.users.actions.failed.updateFailed",
-							null, locale);
+							null, locale));
 		}
 		return "redirect:/adminpageusers";
 	}
@@ -113,37 +100,37 @@ public class AdminPageUsersController extends AbstractRolePageController
 	public String disableUser(@RequestParam("user_id") Long userId, final Locale locale) {
 		User userInQuestion = userSvc.getUserById(userId);
 		if (userInQuestion == null) {			
-			messageEnableDisableFailed = 
+			sessionScopeInfoService.getSessionScopeInfo().setMessageEnableDisableFailed( 
 					messageSource
 					.getMessage("popup.adminpage.users.actions.failed.userNotExists",
-							null, locale);
+							null, locale));
 			return "redirect:/adminpageusers";
 		}
 		if (userInQuestion.getLogin().contentEquals(myUser.getLogin())) {		
-			messageEnableDisableFailed = 
+			sessionScopeInfoService.getSessionScopeInfo().setMessageEnableDisableFailed( 
 					messageSource
 					.getMessage("popup.adminpage.users.actions.failed.sameUser",
-							null, locale);
+							null, locale));
 			return "redirect:/adminpageusers";
 		}
 		if (userInQuestion.getEnabled() != 1) {
-			messageEnableDisableFailed = 
+			sessionScopeInfoService.getSessionScopeInfo().setMessageEnableDisableFailed( 
 					messageSource
 					.getMessage("popup.adminpage.users.actions.failed.userNotEnabled",
-							null, locale);
+							null, locale));
 			return "redirect:/adminpageusers";
 		}
 		
 		if (userSvc.setUserEnabledById(userId, (byte) 0) == 1) {
-			messageEnableDisableSucceeded = 
+			sessionScopeInfoService.getSessionScopeInfo().setMessageEnableDisableSucceeded( 
 				messageSource
 				.getMessage("popup.adminpage.users.actions.succeeded",
-						null, locale);
+						null, locale));
 		} else {
-			messageEnableDisableFailed = 
+			sessionScopeInfoService.getSessionScopeInfo().setMessageEnableDisableFailed( 
 					messageSource
 					.getMessage("popup.adminpage.users.actions.failed.updateFailed",
-							null, locale);
+							null, locale));
 		}
 		return "redirect:/adminpageusers";
 	}

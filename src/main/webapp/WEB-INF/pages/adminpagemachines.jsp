@@ -91,25 +91,11 @@
 								<td><script type="text/javascript">
 									$("#machineServiceableId").ufd();
 								</script> <form:select id="machineServiceableId" path="machineServiceableId">
-										<option value="0">
+										<form:option value="0">
 											<spring:message
 												code="label.adminpage.addNewMachine.selectMachineName" />
-										</option>
-										<c:forEach var="ms" items="${machines_serviceable}">
-											<c:choose>
-												<c:when
-													test="${dataObject.machineServiceableId == ms.machineServiceableId}">
-													<option selected value="${ms.machineServiceableId}">
-														<c:out value="${ms.machineServiceableName}" />
-													</option>
-												</c:when>
-												<c:otherwise>
-													<option value="${ms.machineServiceableId}">
-														<c:out value="${ms.machineServiceableName}" />
-													</option>
-												</c:otherwise>
-											</c:choose>
-										</c:forEach>
+										</form:option>
+										<form:options items="${machines_serviceable}" />
 									</form:select></td>
 								<td><form:errors path="machineServiceableId"
 										cssClass="error" /></td>

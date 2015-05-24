@@ -24,7 +24,11 @@ import com.glomozda.machinerepair.domain.order.Order;
 		query="SELECT os FROM OrderStatus os ORDER BY os.orderStatusNumber"),
 	@NamedQuery(name="OrderStatus.findOrderStatusByName", 
 		query="SELECT os FROM OrderStatus os"
-			+ " WHERE os.orderStatusName = :name")
+			+ " WHERE os.orderStatusName = :name"),
+	@NamedQuery(name="OrderStatus.findIdsAndNames", 
+		query="SELECT os.orderStatusId, os.orderStatusName FROM OrderStatus os"),
+	@NamedQuery(name="OrderStatus.findIdsAndNamesRu", 
+		query="SELECT os.orderStatusId, os.orderStatusNameRu FROM OrderStatus os")
 })
 @Entity
 @Table(name = "order_statuses")

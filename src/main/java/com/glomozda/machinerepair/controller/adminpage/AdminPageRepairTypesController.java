@@ -24,9 +24,6 @@ public class AdminPageRepairTypesController extends AbstractRolePageController
 	implements MessageSourceAware {
 	
 	static Logger log = Logger.getLogger(AdminPageRepairTypesController.class.getName());
-	
-	private String messageEnableDisableFailed = "";
-	private String messageEnableDisableSucceeded = "";
 
 	@Override
 	protected void prepareModel(final Locale locale, final Principal principal, 
@@ -34,21 +31,9 @@ public class AdminPageRepairTypesController extends AbstractRolePageController
 
 		prepareModelAdminPage(locale, model, new RepairType(), repairTypeSvc);
 		
-		model.addAttribute("message_enable_disable_failed",
-				messageEnableDisableFailed);
-		messageEnableDisableFailed = "";
-		model.addAttribute("message_enable_disable_succeeded",
-				messageEnableDisableSucceeded);
-		messageEnableDisableSucceeded = "";
-		
-		model.addAttribute("dialog_available_repair_type",
-				messageSource.getMessage(
-					"label.adminpage.repairTypes.actions.enable.dialog", null,
-					locale));
-		model.addAttribute("dialog_not_available_repair_type",
-				messageSource.getMessage(
-					"label.adminpage.repairTypes.actions.disable.dialog", null,
-					locale));		
+		prepareModelAdminPageWithEnableDisable(locale, model, 
+				"label.adminpage.repairTypes.actions.enable.dialog",
+				"label.adminpage.repairTypes.actions.disable.dialog");	
 	}
 	
 	@Override
@@ -110,31 +95,31 @@ public class AdminPageRepairTypesController extends AbstractRolePageController
 				repairTypeSvc.getRepairTypeById(repairTypeId);
 		
 		if (repairTypeInQuestion == null) {			
-			messageEnableDisableFailed = 
+			sessionScopeInfoService.getSessionScopeInfo().setMessageEnableDisableFailed( 
 					messageSource
 					.getMessage("popup.adminpage.repairTypes.actions.failed.rtNotExists",
-							null, locale);
+							null, locale));
 			return "redirect:/adminpagerepairtypes";
 		}
 		if (repairTypeInQuestion.getAvailable() != 0) {			
-			messageEnableDisableFailed = 
+			sessionScopeInfoService.getSessionScopeInfo().setMessageEnableDisableFailed( 
 					messageSource
 					.getMessage("popup.adminpage.repairTypes.actions.failed.rtNotUnavailable",
-							null, locale);
+							null, locale));
 			return "redirect:/adminpagerepairtypes";
 		}
 		
 		if (repairTypeSvc
 				.setRepairTypeAvailableById(repairTypeId, (byte) 1) == 1) {
-			messageEnableDisableSucceeded = 
+			sessionScopeInfoService.getSessionScopeInfo().setMessageEnableDisableSucceeded( 
 				messageSource
 				.getMessage("popup.adminpage.repairTypes.actions.succeeded",
-						null, locale);
+						null, locale));
 		} else {
-			messageEnableDisableFailed = 
+			sessionScopeInfoService.getSessionScopeInfo().setMessageEnableDisableFailed( 
 					messageSource
 					.getMessage("popup.adminpage.repairTypes.actions.failed.updateFailed",
-							null, locale);
+							null, locale));
 		}
 		
 		return "redirect:/adminpagerepairtypes";
@@ -149,31 +134,31 @@ public class AdminPageRepairTypesController extends AbstractRolePageController
 				repairTypeSvc.getRepairTypeById(repairTypeId);
 		
 		if (repairTypeInQuestion == null) {			
-			messageEnableDisableFailed = 
+			sessionScopeInfoService.getSessionScopeInfo().setMessageEnableDisableFailed( 
 					messageSource
 					.getMessage("popup.adminpage.repairTypes.actions.failed.rtNotExists",
-							null, locale);
+							null, locale));
 			return "redirect:/adminpagerepairtypes";
 		}
 		if (repairTypeInQuestion.getAvailable() != 1) {			
-			messageEnableDisableFailed = 
+			sessionScopeInfoService.getSessionScopeInfo().setMessageEnableDisableFailed( 
 					messageSource
 					.getMessage("popup.adminpage.repairTypes.actions.failed.rtNotAvailable",
-							null, locale);
+							null, locale));
 			return "redirect:/adminpagerepairtypes";
 		}
 		
 		if (repairTypeSvc
 				.setRepairTypeAvailableById(repairTypeId, (byte) 0) == 1) {
-			messageEnableDisableSucceeded = 
+			sessionScopeInfoService.getSessionScopeInfo().setMessageEnableDisableSucceeded( 
 				messageSource
 				.getMessage("popup.adminpage.repairTypes.actions.succeeded",
-						null, locale);
+						null, locale));
 		} else {
-			messageEnableDisableFailed = 
+			sessionScopeInfoService.getSessionScopeInfo().setMessageEnableDisableFailed( 
 					messageSource
 					.getMessage("popup.adminpage.repairTypes.actions.failed.updateFailed",
-							null, locale);
+							null, locale));
 		}
 		
 		return "redirect:/adminpagerepairtypes";

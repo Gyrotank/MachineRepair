@@ -1,6 +1,8 @@
 package com.glomozda.machinerepair.service.user;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.PersistenceException;
 
@@ -53,8 +55,27 @@ public class UserServiceImpl extends UserService {
 	}
 	
 	@Override
-	public List<Object[]> getAllIdsAndLogins() {
-		return userRepository.getAllIdsAndLogins();
+	public Map<Long, String> getAllIdsAndLogins() {		
+		List<Object[]> idsAndLoginsList = userRepository.getAllIdsAndLogins();
+				
+				Map<Long, String> idsAndLoginsMap = 
+						new LinkedHashMap<Long, String>(idsAndLoginsList.size());
+				for (Object[] idAndLogin : idsAndLoginsList)
+					idsAndLoginsMap.put((Long)idAndLogin[0], (String)idAndLogin[1]);
+				
+		return idsAndLoginsMap;
+	}
+	
+	@Override
+	public Map<Long, String> getAllIdsAndLogins(Long start, Long length) {
+		List<Object[]> idsAndLoginsList = userRepository.getAllIdsAndLogins(start, length);
+		
+		Map<Long, String> idsAndLoginsMap = 
+				new LinkedHashMap<Long, String>(idsAndLoginsList.size());
+		for (Object[] idAndLogin : idsAndLoginsList)
+			idsAndLoginsMap.put((Long)idAndLogin[0], (String)idAndLogin[1]);
+		
+		return idsAndLoginsMap;		
 	}
 	
 	@Override

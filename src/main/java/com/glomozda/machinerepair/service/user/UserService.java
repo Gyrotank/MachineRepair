@@ -1,6 +1,7 @@
 package com.glomozda.machinerepair.service.user;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,7 +28,9 @@ public abstract class UserService implements EntityService {
 
 	public abstract Long getUserCount();
 
-	public abstract List<Object[]> getAllIdsAndLogins();
+	public abstract Map<Long, String> getAllIdsAndLogins();
+	
+	public abstract Map<Long, String> getAllIdsAndLogins(Long start, Long length);
 
 	public abstract List<User> getAll(Long start, Long length);
 
@@ -46,6 +49,6 @@ public abstract class UserService implements EntityService {
 
 	public abstract User getUserByLoginAndPassword(String login, String passwordText);
 
-	public abstract Long getUserCountLikeName(String likePattern);
+	public abstract Long getUserCountLikeName(String likePattern);	
 
 }

@@ -38,4 +38,8 @@ public abstract class RepairTypeRepository {
 
 	public abstract List<RepairType> getAll();
 
+	public abstract List<Object[]> getIdsAndNamesOfAvailable();
+
+	public abstract List<Object[]> getIdsAndNamesRuOfAvailable();
+
 }

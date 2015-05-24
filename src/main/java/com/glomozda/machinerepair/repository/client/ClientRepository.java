@@ -50,5 +50,10 @@ public abstract class ClientRepository {
 	public abstract List<Client> getClientsLikeName(String likePattern);
 
 	public abstract List<Client> getClientsLikeName(String likePattern, Long start, Long length);
+
+	public abstract List<Object[]> getIdsAndNamesLikeName(String likePattern);
+
+	public abstract List<Object[]> getIdsAndNamesLikeName(String likePattern,
+			Long start, Long length);
 	
 }

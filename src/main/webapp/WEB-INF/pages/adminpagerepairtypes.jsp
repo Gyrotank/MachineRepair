@@ -106,14 +106,14 @@
 										<c:when test="${rt.available == 0}">
 											<a
 												href="<c:url value="setRTAvailable/?repair-type-id=${rt.repairTypeId}"/>"
-												onclick="return confirm('${dialog_available_repair_type}')">
+												onclick="return confirm('${dialog_enable}')">
 												<img src="resources/images/enable.png" width="24">
 											</a>
 										</c:when>
 										<c:otherwise>
 											<a
 												href="<c:url value="setRTUnavailable/?repair-type-id=${rt.repairTypeId}"/>"
-												onclick="return confirm('${dialog_not_available_repair_type}')">
+												onclick="return confirm('${dialog_disable}')">
 												<img src="resources/images/disable.png" width="24">
 											</a>
 										</c:otherwise>

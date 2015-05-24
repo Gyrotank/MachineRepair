@@ -1,6 +1,8 @@
 package com.glomozda.machinerepair.service.machineserviceable;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.PersistenceException;
 
@@ -80,6 +82,18 @@ public class MachineServiceableServiceImpl extends MachineServiceableService {
 	public List<MachineServiceable> getAllAvailableOrderByTrademark() {
 		return machineServiceableRepository
 				.getAllAvailableOrderByTrademark();
+	}
+	
+	@Override
+	public Map<Long, String> getAllIdsAndNames() {
+		List<Object[]> idsAndNamesList = machineServiceableRepository.getAllIdsAndNames();
+		
+		Map<Long, String> idsAndNamesMap = 
+				new LinkedHashMap<Long, String>(idsAndNamesList.size());
+		for (Object[] idAndName : idsAndNamesList)
+			idsAndNamesMap.put((Long)idAndName[0], (String)idAndName[1]);
+		
+		return idsAndNamesMap;
 	}
 
 	@SuppressWarnings("rawtypes")

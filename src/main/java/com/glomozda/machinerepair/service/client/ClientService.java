@@ -1,6 +1,7 @@
 package com.glomozda.machinerepair.service.client;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,4 +53,9 @@ public abstract class ClientService implements EntityService {
 	public abstract List<Client> getClientsLikeName(String searchQueryArgument);
 
 	public abstract List<Client> getClientsLikeName(String likePattern, Long start,	Long length);
+
+	public abstract Map<Long, String> getIdsAndNamesLikeName(String likePattern);
+
+	public abstract Map<Long, String> getIdsAndNamesLikeName(String likePattern,
+			Long start, Long length);
 }

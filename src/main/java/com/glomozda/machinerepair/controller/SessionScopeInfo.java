@@ -28,9 +28,12 @@ public class SessionScopeInfo implements Serializable {
 	private String messageAdded;
 	private String messageNotAdded;
 	
+	private String messageEnableDisableFailed;
+	private String messageEnableDisableSucceeded;
+	
 	private String messageUpdateFailed;
 	private String messageUpdateSucceeded;
-	private String messageNoChanges;
+	private String messageNoChanges;	
 	
 	private SearchQuery searchQuery;
 	
@@ -52,6 +55,9 @@ public class SessionScopeInfo implements Serializable {
 		this.messageAdded = "";
 		this.messageNotAdded = "";
 		
+		this.messageEnableDisableFailed = "";
+		this.messageEnableDisableSucceeded = "";
+		
 		this.messageUpdateFailed = "";
 		this.messageUpdateSucceeded = "";
 		this.messageNoChanges = "";
@@ -71,6 +77,8 @@ public class SessionScopeInfo implements Serializable {
 			final long pageNumberPlusPlus,
 			final String messageAdded,
 			final String messageNotAdded,
+			final String messageEnableDisableFailed,
+			final String messageEnableDisableSucceeded,
 			final String messageUpdateFailed,
 			final String messageUpdateSucceeded,
 			final String messageNoChanges,
@@ -93,9 +101,12 @@ public class SessionScopeInfo implements Serializable {
 		this.messageAdded = messageAdded;
 		this.messageNotAdded = messageNotAdded;
 		
-		this.messageUpdateFailed = "";
-		this.messageUpdateSucceeded = "";
-		this.messageNoChanges = "";
+		this.messageEnableDisableFailed = messageEnableDisableFailed;
+		this.messageEnableDisableSucceeded = messageEnableDisableSucceeded;
+		
+		this.messageUpdateFailed = messageUpdateFailed;
+		this.messageUpdateSucceeded = messageUpdateSucceeded;
+		this.messageNoChanges = messageNoChanges;
 		
 		this.searchQuery = searchQuery;
 	}
@@ -194,6 +205,23 @@ public class SessionScopeInfo implements Serializable {
 
 	public void setMessageNotAdded(String messageNotAdded) {
 		this.messageNotAdded = messageNotAdded;
+	}
+
+	public String getMessageEnableDisableFailed() {
+		return messageEnableDisableFailed;
+	}
+
+	public void setMessageEnableDisableFailed(String messageEnableDisableFailed) {
+		this.messageEnableDisableFailed = messageEnableDisableFailed;
+	}
+
+	public String getMessageEnableDisableSucceeded() {
+		return messageEnableDisableSucceeded;
+	}
+
+	public void setMessageEnableDisableSucceeded(
+			String messageEnableDisableSucceeded) {
+		this.messageEnableDisableSucceeded = messageEnableDisableSucceeded;
 	}
 
 	public String getMessageUpdateFailed() {

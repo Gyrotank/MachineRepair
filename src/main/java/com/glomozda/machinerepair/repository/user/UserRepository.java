@@ -31,6 +31,8 @@ public abstract class UserRepository {
 	public abstract Long getUserCount();
 
 	public abstract List<Object[]> getAllIdsAndLogins();
+	
+	public abstract List<Object[]> getAllIdsAndLogins(Long start, Long length);
 
 	public abstract List<User> getAll(Long start, Long length);
 
@@ -50,5 +52,5 @@ public abstract class UserRepository {
 	public abstract User getUserByLoginAndPassword(String login, String passwordText);
 
 	public abstract Long getUserCountLikeName(String likePattern);
-
+	
 }

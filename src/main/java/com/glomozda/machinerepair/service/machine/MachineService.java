@@ -1,6 +1,7 @@
 package com.glomozda.machinerepair.service.machine;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,5 +39,7 @@ public abstract class MachineService implements EntityService {
 	public abstract List<Machine> getAll(Long start, Long length);
 
 	public abstract List<Machine> getAll();
+
+	public abstract Map<Long, String> getIdsAndSNs();
 
 }

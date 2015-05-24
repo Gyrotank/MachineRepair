@@ -67,13 +67,13 @@
 								<td><c:choose>
 										<c:when test="${u.enabled == 0}">
 											<a href="<c:url value="enable/?user_id=${u.userId}"/>"
-												onclick="return confirm('${dialog_enable_user}')"> <img
+												onclick="return confirm('${dialog_enable}')"> <img
 												src="resources/images/enable.png" width="24">
 											</a>
 										</c:when>
 										<c:otherwise>
 											<a href="<c:url value="disable/?user_id=${u.userId}"/>"
-												onclick="return confirm('${dialog_disable_user}')"> <img
+												onclick="return confirm('${dialog_disable}')"> <img
 												src="resources/images/disable.png" width="24">
 											</a>
 										</c:otherwise>

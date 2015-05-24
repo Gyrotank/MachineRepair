@@ -104,4 +104,12 @@ public class MachineServiceableRepositoryImpl extends MachineServiceableReposito
 				MachineServiceable.class).getResultList();
 		return result;
 	}
+	
+	@Override
+	public List<Object[]> getAllIdsAndNames() {
+		List<Object[]> result = 
+				em.createNamedQuery("MachineServiceable.findAllIdsAndNames", Object[].class)				
+				.getResultList();
+		return result;
+	}
 }

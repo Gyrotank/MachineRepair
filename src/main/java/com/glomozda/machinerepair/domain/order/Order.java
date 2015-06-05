@@ -301,31 +301,5 @@ public class Order {
 		builder.append(manager);
 		builder.append("]");
 		return builder.toString();
-	}    
-
-//	@Override
-//	public String toString() {
-//		String res = "order{" + "orderId=" + orderId;
-//		
-//		if (client == null) {
-//			res += ", clientId=NO CLIENT";
-//		} else {
-//			res += ", clientId=" + client.getClientId();
-//		}
-//		if (repairType == null) {
-//			res += ", repairTypeId=NO REPAIR TYPE";
-//		} else {
-//			res += ", repairTypeId=" + repairType.getRepairTypeId();
-//		}
-//		if (machine == null) {
-//			res += ", machineId=NO MACHINE";
-//		} else {
-//			res += ", machineId=" + machine.getMachineId();
-//		}
-//		res += ", start=" + start + ", status=" + status + ", manager=" + manager + '}'+"\n";				
-//		
-//		return res;
-//	}
-	
-	
+	}	
 }

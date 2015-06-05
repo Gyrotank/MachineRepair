@@ -169,6 +169,7 @@ public class RepairType {
         hash = 13 * hash + (this.repairTypeName != null ? this.repairTypeName.hashCode() : 0);
         hash = 13 * hash + (this.repairTypeNameRu != null ? this.repairTypeNameRu.hashCode() : 0);
         hash = 13 * hash + (this.repairTypePrice != null ? this.repairTypePrice.hashCode() : 0);
+        hash = 13 * hash + (this.repairTypeDuration != null ? this.repairTypeDuration.hashCode() : 0);
         return hash;
     }
 

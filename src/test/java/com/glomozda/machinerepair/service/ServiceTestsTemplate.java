@@ -16,8 +16,9 @@ import com.glomozda.machinerepair.service.user.UserService;
 import com.glomozda.machinerepair.service.userauthorization.UserAuthorizationService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"/persistenceContextTest.xml"})
-public abstract class DAOTestsTemplate {
+@ContextConfiguration(locations = {"/springContextServiceTest.xml", 
+		"/persistenceContextServiceTest.xml"})
+public abstract class ServiceTestsTemplate {
 	
     @Autowired
     protected JdbcTemplate jdbcTemplate;

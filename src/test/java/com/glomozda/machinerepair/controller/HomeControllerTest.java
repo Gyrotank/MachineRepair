@@ -1,4 +1,4 @@
-package com.glomozda.machinerepair.controller.adminpage;
+package com.glomozda.machinerepair.controller;
 
 import org.junit.Test;
 import org.springframework.test.context.web.WebAppConfiguration;

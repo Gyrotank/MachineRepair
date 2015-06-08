@@ -3,7 +3,6 @@ package com.glomozda.machinerepair.controller.adminpage;
 import java.security.Principal;
 import java.util.Locale;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
@@ -41,8 +40,7 @@ public class AdminPageClientsController extends AbstractRolePageController
 	}
 	
 	@RequestMapping(value = "/adminpageclients", method = RequestMethod.GET)
-	public String activate(HttpServletRequest request, 
-			final Locale locale, final Principal principal, final Model model) {
+	public String activate(final Locale locale, final Principal principal, final Model model) {
 		
 		if (!isMyUserSet(principal)) {
 			return "redirect:/index";

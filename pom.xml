@@ -33,7 +33,7 @@
 			<id>profile-development</id>
 			<properties>
 				<db.username>root</db.username>
-				<db.password>kokokoR2</db.password>
+				<db.password>root</db.password>
 				<db.url>jdbc:mysql://localhost/</db.url>
 				<db.name>machinerepair</db.name>
 				<db.url.full>${db.url}${db.name}?tinyInt1isBit=false&amp;characterEncoding=UTF-8</db.url.full>
@@ -41,7 +41,7 @@
 				<db.driver>com.mysql.jdbc.Driver</db.driver>
 				<tomcat.url>http://localhost:8085</tomcat.url>
 				<tomcat.deploy.url>${tomcat.url}/manager/text</tomcat.deploy.url>
-				<tomcat.deploy.server>Tomcat8-localhost</tomcat.deploy.server>
+				<tomcat.deploy.server>TomcatServer</tomcat.deploy.server>
 			</properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>
@@ -78,7 +78,7 @@
 							<dbCreateStatements>
 								CREATE DATABASE IF NOT EXISTS ${db.name}
 								DEFAULT CHARACTER SET utf8
-  								DEFAULT COLLATE utf8_general_ci;								
+								DEFAULT COLLATE utf8_general_ci;
 							</dbCreateStatements>
 							<dbDropStatements>
 								DROP DATABASE IF EXISTS ${db.name};
@@ -215,15 +215,30 @@
 
 		<!-- Test -->
 		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-all</artifactId>
+			<version>1.3</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>hamcrest-core</artifactId>
+					<groupId>org.hamcrest</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 			<version>${org.springframework.version}</version>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -236,18 +251,21 @@
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
 			<version>1.9.5</version>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
 			<version>2.4.2</version>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>2.4.2</version>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- Everything Else -->

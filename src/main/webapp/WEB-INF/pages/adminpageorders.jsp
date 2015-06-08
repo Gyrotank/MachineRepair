@@ -29,7 +29,8 @@
 				</div>
 				<table data-toggle="table"
 					data-classes="table table-hover table-condensed"
-					data-striped="true" border="1" style="width: 900px; margin: 0 auto">
+					data-striped="true" border="1" 
+					style="width: 900px; margin: 0 auto; float: center">
 					<thead>
 						<tr>
 							<th align="center" data-sortable="true"></th>

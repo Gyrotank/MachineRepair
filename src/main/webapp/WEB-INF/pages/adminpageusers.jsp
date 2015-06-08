@@ -31,7 +31,7 @@
 				</div>
 				<table data-toggle="table"
 					data-classes="table table-hover table-condensed"
-					data-striped="true" border="1" style="width: 900px" align="center">
+					data-striped="true" border="1" style="width: 900px; float: center">
 					<thead>
 						<tr>
 							<th align="center"></th>
@@ -86,7 +86,7 @@
 				<mycustomtags:tablepaging action="adminpageusers/userpaging"
 					buttonName="userPageNumber" pages_count="${pages_count}"
 					page_number="${page_number}" pages_size="${pages_size}" />
-				<br> <a name="add_new_user"></a>
+				<br id="add_new_user">
 				<h2>
 					<spring:message code="label.adminpage.addNewUser" />
 				</h2>

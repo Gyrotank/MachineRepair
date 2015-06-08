@@ -68,7 +68,7 @@
 						<table border="1" data-toggle="table"
 							data-classes="table table-hover table-condensed"
 							data-striped="true" data-show-columns="true" border="1"
-							style="width: 900px" align="center">
+							style="width: 900px; float: center">
 							<thead>
 								<tr>
 									<th align="center" data-sortable="true" data-switchable="false"></th>
@@ -178,7 +178,7 @@
 						<table border="1" data-toggle="table"
 							data-classes="table table-hover table-condensed"
 							data-striped="true" data-show-columns="true" border="1"
-							style="width: 900px" align="center">
+							style="width: 900px; float: center">
 							<thead>
 								<tr>
 									<th align="center" data-sortable="true" data-switchable="false"></th>

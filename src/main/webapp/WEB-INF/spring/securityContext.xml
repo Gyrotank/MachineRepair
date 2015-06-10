@@ -7,6 +7,8 @@
                  http://www.springframework.org/schema/security 
                  http://www.springframework.org/schema/security/spring-security-3.2.xsd"> 
 
+<beans:import resource="springContext.xml" />
+
 <http pattern="/error/**" security="none"/>
 
 <http auto-config="true"> 

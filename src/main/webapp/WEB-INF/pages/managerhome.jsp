@@ -41,11 +41,11 @@
 
 	</h3>
 	<br>
-	<center>
+	<div align="center">
 		<h1>
 			<spring:message code="label.homepage.header" />
 		</h1>
-	</center>
+	</div>
 
 	<a href="${pageContext.servletContext.contextPath}/managerpage"> <spring:message
 			code="label.homepage.managerTools" /></a>

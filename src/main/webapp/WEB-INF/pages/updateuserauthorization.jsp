@@ -26,7 +26,7 @@
 					action="updateUserAuthorization" accept-charset="UTF-8">
 					<table data-toggle="table"
 						data-classes="table table-hover table-condensed"
-						data-striped="true" border="1" style="width: 600px" align="center">
+						data-striped="true" border="1" style="width: 600px; float: center">
 						<thead>
 							<tr>
 								<c:forEach var="ur" items="${userRoles}" varStatus="loopStatus">

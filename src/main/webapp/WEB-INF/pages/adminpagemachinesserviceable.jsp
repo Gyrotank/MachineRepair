@@ -31,7 +31,7 @@
 				</div>
 				<table border="1" data-toggle="table"
 					data-classes="table table-hover table-condensed"
-					data-striped="true" border="1" style="width: 900px" align="center">
+					data-striped="true" border="1" style="width: 900px; float: center">
 					<thead>
 						<tr>
 							<th align="center"></th>
@@ -133,9 +133,8 @@
 					pages_count="${pages_count}" page_number="${page_number}"
 					pages_size="${pages_size}" />
 
-				<br>
-				<div>
-					<a name="add_new_serviceable_machine"></a>
+				<br id="add_new_serviceable_machine">
+				<div>					
 					<h2>
 						<spring:message code="label.adminpage.addNewServiceableMachine" />
 					</h2>

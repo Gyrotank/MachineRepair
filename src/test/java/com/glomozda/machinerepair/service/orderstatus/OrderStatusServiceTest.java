@@ -3,15 +3,13 @@ package com.glomozda.machinerepair.service.orderstatus;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.glomozda.machinerepair.domain.orderstatus.OrderStatus;
-import com.glomozda.machinerepair.service.DAOTestsTemplate;
+import com.glomozda.machinerepair.service.ServiceTestsTemplate;
 
-@ContextConfiguration(locations = "classpath:spring-context-test.xml")
 @Transactional
-public class OrderStatusDAOJDBCTest extends DAOTestsTemplate {
+public class OrderStatusServiceTest extends ServiceTestsTemplate {
 	
 	@Before
     public void prepareDB(){

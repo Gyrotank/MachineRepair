@@ -3,15 +3,13 @@ package com.glomozda.machinerepair.service.machineserviceable;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.glomozda.machinerepair.domain.machineserviceable.MachineServiceable;
-import com.glomozda.machinerepair.service.DAOTestsTemplate;
+import com.glomozda.machinerepair.service.ServiceTestsTemplate;
 
-@ContextConfiguration(locations = "classpath:spring-context-test.xml")
 @Transactional
-public class MachineServiceableDAOJDBCTest extends DAOTestsTemplate{
+public class MachineServiceableServiceTest extends ServiceTestsTemplate{
     
     final MachineServiceable ms1 = new MachineServiceable("M-S-3", "TM-1", "UK", "��");
     final MachineServiceable ms2 = new MachineServiceable("M-S-2", "ATM-2",

@@ -5,19 +5,14 @@ import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.glomozda.machinerepair.domain.client.Client;
 import com.glomozda.machinerepair.domain.user.User;
-import com.glomozda.machinerepair.service.DAOTestsTemplate;
+import com.glomozda.machinerepair.service.ServiceTestsTemplate;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath:spring-context-test.xml")
 @Transactional
-public class ClientDAOJDBCTest extends DAOTestsTemplate{
+public class ClientServiceTest extends ServiceTestsTemplate{
     
     final Client cl1 = new Client();
     final Client cl2 = new Client();

@@ -41,8 +41,8 @@
 					<c:otherwise>
 						<table data-toggle="table"
 							data-classes="table table-hover table-condensed"
-							data-striped="true" border="1" style="width: 900px"
-							align="center">
+							data-striped="true" border="1" 
+							style="width: 900px; float: center">
 							<thead>
 								<tr>
 									<th align="center" data-sortable="true" data-switchable="false"></th>
